@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import '../../specs/001-build-a-mobile/contracts/export_service_contract.dart';
-import '../../specs/001-build-a-mobile/contracts/shared_models.dart';
 
 void main() {
   group('ExportServiceContract', () {

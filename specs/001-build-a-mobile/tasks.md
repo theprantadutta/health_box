@@ -43,13 +43,13 @@
 - [x] **T024** [P] Contract test StorageServiceContract in `test/contract/storage_service_contract_test.dart`
 
 ### Integration Tests (User Stories)
-- [ ] **T025** [P] Integration test: First-time user onboarding in `integration_test/user_onboarding_test.dart`
-- [ ] **T026** [P] Integration test: Multiple family profiles management in `integration_test/family_profiles_test.dart`
-- [ ] **T027** [P] Integration test: Offline functionality in `integration_test/offline_functionality_test.dart`
-- [ ] **T028** [P] Integration test: Medication reminders in `integration_test/medication_reminders_test.dart`
-- [ ] **T029** [P] Integration test: Data export and sharing in `integration_test/data_export_test.dart`
-- [ ] **T030** [P] Integration test: Google Drive sync in `integration_test/google_drive_sync_test.dart`
-- [ ] **T031** [P] Integration test: Large dataset performance in `integration_test/performance_test.dart`
+- [x] **T025** [P] Integration test: First-time user onboarding in `integration_test/user_onboarding_test.dart`
+- [x] **T026** [P] Integration test: Multiple family profiles management in `integration_test/family_profiles_test.dart`
+- [x] **T027** [P] Integration test: Offline functionality in `integration_test/offline_functionality_test.dart`
+- [x] **T028** [P] Integration test: Medication reminders in `integration_test/medication_reminders_test.dart`
+- [x] **T029** [P] Integration test: Data export and sharing in `integration_test/data_export_test.dart`
+- [x] **T030** [P] Integration test: Google Drive sync in `integration_test/google_drive_sync_test.dart`
+- [x] **T031** [P] Integration test: Large dataset performance in `integration_test/performance_test.dart`
 
 ## Phase 3.4: Core Service Implementation (ONLY after tests are failing)
 
