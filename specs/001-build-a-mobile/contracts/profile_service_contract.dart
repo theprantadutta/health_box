@@ -1,6 +1,8 @@
 // Profile Service Contract - Family Member Profile Management
 // Corresponds to FR-001: System MUST allow users to create and manage multiple family member profiles
 
+import 'shared_models.dart';
+
 abstract class ProfileServiceContract {
   // Create new family member profile
   // Returns: Profile ID on success, throws ValidationException on invalid data
@@ -59,18 +61,6 @@ abstract class ProfileServiceContract {
     double? height,
     double? weight,
   });
-}
-
-class ValidationResult {
-  final bool isValid;
-  final List<String> errors;
-  
-  ValidationResult({required this.isValid, required this.errors});
-}
-
-class ValidationException implements Exception {
-  final List<String> errors;
-  ValidationException(this.errors);
 }
 
 class ProfileNotFoundException implements Exception {

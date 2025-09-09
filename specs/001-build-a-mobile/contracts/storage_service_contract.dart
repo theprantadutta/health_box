@@ -4,6 +4,8 @@
 // Corresponds to FR-011: System MUST encrypt all stored medical data
 // Corresponds to FR-015: System MUST maintain data integrity and prevent corruption
 
+import 'shared_models.dart';
+
 abstract class StorageServiceContract {
   // Initialize encrypted database
   // Returns: true on successful initialization

@@ -1,6 +1,8 @@
 // Reminder Service Contract - Medication and appointment notifications
 // Corresponds to FR-004: System MUST provide medication and appointment reminder functionality
 
+import 'shared_models.dart';
+
 abstract class ReminderServiceContract {
   // Create new reminder
   // Returns: Reminder ID on success, throws ValidationException on invalid data

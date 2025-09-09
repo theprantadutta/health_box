@@ -24,23 +24,23 @@
 - [x] **T010** [P] Create LabReport Drift table extending MedicalRecord in `lib/data/models/lab_report.dart`
 - [x] **T011** [P] Create Medication Drift table extending MedicalRecord in `lib/data/models/medication.dart`
 - [x] **T012** [P] Create Vaccination Drift table extending MedicalRecord in `lib/data/models/vaccination.dart`
-- [ ] **T013** [P] Create Allergy Drift table extending MedicalRecord in `lib/data/models/allergy.dart`
-- [ ] **T014** [P] Create ChronicCondition Drift table extending MedicalRecord in `lib/data/models/chronic_condition.dart`
-- [ ] **T015** [P] Create Tag Drift table in `lib/data/models/tag.dart`
-- [ ] **T016** [P] Create Attachment Drift table in `lib/data/models/attachment.dart`
-- [ ] **T017** [P] Create Reminder Drift table in `lib/data/models/reminder.dart`
-- [ ] **T018** [P] Create EmergencyCard Drift table in `lib/data/models/emergency_card.dart`
+- [x] **T013** [P] Create Allergy Drift table extending MedicalRecord in `lib/data/models/allergy.dart`
+- [x] **T014** [P] Create ChronicCondition Drift table extending MedicalRecord in `lib/data/models/chronic_condition.dart`
+- [x] **T015** [P] Create Tag Drift table in `lib/data/models/tag.dart`
+- [x] **T016** [P] Create Attachment Drift table in `lib/data/models/attachment.dart`
+- [x] **T017** [P] Create Reminder Drift table in `lib/data/models/reminder.dart`
+- [x] **T018** [P] Create EmergencyCard Drift table in `lib/data/models/emergency_card.dart`
 
 ## Phase 3.3: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.4
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 
 ### Contract Tests
-- [ ] **T019** [P] Contract test ProfileServiceContract in `test/contract/profile_service_contract_test.dart`
-- [ ] **T020** [P] Contract test MedicalRecordsServiceContract in `test/contract/medical_records_service_contract_test.dart`
-- [ ] **T021** [P] Contract test ReminderServiceContract in `test/contract/reminder_service_contract_test.dart`
-- [ ] **T022** [P] Contract test SyncServiceContract in `test/contract/sync_service_contract_test.dart`
-- [ ] **T023** [P] Contract test ExportServiceContract in `test/contract/export_service_contract_test.dart`
-- [ ] **T024** [P] Contract test StorageServiceContract in `test/contract/storage_service_contract_test.dart`
+- [x] **T019** [P] Contract test ProfileServiceContract in `test/contract/profile_service_contract_test.dart`
+- [x] **T020** [P] Contract test MedicalRecordsServiceContract in `test/contract/medical_records_service_contract_test.dart`
+- [x] **T021** [P] Contract test ReminderServiceContract in `test/contract/reminder_service_contract_test.dart`
+- [x] **T022** [P] Contract test SyncServiceContract in `test/contract/sync_service_contract_test.dart`
+- [x] **T023** [P] Contract test ExportServiceContract in `test/contract/export_service_contract_test.dart`
+- [x] **T024** [P] Contract test StorageServiceContract in `test/contract/storage_service_contract_test.dart`
 
 ### Integration Tests (User Stories)
 - [ ] **T025** [P] Integration test: First-time user onboarding in `integration_test/user_onboarding_test.dart`

@@ -1,6 +1,8 @@
 // Medical Records Service Contract - CRUD operations for all medical record types
 // Corresponds to FR-003: Users MUST be able to add, edit, and delete medical records
 
+import 'shared_models.dart';
+
 abstract class MedicalRecordsServiceContract {
   // Create new medical record
   // Returns: Record ID on success, throws ValidationException on invalid data

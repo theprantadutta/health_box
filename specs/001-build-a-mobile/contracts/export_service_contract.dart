@@ -3,6 +3,8 @@
 // Corresponds to FR-007: Users MUST be able to export medical data
 // Corresponds to FR-008: System MUST support import of previously exported data
 
+import 'shared_models.dart';
+
 abstract class ExportServiceContract {
   // Export medical data for profile
   // Returns: file path of exported data on success
