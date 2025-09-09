@@ -1,5 +1,5 @@
 # Build configuration for Health Box
-# Configures code generation for Drift database and Riverpod providers
+# Configures code generation for Drift database
 
 targets:
   $default:
@@ -8,63 +8,11 @@ targets:
       drift_dev|drift_dev:
         enabled: true
         options:
-          # Enable SQLCipher support for encrypted database
-          sql:
-            modules:
-              - sqlcipher
-          # Generate data classes with proper serialization
-          generate_data_classes: true
-          generate_companions: true
-          # Use ffi for better performance with SQLCipher
-          eager_loading: true
+          # Generate companions for easier inserts/updates
           data_class_to_companions: true
-          mutable_classes: false
           # Generate proper null safety code
-          null_aware_type_converters: true
-          # Medical data specific configurations
-          generate_values_in_copy_with: true
-          generate_manager: true
+          mutable_classes: false
         generate_for:
           include:
             - lib/data/models/**
             - lib/data/database/**
-
-      # Riverpod code generation
-      riverpod_generator|riverpod_generator:
-        enabled: true
-        options:
-          # Generate providers with proper dependencies
-          line_length: 80
-        generate_for:
-          include:
-            - lib/features/**/providers/**
-            - lib/shared/providers/**
-
-      # JSON serialization (if needed for exports)
-      json_serializable|json_serializable:
-        enabled: true
-        options:
-          # Medical data export configurations
-          any_map: true
-          checked: true
-          create_factory: true
-          create_to_json: true
-          disallow_unrecognized_keys: false
-          explicit_to_json: true
-          field_rename: none
-          generic_argument_factories: false
-          ignore_unannotated: false
-          include_if_null: true
-        generate_for:
-          include:
-            - lib/features/export/**
-            - lib/data/models/**
-
-# Global build configurations
-global_options:
-  # Enable incremental builds for faster development
-  build_to: cache
-  
-  # Medical app specific optimizations  
-  log_performance: true
-  track_performance: true
