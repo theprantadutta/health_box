@@ -4,81 +4,83 @@ When amending the constitution (`/memory/constitution.md`), ensure all dependent
 
 ## Templates to Update
 
-### When adding/modifying ANY article:
-- [ ] `/templates/plan-template.md` - Update Constitution Check section
-- [ ] `/templates/spec-template.md` - Update if requirements/scope affected
-- [ ] `/templates/tasks-template.md` - Update if new task types needed
-- [ ] `/.claude/commands/plan.md` - Update if planning process changes
-- [ ] `/.claude/commands/tasks.md` - Update if task generation affected
-- [ ] `/CLAUDE.md` - Update runtime development guidelines
+### When adding/modifying ANY principle:
 
-### Article-specific updates:
+* [ ] `/templates/plan-template.md` - Update Constitution Check section
+* [ ] `/templates/spec-template.md` - Update if requirements/scope affected
+* [ ] `/templates/tasks-template.md` - Update if new task types needed
+* [ ] `/.claude/commands/plan.md` - Update if planning process changes
+* [ ] `/.claude/commands/tasks.md` - Update if task generation affected
+* [ ] `/CLAUDE.md` - Update runtime development guidelines
 
-#### Article I (Library-First):
-- [ ] Ensure templates emphasize library creation
-- [ ] Update CLI command examples
-- [ ] Add llms.txt documentation requirements
+### Principle-specific updates:
 
-#### Article II (CLI Interface):
-- [ ] Update CLI flag requirements in templates
-- [ ] Add text I/O protocol reminders
+#### Principle I (Privacy-First):
 
-#### Article III (Test-First):
-- [ ] Update test order in all templates
-- [ ] Emphasize TDD requirements
-- [ ] Add test approval gates
+* [ ] Ensure all templates emphasize no central servers, no mandatory login
+* [ ] Update encryption and sync guidelines
+* [ ] Add zero-analytics/tracking reminders
 
-#### Article IV (Integration Testing):
-- [ ] List integration test triggers
-- [ ] Update test type priorities
-- [ ] Add real dependency requirements
+#### Principle II (Offline-First):
 
-#### Article V (Observability):
-- [ ] Add logging requirements to templates
-- [ ] Include multi-tier log streaming
-- [ ] Update performance monitoring sections
+* [ ] Verify offline-first behavior in specs and plans
+* [ ] Remove any hard dependency on internet connectivity
+* [ ] Add reminders for offline testing
 
-#### Article VI (Versioning):
-- [ ] Add version increment reminders
-- [ ] Include breaking change procedures
-- [ ] Update migration requirements
+#### Principle III (Simplicity & Accessibility):
 
-#### Article VII (Simplicity):
-- [ ] Update project count limits
-- [ ] Add pattern prohibition examples
-- [ ] Include YAGNI reminders
+* [ ] Update templates with accessibility requirements
+* [ ] Emphasize plain language and intuitive design
+* [ ] Add examples for elder-friendly UI practices
+
+#### Principle IV (Reliability & Data Integrity):
+
+* [ ] Add backup/restore validation steps to templates
+* [ ] Emphasize explicit user confirmation for sync overwrites
+* [ ] Include migration/testing requirements for data safety
+
+#### Principle V (Extensibility & Modularity):
+
+* [ ] Add modular design guidelines to templates
+* [ ] Include reminders for feature isolation
+* [ ] Add extensibility evaluation checkpoints
 
 ## Validation Steps
 
 1. **Before committing constitution changes:**
-   - [ ] All templates reference new requirements
-   - [ ] Examples updated to match new rules
-   - [ ] No contradictions between documents
+
+   * [ ] All templates reference new requirements
+   * [ ] Examples updated to match new rules
+   * [ ] No contradictions between documents
 
 2. **After updating templates:**
-   - [ ] Run through a sample implementation plan
-   - [ ] Verify all constitution requirements addressed
-   - [ ] Check that templates are self-contained (readable without constitution)
+
+   * [ ] Run through a sample implementation plan
+   * [ ] Verify all constitution requirements addressed
+   * [ ] Check that templates are self-contained (readable without constitution)
 
 3. **Version tracking:**
-   - [ ] Update constitution version number
-   - [ ] Note version in template footers
-   - [ ] Add amendment to constitution history
+
+   * [ ] Update constitution version number
+   * [ ] Note version in template footers
+   * [ ] Add amendment to constitution history
 
 ## Common Misses
 
 Watch for these often-forgotten updates:
-- Command documentation (`/commands/*.md`)
-- Checklist items in templates
-- Example code/commands
-- Domain-specific variations (web vs mobile vs CLI)
-- Cross-references between documents
+
+* Command documentation (`/commands/*.md`)
+* Checklist items in templates
+* Example code/commands
+* Domain-specific variations (web vs mobile vs offline-first)
+* Cross-references between documents
 
 ## Template Sync Status
 
-Last sync check: 2025-07-16
-- Constitution version: 2.1.1
-- Templates aligned: ❌ (missing versioning, observability details)
+Last sync check: 2025-09-09
+
+* Constitution version: 1.0.0
+* Templates aligned: ✅
 
 ---
 

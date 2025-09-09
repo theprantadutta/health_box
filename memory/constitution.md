@@ -1,50 +1,43 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# HealthBox Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Privacy-First (NON-NEGOTIABLE)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+All medical data belongs entirely to the user. No central servers, no mandatory login, no third-party data sharing. Data remains on-device unless the user explicitly opts for encrypted Google Drive sync. All storage and transfers must be encrypted.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Offline-First
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+The app must work fully offline at all times. Core features (data entry, search, reminders, emergency cards) cannot depend on internet access. Sync and optional cloud features are strictly add-ons, not requirements.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Simplicity & Accessibility
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+UI must be clean, intuitive, and accessible to all age groups, including elderly users. Features should follow the principle of least surprise, with clear language and straightforward navigation.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Reliability & Data Integrity
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Data must be stored in an encrypted Drift database with robust backup/restore options. Export/import must ensure no corruption or data loss. Sync mechanisms must never overwrite local data without explicit user confirmation.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Extensibility & Modularity
+
+Every feature should be implemented as a modular component to support future growth (e.g., OCR, wearable integration). Future enhancements must not compromise existing user data or privacy principles.
+
+## Security Requirements
+
+* Encrypted local database (SQLCipher).
+* End-to-end encrypted Google Drive sync.
+* Optional user-defined vault password for an added layer of security.
+* Zero third-party analytics, tracking, or telemetry.
+
+## Development Workflow
+
+* Test-First: All critical features require unit and integration tests before merging.
+* Code Reviews: All contributions must be reviewed for compliance with privacy and offline-first principles.
+* Documentation: Each feature must have clear documentation and user-facing instructions.
+* Accessibility Review: All UI changes must be checked against accessibility guidelines.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+The Constitution supersedes all other practices. Amendments require explicit documentation, justification, and a migration plan to safeguard user data. Privacy and offline-first principles are non-negotiable.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-09-07 | **Last Amended**: 2025-09-07
