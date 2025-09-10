@@ -53,6 +53,7 @@ dependencies:
 
   # Notifications and Reminders
   flutter_local_notifications: ^19.4.1
+  timezone: ^0.10.1
 
   # PDF and QR Code Generation
   pdf: ^3.11.1
