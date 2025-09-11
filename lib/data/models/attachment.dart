@@ -6,9 +6,12 @@ class Attachments extends Table {
   TextColumn get fileName => text().named('file_name')();
   TextColumn get filePath => text().named('file_path')();
   TextColumn get fileType => text().named('file_type')();
+  TextColumn get mimeType => text().nullable().named('mime_type')();
   IntColumn get fileSize => integer().named('file_size')();
   TextColumn get description => text().nullable().named('description')();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime).named('created_at')();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime).named('updated_at')();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true)).named('is_active')();
   BoolColumn get isSynced => boolean().withDefault(const Constant(false)).named('is_synced')();
 
   @override

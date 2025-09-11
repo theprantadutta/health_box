@@ -2,7 +2,9 @@ import 'package:drift/drift.dart';
 
 class Reminders extends Table {
   TextColumn get id => text().named('id')();
+  TextColumn get recordId => text().nullable().named('record_id')(); // Reference to medical record
   TextColumn get medicationId => text().nullable().named('medication_id')(); // Optional reference to medication
+  TextColumn get type => text().named('type')(); // Type of reminder (medication, appointment, etc.)
   TextColumn get title => text().named('title')();
   TextColumn get description => text().nullable().named('description')();
   DateTimeColumn get scheduledTime => dateTime().named('scheduled_time')();
@@ -20,6 +22,7 @@ class Reminders extends Table {
   @override
   List<String> get customConstraints => [
     'CHECK (LENGTH(TRIM(title)) > 0)',
+    'CHECK (type IN (\'medication\', \'appointment\', \'lab_test\', \'vaccination\', \'general\'))',
     'CHECK (frequency IN (\'once\', \'daily\', \'weekly\', \'monthly\'))',
     'CHECK (snooze_minutes >= 0 AND snooze_minutes <= 1440)', // Max 24 hours
     'CHECK (last_sent IS NULL OR last_sent <= CURRENT_TIMESTAMP)',

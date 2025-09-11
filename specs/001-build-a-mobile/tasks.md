@@ -82,52 +82,52 @@
 ## Phase 3.6: UI Screens & Widgets
 
 ### Profile Management UI
-- [ ] **T051** Create ProfileListScreen with multi-profile switching in `lib/features/profiles/screens/profile_list_screen.dart`
-- [ ] **T052** Create ProfileFormScreen for add/edit in `lib/features/profiles/screens/profile_form_screen.dart`
-- [ ] **T053** [P] Create ProfileCard widget in `lib/features/profiles/widgets/profile_card.dart`
+- [x] **T051** Create ProfileListScreen with multi-profile switching in `lib/features/profiles/screens/profile_list_screen.dart`
+- [x] **T052** Create ProfileFormScreen for add/edit in `lib/features/profiles/screens/profile_form_screen.dart`
+- [x] **T053** [P] Create ProfileCard widget in `lib/features/profiles/widgets/profile_card.dart`
 
 ### Medical Records UI
-- [ ] **T054** Create MedicalRecordListScreen with search/filter in `lib/features/medical_records/screens/medical_record_list_screen.dart`
-- [ ] **T055** Create MedicalRecordDetailScreen in `lib/features/medical_records/screens/medical_record_detail_screen.dart`
-- [ ] **T056** Create PrescriptionFormScreen in `lib/features/medical_records/screens/prescription_form_screen.dart`
-- [ ] **T057** Create MedicationFormScreen with reminder setup in `lib/features/medical_records/screens/medication_form_screen.dart`
-- [ ] **T058** Create LabReportFormScreen in `lib/features/medical_records/screens/lab_report_form_screen.dart`
-- [ ] **T059** [P] Create MedicalRecordCard widget in `lib/features/medical_records/widgets/medical_record_card.dart`
-- [ ] **T060** [P] Create SearchFilterWidget in `lib/features/medical_records/widgets/search_filter_widget.dart`
+- [x] **T054** Create MedicalRecordListScreen with search/filter in `lib/features/medical_records/screens/medical_record_list_screen.dart`
+- [x] **T055** Create MedicalRecordDetailScreen in `lib/features/medical_records/screens/medical_record_detail_screen.dart`
+- [x] **T056** Create PrescriptionFormScreen in `lib/features/medical_records/screens/prescription_form_screen.dart`
+- [x] **T057** Create MedicationFormScreen with reminder setup in `lib/features/medical_records/screens/medication_form_screen.dart`
+- [x] **T058** Create LabReportFormScreen in `lib/features/medical_records/screens/lab_report_form_screen.dart`
+- [x] **T059** [P] Create MedicalRecordCard widget in `lib/features/medical_records/widgets/medical_record_card.dart`
+- [x] **T060** [P] Create SearchFilterWidget in `lib/features/medical_records/widgets/search_filter_widget.dart`
 
 ### Dashboard & Home UI
-- [ ] **T061** Create DashboardScreen with recent activity and upcoming reminders in `lib/features/dashboard/screens/dashboard_screen.dart`
-- [ ] **T062** [P] Create UpcomingRemindersWidget in `lib/features/dashboard/widgets/upcoming_reminders_widget.dart`
-- [ ] **T063** [P] Create RecentActivityWidget in `lib/features/dashboard/widgets/recent_activity_widget.dart`
-- [ ] **T064** [P] Create QuickActionsWidget in `lib/features/dashboard/widgets/quick_actions_widget.dart`
+- [x] **T061** Create DashboardScreen with recent activity and upcoming reminders in `lib/features/dashboard/screens/dashboard_screen.dart`
+- [x] **T062** [P] Create UpcomingRemindersWidget in `lib/features/dashboard/widgets/upcoming_reminders_widget.dart`
+- [x] **T063** [P] Create RecentActivityWidget in `lib/features/dashboard/widgets/recent_activity_widget.dart`
+- [x] **T064** [P] Create QuickActionsWidget in `lib/features/dashboard/widgets/quick_actions_widget.dart`
 
 ## Phase 3.7: File Management & Attachments
 
-- [ ] **T065** [P] Add `file_picker` and `image_picker` dependencies to `pubspec.yaml`
-- [ ] **T066** Implement AttachmentService for file operations in `lib/shared/services/attachment_service.dart`
-- [ ] **T067** Create AttachmentFormWidget for file selection in `lib/shared/widgets/attachment_form_widget.dart`
-- [ ] **T068** [P] Create AttachmentViewWidget for displaying files in `lib/shared/widgets/attachment_view_widget.dart`
+- [x] **T065** [P] Add `file_picker` and `image_picker` dependencies to `pubspec.yaml`
+- [x] **T066** Implement AttachmentService for file operations in `lib/shared/services/attachment_service.dart`
+- [x] **T067** Create AttachmentFormWidget for file selection in `lib/shared/widgets/attachment_form_widget.dart`
+- [x] **T068** [P] Create AttachmentViewWidget for displaying files in `lib/shared/widgets/attachment_view_widget.dart`
 
 ## Phase 3.8: Tagging & Search System
 
-- [ ] **T069** Implement TagService with CRUD operations in `lib/shared/services/tag_service.dart`
-- [ ] **T070** [P] Create TagManagementScreen in `lib/shared/screens/tag_management_screen.dart`
-- [ ] **T071** [P] Create TagSelectorWidget in `lib/shared/widgets/tag_selector_widget.dart`
-- [ ] **T072** Implement SearchService with full-text search in `lib/shared/services/search_service.dart`
+- [x] **T069** Implement TagService with CRUD operations in `lib/shared/services/tag_service.dart`
+- [x] **T070** [P] Create TagManagementScreen in `lib/shared/screens/tag_management_screen.dart`
+- [x] **T071** [P] Create TagSelectorWidget in `lib/shared/widgets/tag_selector_widget.dart`
+- [x] **T072** Implement SearchService with full-text search in `lib/shared/services/search_service.dart`
 
 ## Phase 3.9: Reminder System Integration
 
-- [ ] **T073** Configure flutter_local_notifications with proper permissions in `lib/features/reminders/services/notification_config.dart`
-- [ ] **T074** Create ReminderScheduler for notification timing in `lib/features/reminders/services/reminder_scheduler.dart`
-- [ ] **T075** [P] Create ReminderFormWidget in `lib/features/reminders/widgets/reminder_form_widget.dart`
-- [ ] **T076** [P] Create ActiveRemindersWidget in `lib/features/reminders/widgets/active_reminders_widget.dart`
+- [x] **T073** Configure flutter_local_notifications with proper permissions in `lib/features/reminders/services/notification_config.dart`
+- [x] **T074** Create ReminderScheduler for notification timing in `lib/features/reminders/services/reminder_scheduler.dart`
+- [x] **T075** [P] Create ReminderFormWidget in `lib/features/reminders/widgets/reminder_form_widget.dart`
+- [x] **T076** [P] Create ActiveRemindersWidget in `lib/features/reminders/widgets/active_reminders_widget.dart`
 
 ## Phase 3.10: Emergency Card Generator
 
-- [ ] **T077** [P] Add `pdf` and `qr_flutter` dependencies to `pubspec.yaml`
-- [ ] **T078** Implement EmergencyCardService in `lib/features/export/services/emergency_card_service.dart`
-- [ ] **T079** Create EmergencyCardScreen for configuration in `lib/features/export/screens/emergency_card_screen.dart`
-- [ ] **T080** [P] Create EmergencyCardPreviewWidget in `lib/features/export/widgets/emergency_card_preview_widget.dart`
+- [x] **T077** [P] Add `pdf` and `qr_flutter` dependencies to `pubspec.yaml`
+- [x] **T078** Implement EmergencyCardService in `lib/features/export/services/emergency_card_service.dart`
+- [x] **T079** Create EmergencyCardScreen for configuration in `lib/features/export/screens/emergency_card_screen.dart`
+- [x] **T080** [P] Create EmergencyCardPreviewWidget in `lib/features/export/widgets/emergency_card_preview_widget.dart`
 
 ## Phase 3.11: Google Drive Sync Implementation
 

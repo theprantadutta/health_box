@@ -241,6 +241,28 @@ class NotificationService {
     }
   }
 
+  // Generic schedule notification method for compatibility
+  Future<void> scheduleNotification(String reminderId, String title, String body, DateTime scheduledTime) async {
+    await scheduleGeneralReminder(
+      reminderId: reminderId,
+      title: title,
+      body: body,
+      scheduledTime: scheduledTime,
+      frequency: 'once',
+    );
+  }
+
+  // Generic schedule repeating notification method for compatibility  
+  Future<void> scheduleRepeatingNotification(String reminderId, String title, String body, DateTime scheduledTime, String frequency) async {
+    await scheduleGeneralReminder(
+      reminderId: reminderId,
+      title: title,
+      body: body,
+      scheduledTime: scheduledTime,
+      frequency: frequency,
+    );
+  }
+
   // Show an immediate notification
   Future<void> showImmediateNotification({
     required String title,

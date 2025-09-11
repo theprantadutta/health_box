@@ -79,4 +79,8 @@ dart run build_runner build --delete-conflicting-outputs
 - Mark a task as done after you have completed it in the tasks list in the tasks.md file.
 - Every time you complete a phase in the tasks list, please do a conventional commit, like after every phase in the list, not after every task do a conventional commit.
 - Always make sure all the services, components and other things that you have implemented are being used in our actual UI and app, that they are not in limbo.
+- Flutter Riverpod 3 now uses annotation syntax, but if you are using previous syntax, then don't forget to include this at the top of the file
+import 'package:flutter_riverpod/legacy.dart';
+also see this if necessary https://riverpod.dev/docs/whats_new and
+https://riverpod.dev/docs/3.0_migration
 <!-- MANUAL ADDITIONS END -->

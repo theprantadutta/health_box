@@ -224,6 +224,32 @@ class PrescriptionService {
     }
   }
 
+  Future<List<Prescription>> getExpiringPrescriptions({int daysAhead = 30, String? profileId}) async {
+    try {
+      final now = DateTime.now();
+      final futureDate = now.add(Duration(days: daysAhead));
+      
+      var query = _database.select(_database.prescriptions)
+        ..where((p) => 
+            p.isActive.equals(true) & 
+            p.endDate.isNotNull() &
+            p.endDate.isBiggerThanValue(now) &
+            p.endDate.isSmallerOrEqualValue(futureDate));
+
+      if (profileId != null) {
+        query = query..where((p) => p.profileId.equals(profileId));
+      }
+
+      query = query..orderBy([
+        (p) => OrderingTerm(expression: p.endDate),
+      ]);
+
+      return await query.get();
+    } catch (e) {
+      throw PrescriptionServiceException('Failed to retrieve expiring prescriptions: ${e.toString()}');
+    }
+  }
+
   Future<List<Prescription>> getPrescriptionsNeedingRefill({String? profileId}) async {
     try {
       var query = _database.select(_database.prescriptions)

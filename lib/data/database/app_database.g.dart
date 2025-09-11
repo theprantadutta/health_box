@@ -7680,12 +7680,74 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+    'icon',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isSystemMeta = const VerificationMeta(
+    'isSystem',
+  );
+  @override
+  late final GeneratedColumn<bool> isSystem = GeneratedColumn<bool>(
+    'is_system',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_system" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
@@ -7710,7 +7772,12 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
     name,
     color,
     description,
+    category,
+    icon,
+    isSystem,
+    isActive,
     createdAt,
+    updatedAt,
     usageCount,
   ];
   @override
@@ -7755,10 +7822,40 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
         ),
       );
     }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('icon')) {
+      context.handle(
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
+    }
+    if (data.containsKey('is_system')) {
+      context.handle(
+        _isSystemMeta,
+        isSystem.isAcceptableOrUnknown(data['is_system']!, _isSystemMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
     }
     if (data.containsKey('usage_count')) {
@@ -7792,9 +7889,29 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       ),
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      ),
+      icon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon'],
+      ),
+      isSystem: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_system'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
       )!,
       usageCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -7814,14 +7931,24 @@ class Tag extends DataClass implements Insertable<Tag> {
   final String name;
   final String color;
   final String? description;
+  final String? category;
+  final String? icon;
+  final bool isSystem;
+  final bool isActive;
   final DateTime createdAt;
+  final DateTime updatedAt;
   final int usageCount;
   const Tag({
     required this.id,
     required this.name,
     required this.color,
     this.description,
+    this.category,
+    this.icon,
+    required this.isSystem,
+    required this.isActive,
     required this.createdAt,
+    required this.updatedAt,
     required this.usageCount,
   });
   @override
@@ -7833,7 +7960,16 @@ class Tag extends DataClass implements Insertable<Tag> {
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
+    }
+    if (!nullToAbsent || icon != null) {
+      map['icon'] = Variable<String>(icon);
+    }
+    map['is_system'] = Variable<bool>(isSystem);
+    map['is_active'] = Variable<bool>(isActive);
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     map['usage_count'] = Variable<int>(usageCount);
     return map;
   }
@@ -7846,7 +7982,14 @@ class Tag extends DataClass implements Insertable<Tag> {
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
+      isSystem: Value(isSystem),
+      isActive: Value(isActive),
       createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
       usageCount: Value(usageCount),
     );
   }
@@ -7861,7 +8004,12 @@ class Tag extends DataClass implements Insertable<Tag> {
       name: serializer.fromJson<String>(json['name']),
       color: serializer.fromJson<String>(json['color']),
       description: serializer.fromJson<String?>(json['description']),
+      category: serializer.fromJson<String?>(json['category']),
+      icon: serializer.fromJson<String?>(json['icon']),
+      isSystem: serializer.fromJson<bool>(json['isSystem']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       usageCount: serializer.fromJson<int>(json['usageCount']),
     );
   }
@@ -7873,7 +8021,12 @@ class Tag extends DataClass implements Insertable<Tag> {
       'name': serializer.toJson<String>(name),
       'color': serializer.toJson<String>(color),
       'description': serializer.toJson<String?>(description),
+      'category': serializer.toJson<String?>(category),
+      'icon': serializer.toJson<String?>(icon),
+      'isSystem': serializer.toJson<bool>(isSystem),
+      'isActive': serializer.toJson<bool>(isActive),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'usageCount': serializer.toJson<int>(usageCount),
     };
   }
@@ -7883,14 +8036,24 @@ class Tag extends DataClass implements Insertable<Tag> {
     String? name,
     String? color,
     Value<String?> description = const Value.absent(),
+    Value<String?> category = const Value.absent(),
+    Value<String?> icon = const Value.absent(),
+    bool? isSystem,
+    bool? isActive,
     DateTime? createdAt,
+    DateTime? updatedAt,
     int? usageCount,
   }) => Tag(
     id: id ?? this.id,
     name: name ?? this.name,
     color: color ?? this.color,
     description: description.present ? description.value : this.description,
+    category: category.present ? category.value : this.category,
+    icon: icon.present ? icon.value : this.icon,
+    isSystem: isSystem ?? this.isSystem,
+    isActive: isActive ?? this.isActive,
     createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
     usageCount: usageCount ?? this.usageCount,
   );
   Tag copyWithCompanion(TagsCompanion data) {
@@ -7901,7 +8064,12 @@ class Tag extends DataClass implements Insertable<Tag> {
       description: data.description.present
           ? data.description.value
           : this.description,
+      category: data.category.present ? data.category.value : this.category,
+      icon: data.icon.present ? data.icon.value : this.icon,
+      isSystem: data.isSystem.present ? data.isSystem.value : this.isSystem,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       usageCount: data.usageCount.present
           ? data.usageCount.value
           : this.usageCount,
@@ -7915,15 +8083,31 @@ class Tag extends DataClass implements Insertable<Tag> {
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('description: $description, ')
+          ..write('category: $category, ')
+          ..write('icon: $icon, ')
+          ..write('isSystem: $isSystem, ')
+          ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('usageCount: $usageCount')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, color, description, createdAt, usageCount);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    color,
+    description,
+    category,
+    icon,
+    isSystem,
+    isActive,
+    createdAt,
+    updatedAt,
+    usageCount,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -7932,7 +8116,12 @@ class Tag extends DataClass implements Insertable<Tag> {
           other.name == this.name &&
           other.color == this.color &&
           other.description == this.description &&
+          other.category == this.category &&
+          other.icon == this.icon &&
+          other.isSystem == this.isSystem &&
+          other.isActive == this.isActive &&
           other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
           other.usageCount == this.usageCount);
 }
 
@@ -7941,7 +8130,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
   final Value<String> name;
   final Value<String> color;
   final Value<String?> description;
+  final Value<String?> category;
+  final Value<String?> icon;
+  final Value<bool> isSystem;
+  final Value<bool> isActive;
   final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   final Value<int> usageCount;
   final Value<int> rowid;
   const TagsCompanion({
@@ -7949,7 +8143,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     this.name = const Value.absent(),
     this.color = const Value.absent(),
     this.description = const Value.absent(),
+    this.category = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.isSystem = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     this.usageCount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -7958,7 +8157,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     required String name,
     required String color,
     this.description = const Value.absent(),
+    this.category = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.isSystem = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
     this.usageCount = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -7969,7 +8173,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     Expression<String>? name,
     Expression<String>? color,
     Expression<String>? description,
+    Expression<String>? category,
+    Expression<String>? icon,
+    Expression<bool>? isSystem,
+    Expression<bool>? isActive,
     Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
     Expression<int>? usageCount,
     Expression<int>? rowid,
   }) {
@@ -7978,7 +8187,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
       if (name != null) 'name': name,
       if (color != null) 'color': color,
       if (description != null) 'description': description,
+      if (category != null) 'category': category,
+      if (icon != null) 'icon': icon,
+      if (isSystem != null) 'is_system': isSystem,
+      if (isActive != null) 'is_active': isActive,
       if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
       if (usageCount != null) 'usage_count': usageCount,
       if (rowid != null) 'rowid': rowid,
     });
@@ -7989,7 +8203,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     Value<String>? name,
     Value<String>? color,
     Value<String?>? description,
+    Value<String?>? category,
+    Value<String?>? icon,
+    Value<bool>? isSystem,
+    Value<bool>? isActive,
     Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
     Value<int>? usageCount,
     Value<int>? rowid,
   }) {
@@ -7998,7 +8217,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
       name: name ?? this.name,
       color: color ?? this.color,
       description: description ?? this.description,
+      category: category ?? this.category,
+      icon: icon ?? this.icon,
+      isSystem: isSystem ?? this.isSystem,
+      isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       usageCount: usageCount ?? this.usageCount,
       rowid: rowid ?? this.rowid,
     );
@@ -8019,8 +8243,23 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
+    if (isSystem.present) {
+      map['is_system'] = Variable<bool>(isSystem.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     if (usageCount.present) {
       map['usage_count'] = Variable<int>(usageCount.value);
@@ -8038,7 +8277,12 @@ class TagsCompanion extends UpdateCompanion<Tag> {
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('description: $description, ')
+          ..write('category: $category, ')
+          ..write('icon: $icon, ')
+          ..write('isSystem: $isSystem, ')
+          ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('usageCount: $usageCount, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -8105,6 +8349,17 @@ class $AttachmentsTable extends Attachments
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _fileSizeMeta = const VerificationMeta(
     'fileSize',
   );
@@ -8139,6 +8394,33 @@ class $AttachmentsTable extends Attachments
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   static const VerificationMeta _isSyncedMeta = const VerificationMeta(
     'isSynced',
   );
@@ -8161,9 +8443,12 @@ class $AttachmentsTable extends Attachments
     fileName,
     filePath,
     fileType,
+    mimeType,
     fileSize,
     description,
     createdAt,
+    updatedAt,
+    isActive,
     isSynced,
   ];
   @override
@@ -8215,6 +8500,12 @@ class $AttachmentsTable extends Attachments
     } else if (isInserting) {
       context.missing(_fileTypeMeta);
     }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    }
     if (data.containsKey('file_size')) {
       context.handle(
         _fileSizeMeta,
@@ -8236,6 +8527,18 @@ class $AttachmentsTable extends Attachments
       context.handle(
         _createdAtMeta,
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
       );
     }
     if (data.containsKey('is_synced')) {
@@ -8273,6 +8576,10 @@ class $AttachmentsTable extends Attachments
         DriftSqlType.string,
         data['${effectivePrefix}file_type'],
       )!,
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      ),
       fileSize: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}file_size'],
@@ -8284,6 +8591,14 @@ class $AttachmentsTable extends Attachments
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
       )!,
       isSynced: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
@@ -8304,9 +8619,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
   final String fileName;
   final String filePath;
   final String fileType;
+  final String? mimeType;
   final int fileSize;
   final String? description;
   final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
   final bool isSynced;
   const Attachment({
     required this.id,
@@ -8314,9 +8632,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     required this.fileName,
     required this.filePath,
     required this.fileType,
+    this.mimeType,
     required this.fileSize,
     this.description,
     required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
     required this.isSynced,
   });
   @override
@@ -8327,11 +8648,16 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     map['file_name'] = Variable<String>(fileName);
     map['file_path'] = Variable<String>(filePath);
     map['file_type'] = Variable<String>(fileType);
+    if (!nullToAbsent || mimeType != null) {
+      map['mime_type'] = Variable<String>(mimeType);
+    }
     map['file_size'] = Variable<int>(fileSize);
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
     map['is_synced'] = Variable<bool>(isSynced);
     return map;
   }
@@ -8343,11 +8669,16 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       fileName: Value(fileName),
       filePath: Value(filePath),
       fileType: Value(fileType),
+      mimeType: mimeType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mimeType),
       fileSize: Value(fileSize),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
       createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
       isSynced: Value(isSynced),
     );
   }
@@ -8363,9 +8694,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       fileName: serializer.fromJson<String>(json['fileName']),
       filePath: serializer.fromJson<String>(json['filePath']),
       fileType: serializer.fromJson<String>(json['fileType']),
+      mimeType: serializer.fromJson<String?>(json['mimeType']),
       fileSize: serializer.fromJson<int>(json['fileSize']),
       description: serializer.fromJson<String?>(json['description']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
     );
   }
@@ -8378,9 +8712,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       'fileName': serializer.toJson<String>(fileName),
       'filePath': serializer.toJson<String>(filePath),
       'fileType': serializer.toJson<String>(fileType),
+      'mimeType': serializer.toJson<String?>(mimeType),
       'fileSize': serializer.toJson<int>(fileSize),
       'description': serializer.toJson<String?>(description),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
       'isSynced': serializer.toJson<bool>(isSynced),
     };
   }
@@ -8391,9 +8728,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     String? fileName,
     String? filePath,
     String? fileType,
+    Value<String?> mimeType = const Value.absent(),
     int? fileSize,
     Value<String?> description = const Value.absent(),
     DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
     bool? isSynced,
   }) => Attachment(
     id: id ?? this.id,
@@ -8401,9 +8741,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     fileName: fileName ?? this.fileName,
     filePath: filePath ?? this.filePath,
     fileType: fileType ?? this.fileType,
+    mimeType: mimeType.present ? mimeType.value : this.mimeType,
     fileSize: fileSize ?? this.fileSize,
     description: description.present ? description.value : this.description,
     createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
     isSynced: isSynced ?? this.isSynced,
   );
   Attachment copyWithCompanion(AttachmentsCompanion data) {
@@ -8413,11 +8756,14 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       fileName: data.fileName.present ? data.fileName.value : this.fileName,
       filePath: data.filePath.present ? data.filePath.value : this.filePath,
       fileType: data.fileType.present ? data.fileType.value : this.fileType,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
       fileSize: data.fileSize.present ? data.fileSize.value : this.fileSize,
       description: data.description.present
           ? data.description.value
           : this.description,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
     );
   }
@@ -8430,9 +8776,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           ..write('fileName: $fileName, ')
           ..write('filePath: $filePath, ')
           ..write('fileType: $fileType, ')
+          ..write('mimeType: $mimeType, ')
           ..write('fileSize: $fileSize, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
           ..write('isSynced: $isSynced')
           ..write(')'))
         .toString();
@@ -8445,9 +8794,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     fileName,
     filePath,
     fileType,
+    mimeType,
     fileSize,
     description,
     createdAt,
+    updatedAt,
+    isActive,
     isSynced,
   );
   @override
@@ -8459,9 +8811,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           other.fileName == this.fileName &&
           other.filePath == this.filePath &&
           other.fileType == this.fileType &&
+          other.mimeType == this.mimeType &&
           other.fileSize == this.fileSize &&
           other.description == this.description &&
           other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
           other.isSynced == this.isSynced);
 }
 
@@ -8471,9 +8826,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
   final Value<String> fileName;
   final Value<String> filePath;
   final Value<String> fileType;
+  final Value<String?> mimeType;
   final Value<int> fileSize;
   final Value<String?> description;
   final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
   final Value<bool> isSynced;
   final Value<int> rowid;
   const AttachmentsCompanion({
@@ -8482,9 +8840,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     this.fileName = const Value.absent(),
     this.filePath = const Value.absent(),
     this.fileType = const Value.absent(),
+    this.mimeType = const Value.absent(),
     this.fileSize = const Value.absent(),
     this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -8494,9 +8855,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     required String fileName,
     required String filePath,
     required String fileType,
+    this.mimeType = const Value.absent(),
     required int fileSize,
     this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -8511,9 +8875,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     Expression<String>? fileName,
     Expression<String>? filePath,
     Expression<String>? fileType,
+    Expression<String>? mimeType,
     Expression<int>? fileSize,
     Expression<String>? description,
     Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
     Expression<bool>? isSynced,
     Expression<int>? rowid,
   }) {
@@ -8523,9 +8890,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
       if (fileName != null) 'file_name': fileName,
       if (filePath != null) 'file_path': filePath,
       if (fileType != null) 'file_type': fileType,
+      if (mimeType != null) 'mime_type': mimeType,
       if (fileSize != null) 'file_size': fileSize,
       if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
       if (isSynced != null) 'is_synced': isSynced,
       if (rowid != null) 'rowid': rowid,
     });
@@ -8537,9 +8907,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     Value<String>? fileName,
     Value<String>? filePath,
     Value<String>? fileType,
+    Value<String?>? mimeType,
     Value<int>? fileSize,
     Value<String?>? description,
     Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
     Value<bool>? isSynced,
     Value<int>? rowid,
   }) {
@@ -8549,9 +8922,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
       fileName: fileName ?? this.fileName,
       filePath: filePath ?? this.filePath,
       fileType: fileType ?? this.fileType,
+      mimeType: mimeType ?? this.mimeType,
       fileSize: fileSize ?? this.fileSize,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
       isSynced: isSynced ?? this.isSynced,
       rowid: rowid ?? this.rowid,
     );
@@ -8575,6 +8951,9 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     if (fileType.present) {
       map['file_type'] = Variable<String>(fileType.value);
     }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
     if (fileSize.present) {
       map['file_size'] = Variable<int>(fileSize.value);
     }
@@ -8583,6 +8962,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
     }
     if (isSynced.present) {
       map['is_synced'] = Variable<bool>(isSynced.value);
@@ -8601,9 +8986,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
           ..write('fileName: $fileName, ')
           ..write('filePath: $filePath, ')
           ..write('fileType: $fileType, ')
+          ..write('mimeType: $mimeType, ')
           ..write('fileSize: $fileSize, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
           ..write('isSynced: $isSynced, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -8626,6 +9014,17 @@ class $RemindersTable extends Reminders
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _recordIdMeta = const VerificationMeta(
+    'recordId',
+  );
+  @override
+  late final GeneratedColumn<String> recordId = GeneratedColumn<String>(
+    'record_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _medicationIdMeta = const VerificationMeta(
     'medicationId',
   );
@@ -8636,6 +9035,15 @@ class $RemindersTable extends Reminders
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
@@ -8755,7 +9163,9 @@ class $RemindersTable extends Reminders
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    recordId,
     medicationId,
+    type,
     title,
     description,
     scheduledTime,
@@ -8784,6 +9194,12 @@ class $RemindersTable extends Reminders
     } else if (isInserting) {
       context.missing(_idMeta);
     }
+    if (data.containsKey('record_id')) {
+      context.handle(
+        _recordIdMeta,
+        recordId.isAcceptableOrUnknown(data['record_id']!, _recordIdMeta),
+      );
+    }
     if (data.containsKey('medication_id')) {
       context.handle(
         _medicationIdMeta,
@@ -8792,6 +9208,14 @@ class $RemindersTable extends Reminders
           _medicationIdMeta,
         ),
       );
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -8887,10 +9311,18 @@ class $RemindersTable extends Reminders
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      recordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_id'],
+      ),
       medicationId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}medication_id'],
       ),
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -8942,7 +9374,9 @@ class $RemindersTable extends Reminders
 
 class Reminder extends DataClass implements Insertable<Reminder> {
   final String id;
+  final String? recordId;
   final String? medicationId;
+  final String type;
   final String title;
   final String? description;
   final DateTime scheduledTime;
@@ -8955,7 +9389,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   final int snoozeMinutes;
   const Reminder({
     required this.id,
+    this.recordId,
     this.medicationId,
+    required this.type,
     required this.title,
     this.description,
     required this.scheduledTime,
@@ -8971,9 +9407,13 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    if (!nullToAbsent || recordId != null) {
+      map['record_id'] = Variable<String>(recordId);
+    }
     if (!nullToAbsent || medicationId != null) {
       map['medication_id'] = Variable<String>(medicationId);
     }
+    map['type'] = Variable<String>(type);
     map['title'] = Variable<String>(title);
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -9000,9 +9440,13 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   RemindersCompanion toCompanion(bool nullToAbsent) {
     return RemindersCompanion(
       id: Value(id),
+      recordId: recordId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recordId),
       medicationId: medicationId == null && nullToAbsent
           ? const Value.absent()
           : Value(medicationId),
+      type: Value(type),
       title: Value(title),
       description: description == null && nullToAbsent
           ? const Value.absent()
@@ -9033,7 +9477,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Reminder(
       id: serializer.fromJson<String>(json['id']),
+      recordId: serializer.fromJson<String?>(json['recordId']),
       medicationId: serializer.fromJson<String?>(json['medicationId']),
+      type: serializer.fromJson<String>(json['type']),
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String?>(json['description']),
       scheduledTime: serializer.fromJson<DateTime>(json['scheduledTime']),
@@ -9051,7 +9497,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'recordId': serializer.toJson<String?>(recordId),
       'medicationId': serializer.toJson<String?>(medicationId),
+      'type': serializer.toJson<String>(type),
       'title': serializer.toJson<String>(title),
       'description': serializer.toJson<String?>(description),
       'scheduledTime': serializer.toJson<DateTime>(scheduledTime),
@@ -9067,7 +9515,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
 
   Reminder copyWith({
     String? id,
+    Value<String?> recordId = const Value.absent(),
     Value<String?> medicationId = const Value.absent(),
+    String? type,
     String? title,
     Value<String?> description = const Value.absent(),
     DateTime? scheduledTime,
@@ -9080,7 +9530,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     int? snoozeMinutes,
   }) => Reminder(
     id: id ?? this.id,
+    recordId: recordId.present ? recordId.value : this.recordId,
     medicationId: medicationId.present ? medicationId.value : this.medicationId,
+    type: type ?? this.type,
     title: title ?? this.title,
     description: description.present ? description.value : this.description,
     scheduledTime: scheduledTime ?? this.scheduledTime,
@@ -9097,9 +9549,11 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   Reminder copyWithCompanion(RemindersCompanion data) {
     return Reminder(
       id: data.id.present ? data.id.value : this.id,
+      recordId: data.recordId.present ? data.recordId.value : this.recordId,
       medicationId: data.medicationId.present
           ? data.medicationId.value
           : this.medicationId,
+      type: data.type.present ? data.type.value : this.type,
       title: data.title.present ? data.title.value : this.title,
       description: data.description.present
           ? data.description.value
@@ -9127,7 +9581,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   String toString() {
     return (StringBuffer('Reminder(')
           ..write('id: $id, ')
+          ..write('recordId: $recordId, ')
           ..write('medicationId: $medicationId, ')
+          ..write('type: $type, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('scheduledTime: $scheduledTime, ')
@@ -9145,7 +9601,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   @override
   int get hashCode => Object.hash(
     id,
+    recordId,
     medicationId,
+    type,
     title,
     description,
     scheduledTime,
@@ -9162,7 +9620,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       identical(this, other) ||
       (other is Reminder &&
           other.id == this.id &&
+          other.recordId == this.recordId &&
           other.medicationId == this.medicationId &&
+          other.type == this.type &&
           other.title == this.title &&
           other.description == this.description &&
           other.scheduledTime == this.scheduledTime &&
@@ -9177,7 +9637,9 @@ class Reminder extends DataClass implements Insertable<Reminder> {
 
 class RemindersCompanion extends UpdateCompanion<Reminder> {
   final Value<String> id;
+  final Value<String?> recordId;
   final Value<String?> medicationId;
+  final Value<String> type;
   final Value<String> title;
   final Value<String?> description;
   final Value<DateTime> scheduledTime;
@@ -9191,7 +9653,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   final Value<int> rowid;
   const RemindersCompanion({
     this.id = const Value.absent(),
+    this.recordId = const Value.absent(),
     this.medicationId = const Value.absent(),
+    this.type = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.scheduledTime = const Value.absent(),
@@ -9206,7 +9670,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   });
   RemindersCompanion.insert({
     required String id,
+    this.recordId = const Value.absent(),
     this.medicationId = const Value.absent(),
+    required String type,
     required String title,
     this.description = const Value.absent(),
     required DateTime scheduledTime,
@@ -9219,12 +9685,15 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     this.snoozeMinutes = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
+       type = Value(type),
        title = Value(title),
        scheduledTime = Value(scheduledTime),
        frequency = Value(frequency);
   static Insertable<Reminder> custom({
     Expression<String>? id,
+    Expression<String>? recordId,
     Expression<String>? medicationId,
+    Expression<String>? type,
     Expression<String>? title,
     Expression<String>? description,
     Expression<DateTime>? scheduledTime,
@@ -9239,7 +9708,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (recordId != null) 'record_id': recordId,
       if (medicationId != null) 'medication_id': medicationId,
+      if (type != null) 'type': type,
       if (title != null) 'title': title,
       if (description != null) 'description': description,
       if (scheduledTime != null) 'scheduled_time': scheduledTime,
@@ -9256,7 +9727,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
 
   RemindersCompanion copyWith({
     Value<String>? id,
+    Value<String?>? recordId,
     Value<String?>? medicationId,
+    Value<String>? type,
     Value<String>? title,
     Value<String?>? description,
     Value<DateTime>? scheduledTime,
@@ -9271,7 +9744,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   }) {
     return RemindersCompanion(
       id: id ?? this.id,
+      recordId: recordId ?? this.recordId,
       medicationId: medicationId ?? this.medicationId,
+      type: type ?? this.type,
       title: title ?? this.title,
       description: description ?? this.description,
       scheduledTime: scheduledTime ?? this.scheduledTime,
@@ -9292,8 +9767,14 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
+    if (recordId.present) {
+      map['record_id'] = Variable<String>(recordId.value);
+    }
     if (medicationId.present) {
       map['medication_id'] = Variable<String>(medicationId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -9335,7 +9816,9 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   String toString() {
     return (StringBuffer('RemindersCompanion(')
           ..write('id: $id, ')
+          ..write('recordId: $recordId, ')
           ..write('medicationId: $medicationId, ')
+          ..write('type: $type, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('scheduledTime: $scheduledTime, ')
@@ -13571,7 +14054,12 @@ typedef $$TagsTableCreateCompanionBuilder =
       required String name,
       required String color,
       Value<String?> description,
+      Value<String?> category,
+      Value<String?> icon,
+      Value<bool> isSystem,
+      Value<bool> isActive,
       Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<int> usageCount,
       Value<int> rowid,
     });
@@ -13581,7 +14069,12 @@ typedef $$TagsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String> color,
       Value<String?> description,
+      Value<String?> category,
+      Value<String?> icon,
+      Value<bool> isSystem,
+      Value<bool> isActive,
       Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<int> usageCount,
       Value<int> rowid,
     });
@@ -13614,8 +14107,33 @@ class $$TagsTableFilterComposer extends Composer<_$AppDatabase, $TagsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get icon => $composableBuilder(
+    column: $table.icon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSystem => $composableBuilder(
+    column: $table.isSystem,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -13653,8 +14171,33 @@ class $$TagsTableOrderingComposer extends Composer<_$AppDatabase, $TagsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get icon => $composableBuilder(
+    column: $table.icon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSystem => $composableBuilder(
+    column: $table.isSystem,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -13687,8 +14230,23 @@ class $$TagsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get icon =>
+      $composableBuilder(column: $table.icon, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSystem =>
+      $composableBuilder(column: $table.isSystem, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   GeneratedColumn<int> get usageCount => $composableBuilder(
     column: $table.usageCount,
@@ -13728,7 +14286,12 @@ class $$TagsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String> color = const Value.absent(),
                 Value<String?> description = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<String?> icon = const Value.absent(),
+                Value<bool> isSystem = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> usageCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TagsCompanion(
@@ -13736,7 +14299,12 @@ class $$TagsTableTableManager
                 name: name,
                 color: color,
                 description: description,
+                category: category,
+                icon: icon,
+                isSystem: isSystem,
+                isActive: isActive,
                 createdAt: createdAt,
+                updatedAt: updatedAt,
                 usageCount: usageCount,
                 rowid: rowid,
               ),
@@ -13746,7 +14314,12 @@ class $$TagsTableTableManager
                 required String name,
                 required String color,
                 Value<String?> description = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<String?> icon = const Value.absent(),
+                Value<bool> isSystem = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> usageCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TagsCompanion.insert(
@@ -13754,7 +14327,12 @@ class $$TagsTableTableManager
                 name: name,
                 color: color,
                 description: description,
+                category: category,
+                icon: icon,
+                isSystem: isSystem,
+                isActive: isActive,
                 createdAt: createdAt,
+                updatedAt: updatedAt,
                 usageCount: usageCount,
                 rowid: rowid,
               ),
@@ -13787,9 +14365,12 @@ typedef $$AttachmentsTableCreateCompanionBuilder =
       required String fileName,
       required String filePath,
       required String fileType,
+      Value<String?> mimeType,
       required int fileSize,
       Value<String?> description,
       Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
       Value<bool> isSynced,
       Value<int> rowid,
     });
@@ -13800,9 +14381,12 @@ typedef $$AttachmentsTableUpdateCompanionBuilder =
       Value<String> fileName,
       Value<String> filePath,
       Value<String> fileType,
+      Value<String?> mimeType,
       Value<int> fileSize,
       Value<String?> description,
       Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
       Value<bool> isSynced,
       Value<int> rowid,
     });
@@ -13841,6 +14425,11 @@ class $$AttachmentsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get fileSize => $composableBuilder(
     column: $table.fileSize,
     builder: (column) => ColumnFilters(column),
@@ -13853,6 +14442,16 @@ class $$AttachmentsTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -13896,6 +14495,11 @@ class $$AttachmentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get fileSize => $composableBuilder(
     column: $table.fileSize,
     builder: (column) => ColumnOrderings(column),
@@ -13908,6 +14512,16 @@ class $$AttachmentsTableOrderingComposer
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -13941,6 +14555,9 @@ class $$AttachmentsTableAnnotationComposer
   GeneratedColumn<String> get fileType =>
       $composableBuilder(column: $table.fileType, builder: (column) => column);
 
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
   GeneratedColumn<int> get fileSize =>
       $composableBuilder(column: $table.fileSize, builder: (column) => column);
 
@@ -13951,6 +14568,12 @@ class $$AttachmentsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
 
   GeneratedColumn<bool> get isSynced =>
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
@@ -13992,9 +14615,12 @@ class $$AttachmentsTableTableManager
                 Value<String> fileName = const Value.absent(),
                 Value<String> filePath = const Value.absent(),
                 Value<String> fileType = const Value.absent(),
+                Value<String?> mimeType = const Value.absent(),
                 Value<int> fileSize = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AttachmentsCompanion(
@@ -14003,9 +14629,12 @@ class $$AttachmentsTableTableManager
                 fileName: fileName,
                 filePath: filePath,
                 fileType: fileType,
+                mimeType: mimeType,
                 fileSize: fileSize,
                 description: description,
                 createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
                 isSynced: isSynced,
                 rowid: rowid,
               ),
@@ -14016,9 +14645,12 @@ class $$AttachmentsTableTableManager
                 required String fileName,
                 required String filePath,
                 required String fileType,
+                Value<String?> mimeType = const Value.absent(),
                 required int fileSize,
                 Value<String?> description = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AttachmentsCompanion.insert(
@@ -14027,9 +14659,12 @@ class $$AttachmentsTableTableManager
                 fileName: fileName,
                 filePath: filePath,
                 fileType: fileType,
+                mimeType: mimeType,
                 fileSize: fileSize,
                 description: description,
                 createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
                 isSynced: isSynced,
                 rowid: rowid,
               ),
@@ -14061,7 +14696,9 @@ typedef $$AttachmentsTableProcessedTableManager =
 typedef $$RemindersTableCreateCompanionBuilder =
     RemindersCompanion Function({
       required String id,
+      Value<String?> recordId,
       Value<String?> medicationId,
+      required String type,
       required String title,
       Value<String?> description,
       required DateTime scheduledTime,
@@ -14077,7 +14714,9 @@ typedef $$RemindersTableCreateCompanionBuilder =
 typedef $$RemindersTableUpdateCompanionBuilder =
     RemindersCompanion Function({
       Value<String> id,
+      Value<String?> recordId,
       Value<String?> medicationId,
+      Value<String> type,
       Value<String> title,
       Value<String?> description,
       Value<DateTime> scheduledTime,
@@ -14105,8 +14744,18 @@ class $$RemindersTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get recordId => $composableBuilder(
+    column: $table.recordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get medicationId => $composableBuilder(
     column: $table.medicationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14175,8 +14824,18 @@ class $$RemindersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get recordId => $composableBuilder(
+    column: $table.recordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get medicationId => $composableBuilder(
     column: $table.medicationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -14243,10 +14902,16 @@ class $$RemindersTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<String> get recordId =>
+      $composableBuilder(column: $table.recordId, builder: (column) => column);
+
   GeneratedColumn<String> get medicationId => $composableBuilder(
     column: $table.medicationId,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
@@ -14318,7 +14983,9 @@ class $$RemindersTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String?> recordId = const Value.absent(),
                 Value<String?> medicationId = const Value.absent(),
+                Value<String> type = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<DateTime> scheduledTime = const Value.absent(),
@@ -14332,7 +14999,9 @@ class $$RemindersTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => RemindersCompanion(
                 id: id,
+                recordId: recordId,
                 medicationId: medicationId,
+                type: type,
                 title: title,
                 description: description,
                 scheduledTime: scheduledTime,
@@ -14348,7 +15017,9 @@ class $$RemindersTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String?> recordId = const Value.absent(),
                 Value<String?> medicationId = const Value.absent(),
+                required String type,
                 required String title,
                 Value<String?> description = const Value.absent(),
                 required DateTime scheduledTime,
@@ -14362,7 +15033,9 @@ class $$RemindersTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => RemindersCompanion.insert(
                 id: id,
+                recordId: recordId,
                 medicationId: medicationId,
+                type: type,
                 title: title,
                 description: description,
                 scheduledTime: scheduledTime,

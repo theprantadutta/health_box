@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:ui' show Locale;
 import '../../data/services/storage_service.dart';
@@ -7,7 +8,7 @@ import 'app_providers.dart';
 // State persistence manager
 class StatePersistenceManager {
   final StorageService _storageService;
-  
+
   StatePersistenceManager(this._storageService);
 
   // Persist app state
@@ -15,14 +16,15 @@ class StatePersistenceManager {
     try {
       final stateMap = {
         'isDarkMode': appState.isDarkMode,
-        'locale': '${appState.locale.languageCode}_${appState.locale.countryCode}',
+        'locale':
+            '${appState.locale.languageCode}_${appState.locale.countryCode}',
         'selectedProfileId': appState.selectedProfileId,
         'isOfflineMode': appState.isOfflineMode,
         'lastSyncTime': appState.lastSyncTime?.toIso8601String(),
         'userPreferences': appState.userPreferences,
         'unseenNotificationCount': appState.unseenNotificationCount,
       };
-      
+
       await _storageService.storeJsonData('app_state', stateMap);
     } catch (error) {
       debugPrint('Failed to persist app state: $error');
@@ -33,15 +35,20 @@ class StatePersistenceManager {
   Future<AppState?> restoreAppState() async {
     try {
       final stateMap = await _storageService.retrieveJsonData('app_state');
-      
+
       if (stateMap == null) return null;
 
       final localeString = stateMap['locale'] as String? ?? 'en_US';
       final localeParts = localeString.split('_');
-      final locale = Locale(localeParts[0], localeParts.length > 1 ? localeParts[1] : null);
+      final locale = Locale(
+        localeParts[0],
+        localeParts.length > 1 ? localeParts[1] : null,
+      );
 
       final lastSyncString = stateMap['lastSyncTime'] as String?;
-      final lastSyncTime = lastSyncString != null ? DateTime.tryParse(lastSyncString) : null;
+      final lastSyncTime = lastSyncString != null
+          ? DateTime.tryParse(lastSyncString)
+          : null;
 
       return AppState(
         isInitialized: true,
@@ -50,9 +57,12 @@ class StatePersistenceManager {
         selectedProfileId: stateMap['selectedProfileId'] as String?,
         isOfflineMode: stateMap['isOfflineMode'] as bool? ?? true,
         lastSyncTime: lastSyncTime,
-        userPreferences: (stateMap['userPreferences'] as Map<String, dynamic>?) ?? {},
-        unseenNotificationCount: stateMap['unseenNotificationCount'] as int? ?? 0,
-        hasUnseenNotifications: (stateMap['unseenNotificationCount'] as int? ?? 0) > 0,
+        userPreferences:
+            (stateMap['userPreferences'] as Map<String, dynamic>?) ?? {},
+        unseenNotificationCount:
+            stateMap['unseenNotificationCount'] as int? ?? 0,
+        hasUnseenNotifications:
+            (stateMap['unseenNotificationCount'] as int? ?? 0) > 0,
       );
     } catch (error) {
       debugPrint('Failed to restore app state: $error');
@@ -63,15 +73,17 @@ class StatePersistenceManager {
   // Clear all persisted state
   Future<void> clearPersistedState() async {
     try {
-      await _storageService.removeItem('app_state');
-      await _storageService.removeItem('user_preferences');
+      await _storageService.deleteFile('app_state');
+      await _storageService.deleteFile('user_preferences');
     } catch (error) {
       debugPrint('Failed to clear persisted state: $error');
     }
   }
 }
 
-final statePersistenceManagerProvider = Provider<StatePersistenceManager>((ref) {
+final statePersistenceManagerProvider = Provider<StatePersistenceManager>((
+  ref,
+) {
   final storageService = ref.read(storageServiceProvider);
   return StatePersistenceManager(storageService);
 });
@@ -80,14 +92,16 @@ final statePersistenceManagerProvider = Provider<StatePersistenceManager>((ref) 
 class AppErrorHandler {
   final StorageService _storageService;
   final List<AppError> _errorBuffer = [];
-  
+
   static const int _maxErrorBufferSize = 100;
   static const String _errorLogKey = 'error_log';
 
   AppErrorHandler(this._storageService);
 
   // Handle and log errors
-  Future<void> handleError(dynamic error, StackTrace? stackTrace, {
+  Future<void> handleError(
+    dynamic error,
+    StackTrace? stackTrace, {
     String? context,
     Map<String, dynamic>? additionalData,
   }) async {
@@ -103,7 +117,7 @@ class AppErrorHandler {
 
     // Add to buffer
     _errorBuffer.add(appError);
-    
+
     // Keep buffer size manageable
     if (_errorBuffer.length > _maxErrorBufferSize) {
       _errorBuffer.removeAt(0);
@@ -111,7 +125,7 @@ class AppErrorHandler {
 
     // Log error
     await _logError(appError);
-    
+
     // Print to console in debug mode
     if (kDebugMode) {
       debugPrint('AppError: ${appError.message}');
@@ -124,7 +138,8 @@ class AppErrorHandler {
   // Log error to persistent storage
   Future<void> _logError(AppError error) async {
     try {
-      final existingLogs = await _storageService.getItem<List<dynamic>>(_errorLogKey) ?? [];
+      final errorData = await _storageService.retrieveJsonData(_errorLogKey);
+      final existingLogs = errorData?['logs'] as List<dynamic>? ?? [];
       final errorMap = {
         'message': error.message,
         'code': error.code,
@@ -134,7 +149,7 @@ class AppErrorHandler {
       };
 
       existingLogs.add(errorMap);
-      
+
       // Keep only last 50 errors in persistent storage
       if (existingLogs.length > 50) {
         existingLogs.removeAt(0);
@@ -151,17 +166,21 @@ class AppErrorHandler {
     try {
       final errorData = await _storageService.retrieveJsonData(_errorLogKey);
       final errorLogs = errorData?['logs'] as List<dynamic>? ?? [];
-      
+
       return errorLogs
           .cast<Map<String, dynamic>>()
           .take(limit)
-          .map((errorMap) => AppError(
-                message: errorMap['message'] as String? ?? 'Unknown error',
-                code: errorMap['code'] as String?,
-                timestamp: DateTime.tryParse(errorMap['timestamp'] as String? ?? '') ?? DateTime.now(),
-                stackTrace: errorMap['stackTrace'] as String?,
-                context: errorMap['context'] as Map<String, dynamic>?,
-              ))
+          .map(
+            (errorMap) => AppError(
+              message: errorMap['message'] as String? ?? 'Unknown error',
+              code: errorMap['code'] as String?,
+              timestamp:
+                  DateTime.tryParse(errorMap['timestamp'] as String? ?? '') ??
+                  DateTime.now(),
+              stackTrace: errorMap['stackTrace'] as String?,
+              context: errorMap['context'] as Map<String, dynamic>?,
+            ),
+          )
           .toList();
     } catch (error) {
       debugPrint('Failed to get recent errors: $error');
@@ -172,7 +191,7 @@ class AppErrorHandler {
   // Clear error logs
   Future<void> clearErrorLogs() async {
     try {
-      await _storageService.removeItem(_errorLogKey);
+      await _storageService.deleteFile(_errorLogKey);
       _errorBuffer.clear();
     } catch (error) {
       debugPrint('Failed to clear error logs: $error');
@@ -233,16 +252,22 @@ class ErrorBoundaryState {
 
 class ErrorBoundaryNotifier extends StateNotifier<ErrorBoundaryState> {
   ErrorBoundaryNotifier(this.ref) : super(const ErrorBoundaryState());
-  
+
   final Ref ref;
 
-  Future<void> captureError(dynamic error, StackTrace? stackTrace, {
+  Future<void> captureError(
+    dynamic error,
+    StackTrace? stackTrace, {
     String? context,
     Map<String, dynamic>? additionalData,
   }) async {
     final errorHandler = ref.read(appErrorHandlerProvider);
-    await errorHandler.handleError(error, stackTrace, 
-      context: context, additionalData: additionalData);
+    await errorHandler.handleError(
+      error,
+      stackTrace,
+      context: context,
+      additionalData: additionalData,
+    );
 
     final appError = AppError(
       message: error.toString(),
@@ -263,10 +288,7 @@ class ErrorBoundaryNotifier extends StateNotifier<ErrorBoundaryState> {
   }
 
   void clearError() {
-    state = state.copyWith(
-      hasError: false,
-      error: null,
-    );
+    state = state.copyWith(hasError: false, error: null);
   }
 
   void resetErrorCount() {
@@ -274,9 +296,10 @@ class ErrorBoundaryNotifier extends StateNotifier<ErrorBoundaryState> {
   }
 }
 
-final errorBoundaryNotifierProvider = StateNotifierProvider<ErrorBoundaryNotifier, ErrorBoundaryState>((ref) {
-  return ErrorBoundaryNotifier(ref);
-});
+final errorBoundaryNotifierProvider =
+    StateNotifierProvider<ErrorBoundaryNotifier, ErrorBoundaryState>((ref) {
+      return ErrorBoundaryNotifier(ref);
+    });
 
 // Recovery manager for corrupted state
 class StateRecoveryManager {
@@ -290,7 +313,7 @@ class StateRecoveryManager {
     try {
       // Try to restore from persistent storage
       final restoredState = await _persistenceManager.restoreAppState();
-      
+
       if (restoredState != null) {
         return restoredState;
       }
@@ -298,7 +321,11 @@ class StateRecoveryManager {
       // Fallback to default state
       return _createDefaultAppState();
     } catch (error, stackTrace) {
-      await _errorHandler.handleError(error, stackTrace, context: 'App state recovery');
+      await _errorHandler.handleError(
+        error,
+        stackTrace,
+        context: 'App state recovery',
+      );
       return _createDefaultAppState();
     }
   }
@@ -320,7 +347,11 @@ class StateRecoveryManager {
       await _persistenceManager.clearPersistedState();
       await _errorHandler.clearErrorLogs();
     } catch (error, stackTrace) {
-      await _errorHandler.handleError(error, stackTrace, context: 'Emergency reset');
+      await _errorHandler.handleError(
+        error,
+        stackTrace,
+        context: 'Emergency reset',
+      );
     }
   }
 }

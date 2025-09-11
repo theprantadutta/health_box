@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' show Locale;
 import '../../data/database/app_database.dart';
@@ -70,8 +71,10 @@ class AppState {
       isOfflineMode: isOfflineMode ?? this.isOfflineMode,
       lastSyncTime: lastSyncTime ?? this.lastSyncTime,
       appVersion: appVersion ?? this.appVersion,
-      hasUnseenNotifications: hasUnseenNotifications ?? this.hasUnseenNotifications,
-      unseenNotificationCount: unseenNotificationCount ?? this.unseenNotificationCount,
+      hasUnseenNotifications:
+          hasUnseenNotifications ?? this.hasUnseenNotifications,
+      unseenNotificationCount:
+          unseenNotificationCount ?? this.unseenNotificationCount,
       userPreferences: userPreferences ?? this.userPreferences,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
@@ -83,29 +86,33 @@ class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(this.ref) : super(const AppState()) {
     _initializeApp();
   }
-  
+
   final Ref ref;
 
   Future<void> _initializeApp() async {
     state = state.copyWith(isLoading: true);
-    
+
     try {
       // Initialize database
       final database = ref.read(appDatabaseProvider);
-      
+
       // Load user preferences
       final storageService = ref.read(storageServiceProvider);
       await storageService.initialize();
-      final preferences = await storageService.retrieveJsonData('user_preferences') ?? {};
-      
+      final preferences =
+          await storageService.retrieveJsonData('user_preferences') ?? {};
+
       // Set initial state from preferences
       final isDarkMode = preferences['dark_mode'] as bool? ?? false;
       final localeCode = preferences['locale'] as String? ?? 'en_US';
       final selectedProfileId = preferences['selected_profile_id'] as String?;
-      
+
       final localeParts = localeCode.split('_');
-      final locale = Locale(localeParts[0], localeParts.length > 1 ? localeParts[1] : null);
-      
+      final locale = Locale(
+        localeParts[0],
+        localeParts.length > 1 ? localeParts[1] : null,
+      );
+
       state = state.copyWith(
         isInitialized: true,
         isDarkMode: isDarkMode,
@@ -125,34 +132,48 @@ class AppNotifier extends StateNotifier<AppState> {
   Future<void> setDarkMode(bool isDark) async {
     try {
       final storageService = ref.read(storageServiceProvider);
-      final updatedPreferences = Map<String, dynamic>.from(state.userPreferences);
+      final updatedPreferences = Map<String, dynamic>.from(
+        state.userPreferences,
+      );
       updatedPreferences['dark_mode'] = isDark;
-      
-      await storageService.storeJsonData('user_preferences', updatedPreferences);
-      
+
+      await storageService.storeJsonData(
+        'user_preferences',
+        updatedPreferences,
+      );
+
       state = state.copyWith(
         isDarkMode: isDark,
         userPreferences: updatedPreferences,
       );
     } catch (error) {
-      state = state.copyWith(error: 'Failed to update theme: ${error.toString()}');
+      state = state.copyWith(
+        error: 'Failed to update theme: ${error.toString()}',
+      );
     }
   }
 
   Future<void> setSelectedProfile(String? profileId) async {
     try {
       final storageService = ref.read(storageServiceProvider);
-      final updatedPreferences = Map<String, dynamic>.from(state.userPreferences);
+      final updatedPreferences = Map<String, dynamic>.from(
+        state.userPreferences,
+      );
       updatedPreferences['selected_profile_id'] = profileId;
-      
-      await storageService.storeJsonData('user_preferences', updatedPreferences);
-      
+
+      await storageService.storeJsonData(
+        'user_preferences',
+        updatedPreferences,
+      );
+
       state = state.copyWith(
         selectedProfileId: profileId,
         userPreferences: updatedPreferences,
       );
     } catch (error) {
-      state = state.copyWith(error: 'Failed to set selected profile: ${error.toString()}');
+      state = state.copyWith(
+        error: 'Failed to set selected profile: ${error.toString()}',
+      );
     }
   }
 
@@ -168,7 +189,7 @@ final appNotifierProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
 // Theme provider
 final appThemeProvider = Provider<ThemeData>((ref) {
   final appState = ref.watch(appNotifierProvider);
-  
+
   if (appState.isDarkMode) {
     return ThemeData.dark(useMaterial3: true).copyWith(
       colorScheme: ColorScheme.fromSeed(

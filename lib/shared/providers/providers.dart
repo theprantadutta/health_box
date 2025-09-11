@@ -14,3 +14,4 @@ export 'persistence_providers.dart';
 
 // Re-export Riverpod for convenience
 export 'package:flutter_riverpod/flutter_riverpod.dart';
+export 'package:flutter_riverpod/legacy.dart';

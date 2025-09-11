@@ -268,6 +268,24 @@ class AttachmentDao {
     return result.read(_database.attachments.fileSize.sum())?.toInt() ?? 0;
   }
 
+  // Stream operations for real-time updates
+  Stream<List<Attachment>> watchAllAttachments() {
+    return (_database.select(_database.attachments)
+          ..orderBy([
+            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
+  Stream<List<Attachment>> watchAttachmentsByRecordId(String recordId) {
+    return (_database.select(_database.attachments)
+          ..where((attachment) => attachment.recordId.equals(recordId))
+          ..orderBy([
+            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
   Future<int> getUnsyncedAttachmentCount() async {
     final query = _database.selectOnly(_database.attachments)
       ..addColumns([_database.attachments.id.count()])
@@ -403,15 +421,6 @@ class AttachmentDao {
     }
   }
 
-  // Stream operations for real-time updates
-  Stream<List<Attachment>> watchAttachmentsByRecordId(String recordId) {
-    return (_database.select(_database.attachments)
-          ..where((attachment) => attachment.recordId.equals(recordId))
-          ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
-          ]))
-        .watch();
-  }
 
   Stream<List<Attachment>> watchAttachmentsByFileType(String fileType) {
     return (_database.select(_database.attachments)

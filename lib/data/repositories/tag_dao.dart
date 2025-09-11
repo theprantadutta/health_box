@@ -89,6 +89,15 @@ class TagDao {
         .get();
   }
 
+  Future<List<Tag>> getTagsByCategory(String category) async {
+    return await (_database.select(_database.tags)
+          ..where((tag) => tag.category.equals(category))
+          ..orderBy([
+            (tag) => OrderingTerm(expression: tag.name),
+          ]))
+        .get();
+  }
+
   Future<String> createTag(TagsCompanion tag) async {
     await _database.into(_database.tags).insert(tag);
     return tag.id.value;
