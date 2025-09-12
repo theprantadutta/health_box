@@ -1,0 +1,248 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Health Box",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Dashboard tab label"
+  },
+  
+  "profiles": "Profiles",
+  "@profiles": {
+    "description": "Profiles tab label"
+  },
+  
+  "medicalRecords": "Medical Records",
+  "@medicalRecords": {
+    "description": "Medical Records tab label"
+  },
+  
+  "reminders": "Reminders",
+  "@reminders": {
+    "description": "Reminders tab label"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  
+  "search": "Search",
+  "@search": {
+    "description": "Search label"
+  },
+  
+  "searchHint": "Search medical records...",
+  "@searchHint": {
+    "description": "Placeholder text for search field"
+  },
+  
+  "add": "Add",
+  "@add": {
+    "description": "Add button label"
+  },
+  
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button label"
+  },
+  
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button label"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button label"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button label"
+  },
+  
+  "name": "Name",
+  "@name": {
+    "description": "Name field label"
+  },
+  
+  "dateOfBirth": "Date of Birth",
+  "@dateOfBirth": {
+    "description": "Date of birth field label"
+  },
+  
+  "gender": "Gender",
+  "@gender": {
+    "description": "Gender field label"
+  },
+  
+  "bloodType": "Blood Type",
+  "@bloodType": {
+    "description": "Blood type field label"
+  },
+  
+  "emergencyContact": "Emergency Contact",
+  "@emergencyContact": {
+    "description": "Emergency contact field label"
+  },
+  
+  "prescriptions": "Prescriptions",
+  "@prescriptions": {
+    "description": "Prescriptions label"
+  },
+  
+  "medications": "Medications",
+  "@medications": {
+    "description": "Medications label"
+  },
+  
+  "labReports": "Lab Reports",
+  "@labReports": {
+    "description": "Lab reports label"
+  },
+  
+  "vaccinations": "Vaccinations",
+  "@vaccinations": {
+    "description": "Vaccinations label"
+  },
+  
+  "allergies": "Allergies",
+  "@allergies": {
+    "description": "Allergies label"
+  },
+  
+  "chronicConditions": "Chronic Conditions",
+  "@chronicConditions": {
+    "description": "Chronic conditions label"
+  },
+  
+  "upcomingReminders": "Upcoming Reminders",
+  "@upcomingReminders": {
+    "description": "Upcoming reminders section title"
+  },
+  
+  "recentActivity": "Recent Activity",
+  "@recentActivity": {
+    "description": "Recent activity section title"
+  },
+  
+  "noDataFound": "No data found",
+  "@noDataFound": {
+    "description": "Message shown when no data is available"
+  },
+  
+  "errorOccurred": "An error occurred",
+  "@errorOccurred": {
+    "description": "Generic error message"
+  },
+  
+  "tryAgain": "Try Again",
+  "@tryAgain": {
+    "description": "Try again button label"
+  },
+  
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
+  
+  "welcome": "Welcome to Health Box",
+  "@welcome": {
+    "description": "Welcome message on onboarding screen"
+  },
+  
+  "onboardingDescription": "Securely manage your family's medical data with offline-first privacy and optional encrypted sync.",
+  "@onboardingDescription": {
+    "description": "Description on onboarding screen"
+  },
+  
+  "getStarted": "Get Started",
+  "@getStarted": {
+    "description": "Get started button label"
+  },
+  
+  "createProfile": "Create Profile",
+  "@createProfile": {
+    "description": "Create profile button label"
+  },
+  
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "Edit profile button label"
+  },
+  
+  "deleteProfile": "Delete Profile",
+  "@deleteProfile": {
+    "description": "Delete profile button label"
+  },
+  
+  "confirmDelete": "Are you sure you want to delete this item?",
+  "@confirmDelete": {
+    "description": "Confirmation message for delete action"
+  },
+  
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme settings label"
+  },
+  
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "Light theme option"
+  },
+  
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark theme option"
+  },
+  
+  "systemTheme": "System Theme",
+  "@systemTheme": {
+    "description": "System theme option"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language settings label"
+  },
+  
+  "export": "Export",
+  "@export": {
+    "description": "Export button label"
+  },
+  
+  "import": "Import",
+  "@import": {
+    "description": "Import button label"
+  },
+  
+  "sync": "Sync",
+  "@sync": {
+    "description": "Sync button label"
+  },
+  
+  "backup": "Backup",
+  "@backup": {
+    "description": "Backup button label"
+  },
+  
+  "emergencyCard": "Emergency Card",
+  "@emergencyCard": {
+    "description": "Emergency card label"
+  },
+  
+  "generateEmergencyCard": "Generate Emergency Card",
+  "@generateEmergencyCard": {
+    "description": "Generate emergency card button label"
+  }
+}

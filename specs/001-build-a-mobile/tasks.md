@@ -160,18 +160,18 @@
 
 ## Phase 3.15: UI Polish & Accessibility
 
-- [ ] **T098** Implement theme system with light/dark mode in `lib/shared/theme/app_theme.dart`
-- [ ] **T099** [P] Add internationalization with `flutter_intl` in `lib/l10n/`
-- [ ] **T100** [P] Implement semantic labels for accessibility in all major widgets
-- [ ] **T101** [P] Create responsive layout helpers in `lib/shared/utils/responsive_utils.dart`
-- [ ] **T102** [P] Add Material 3 dynamic colors and theming in `lib/shared/theme/material3_theme.dart`
+- [x] **T098** Implement theme system with light/dark mode in `lib/shared/theme/app_theme.dart`
+- [x] **T099** [P] Add internationalization with `flutter_intl` in `lib/l10n/`
+- [x] **T100** [P] Implement semantic labels for accessibility in all major widgets
+- [x] **T101** [P] Create responsive layout helpers in `lib/shared/utils/responsive_utils.dart`
+- [x] **T102** [P] Add Material 3 dynamic colors and theming in `lib/shared/theme/material3_theme.dart`
 
 ## Phase 3.16: App Integration & Navigation
 
-- [ ] **T103** Set up app routing with `go_router` in `lib/shared/navigation/app_router.dart`
-- [ ] **T104** Create MainAppScreen with bottom navigation in `lib/screens/main_app_screen.dart`
-- [ ] **T105** Create OnboardingScreen for first-time users in `lib/screens/onboarding_screen.dart`
-- [ ] **T106** Implement app lifecycle management in `lib/shared/services/app_lifecycle_service.dart`
+- [x] **T103** Set up app routing with `go_router` in `lib/shared/navigation/app_router.dart`
+- [x] **T104** Create MainAppScreen with bottom navigation in `lib/screens/main_app_screen.dart`
+- [x] **T105** Create OnboardingScreen for first-time users in `lib/screens/onboarding_screen.dart`
+- [x] **T106** Implement app lifecycle management in `lib/shared/services/app_lifecycle_service.dart`
 
 ## Phase 3.17: Testing & Error Handling
 

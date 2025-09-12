@@ -8,7 +8,8 @@
       "Bash(flutter pub:*)",
       "Bash(dart analyze:*)",
       "Bash(find:*)",
-      "WebFetch(domain:riverpod.dev)"
+      "WebFetch(domain:riverpod.dev)",
+      "Bash(flutter gen-l10n:*)"
     ],
     "deny": [],
     "ask": []
