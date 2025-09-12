@@ -25,21 +25,29 @@ class ProfileCard extends StatelessWidget {
     final age = _calculateAge(profile.dateOfBirth);
     final ageCategory = _getAgeCategory(age);
 
-    return Card(
-      elevation: isSelected ? 4 : 1,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: isSelected
-            ? BorderSide(
-                color: theme.colorScheme.primary,
-                width: 2,
-              )
-            : BorderSide.none,
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+    return Hero(
+      tag: 'profile_${profile.id}',
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        child: Card(
+          elevation: isSelected ? 4 : 1,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: isSelected
+                ? BorderSide(
+                    color: theme.colorScheme.primary,
+                    width: 2,
+                  )
+                : BorderSide.none,
+          ),
+          child: Semantics(
+            label: 'Profile for ${profile.firstName} ${profile.lastName}, age $age',
+            hint: 'Tap to view or edit profile details',
+            button: true,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -212,6 +220,9 @@ class ProfileCard extends StatelessWidget {
                 ),
               ],
             ],
+          ),
+        ),
+            ),
           ),
         ),
       ),

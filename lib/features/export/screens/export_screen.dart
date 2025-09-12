@@ -266,9 +266,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             for (final profile in _profiles)
               CheckboxListTile(
                 title: Text('${profile.firstName} ${profile.lastName}'),
-                subtitle: profile.dateOfBirth != null
-                    ? Text('Born: ${_formatDate(profile.dateOfBirth)}')
-                    : null,
+                subtitle: Text('Born: ${_formatDate(profile.dateOfBirth)}'),
                 value: _selectedProfileIds.contains(profile.id),
                 onChanged: (selected) {
                   setState(() {

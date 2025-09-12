@@ -254,7 +254,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: DropdownButtonFormField<VitalType>(
-          value: _selectedVitalType,
+          initialValue: _selectedVitalType,
           decoration: const InputDecoration(
             labelText: 'Vital Sign',
             border: InputBorder.none,
@@ -289,7 +289,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: DropdownButtonFormField<TimeRange>(
-          value: _selectedTimeRange,
+          initialValue: _selectedTimeRange,
           decoration: const InputDecoration(
             labelText: 'Time Range',
             border: InputBorder.none,
@@ -553,7 +553,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(reading.status).withOpacity(0.2),
+                      color: _getStatusColor(reading.status).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -594,7 +594,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: _getTrendColor(stats.trend.direction).withOpacity(0.2),
+                    color: _getTrendColor(stats.trend.direction).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -674,7 +674,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -701,7 +701,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
           
           // Vital type dropdown
           DropdownButtonFormField<VitalType>(
-            value: _selectedVitalType,
+            initialValue: _selectedVitalType,
             decoration: const InputDecoration(
               labelText: 'Vital Sign',
               border: OutlineInputBorder(),

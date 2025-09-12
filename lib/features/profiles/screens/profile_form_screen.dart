@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/theme/app_theme.dart';
 import '../services/profile_service.dart';
 
 class ProfileFormScreen extends ConsumerStatefulWidget {
@@ -72,10 +75,26 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Profile' : 'Add New Profile'),
+        title: Text(
+          _isEditing ? 'Edit Profile' : 'Add New Profile',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppTheme.getPrimaryGradient(isDarkMode),
+          ),
+        ),
         actions: [
           if (_isLoading)
             const Center(
@@ -84,14 +103,23 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                 child: SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
                 ),
               ),
             )
           else
             TextButton(
               onPressed: _saveProfile,
-              child: const Text('SAVE'),
+              child: const Text(
+                'SAVE',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
         ],
       ),
@@ -101,20 +129,32 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
           padding: const EdgeInsets.all(16.0),
           children: [
             // Profile Image Section
-            _buildProfileImageSection(),
+            Hero(
+              tag: widget.profile != null ? 'profile_${widget.profile!.id}' : 'new_profile',
+              child: ModernCard(
+                elevation: CardElevation.medium,
+                child: _buildProfileImageSection(),
+              ),
+            ),
             const SizedBox(height: 24),
             
-            // Basic Information
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            // Basic Information Card
+            ModernCard(
+              elevation: CardElevation.medium,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Basic Information',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
-            ),
-            const SizedBox(height: 16),
+                  const SizedBox(height: 16),
             
-            // First Name
-            TextFormField(
+                  // First Name
+                  TextFormField(
               controller: _firstNameController,
               decoration: const InputDecoration(
                 labelText: 'First Name *',
@@ -328,7 +368,11 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
               ),
               maxLines: 3,
             ),
-            const SizedBox(height: 32),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
             
             // Action Buttons
             _buildActionButtons(),
@@ -396,18 +440,21 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
       children: [
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton.icon(
+          child: GradientButton(
             onPressed: _isLoading ? null : _saveProfile,
-            icon: _isLoading
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(_isEditing ? Icons.save : Icons.person_add),
-            label: Text(_isEditing ? 'Save Changes' : 'Add Profile'),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+            isLoading: _isLoading,
+            size: GradientButtonSize.large,
+            style: GradientButtonStyle.primary,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!_isLoading) Icon(
+                  _isEditing ? Icons.save : Icons.person_add,
+                  color: Colors.white,
+                ),
+                if (!_isLoading) const SizedBox(width: 8),
+                Text(_isEditing ? 'Save Changes' : 'Add Profile'),
+              ],
             ),
           ),
         ),

@@ -183,7 +183,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
   Widget _buildSelectedTagChip(ThemeData theme, Tag tag) {
     return Chip(
       avatar: CircleAvatar(
-        backgroundColor: _parseColor(tag.color ?? '#808080'),
+        backgroundColor: _parseColor(tag.color),
         radius: 8,
       ),
       label: Text(tag.name),
@@ -255,7 +255,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
 
     return FilterChip(
       avatar: CircleAvatar(
-        backgroundColor: _parseColor(tag.color ?? '#808080'),
+        backgroundColor: _parseColor(tag.color),
         radius: 8,
       ),
       label: Row(
@@ -499,7 +499,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
       final request = CreateTagRequest(
         name: name.trim(),
         description: description.trim().isNotEmpty ? description.trim() : null,
-        color: '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+        color: '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
         category: category,
       );
 

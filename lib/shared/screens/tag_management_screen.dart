@@ -226,7 +226,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
           width: 20,
           height: 20,
           decoration: BoxDecoration(
-            color: _parseColor(tag.color ?? '#808080'),
+            color: _parseColor(tag.color),
             shape: BoxShape.circle,
           ),
         ),
@@ -495,7 +495,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
         final request = CreateTagRequest(
           name: name.trim(),
           description: description.trim().isNotEmpty ? description.trim() : null,
-          color: '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+          color: '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
           category: category,
         );
         await _tagService.createTag(request);
@@ -508,7 +508,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
         final request = UpdateTagRequest(
           name: name.trim(),
           description: description.trim().isNotEmpty ? description.trim() : null,
-          color: '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+          color: '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
           category: category,
         );
         await _tagService.updateTag(existingTag.id, request);

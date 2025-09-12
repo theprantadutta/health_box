@@ -107,7 +107,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       // Parse time slots if present
       if (reminder.timeSlots != null) {
         try {
-          final slotsJson = reminder.timeSlots!;
+          final _ = reminder.timeSlots!;
           // Simple parsing for time slots - would need proper JSON parsing
           _timeSlots = [_selectedTime]; // Default to current time for now
         } catch (e) {
@@ -211,7 +211,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
 
   Widget _buildTypeSelector() {
     return DropdownButtonFormField<String>(
-      value: _selectedType,
+      initialValue: _selectedType,
       decoration: const InputDecoration(
         labelText: 'Type',
         border: OutlineInputBorder(),
@@ -234,7 +234,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
 
   Widget _buildFrequencySelector() {
     return DropdownButtonFormField<String>(
-      value: _selectedFrequency,
+      initialValue: _selectedFrequency,
       decoration: const InputDecoration(
         labelText: 'Frequency',
         border: OutlineInputBorder(),
@@ -374,7 +374,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<int>(
-          value: _snoozeMinutes,
+          initialValue: _snoozeMinutes,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
           ),

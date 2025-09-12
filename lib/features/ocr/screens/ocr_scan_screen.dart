@@ -140,7 +140,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(60),
           ),
           child: Icon(
@@ -303,7 +303,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withOpacity(0.5),
+                Colors.black.withValues(alpha: 0.5),
               ],
             ),
           ),
@@ -362,7 +362,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
                 child: Container(
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Icon(

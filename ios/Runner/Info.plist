@@ -45,5 +45,116 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Privacy Permissions for Medical Data App -->
+	<key>NSCameraUsageDescription</key>
+	<string>HealthBox needs camera access to scan prescriptions and medical documents using OCR technology.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>HealthBox needs photo library access to attach medical images and documents to your health records.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>HealthBox needs microphone access to record voice memos for your medical records.</string>
+	<key>NSDocumentsDirectoryUsageDescription</key>
+	<string>HealthBox needs document access to import and export your medical data securely.</string>
+	
+	<!-- Health Data Permissions (if using HealthKit in future) -->
+	<key>NSHealthShareUsageDescription</key>
+	<string>HealthBox can integrate with Apple Health to provide comprehensive health tracking.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>HealthBox can update your health data in Apple Health with your medical information.</string>
+	
+	<!-- Notification Permissions -->
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>HealthBox needs notification access to remind you about medications and appointments.</string>
+	
+	<!-- File and Storage Access -->
+	<key>NSFileProviderUsageDescription</key>
+	<string>HealthBox needs file access to securely backup and restore your medical data.</string>
+	
+	<!-- Background App Refresh for Reminders -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>background-fetch</string>
+		<string>background-processing</string>
+	</array>
+	
+	<!-- Location Services (for emergency features) -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>HealthBox can use your location for emergency card services and nearby healthcare facilities.</string>
+	
+	<!-- Network Usage -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>googleapis.com</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.2</string>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>
+	
+	<!-- Prevent screenshots of sensitive medical data -->
+	<key>UIApplicationExitsOnSuspend</key>
+	<false/>
+	
+	<!-- Support for file extensions -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>HealthBox Backup</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.pranta.healthbox.backup</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Medical Images</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.image</string>
+				<string>public.jpeg</string>
+				<string>public.png</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Exported UTI for HealthBox backup files -->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>HealthBox Encrypted Backup</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.pranta.healthbox.backup</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>hbox</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

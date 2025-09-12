@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HealthBox Medical Data Manager Color Palette -->
+    
+    <!-- Launch screen background - Medical blue -->
+    <color name="launch_background_color">#E3F2FD</color>
+    
+    <!-- Primary medical colors -->
+    <color name="medical_blue">#1976D2</color>
+    <color name="medical_blue_light">#E3F2FD</color>
+    <color name="medical_blue_dark">#0D47A1</color>
+    
+    <!-- Accent colors for health data -->
+    <color name="health_green">#4CAF50</color>
+    <color name="warning_orange">#FF9800</color>
+    <color name="critical_red">#F44336</color>
+    
+    <!-- Neutral colors -->
+    <color name="light_gray">#F5F5F5</color>
+    <color name="medium_gray">#9E9E9E</color>
+    <color name="dark_gray">#424242</color>
+</resources>

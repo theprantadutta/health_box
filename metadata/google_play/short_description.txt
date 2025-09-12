@@ -1,0 +1,1 @@
+Secure, offline-first medical data manager for families. Encrypted storage, medication reminders, and emergency cards.

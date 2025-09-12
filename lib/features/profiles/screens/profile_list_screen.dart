@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/theme/app_theme.dart';
 import '../widgets/profile_card.dart';
 import 'profile_form_screen.dart';
 
@@ -27,14 +29,29 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileNotifierProvider);
     final profileNotifier = ref.read(profileNotifierProvider.notifier);
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Family Profiles'),
+        title: const Text(
+          'Family Profiles',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppTheme.getPrimaryGradient(isDarkMode),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add, color: Colors.white),
             onPressed: () => _navigateToAddProfile(context),
             tooltip: 'Add New Profile',
           ),
@@ -114,10 +131,18 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: GradientButton(
         onPressed: () => _navigateToAddProfile(context),
-        icon: const Icon(Icons.person_add),
-        label: const Text('Add Profile'),
+        style: GradientButtonStyle.primary,
+        size: GradientButtonSize.medium,
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.person_add, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Add Profile'),
+          ],
+        ),
       ),
     );
   }

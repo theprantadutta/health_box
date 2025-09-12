@@ -1,0 +1,47 @@
+HealthBox is the most secure way to manage your family's medical records. Built with privacy-first principles, your health data is encrypted and stored locally on your device.
+
+KEY FEATURES:
+
+SECURE & PRIVATE
+• Bank-level encryption using SQLCipher
+• Offline-first design - no internet required
+• Optional encrypted iCloud sync
+• Your data never leaves your control
+
+COMPREHENSIVE RECORDS
+• Manage multiple family members
+• Store prescriptions, lab reports, vaccinations
+• Track chronic conditions and allergies
+• Attach photos and documents to records
+• Organize with smart tags and search
+
+SMART REMINDERS
+• Medication schedules with notifications
+• Appointment and vaccination reminders
+• Prescription refill alerts
+• Works completely offline
+
+EMERGENCY READY
+• Generate QR emergency cards
+• Quick access to critical medical information
+• Offline emergency contact details
+• Perfect for travel and emergencies
+
+HEALTH INSIGHTS
+• Track vital signs with beautiful charts
+• Monitor medication adherence
+• Export reports for healthcare providers
+• Analyze health trends over time
+
+ADVANCED FEATURES
+• OCR prescription scanning
+• Voice memo support
+• Dark mode and accessibility
+• Multiple export formats (PDF, JSON)
+• Cross-device sync with end-to-end encryption
+
+Perfect for families managing complex health needs, chronic conditions, or anyone who values privacy and wants their medical information organized and accessible.
+
+HealthBox puts you in control of your health data with military-grade security and an intuitive interface designed for real families.
+
+Download now and experience the peace of mind that comes with having your family's medical information securely organized and always accessible.

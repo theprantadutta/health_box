@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/reminder_scheduler.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/reminder_providers.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 /// Widget displaying active reminders with management options
 class ActiveRemindersWidget extends ConsumerWidget {
@@ -41,7 +42,8 @@ class ActiveRemindersWidget extends ConsumerWidget {
       return _buildEmptyState(context);
     }
 
-    return Card(
+    return ModernCard(
+      elevation: CardElevation.medium,
       child: Column(
         children: [
           if (showHeader) _buildHeader(context, reminders.length),
@@ -212,7 +214,7 @@ class ActiveRemindersWidget extends ConsumerWidget {
     }
 
     return CircleAvatar(
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       child: Icon(iconData, color: color, size: 20),
     );
   }
@@ -221,7 +223,7 @@ class ActiveRemindersWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
@@ -239,7 +241,7 @@ class ActiveRemindersWidget extends ConsumerWidget {
       return Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           shape: BoxShape.circle,
         ),
         child: Icon(

@@ -7,19 +7,27 @@ class ProfileDao {
   ProfileDao(this._database);
 
   Future<List<FamilyMemberProfile>> getAllProfiles() async {
-    return await (_database.select(_database.familyMemberProfiles)
-          ..where((profile) => profile.isActive.equals(true))
-          ..orderBy([
-            (profile) => OrderingTerm(expression: profile.firstName),
-            (profile) => OrderingTerm(expression: profile.lastName),
-          ]))
-        .get();
+    try {
+      return await (_database.select(_database.familyMemberProfiles)
+            ..where((profile) => profile.isActive.equals(true))
+            ..orderBy([
+              (profile) => OrderingTerm(expression: profile.firstName),
+              (profile) => OrderingTerm(expression: profile.lastName),
+            ]))
+          .get();
+    } catch (e) {
+      throw Exception('Failed to get profiles from database: $e');
+    }
   }
 
   Future<FamilyMemberProfile?> getProfileById(String id) async {
-    return await (_database.select(_database.familyMemberProfiles)
-          ..where((profile) => profile.id.equals(id) & profile.isActive.equals(true)))
-        .getSingleOrNull();
+    try {
+      return await (_database.select(_database.familyMemberProfiles)
+            ..where((profile) => profile.id.equals(id) & profile.isActive.equals(true)))
+          .getSingleOrNull();
+    } catch (e) {
+      throw Exception('Failed to get profile by ID from database: $e');
+    }
   }
 
   Future<List<FamilyMemberProfile>> getProfilesByName(String searchTerm) async {
@@ -39,8 +47,12 @@ class ProfileDao {
   }
 
   Future<String> createProfile(FamilyMemberProfilesCompanion profile) async {
-    await _database.into(_database.familyMemberProfiles).insert(profile);
-    return profile.id.value;
+    try {
+      await _database.into(_database.familyMemberProfiles).insert(profile);
+      return profile.id.value;
+    } catch (e) {
+      throw Exception('Failed to create profile in database: $e');
+    }
   }
 
   Future<bool> updateProfile(String id, FamilyMemberProfilesCompanion profile) async {

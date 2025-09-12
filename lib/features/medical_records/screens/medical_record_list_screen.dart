@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/theme/app_theme.dart';
 import '../widgets/medical_record_card.dart';
 import '../widgets/search_filter_widget.dart';
 import 'prescription_form_screen.dart';
@@ -48,13 +50,29 @@ class _MedicalRecordListScreenState extends ConsumerState<MedicalRecordListScree
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medical Records'),
+        title: const Text(
+          'Medical Records',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppTheme.getPrimaryGradient(isDarkMode),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: _showFilterDialog,
             tooltip: 'Filter Records',
           ),
@@ -130,10 +148,18 @@ class _MedicalRecordListScreenState extends ConsumerState<MedicalRecordListScree
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: GradientButton(
         onPressed: () => _showAddRecordOptions(context),
-        icon: const Icon(Icons.add),
-        label: const Text('Add Record'),
+        style: GradientButtonStyle.primary,
+        size: GradientButtonSize.medium,
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.add, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Add Record'),
+          ],
+        ),
       ),
     );
   }

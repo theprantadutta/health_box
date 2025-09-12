@@ -6,7 +6,7 @@ import '../l10n/app_localizations.dart';
 import '../shared/navigation/app_router.dart';
 import '../shared/utils/responsive_utils.dart';
 import '../shared/utils/accessibility_utils.dart';
-// import '../shared/providers/app_providers.dart';
+import '../shared/providers/onboarding_providers.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -398,6 +398,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // await ref.read(sharedPreferencesProvider).setBool('onboarding_complete', true);
       
       if (mounted) {
+        // Mark onboarding as completed
+        await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+        
         context.pushReplacement(AppRoutes.dashboard);
         
         if (AccessibilityUtils.isScreenReaderActive(context)) {
@@ -409,6 +412,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     } catch (e) {
       debugPrint('Error completing onboarding: $e');
       if (mounted) {
+        // Still mark as completed even if there was an error
+        await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
         context.pushReplacement(AppRoutes.dashboard);
       }
     }

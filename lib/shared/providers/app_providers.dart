@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' show Locale;
 import '../../data/database/app_database.dart';
 import '../../data/services/storage_service.dart';
 import '../../data/services/file_storage_service.dart';
@@ -94,7 +93,7 @@ class AppNotifier extends StateNotifier<AppState> {
 
     try {
       // Initialize database
-      final database = ref.read(appDatabaseProvider);
+      ref.read(appDatabaseProvider);
 
       // Load user preferences
       final storageService = ref.read(storageServiceProvider);
@@ -187,6 +186,11 @@ final appNotifierProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
 });
 
 // Theme provider
+final themeModeProvider = Provider<ThemeMode>((ref) {
+  final appState = ref.watch(appNotifierProvider);
+  return appState.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+});
+
 final appThemeProvider = Provider<ThemeData>((ref) {
   final appState = ref.watch(appNotifierProvider);
 

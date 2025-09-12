@@ -163,7 +163,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           horizontalInterval: _calculateGridInterval(),
           getDrawingHorizontalLine: (value) {
             return FlLine(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               strokeWidth: 1,
             );
           },
@@ -197,8 +197,8 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         borderData: FlBorderData(
           show: true,
           border: Border(
-            left: BorderSide(color: Colors.grey.withOpacity(0.3)),
-            bottom: BorderSide(color: Colors.grey.withOpacity(0.3)),
+            left: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+            bottom: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
           ),
         ),
         lineBarsData: [
@@ -225,7 +225,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
             ),
             belowBarData: BarAreaData(
               show: true,
-              color: _getVitalTypeColor(widget.vitalType).withOpacity(0.1),
+              color: _getVitalTypeColor(widget.vitalType).withValues(alpha: 0.1),
             ),
           ),
         ],
@@ -280,7 +280,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           horizontalInterval: 20,
           getDrawingHorizontalLine: (value) {
             return FlLine(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               strokeWidth: 1,
             );
           },
@@ -314,8 +314,8 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         borderData: FlBorderData(
           show: true,
           border: Border(
-            left: BorderSide(color: Colors.grey.withOpacity(0.3)),
-            bottom: BorderSide(color: Colors.grey.withOpacity(0.3)),
+            left: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+            bottom: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
           ),
         ),
         lineBarsData: [
@@ -405,7 +405,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           _buildLegendItem('Diastolic', Colors.blue),
           if (widget.showNormalRange) ...[
             const SizedBox(width: 24),
-            _buildLegendItem('Normal Range', Colors.green.withOpacity(0.3)),
+            _buildLegendItem('Normal Range', Colors.green.withValues(alpha: 0.3)),
           ],
         ],
       );
@@ -418,7 +418,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
             _getVitalTypeColor(widget.vitalType),
           ),
           const SizedBox(width: 24),
-          _buildLegendItem('Normal Range', Colors.green.withOpacity(0.3)),
+          _buildLegendItem('Normal Range', Colors.green.withValues(alpha: 0.3)),
         ],
       );
     }
@@ -468,13 +468,13 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
       horizontalLines: [
         HorizontalLine(
           y: minNormal,
-          color: Colors.green.withOpacity(0.5),
+          color: Colors.green.withValues(alpha: 0.5),
           strokeWidth: 2,
           dashArray: [5, 5],
         ),
         HorizontalLine(
           y: maxNormal,
-          color: Colors.green.withOpacity(0.5),
+          color: Colors.green.withValues(alpha: 0.5),
           strokeWidth: 2,
           dashArray: [5, 5],
         ),
@@ -488,14 +488,14 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         // Normal systolic range
         HorizontalLine(
           y: 130,
-          color: Colors.green.withOpacity(0.5),
+          color: Colors.green.withValues(alpha: 0.5),
           strokeWidth: 2,
           dashArray: [5, 5],
         ),
         // Normal diastolic range  
         HorizontalLine(
           y: 85,
-          color: Colors.green.withOpacity(0.5),
+          color: Colors.green.withValues(alpha: 0.5),
           strokeWidth: 2,
           dashArray: [5, 5],
         ),

@@ -361,6 +361,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.28.2"
+  encrypted_drift:
+    dependency: "direct main"
+    description:
+      path: "extras/encryption"
+      ref: HEAD
+      resolved-ref: "8bfe3053c778de2b61e4f2c103629a07cb35a3cc"
+      url: "https://github.com/simolus3/drift.git"
+    source: git
+    version: "1.1.0"
   equatable:
     dependency: transitive
     description:
@@ -1228,6 +1237,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  shared_preferences:
+    dependency: "direct main"
+    description:
+      name: shared_preferences
+      sha256: "6e8bf70b7fef813df4e9a36f658ac46d107db4b4cfe1048b477d4e453a8159f5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.3"
+  shared_preferences_android:
+    dependency: transitive
+    description:
+      name: shared_preferences_android
+      sha256: a2608114b1ffdcbc9c120eb71a0e207c71da56202852d4aab8a5e30a82269e74
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.12"
+  shared_preferences_foundation:
+    dependency: transitive
+    description:
+      name: shared_preferences_foundation
+      sha256: "6a52cfcdaeac77cad8c97b539ff688ccfc458c007b4db12be584fbe5c0e49e03"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.4"
+  shared_preferences_linux:
+    dependency: transitive
+    description:
+      name: shared_preferences_linux
+      sha256: "580abfd40f415611503cae30adf626e6656dfb2f0cee8f465ece7b6defb40f2f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
+  shared_preferences_platform_interface:
+    dependency: transitive
+    description:
+      name: shared_preferences_platform_interface
+      sha256: "57cbf196c486bc2cf1f02b85784932c6094376284b3ad5779d1b1c6c6a816b80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
+  shared_preferences_web:
+    dependency: transitive
+    description:
+      name: shared_preferences_web
+      sha256: c49bd060261c9a3f0ff445892695d6212ff603ef3115edbb448509d407600019
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.3"
+  shared_preferences_windows:
+    dependency: transitive
+    description:
+      name: shared_preferences_windows
+      sha256: "94ef0f72b2d71bc3e700e025db3710911bd51a71cefb65cc609dd0d9a982e3c1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   shelf:
     dependency: transitive
     description:
@@ -1305,14 +1370,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
-  sqlcipher_flutter_libs:
-    dependency: "direct main"
+  sqflite_common:
+    dependency: transitive
     description:
-      name: sqlcipher_flutter_libs
-      sha256: dd1fcc74d5baf3c36ad53e2652b2d06c9f8747494a3ccde0076e88b159dfe622
+      name: sqflite_common
+      sha256: "6ef422a4525ecc601db6c0a2233ff448c731307906e92cabc9ba292afaae16a6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.8"
+    version: "2.5.6"
+  sqflite_sqlcipher:
+    dependency: transitive
+    description:
+      name: sqflite_sqlcipher
+      sha256: "81f690c8c250ecbcd981d5c7b98abbc2767a161ed2cdd5277b505cd4d95c681e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
   sqlite3:
     dependency: transitive
     description:
@@ -1321,14 +1394,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.9.0"
-  sqlite3_flutter_libs:
-    dependency: "direct main"
-    description:
-      name: sqlite3_flutter_libs
-      sha256: "2b03273e71867a8a4d030861fc21706200debe5c5858a4b9e58f4a1c129586a4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.39"
   sqlparser:
     dependency: transitive
     description:
@@ -1385,6 +1450,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: c254ade258ec8282947a0acbbc90b9575b4f19673533ee46f2f6e9b3aeefd7c0
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   term_glyph:
     dependency: transitive
     description:
