@@ -131,32 +131,32 @@
 
 ## Phase 3.11: Google Drive Sync Implementation
 
-- [ ] **T081** [P] Add `google_sign_in`, `googleapis`, and encryption dependencies to `pubspec.yaml`
-- [ ] **T082** Implement GoogleDriveService with authentication in `lib/features/sync/services/google_drive_service.dart`
-- [ ] **T083** Implement SyncService with conflict resolution in `lib/features/sync/services/sync_service.dart`
-- [ ] **T084** Create SyncSettingsScreen in `lib/features/sync/screens/sync_settings_screen.dart`
-- [ ] **T085** [P] Create SyncStatusWidget in `lib/features/sync/widgets/sync_status_widget.dart`
+- [x] **T081** [P] Add `google_sign_in`, `googleapis`, and encryption dependencies to `pubspec.yaml`
+- [x] **T082** Implement GoogleDriveService with authentication in `lib/features/sync/services/google_drive_service.dart`
+- [x] **T083** Implement SyncService with conflict resolution in `lib/features/sync/services/sync_service.dart`
+- [x] **T084** Create SyncSettingsScreen in `lib/features/sync/screens/sync_settings_screen.dart`
+- [x] **T085** [P] Create SyncStatusWidget in `lib/features/sync/widgets/sync_status_widget.dart`
 
 ## Phase 3.12: Export/Import System
 
-- [ ] **T086** [P] Add `archive` dependency for ZIP support to `pubspec.yaml`
-- [ ] **T087** Implement ExportService with multiple formats in `lib/features/export/services/export_service.dart`
-- [ ] **T088** Implement ImportService with validation in `lib/features/export/services/import_service.dart`
-- [ ] **T089** Create ExportScreen with format selection in `lib/features/export/screens/export_screen.dart`
-- [ ] **T090** Create ImportScreen with file validation in `lib/features/export/screens/import_screen.dart`
+- [x] **T086** [P] Add `archive` dependency for ZIP support to `pubspec.yaml`
+- [x] **T087** Implement ExportService with multiple formats in `lib/features/export/services/export_service.dart`
+- [x] **T088** Implement ImportService with validation in `lib/features/export/services/import_service.dart`
+- [x] **T089** Create ExportScreen with format selection in `lib/features/export/screens/export_screen.dart`
+- [x] **T090** Create ImportScreen with file validation in `lib/features/export/screens/import_screen.dart`
 
 ## Phase 3.13: OCR Support (Optional)
 
-- [ ] **T091** [P] Add `google_ml_kit` dependency to `pubspec.yaml`
-- [ ] **T092** [P] Implement OCRService for prescription scanning in `lib/features/ocr/services/ocr_service.dart`
-- [ ] **T093** [P] Create OCRScanScreen in `lib/features/ocr/screens/ocr_scan_screen.dart`
+- [x] **T091** [P] Add `google_ml_kit` dependency to `pubspec.yaml`
+- [x] **T092** [P] Implement OCRService for prescription scanning in `lib/features/ocr/services/ocr_service.dart`
+- [x] **T093** [P] Create OCRScanScreen in `lib/features/ocr/screens/ocr_scan_screen.dart`
 
 ## Phase 3.14: Analytics & Graphs
 
-- [ ] **T094** [P] Add `fl_chart` dependency for graphs to `pubspec.yaml`
-- [ ] **T095** [P] Implement AnalyticsService for vitals tracking in `lib/features/analytics/services/analytics_service.dart`
-- [ ] **T096** [P] Create VitalsTrackingScreen in `lib/features/analytics/screens/vitals_tracking_screen.dart`
-- [ ] **T097** [P] Create VitalsChartWidget in `lib/features/analytics/widgets/vitals_chart_widget.dart`
+- [x] **T094** [P] Add `fl_chart` dependency for graphs to `pubspec.yaml`
+- [x] **T095** [P] Implement AnalyticsService for vitals tracking in `lib/features/analytics/services/analytics_service.dart`
+- [x] **T096** [P] Create VitalsTrackingScreen in `lib/features/analytics/screens/vitals_tracking_screen.dart`
+- [x] **T097** [P] Create VitalsChartWidget in `lib/features/analytics/widgets/vitals_chart_widget.dart`
 
 ## Phase 3.15: UI Polish & Accessibility
 
