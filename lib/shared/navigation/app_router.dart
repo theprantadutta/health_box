@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/onboarding_providers.dart';
+import '../animations/page_transitions.dart';
 
 import '../../screens/main_app_screen.dart';
 import '../../screens/onboarding_screen.dart';
@@ -116,10 +117,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'form',
                 name: 'profile-form',
-                builder: (context, state) {
-                  // For now, pass null - the profile will be passed via navigation parameters
-                  return const ProfileFormScreen();
-                },
+                pageBuilder: (context, state) => buildPremiumPage(
+                  child: const ProfileFormScreen(),
+                  transitionType: PageTransitionType.healthSlide,
+                  healthContext: 'profiles',
+                ),
               ),
             ],
           ),
@@ -134,32 +136,48 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'detail/:recordId',
                 name: 'medical-record-detail',
-                builder: (context, state) => MedicalRecordDetailScreen(
-                  recordId: state.pathParameters['recordId']!,
+                pageBuilder: (context, state) => buildPremiumPage(
+                  child: MedicalRecordDetailScreen(
+                    recordId: state.pathParameters['recordId']!,
+                  ),
+                  transitionType: PageTransitionType.cardFlip,
+                  healthContext: 'medical_records',
                 ),
               ),
               GoRoute(
                 path: 'prescription/form',
                 name: 'prescription-form',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final profileId = state.uri.queryParameters['profileId'];
-                  return PrescriptionFormScreen(profileId: profileId);
+                  return buildPremiumPage(
+                    child: PrescriptionFormScreen(profileId: profileId),
+                    transitionType: PageTransitionType.healthSlide,
+                    healthContext: 'medication',
+                  );
                 },
               ),
               GoRoute(
                 path: 'medication/form',
                 name: 'medication-form',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final profileId = state.uri.queryParameters['profileId'];
-                  return MedicationFormScreen(profileId: profileId);
+                  return buildPremiumPage(
+                    child: MedicationFormScreen(profileId: profileId),
+                    transitionType: PageTransitionType.morphing,
+                    healthContext: 'medication',
+                  );
                 },
               ),
               GoRoute(
                 path: 'lab-report/form',
                 name: 'lab-report-form',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final profileId = state.uri.queryParameters['profileId'];
-                  return LabReportFormScreen(profileId: profileId);
+                  return buildPremiumPage(
+                    child: LabReportFormScreen(profileId: profileId),
+                    transitionType: PageTransitionType.wave,
+                    healthContext: 'nutrition',
+                  );
                 },
               ),
             ],
@@ -183,25 +201,41 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'export',
                 name: 'export',
-                builder: (context, state) => const ExportScreen(),
+                pageBuilder: (context, state) => buildPremiumPage(
+                  child: const ExportScreen(),
+                  transitionType: PageTransitionType.slide,
+                  healthContext: 'settings',
+                ),
               ),
               GoRoute(
                 path: 'import',
                 name: 'import',
-                builder: (context, state) => const ImportScreen(),
+                pageBuilder: (context, state) => buildPremiumPage(
+                  child: const ImportScreen(),
+                  transitionType: PageTransitionType.slide,
+                  healthContext: 'settings',
+                ),
               ),
               GoRoute(
                 path: 'emergency-card',
                 name: 'emergency-card',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final profileId = state.uri.queryParameters['profileId'] ?? '';
-                  return EmergencyCardScreen(profileId: profileId);
+                  return buildPremiumPage(
+                    child: EmergencyCardScreen(profileId: profileId),
+                    transitionType: PageTransitionType.cardFlip,
+                    healthContext: 'emergency',
+                  );
                 },
               ),
               GoRoute(
                 path: 'sync',
                 name: 'sync',
-                builder: (context, state) => const SyncSettingsScreen(),
+                pageBuilder: (context, state) => buildPremiumPage(
+                  child: const SyncSettingsScreen(),
+                  transitionType: PageTransitionType.breathe,
+                  healthContext: 'wellness',
+                ),
               ),
             ],
           ),
@@ -210,22 +244,26 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.vitalsTracking,
             name: 'vitals-tracking',
-            builder: (context, state) {
+            pageBuilder: (context, state) {
               final profileId = state.uri.queryParameters['profileId'] ?? '';
-              return VitalsTrackingScreen(profileId: profileId);
+              return buildPremiumPage(
+                child: VitalsTrackingScreen(profileId: profileId),
+                transitionType: PageTransitionType.wave,
+                healthContext: 'fitness',
+              );
             },
           ),
           
           GoRoute(
             path: AppRoutes.ocrScan,
             name: 'ocr-scan',
-            builder: (context, state) {
-              // For OCRScanScreen, we need to provide default values
-              // These would typically be passed from the parent screen
-              return const OCRScanScreen(
+            pageBuilder: (context, state) => buildPremiumPage(
+              child: const OCRScanScreen(
                 ocrType: OCRType.prescription, // Default type
-              );
-            },
+              ),
+              transitionType: PageTransitionType.dissolve,
+              healthContext: 'medication',
+            ),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/widgets/loading_animation_widget.dart';
+import '../../../shared/widgets/premium_button.dart';
 import '../../../shared/widgets/error_state_widget.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/providers/reminder_providers.dart';
@@ -105,10 +106,19 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
           _buildStatsTab(),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: PremiumButton(
         onPressed: () => _showAddReminderDialog(context),
-        icon: const Icon(Icons.add),
-        label: const Text('Add Reminder'),
+        style: PremiumButtonStyle.gradient,
+        healthContext: 'reminders',
+        enableParticleEffect: true,
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.add, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Add Reminder', style: TextStyle(color: Colors.white)),
+          ],
+        ),
       ),
     );
   }

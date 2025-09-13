@@ -6,7 +6,7 @@ import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/widgets/premium_button.dart';
 import '../widgets/upcoming_reminders_widget.dart';
 import '../widgets/recent_activity_widget.dart';
 import '../../profiles/screens/profile_list_screen.dart';
@@ -19,13 +19,38 @@ class DashboardScreen extends ConsumerStatefulWidget {
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+class _DashboardScreenState extends ConsumerState<DashboardScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _staggerController;
+  late AnimationController _greetingController;
+
   @override
   void initState() {
     super.initState();
+
+    // Initialize animations
+    _staggerController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _greetingController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(profileNotifierProvider.notifier).loadProfiles();
+      _startAnimations();
+    });
+  }
+
+  void _startAnimations() {
+    _greetingController.forward();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _staggerController.forward();
     });
   }
 
@@ -101,15 +126,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        flex: 2,
-                        child: _buildQuickActions(),
-                      ),
+                      Expanded(flex: 2, child: _buildQuickActions()),
                       const SizedBox(width: 24),
-                      Expanded(
-                        flex: 3,
-                        child: _buildStatisticsOverview(),
-                      ),
+                      Expanded(flex: 3, child: _buildStatisticsOverview()),
                     ],
                   )
                 else ...[
@@ -118,7 +137,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   const SizedBox(height: 24),
                   _buildStatisticsOverview(),
                 ],
-                
+
                 const SizedBox(height: 24),
 
                 // Reminders and Activity Row (Desktop/Tablet)
@@ -138,6 +157,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   const RecentActivityWidget(),
                 ],
 
+                const SizedBox(height: 24),
+
+                // Health Insights Section
+                _buildHealthInsights(),
+
                 const SizedBox(height: 100), // Space for floating action button
               ]),
             ),
@@ -148,13 +172,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildWelcomeSection(ProfileState profileState, AsyncValue<List<dynamic>> profilesAsync) {
+  Widget _buildWelcomeSection(
+    ProfileState profileState,
+    AsyncValue<List<dynamic>> profilesAsync,
+  ) {
     final selectedProfile = profileState.selectedProfile;
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
     return ModernCard(
-      elevation: CardElevation.low,
+      elevation: CardElevation.medium,
+      enableFloatingEffect: true,
+      enablePulseEffect: selectedProfile != null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -163,13 +192,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  gradient: selectedProfile != null 
+                  gradient: selectedProfile != null
                       ? AppTheme.getSuccessGradient()
                       : AppTheme.getPrimaryGradient(isDarkMode),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
-                  selectedProfile != null ? Icons.waving_hand : Icons.family_restroom,
+                  selectedProfile != null
+                      ? Icons.waving_hand
+                      : Icons.family_restroom,
                   color: Colors.white,
                   size: AppTheme.isMobile(context) ? 24 : 28,
                 ),
@@ -225,9 +256,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           if (selectedProfile == null) ...[
             const SizedBox(height: 24),
             profilesAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stack) => ModernCard(
                 color: theme.colorScheme.errorContainer,
                 elevation: CardElevation.none,
@@ -238,7 +267,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     Expanded(
                       child: Text(
                         'Error loading profiles: $error',
-                        style: TextStyle(color: theme.colorScheme.onErrorContainer),
+                        style: TextStyle(
+                          color: theme.colorScheme.onErrorContainer,
+                        ),
                       ),
                     ),
                   ],
@@ -252,12 +283,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           style: theme.textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 16),
-                        GradientButton(
+                        PremiumButton(
                           onPressed: () => context.push(AppRoutes.profiles),
+                          style: PremiumButtonStyle.gradient,
+                          healthContext: 'heart',
+                          enableParticleEffect: true,
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.person_add, size: 20, color: Colors.white),
+                              Icon(
+                                Icons.person_add,
+                                size: 20,
+                                color: Colors.white,
+                              ),
                               SizedBox(width: 8),
                               Text('Add Family Member'),
                             ],
@@ -279,17 +317,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           children: profiles.map((profile) {
                             return GestureDetector(
                               onTap: () {
-                                ref.read(profileNotifierProvider.notifier).selectProfile(profile);
+                                ref
+                                    .read(profileNotifierProvider.notifier)
+                                    .selectProfile(profile);
                               },
                               child: ModernCard(
                                 elevation: CardElevation.low,
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     CircleAvatar(
                                       radius: 16,
-                                      backgroundColor: theme.colorScheme.primary,
+                                      backgroundColor:
+                                          theme.colorScheme.primary,
                                       child: Text(
                                         '${profile.firstName[0]}',
                                         style: TextStyle(
@@ -322,40 +366,53 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildQuickActions() {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
-    
+
     final actions = [
       _QuickAction(
         title: 'Add Record',
         subtitle: 'Medical record',
         icon: Icons.medical_information,
-        gradient: AppTheme.getPrimaryGradient(isDarkMode),
+        gradient: AppTheme.getHealthContextGradient(
+          'medication',
+          isDark: isDarkMode,
+        ),
         onTap: () => context.push(AppRoutes.medicalRecords),
       ),
       _QuickAction(
         title: 'Set Reminder',
         subtitle: 'Medication alert',
         icon: Icons.notifications_active,
-        gradient: AppTheme.getWarningGradient(),
+        gradient: AppTheme.getHealthContextGradient(
+          'fitness',
+          isDark: isDarkMode,
+        ),
         onTap: () => context.push(AppRoutes.reminders),
       ),
       _QuickAction(
         title: 'Scan Document',
         subtitle: 'OCR prescription',
         icon: Icons.document_scanner,
-        gradient: AppTheme.getSuccessGradient(),
+        gradient: AppTheme.getHealthContextGradient(
+          'nutrition',
+          isDark: isDarkMode,
+        ),
         onTap: () => context.push(AppRoutes.ocrScan),
       ),
       _QuickAction(
         title: 'Track Vitals',
         subtitle: 'Health metrics',
         icon: Icons.favorite,
-        gradient: AppTheme.getErrorGradient(),
+        gradient: AppTheme.getHealthContextGradient(
+          'heart',
+          isDark: isDarkMode,
+        ),
         onTap: () => context.push('${AppRoutes.vitalsTracking}?profileId='),
       ),
     ];
 
     return ModernCard(
-      elevation: CardElevation.low,
+      elevation: CardElevation.medium,
+      enableFloatingEffect: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -395,18 +452,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 childAspectRatio: 1.2,
               ),
               itemCount: actions.length,
-              itemBuilder: (context, index) => _buildQuickActionCard(actions[index]),
+              itemBuilder: (context, index) =>
+                  _buildQuickActionCard(actions[index]),
             )
           else
             // Desktop/Tablet: Single row
             Row(
               children: actions
-                  .map((action) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: _buildQuickActionCard(action),
-                        ),
-                      ))
+                  .map(
+                    (action) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: _buildQuickActionCard(action),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
         ],
@@ -416,7 +476,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildQuickActionCard(_QuickAction action) {
     final theme = Theme.of(context);
-    
+
     return GestureDetector(
       onTap: action.onTap,
       child: Container(
@@ -424,7 +484,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         decoration: BoxDecoration(
           gradient: action.gradient,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: AppTheme.getCardShadow(theme.brightness == Brightness.dark),
+          boxShadow: AppTheme.getCardShadow(
+            theme.brightness == Brightness.dark,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -447,10 +509,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             const SizedBox(height: 2),
             Text(
               action.subtitle,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ],
         ),
@@ -461,7 +520,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildFloatingActionButton() {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: AppTheme.getPrimaryGradient(isDarkMode),
@@ -496,7 +555,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (profiles) => profiles.length.toString(),
         ),
         icon: Icons.family_restroom,
-        gradient: AppTheme.getPrimaryGradient(isDarkMode),
+        gradient: AppTheme.getHealthContextGradient(
+          'heart',
+          isDark: isDarkMode,
+        ),
       ),
       _StatItem(
         label: 'Medical Records',
@@ -506,24 +568,34 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (records) => records.length.toString(),
         ),
         icon: Icons.medical_information,
-        gradient: AppTheme.getSuccessGradient(),
+        gradient: AppTheme.getHealthContextGradient(
+          'medication',
+          isDark: isDarkMode,
+        ),
       ),
       _StatItem(
         label: 'Active Reminders',
         value: '0', // Will be populated when reminder system is integrated
         icon: Icons.notifications_active,
-        gradient: AppTheme.getWarningGradient(),
+        gradient: AppTheme.getHealthContextGradient(
+          'fitness',
+          isDark: isDarkMode,
+        ),
       ),
       _StatItem(
         label: 'This Month',
         value: '0', // Will show activity count
         icon: Icons.calendar_month,
-        gradient: AppTheme.getErrorGradient(),
+        gradient: AppTheme.getHealthContextGradient(
+          'nutrition',
+          isDark: isDarkMode,
+        ),
       ),
     ];
 
     return ModernCard(
-      elevation: CardElevation.low,
+      elevation: CardElevation.medium,
+      enableFloatingEffect: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -569,12 +641,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             // Desktop/Tablet: Single row
             Row(
               children: stats
-                  .map((stat) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16),
-                          child: _buildStatCard(stat),
-                        ),
-                      ))
+                  .map(
+                    (stat) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: _buildStatCard(stat),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
         ],
@@ -584,7 +658,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildStatCard(_StatItem stat) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: EdgeInsets.all(AppTheme.isMobile(context) ? 12 : 16),
       decoration: BoxDecoration(
@@ -640,7 +714,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Global search will be available in Phase 3.8 with the SearchService implementation.'),
+            const Text(
+              'Global search will be available in Phase 3.8 with the SearchService implementation.',
+            ),
           ],
         ),
         actions: [
@@ -663,10 +739,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           children: [
             const Text(
               'Quick Add',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ListTile(
@@ -700,7 +773,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Navigate to medication form - T057 already implemented'),
+                    content: Text(
+                      'Navigate to medication form - T057 already implemented',
+                    ),
                   ),
                 );
               },
@@ -721,6 +796,214 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  String _getDynamicTitle() {
+    final hour = DateTime.now().hour;
+    final profileState = ref.read(profileNotifierProvider);
+    final selectedProfile = profileState.selectedProfile;
+
+    if (selectedProfile != null) {
+      if (hour < 12) {
+        return 'Good Morning!';
+      } else if (hour < 17) {
+        return 'Good Afternoon!';
+      } else {
+        return 'Good Evening!';
+      }
+    } else {
+      return 'HealthBox';
+    }
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good morning';
+    } else if (hour < 17) {
+      return 'Good afternoon';
+    } else {
+      return 'Good evening';
+    }
+  }
+
+  String _getHealthInsight() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 10) {
+      return 'Start your day healthy';
+    } else if (hour < 14) {
+      return 'Midday health check';
+    } else if (hour < 18) {
+      return 'Afternoon wellness';
+    } else {
+      return 'Evening wind down';
+    }
+  }
+
+  IconData _getHealthIcon() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return Icons.wb_sunny_rounded;
+    } else if (hour < 17) {
+      return Icons.wb_cloudy_rounded;
+    } else {
+      return Icons.nightlight_round;
+    }
+  }
+
+  Widget _buildHealthInsights() {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    final profileState = ref.watch(profileNotifierProvider);
+    final selectedProfile = profileState.selectedProfile;
+
+    if (selectedProfile == null) {
+      return const SizedBox.shrink();
+    }
+
+    return ModernCard(
+      elevation: CardElevation.medium,
+      enableFloatingEffect: true,
+      enablePulseEffect: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: AppTheme.getHealthContextGradient(
+                    'wellness',
+                    isDark: isDarkMode,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.insights_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Health Insights',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  _getHealthInsight(),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildInsightCard(
+                  'Daily Goal',
+                  '75%',
+                  Icons.track_changes_rounded,
+                  AppTheme.getHealthContextGradient(
+                    'fitness',
+                    isDark: isDarkMode,
+                  ),
+                  theme,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildInsightCard(
+                  'Wellness Score',
+                  '8.5/10',
+                  Icons.favorite_rounded,
+                  AppTheme.getHealthContextGradient(
+                    'heart',
+                    isDark: isDarkMode,
+                  ),
+                  theme,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildInsightCard(
+                  'Streak',
+                  '12 days',
+                  Icons.local_fire_department_rounded,
+                  AppTheme.getHealthContextGradient(
+                    'nutrition',
+                    isDark: isDarkMode,
+                  ),
+                  theme,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInsightCard(
+    String title,
+    String value,
+    IconData icon,
+    LinearGradient gradient,
+    ThemeData theme,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradient.colors
+              .map((c) => c.withValues(alpha: c.a * 0.7))
+              .toList(),
+          begin: gradient.begin,
+          end: gradient.end,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.white, size: 20),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white70, fontSize: 11),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _staggerController.dispose();
+    _greetingController.dispose();
+    super.dispose();
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/profile_dao.dart';
+import '../../../shared/widgets/premium_button.dart';
 import '../services/export_service.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
@@ -406,11 +407,20 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
+      child: PremiumButton(
         onPressed: canExport ? _performExport : null,
-        icon: const Icon(Icons.download),
-        label: const Text('Export Data'),
-        style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+        style: PremiumButtonStyle.gradient,
+        healthContext: 'export',
+        enableParticleEffect: true,
+        state: canExport ? PremiumButtonState.normal : PremiumButtonState.disabled,
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.download, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Export Data', style: TextStyle(color: Colors.white)),
+          ],
+        ),
       ),
     );
   }

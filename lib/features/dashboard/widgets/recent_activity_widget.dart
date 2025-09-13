@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/widgets/modern_card.dart';
 import '../../../data/database/app_database.dart';
 import '../../medical_records/screens/medical_record_detail_screen.dart';
 
@@ -12,56 +13,56 @@ class RecentActivityWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final profileState = ref.watch(profileNotifierProvider);
-    final recentRecordsAsync = ref.watch(recentMedicalRecordsProvider({
-      'limit': 5,
-      'profileId': profileState.selectedProfile?.id,
-    }));
+    final recentRecordsAsync = ref.watch(
+      recentMedicalRecordsProvider({
+        'limit': 5,
+        'profileId': profileState.selectedProfile?.id,
+      }),
+    );
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.history,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Recent Activity',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Full activity log - Coming with navigation integration'),
-                      ),
-                    );
-                  },
-                  child: const Text('View All'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            recentRecordsAsync.when(
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
+    return ModernCard(
+      elevation: CardElevation.medium,
+      enableFloatingEffect: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.history, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                'Recent Activity',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              error: (error, stack) => _buildErrorState(context, error),
-              data: (records) => _buildActivityList(context, records),
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Full activity log - Coming with navigation integration',
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('View All'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          recentRecordsAsync.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),
+              ),
             ),
-          ],
-        ),
+            error: (error, stack) => _buildErrorState(context, error),
+            data: (records) => _buildActivityList(context, records),
+          ),
+        ],
       ),
     );
   }
@@ -73,16 +74,9 @@ class RecentActivityWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: theme.colorScheme.error,
-            size: 48,
-          ),
+          Icon(Icons.error_outline, color: theme.colorScheme.error, size: 48),
           const SizedBox(height: 8),
-          Text(
-            'Error loading activity',
-            style: theme.textTheme.titleSmall,
-          ),
+          Text('Error loading activity', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
             error.toString(),
@@ -112,10 +106,7 @@ class RecentActivityWidget extends ConsumerWidget {
               size: 48,
             ),
             const SizedBox(height: 8),
-            Text(
-              'No recent activity',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('No recent activity', style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
               'Your medical records and activities will appear here',
@@ -129,11 +120,13 @@ class RecentActivityWidget extends ConsumerWidget {
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Navigate to add medical record - T054 already implemented'),
+                    content: Text(
+                      'Navigate to add medical record - T054 already implemented',
+                    ),
                   ),
                 );
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_rounded),
               label: const Text('Add Record'),
             ),
           ],
@@ -142,7 +135,9 @@ class RecentActivityWidget extends ConsumerWidget {
     }
 
     return Column(
-      children: records.map((record) => _buildActivityItem(context, record)).toList(),
+      children: records
+          .map((record) => _buildActivityItem(context, record))
+          .toList(),
     );
   }
 
@@ -152,30 +147,23 @@ class RecentActivityWidget extends ConsumerWidget {
       DateTime.now().subtract(const Duration(hours: 24)),
     );
 
-    return InkWell(
+    return ModernCard(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: CardElevation.low,
+      enableFloatingEffect: true,
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => MedicalRecordDetailScreen(
-              recordId: record.id,
-              record: record,
-            ),
+            builder: (context) =>
+                MedicalRecordDetailScreen(recordId: record.id, record: record),
           ),
         );
       },
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+      color: isRecent
+          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
+          : null,
+      child: Padding(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isRecent
-              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
-        ),
         child: Row(
           children: [
             // Activity Type Icon
@@ -193,7 +181,7 @@ class RecentActivityWidget extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 12),
-            
+
             // Activity Details
             Expanded(
               child: Column(
@@ -213,7 +201,10 @@ class RecentActivityWidget extends ConsumerWidget {
                       ),
                       if (isRecent)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: theme.colorScheme.primary,
                             borderRadius: BorderRadius.circular(8),
@@ -267,7 +258,7 @@ class RecentActivityWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             // Arrow Icon
             Icon(
               Icons.arrow_forward_ios,

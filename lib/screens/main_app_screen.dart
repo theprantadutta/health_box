@@ -6,6 +6,8 @@ import '../l10n/app_localizations.dart';
 import '../shared/navigation/app_router.dart';
 import '../shared/utils/responsive_utils.dart';
 import '../shared/utils/accessibility_utils.dart';
+import '../shared/widgets/premium_navigation.dart';
+import '../shared/theme/app_theme.dart';
 
 class SelectedIndexNotifier extends Notifier<int> {
   @override
@@ -33,93 +35,122 @@ class MainAppScreen extends ConsumerWidget {
     final selectedIndex = ref.watch(selectedIndexProvider);
     final l10n = AppLocalizations.of(context)!;
     
-    final destinations = [
-      NavigationDestination(
+    final premiumDestinations = [
+      PremiumNavigationDestination(
         icon: const Icon(Icons.dashboard_outlined),
         selectedIcon: const Icon(Icons.dashboard),
         label: l10n.dashboard,
+        healthContext: 'wellness',
+        tooltip: l10n.dashboard,
       ),
-      NavigationDestination(
+      PremiumNavigationDestination(
         icon: const Icon(Icons.people_outlined),
         selectedIcon: const Icon(Icons.people),
         label: l10n.profiles,
+        healthContext: 'heart',
+        tooltip: l10n.profiles,
       ),
-      NavigationDestination(
+      PremiumNavigationDestination(
         icon: const Icon(Icons.medical_information_outlined),
         selectedIcon: const Icon(Icons.medical_information),
         label: l10n.medicalRecords,
+        healthContext: 'medication',
+        tooltip: l10n.medicalRecords,
       ),
-      NavigationDestination(
+      PremiumNavigationDestination(
         icon: const Icon(Icons.notifications_outlined),
         selectedIcon: const Icon(Icons.notifications),
         label: l10n.reminders,
+        healthContext: 'fitness',
+        tooltip: l10n.reminders,
       ),
-      NavigationDestination(
+      PremiumNavigationDestination(
         icon: const Icon(Icons.settings_outlined),
         selectedIcon: const Icon(Icons.settings),
         label: l10n.settings,
+        healthContext: 'nutrition',
+        tooltip: l10n.settings,
       ),
     ];
 
-    final railDestinations = destinations
-        .map((dest) => NavigationRailDestination(
-              icon: dest.icon,
-              selectedIcon: dest.selectedIcon,
-              label: Text(dest.label),
-            ))
-        .toList();
+    // Legacy destinations for compatibility (if needed later)
+    // final destinations = premiumDestinations.map((dest) => NavigationDestination(
+    //   icon: dest.icon,
+    //   selectedIcon: dest.selectedIcon,
+    //   label: dest.label,
+    // )).toList();
 
     if (ResponsiveUtils.shouldShowRail(context)) {
       return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Row(
           children: [
-            NavigationRail(
-              extended: ResponsiveUtils.isDesktop(context),
-              destinations: railDestinations,
+            // Premium Navigation Rail
+            PremiumNavigationRail(
+              destinations: premiumDestinations,
               selectedIndex: selectedIndex,
               onDestinationSelected: (index) => _onDestinationSelected(
                 context,
                 ref,
                 index,
               ),
-              labelType: ResponsiveUtils.getNavigationRailLabelType(context),
-              minWidth: ResponsiveUtils.getNavigationRailWidth(context),
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              elevation: 1,
+              extended: ResponsiveUtils.isDesktop(context),
+              width: ResponsiveUtils.getNavigationRailWidth(context),
+              extendedWidth: 280.0,
+              elevation: 2.0,
+              enableGlow: true,
+              healthContext: _getCurrentHealthContext(selectedIndex),
+              margin: const EdgeInsets.all(8.0),
             ),
-            const VerticalDivider(thickness: 1, width: 1),
-            Expanded(child: child),
+            
+            // Content area with enhanced styling
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(top: 8.0, right: 8.0, bottom: 8.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: AppTheme.getCardShadow(
+                    Theme.of(context).brightness == Brightness.dark
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: child,
+                ),
+              ),
+            ),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) => _onDestinationSelected(
-          context,
-          ref,
-          index,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Container(
+        margin: const EdgeInsets.only(bottom: 100.0), // Space for floating nav
+        child: child,
+      ),
+      bottomNavigationBar: null, // We'll use our floating nav instead
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(bottom: 16.0),
+        child: PremiumNavigationBar(
+          destinations: premiumDestinations,
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) => _onDestinationSelected(
+            context,
+            ref,
+            index,
+          ),
+          enableGlow: true,
+          enableFloating: true,
+          enableMorphing: true,
+          healthContext: _getCurrentHealthContext(selectedIndex),
+          height: 72.0,
+          elevation: 12.0,
+          enableHapticFeedback: true,
         ),
-        destinations: destinations.map((dest) {
-          return NavigationDestination(
-            icon: Semantics(
-              label: dest.label,
-              hint: AccessibilityUtils.getCommonHint('navigate'),
-              excludeSemantics: false,
-              child: dest.icon,
-            ),
-            selectedIcon: Semantics(
-              label: '${dest.label} selected',
-              hint: 'Currently selected tab',
-              excludeSemantics: false,
-              child: dest.selectedIcon ?? dest.icon,
-            ),
-            label: dest.label,
-          );
-        }).toList(),
       ),
     );
   }
@@ -153,6 +184,11 @@ class MainAppScreen extends ConsumerWidget {
         );
       }
     }
+  }
+  
+  String _getCurrentHealthContext(int index) {
+    const contexts = ['wellness', 'heart', 'medication', 'fitness', 'nutrition'];
+    return index < contexts.length ? contexts[index] : 'wellness';
   }
 }
 

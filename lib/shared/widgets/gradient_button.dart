@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+class RipplePainter extends CustomPainter {
+  const RipplePainter({
+    required this.animation,
+    required this.color,
+  });
+
+  final Animation<double> animation;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (animation.value == 0) return;
+
+    final paint = Paint()
+      ..color = color.withValues(alpha: (1 - animation.value) * color.alpha)
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width * animation.value * 0.8;
+
+    canvas.drawCircle(center, radius, paint);
+  }
+
+  @override
+  bool shouldRepaint(RipplePainter oldDelegate) {
+    return oldDelegate.animation.value != animation.value ||
+           oldDelegate.color != color;
+  }
+}
+
 class GradientButton extends StatefulWidget {
   const GradientButton({
     super.key,
@@ -34,29 +64,111 @@ class GradientButton extends StatefulWidget {
 }
 
 class _GradientButtonState extends State<GradientButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+    with TickerProviderStateMixin {
+  late AnimationController _pressController;
+  late AnimationController _rippleController;
+  late AnimationController _glowController;
+  late AnimationController _bounceController;
+  
   late Animation<double> _scaleAnimation;
+  late Animation<double> _rippleAnimation;
+  late Animation<double> _glowAnimation;
+  late Animation<double> _bounceAnimation;
+  late Animation<double> _shadowAnimation;
+  late Animation<Color?> _colorAnimation;
+
+  bool _isPressed = false;
+  bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    
+    // Press animation controller
+    _pressController = AnimationController(
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
+    
+    // Ripple animation controller
+    _rippleController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    
+    // Glow animation controller
+    _glowController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    
+    // Bounce/Success animation controller
+    _bounceController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    // Scale animation (press effect)
     _scaleAnimation = Tween<double>(
       begin: 1.0,
-      end: 0.95,
+      end: 0.96,
     ).animate(CurvedAnimation(
-      parent: _controller,
+      parent: _pressController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Ripple animation
+    _rippleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _rippleController,
+      curve: Curves.easeOutCirc,
+    ));
+
+    // Glow animation (hover effect)
+    _glowAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _glowController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Bounce animation (success feedback)
+    _bounceAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.05,
+    ).animate(CurvedAnimation(
+      parent: _bounceController,
+      curve: Curves.elasticOut,
+    ));
+
+    // Shadow animation
+    _shadowAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.7,
+    ).animate(CurvedAnimation(
+      parent: _pressController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Color animation for hover
+    _colorAnimation = ColorTween(
+      begin: Colors.transparent,
+      end: Colors.white.withValues(alpha: 0.1),
+    ).animate(CurvedAnimation(
+      parent: _glowController,
       curve: Curves.easeInOut,
     ));
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _pressController.dispose();
+    _rippleController.dispose();
+    _glowController.dispose();
+    _bounceController.dispose();
     super.dispose();
   }
 
@@ -72,8 +184,8 @@ class _GradientButtonState extends State<GradientButton>
     final effectiveBorderRadius = widget.borderRadius ?? 
         BorderRadius.circular(effectiveHeight / 2);
     
-    // Get gradient based on style
-    final gradient = widget.gradient ?? _getStyleGradient(isDarkMode);
+    // Get premium gradient based on style
+    final gradient = widget.gradient ?? _getPremiumStyleGradient(isDarkMode);
     
     // Get text color based on style
     final textColor = _getTextColor();
@@ -81,46 +193,136 @@ class _GradientButtonState extends State<GradientButton>
     final isActive = widget.enabled && widget.onPressed != null;
     
     return AnimatedBuilder(
-      animation: _scaleAnimation,
+      animation: Listenable.merge([
+        _scaleAnimation,
+        _rippleAnimation,
+        _glowAnimation,
+        _bounceAnimation,
+        _shadowAnimation,
+        _colorAnimation,
+      ]),
       builder: (context, child) {
         return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: GestureDetector(
-            onTapDown: isActive ? (_) => _controller.forward() : null,
-            onTapUp: isActive ? (_) => _controller.reverse() : null,
-            onTapCancel: () => _controller.reverse(),
-            onTap: widget.isLoading ? null : widget.onPressed,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: effectiveWidth,
-              height: effectiveHeight,
-              decoration: BoxDecoration(
-                gradient: isActive ? gradient : _getDisabledGradient(theme),
-                borderRadius: effectiveBorderRadius,
-                boxShadow: isActive && (widget.elevation ?? 0) > 0
-                    ? AppTheme.getElevatedShadow(isDarkMode)
-                    : null,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                borderRadius: effectiveBorderRadius,
-                child: Semantics(
-                  button: true,
-                  enabled: isActive,
-                  child: InkWell(
-                    borderRadius: effectiveBorderRadius,
-                    onTap: widget.isLoading ? null : widget.onPressed,
+          scale: _scaleAnimation.value * _bounceAnimation.value,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Glow effect (hover)
+              if (_glowAnimation.value > 0)
+                Positioned.fill(
                   child: Container(
-                    padding: dimensions.padding,
                     decoration: BoxDecoration(
                       borderRadius: effectiveBorderRadius,
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.3 * _glowAnimation.value,
+                          ),
+                          blurRadius: 20 * _glowAnimation.value,
+                          spreadRadius: 2 * _glowAnimation.value,
+                        ),
+                      ],
                     ),
-                    child: _buildButtonContent(textColor),
-                  ),
                   ),
                 ),
+              
+              // Main button
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: effectiveWidth,
+                height: effectiveHeight,
+                decoration: BoxDecoration(
+                  gradient: isActive ? gradient : _getDisabledGradient(theme),
+                  borderRadius: effectiveBorderRadius,
+                  boxShadow: isActive 
+                      ? _getPremiumStyleShadows(isDarkMode).map((shadow) => BoxShadow(
+                          color: shadow.color.withValues(
+                            alpha: shadow.color.alpha * _shadowAnimation.value,
+                          ),
+                          offset: shadow.offset * _shadowAnimation.value,
+                          blurRadius: shadow.blurRadius * _shadowAnimation.value,
+                          spreadRadius: shadow.spreadRadius,
+                        )).toList()
+                      : null,
+                ),
+                child: Stack(
+                  children: [
+                    // Ripple effect
+                    if (_rippleAnimation.value > 0)
+                      Positioned.fill(
+                        child: ClipRRect(
+                          borderRadius: effectiveBorderRadius,
+                          child: CustomPaint(
+                            painter: RipplePainter(
+                              animation: _rippleAnimation,
+                              color: Colors.white.withValues(alpha: 0.3),
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                    // Hover overlay
+                    if (_colorAnimation.value != null)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: _colorAnimation.value,
+                            borderRadius: effectiveBorderRadius,
+                          ),
+                        ),
+                      ),
+                    
+                    // Button content
+                    Material(
+                      color: Colors.transparent,
+                      borderRadius: effectiveBorderRadius,
+                      child: Semantics(
+                        button: true,
+                        enabled: isActive,
+                        child: InkWell(
+                          borderRadius: effectiveBorderRadius,
+                          onTap: isActive && !widget.isLoading ? () async {
+                            // Trigger ripple and press animations
+                            _rippleController.forward(from: 0);
+                            await _pressController.forward();
+                            
+                            // Call the callback
+                            widget.onPressed!();
+                            
+                            // Trigger success bounce
+                            _bounceController.forward(from: 0);
+                            await _pressController.reverse();
+                          } : null,
+                          onTapDown: isActive ? (_) {
+                            setState(() => _isPressed = true);
+                            _pressController.forward();
+                          } : null,
+                          onTapUp: (_) {
+                            setState(() => _isPressed = false);
+                          },
+                          onTapCancel: () {
+                            setState(() => _isPressed = false);
+                            _pressController.reverse();
+                          },
+                          onHover: (hovering) {
+                            setState(() => _isHovered = hovering);
+                            if (hovering) {
+                              _glowController.forward();
+                            } else {
+                              _glowController.reverse();
+                            }
+                          },
+                          child: Container(
+                            padding: dimensions.padding,
+                            child: _buildButtonContent(textColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         );
       },
@@ -133,17 +335,30 @@ class _GradientButtonState extends State<GradientButton>
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Premium loading spinner
           SizedBox(
-            width: 16,
-            height: 16,
+            width: 18,
+            height: 18,
             child: CircularProgressIndicator(
-              strokeWidth: 2,
+              strokeWidth: 2.5,
               valueColor: AlwaysStoppedAnimation<Color>(textColor),
+              strokeCap: StrokeCap.round,
             ),
           ),
-          const SizedBox(width: 8),
-          DefaultTextStyle(
-            style: TextStyle(color: textColor),
+          const SizedBox(width: 12),
+          AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.w600,
+              shadows: _isHovered ? [
+                Shadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  offset: const Offset(0, 1),
+                  blurRadius: 2,
+                ),
+              ] : null,
+            ),
             child: widget.child,
           ),
         ],
@@ -151,12 +366,35 @@ class _GradientButtonState extends State<GradientButton>
     }
 
     return Center(
-      child: DefaultTextStyle(
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-        ),
-        child: widget.child,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Animated text with premium styling
+          AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.w600,
+              fontSize: _getButtonDimensions().height * 0.32, // Responsive font size
+              letterSpacing: 0.5,
+              shadows: _isHovered ? [
+                Shadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  offset: const Offset(0, 1),
+                  blurRadius: 2,
+                ),
+              ] : null,
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              transform: Matrix4.identity()..scale(
+                _isPressed ? 0.95 : 1.0,
+              ),
+              child: widget.child,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -194,6 +432,34 @@ class _GradientButtonState extends State<GradientButton>
         return AppTheme.getWarningGradient();
       case GradientButtonStyle.error:
         return AppTheme.getErrorGradient();
+    }
+  }
+
+  // Premium gradients for enhanced button styles
+  Gradient _getPremiumStyleGradient(bool isDarkMode) {
+    switch (widget.style) {
+      case GradientButtonStyle.primary:
+        return AppTheme.getPremiumPrimaryGradient(isDarkMode);
+      case GradientButtonStyle.success:
+        return AppTheme.getAuroraSuccessGradient();
+      case GradientButtonStyle.warning:
+        return AppTheme.getSunsetFireGradient();
+      case GradientButtonStyle.error:
+        return AppTheme.getErrorGradient();
+    }
+  }
+
+  // Premium shadows for enhanced button styles
+  List<BoxShadow> _getPremiumStyleShadows(bool isDarkMode) {
+    switch (widget.style) {
+      case GradientButtonStyle.primary:
+        return AppTheme.getElevatedShadow(isDarkMode);
+      case GradientButtonStyle.success:
+        return AppTheme.getSuccessShadow(isDarkMode);
+      case GradientButtonStyle.warning:
+        return AppTheme.getWarningShadow(isDarkMode);
+      case GradientButtonStyle.error:
+        return AppTheme.getErrorShadow(isDarkMode);
     }
   }
 

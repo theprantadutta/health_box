@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
-import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/widgets/premium_button.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../widgets/medical_record_card.dart';
 import '../widgets/search_filter_widget.dart';
@@ -148,10 +148,11 @@ class _MedicalRecordListScreenState extends ConsumerState<MedicalRecordListScree
           ),
         ],
       ),
-      floatingActionButton: GradientButton(
+      floatingActionButton: PremiumButton(
         onPressed: () => _showAddRecordOptions(context),
-        style: GradientButtonStyle.primary,
-        size: GradientButtonSize.medium,
+        style: PremiumButtonStyle.gradient,
+        healthContext: 'medical',
+        enableParticleEffect: true,
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -251,15 +252,23 @@ class _MedicalRecordListScreenState extends ConsumerState<MedicalRecordListScree
                 ),
           ),
           const SizedBox(height: 16),
-          ElevatedButton.icon(
+          PremiumButton(
             onPressed: () {
               ref.invalidate(allMedicalRecordsProvider);
               if (_selectedProfileId != null) {
                 ref.invalidate(recordsByProfileIdProvider);
               }
             },
-            icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
+            style: PremiumButtonStyle.filled,
+            healthContext: 'medical',
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.refresh),
+                SizedBox(width: 8),
+                Text('Retry'),
+              ],
+            ),
           ),
         ],
       ),
@@ -323,10 +332,19 @@ class _MedicalRecordListScreenState extends ConsumerState<MedicalRecordListScree
           ),
           const SizedBox(height: 16),
           if (!hasFilters)
-            ElevatedButton.icon(
+            PremiumButton(
               onPressed: () => _showAddRecordOptions(context),
-              icon: const Icon(Icons.add),
-              label: const Text('Add First Record'),
+              style: PremiumButtonStyle.filled,
+              healthContext: 'medical',
+              enableParticleEffect: true,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 8),
+                  Text('Add First Record'),
+                ],
+              ),
             ),
         ],
       ),

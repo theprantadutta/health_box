@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/providers/reminder_providers.dart';
 import '../../../data/database/app_database.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 class UpcomingRemindersWidget extends ConsumerWidget {
   const UpcomingRemindersWidget({super.key});
@@ -9,7 +10,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final upcomingRemindersAsync = ref.watch(upcomingRemindersProvider(const Duration(days: 7)));
+    final upcomingRemindersAsync = ref.watch(
+      upcomingRemindersProvider(const Duration(days: 7)),
+    );
 
     return Card(
       child: Padding(
@@ -19,10 +22,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.upcoming,
-                  color: theme.colorScheme.primary,
-                ),
+                Icon(Icons.upcoming, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
                   'Upcoming Reminders',
@@ -35,7 +35,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('All reminders view - Coming in Phase 3.9'),
+                        content: Text(
+                          'All reminders view - Coming in Phase 3.9',
+                        ),
                       ),
                     );
                   },
@@ -67,16 +69,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: theme.colorScheme.error,
-            size: 48,
-          ),
+          Icon(Icons.error_outline, color: theme.colorScheme.error, size: 48),
           const SizedBox(height: 8),
-          Text(
-            'Error loading reminders',
-            style: theme.textTheme.titleSmall,
-          ),
+          Text('Error loading reminders', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
             error.toString(),
@@ -106,10 +101,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
               size: 48,
             ),
             const SizedBox(height: 8),
-            Text(
-              'No upcoming reminders',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('No upcoming reminders', style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
               'You\'re all caught up for the next 7 days!',
@@ -127,7 +119,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
                   ),
                 );
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_rounded),
               label: const Text('Add Reminder'),
             ),
           ],
@@ -140,7 +132,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
 
     return Column(
       children: [
-        ...displayReminders.map((reminder) => _buildReminderItem(context, reminder)),
+        ...displayReminders.map(
+          (reminder) => _buildReminderItem(context, reminder),
+        ),
         if (reminders.length > 3) ...[
           const SizedBox(height: 8),
           Text(
@@ -159,121 +153,116 @@ class UpcomingRemindersWidget extends ConsumerWidget {
     final scheduledTime = reminder.scheduledTime;
     final now = DateTime.now();
     final isOverdue = scheduledTime.isBefore(now);
-    final isToday = scheduledTime.year == now.year &&
-                    scheduledTime.month == now.month &&
-                    scheduledTime.day == now.day;
+    final isToday =
+        scheduledTime.year == now.year &&
+        scheduledTime.month == now.month &&
+        scheduledTime.day == now.day;
 
-    return Container(
+    return ModernCard(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isOverdue
-            ? theme.colorScheme.errorContainer.withValues(alpha: 0.3)
-            : isToday
-                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isOverdue
-              ? theme.colorScheme.error
-              : isToday
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outline.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Status Icon
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: isOverdue
-                  ? theme.colorScheme.error
-                  : isToday
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.secondary,
-              borderRadius: BorderRadius.circular(16),
+      elevation: CardElevation.low,
+      enableFloatingEffect: true,
+      color: isOverdue
+          ? theme.colorScheme.errorContainer.withValues(alpha: 0.3)
+          : isToday
+          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
+          : null,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            // Status Icon
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isOverdue
+                    ? theme.colorScheme.error
+                    : isToday
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.secondary,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                _getReminderIcon(reminder.type),
+                color: Colors.white,
+                size: 18,
+              ),
             ),
-            child: Icon(
-              _getReminderIcon(reminder.type),
-              color: Colors.white,
-              size: 18,
-            ),
-          ),
-          const SizedBox(width: 12),
-          
-          // Reminder Details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  reminder.title,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  _formatReminderTime(scheduledTime),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: isOverdue
-                        ? theme.colorScheme.error
-                        : theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                if (reminder.description?.isNotEmpty == true) ...[
-                  const SizedBox(height: 2),
+            const SizedBox(width: 12),
+
+            // Reminder Details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    reminder.description!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                    reminder.title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _formatReminderTime(scheduledTime),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: isOverdue
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  if (reminder.description?.isNotEmpty == true) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      reminder.description!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          ),
-          
-          // Status Badge
-          if (isOverdue)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.error,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                'OVERDUE',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onError,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-          else if (isToday)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                'TODAY',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
             ),
-        ],
+
+            // Status Badge
+            if (isOverdue)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.error,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'OVERDUE',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onError,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            else if (isToday)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'TODAY',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -298,7 +287,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
   String _formatReminderTime(DateTime scheduledTime) {
     final now = DateTime.now();
     final difference = scheduledTime.difference(now);
-    
+
     if (scheduledTime.isBefore(now)) {
       // Overdue
       if (difference.inDays.abs() > 0) {
