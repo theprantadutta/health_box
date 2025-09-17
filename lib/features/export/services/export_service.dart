@@ -15,13 +15,7 @@ import '../../../data/repositories/profile_dao.dart';
 import '../../../data/repositories/reminder_dao.dart';
 import '../../../data/repositories/tag_dao.dart';
 
-enum ExportFormat {
-  json,
-  csv,
-  pdf,
-  zip,
-  backup,
-}
+enum ExportFormat { json, csv, pdf, zip, backup }
 
 enum ExportScope {
   all,
@@ -88,7 +82,7 @@ class ExportService {
   Function(double progress, String status)? onProgress;
 
   ExportService({AppDatabase? database})
-      : _database = database ?? AppDatabase.instance {
+    : _database = database ?? AppDatabase.instance {
     _initializeDAOs();
   }
 
@@ -166,7 +160,9 @@ class ExportService {
         data['profiles'] as List<dynamic>,
         'profiles',
       );
-      final profilesFile = File(p.join(directory.path, '${baseFileName}_profiles.csv'));
+      final profilesFile = File(
+        p.join(directory.path, '${baseFileName}_profiles.csv'),
+      );
       await profilesFile.writeAsString(profilesCsv);
       files.add(profilesFile.path);
       totalItems += (data['profiles'] as List).length;
@@ -178,7 +174,9 @@ class ExportService {
         data['medicalRecords'] as List<dynamic>,
         'medicalRecords',
       );
-      final recordsFile = File(p.join(directory.path, '${baseFileName}_medical_records.csv'));
+      final recordsFile = File(
+        p.join(directory.path, '${baseFileName}_medical_records.csv'),
+      );
       await recordsFile.writeAsString(recordsCsv);
       files.add(recordsFile.path);
       totalItems += (data['medicalRecords'] as List).length;
@@ -190,7 +188,9 @@ class ExportService {
         data['reminders'] as List<dynamic>,
         'reminders',
       );
-      final remindersFile = File(p.join(directory.path, '${baseFileName}_reminders.csv'));
+      final remindersFile = File(
+        p.join(directory.path, '${baseFileName}_reminders.csv'),
+      );
       await remindersFile.writeAsString(remindersCsv);
       files.add(remindersFile.path);
       totalItems += (data['reminders'] as List).length;
@@ -225,7 +225,9 @@ class ExportService {
               style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 20),
-            pw.Text('Export Date: ${DateTime.now().toIso8601String().split('T')[0]}'),
+            pw.Text(
+              'Export Date: ${DateTime.now().toIso8601String().split('T')[0]}',
+            ),
             pw.SizedBox(height: 10),
             pw.Text('Export Scope: ${options.scope.name}'),
             pw.SizedBox(height: 10),
@@ -287,13 +289,21 @@ class ExportService {
     }
 
     if (data.containsKey('medicalRecords')) {
-      final csv = _convertToCSV(data['medicalRecords'] as List<dynamic>, 'medicalRecords');
+      final csv = _convertToCSV(
+        data['medicalRecords'] as List<dynamic>,
+        'medicalRecords',
+      );
       final csvBytes = utf8.encode(csv);
-      archive.addFile(ArchiveFile('medical_records.csv', csvBytes.length, csvBytes));
+      archive.addFile(
+        ArchiveFile('medical_records.csv', csvBytes.length, csvBytes),
+      );
     }
 
     if (data.containsKey('reminders')) {
-      final csv = _convertToCSV(data['reminders'] as List<dynamic>, 'reminders');
+      final csv = _convertToCSV(
+        data['reminders'] as List<dynamic>,
+        'reminders',
+      );
       final csvBytes = utf8.encode(csv);
       archive.addFile(ArchiveFile('reminders.csv', csvBytes.length, csvBytes));
     }
@@ -302,7 +312,10 @@ class ExportService {
 
     // Add attachments if requested
     if (options.includeAttachments && data.containsKey('attachments')) {
-      await _addAttachmentsToArchive(archive, data['attachments'] as List<dynamic>);
+      await _addAttachmentsToArchive(
+        archive,
+        data['attachments'] as List<dynamic>,
+      );
     }
 
     _updateProgress(0.8, 'Compressing archive...');
@@ -390,21 +403,28 @@ class ExportService {
     return data;
   }
 
-  Future<List<Map<String, dynamic>>> _getProfilesData(ExportOptions options) async {
+  Future<List<Map<String, dynamic>>> _getProfilesData(
+    ExportOptions options,
+  ) async {
     final profiles = await _profileDao.getAllProfiles();
-    
+
     if (options.profileIds != null) {
-      final filteredProfiles = profiles.where((p) => options.profileIds!.contains(p.id)).toList();
+      final filteredProfiles = profiles
+          .where((p) => options.profileIds!.contains(p.id))
+          .toList();
       return filteredProfiles.map((p) => p.toJson()).toList();
     }
 
     return profiles.map((p) => p.toJson()).toList();
   }
 
-  Future<List<Map<String, dynamic>>> _getMedicalRecordsData(ExportOptions options) async {
+  Future<List<Map<String, dynamic>>> _getMedicalRecordsData(
+    ExportOptions options,
+  ) async {
     final records = await _medicalRecordDao.getAllRecords();
     final filteredRecords = records.where((record) {
-      if (options.profileIds != null && !options.profileIds!.contains(record.profileId)) {
+      if (options.profileIds != null &&
+          !options.profileIds!.contains(record.profileId)) {
         return false;
       }
 
@@ -412,11 +432,13 @@ class ExportService {
         return false;
       }
 
-      if (options.dateFrom != null && record.recordDate.isBefore(options.dateFrom!)) {
+      if (options.dateFrom != null &&
+          record.recordDate.isBefore(options.dateFrom!)) {
         return false;
       }
 
-      if (options.dateTo != null && record.recordDate.isAfter(options.dateTo!)) {
+      if (options.dateTo != null &&
+          record.recordDate.isAfter(options.dateTo!)) {
         return false;
       }
 
@@ -426,7 +448,9 @@ class ExportService {
     return filteredRecords.map((r) => r.toJson()).toList();
   }
 
-  Future<List<Map<String, dynamic>>> _getRemindersData(ExportOptions options) async {
+  Future<List<Map<String, dynamic>>> _getRemindersData(
+    ExportOptions options,
+  ) async {
     final reminders = await _reminderDao.getAllReminders();
     final filteredReminders = reminders.where((reminder) {
       if (options.profileIds != null && reminder.recordId != null) {
@@ -435,11 +459,13 @@ class ExportService {
         return true; // For now, include all reminders if any profiles are selected
       }
 
-      if (options.dateFrom != null && reminder.scheduledTime.isBefore(options.dateFrom!)) {
+      if (options.dateFrom != null &&
+          reminder.scheduledTime.isBefore(options.dateFrom!)) {
         return false;
       }
 
-      if (options.dateTo != null && reminder.scheduledTime.isAfter(options.dateTo!)) {
+      if (options.dateTo != null &&
+          reminder.scheduledTime.isAfter(options.dateTo!)) {
         return false;
       }
 
@@ -454,7 +480,9 @@ class ExportService {
     return tags.map((t) => t.toJson()).toList();
   }
 
-  Future<List<Map<String, dynamic>>> _getAttachmentsData(ExportOptions options) async {
+  Future<List<Map<String, dynamic>>> _getAttachmentsData(
+    ExportOptions options,
+  ) async {
     final attachments = await _attachmentDao.getAllAttachments();
     return attachments.map((a) => a.toJson()).toList();
   }
@@ -462,7 +490,10 @@ class ExportService {
   String _convertToCSV(List<dynamic> data, String entityType) {
     if (data.isEmpty) return '';
 
-    final headers = _getCSVHeaders(entityType, data.first as Map<String, dynamic>);
+    final headers = _getCSVHeaders(
+      entityType,
+      data.first as Map<String, dynamic>,
+    );
     final rows = <List<dynamic>>[];
     rows.add(headers);
 
@@ -478,11 +509,34 @@ class ExportService {
   List<String> _getCSVHeaders(String entityType, Map<String, dynamic> sample) {
     switch (entityType) {
       case 'profiles':
-        return ['id', 'firstName', 'lastName', 'dateOfBirth', 'email', 'phone', 'createdAt'];
+        return [
+          'id',
+          'firstName',
+          'lastName',
+          'dateOfBirth',
+          'email',
+          'phone',
+          'createdAt',
+        ];
       case 'medicalRecords':
-        return ['id', 'profileId', 'recordType', 'title', 'recordDate', 'isActive', 'createdAt'];
+        return [
+          'id',
+          'profileId',
+          'recordType',
+          'title',
+          'recordDate',
+          'isActive',
+          'createdAt',
+        ];
       case 'reminders':
-        return ['id', 'profileId', 'title', 'description', 'scheduledTime', 'isActive'];
+        return [
+          'id',
+          'profileId',
+          'title',
+          'description',
+          'scheduledTime',
+          'isActive',
+        ];
       default:
         return sample.keys.toList();
     }
@@ -606,7 +660,10 @@ class ExportService {
     );
   }
 
-  Future<void> _addAttachmentsToArchive(Archive archive, List<dynamic> attachments) async {
+  Future<void> _addAttachmentsToArchive(
+    Archive archive,
+    List<dynamic> attachments,
+  ) async {
     for (final attachment in attachments) {
       final attachmentMap = attachment as Map<String, dynamic>;
       final filePath = attachmentMap['filePath'] as String?;
@@ -616,13 +673,17 @@ class ExportService {
         if (await file.exists()) {
           final bytes = await file.readAsBytes();
           final fileName = p.basename(filePath);
-          archive.addFile(ArchiveFile('attachments/$fileName', bytes.length, bytes));
+          archive.addFile(
+            ArchiveFile('attachments/$fileName', bytes.length, bytes),
+          );
         }
       }
     }
   }
 
-  Future<Map<String, dynamic>> _generateBackupMetadata(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> _generateBackupMetadata(
+    Map<String, dynamic> data,
+  ) async {
     return {
       'exportedAt': DateTime.now().toIso8601String(),
       'version': '1.0.0',
@@ -648,7 +709,10 @@ class ExportService {
     return count;
   }
 
-  Future<File> _createExportFile(String extension, String? customFileName) async {
+  Future<File> _createExportFile(
+    String extension,
+    String? customFileName,
+  ) async {
     final directory = await _getExportDirectory();
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final fileName = customFileName ?? 'health_data_export_$timestamp';

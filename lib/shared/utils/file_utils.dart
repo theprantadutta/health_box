@@ -5,7 +5,7 @@ class FileUtils {
   /// Get MIME type for a file based on extension
   static String getMimeType(String filePath) {
     final extension = path.extension(filePath).toLowerCase();
-    
+
     switch (extension) {
       // Images
       case '.jpg':
@@ -21,7 +21,7 @@ class FileUtils {
         return 'image/webp';
       case '.svg':
         return 'image/svg+xml';
-      
+
       // Documents
       case '.pdf':
         return 'application/pdf';
@@ -33,7 +33,7 @@ class FileUtils {
         return 'text/plain';
       case '.rtf':
         return 'application/rtf';
-      
+
       // Audio
       case '.mp3':
         return 'audio/mpeg';
@@ -43,7 +43,7 @@ class FileUtils {
         return 'audio/aac';
       case '.m4a':
         return 'audio/mp4';
-      
+
       // Video
       case '.mp4':
         return 'video/mp4';
@@ -53,7 +53,7 @@ class FileUtils {
         return 'video/quicktime';
       case '.wmv':
         return 'video/x-ms-wmv';
-      
+
       default:
         return 'application/octet-stream';
     }
@@ -62,17 +62,17 @@ class FileUtils {
   /// Format file size in human-readable format
   static String formatFileSize(int bytes) {
     const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    
+
     if (bytes == 0) return '0 B';
-    
+
     int i = 0;
     double size = bytes.toDouble();
-    
+
     while (size >= 1024 && i < suffixes.length - 1) {
       size /= 1024;
       i++;
     }
-    
+
     return '${size.toStringAsFixed(size < 10 ? 1 : 0)} ${suffixes[i]}';
   }
 
@@ -89,7 +89,15 @@ class FileUtils {
   /// Check if file is an image
   static bool isImageFile(String filePath) {
     final extension = getFileExtension(filePath);
-    return ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg'].contains(extension);
+    return [
+      '.jpg',
+      '.jpeg',
+      '.png',
+      '.gif',
+      '.bmp',
+      '.webp',
+      '.svg',
+    ].contains(extension);
   }
 
   /// Check if file is a document
@@ -125,7 +133,7 @@ class FileUtils {
     final extension = getFileExtension(originalFileName);
     final nameWithoutExt = getFileNameWithoutExtension(originalFileName);
     final sanitizedName = sanitizeFileName(nameWithoutExt);
-    
+
     return '${timestamp}_${sanitizedName}$extension';
   }
 
@@ -164,11 +172,14 @@ class FileUtils {
   }
 
   /// Copy file to new location
-  static Future<String?> copyFile(String sourcePath, String destinationPath) async {
+  static Future<String?> copyFile(
+    String sourcePath,
+    String destinationPath,
+  ) async {
     try {
       final sourceFile = File(sourcePath);
       if (!await sourceFile.exists()) return null;
-      
+
       final copiedFile = await sourceFile.copy(destinationPath);
       return copiedFile.path;
     } catch (e) {
@@ -181,9 +192,12 @@ class FileUtils {
     try {
       final directory = Directory(directoryPath);
       if (!await directory.exists()) return 0;
-      
+
       int totalSize = 0;
-      await for (final entity in directory.list(recursive: true, followLinks: false)) {
+      await for (final entity in directory.list(
+        recursive: true,
+        followLinks: false,
+      )) {
         if (entity is File) {
           try {
             totalSize += await entity.length();
@@ -192,7 +206,7 @@ class FileUtils {
           }
         }
       }
-      
+
       return totalSize;
     } catch (e) {
       return 0;
@@ -200,14 +214,17 @@ class FileUtils {
   }
 
   /// Clean up old files in directory
-  static Future<int> cleanupOldFiles(String directoryPath, Duration maxAge) async {
+  static Future<int> cleanupOldFiles(
+    String directoryPath,
+    Duration maxAge,
+  ) async {
     try {
       final directory = Directory(directoryPath);
       if (!await directory.exists()) return 0;
-      
+
       final cutoffDate = DateTime.now().subtract(maxAge);
       int deletedCount = 0;
-      
+
       await for (final entity in directory.list()) {
         if (entity is File) {
           try {
@@ -221,7 +238,7 @@ class FileUtils {
           }
         }
       }
-      
+
       return deletedCount;
     } catch (e) {
       return 0;
@@ -229,16 +246,28 @@ class FileUtils {
   }
 
   /// Validate file extension
-  static bool hasValidExtension(String filePath, List<String> allowedExtensions) {
+  static bool hasValidExtension(
+    String filePath,
+    List<String> allowedExtensions,
+  ) {
     final extension = getFileExtension(filePath);
-    return allowedExtensions.any((allowed) => allowed.toLowerCase() == extension);
+    return allowedExtensions.any(
+      (allowed) => allowed.toLowerCase() == extension,
+    );
   }
 
   /// Get human-readable file type
   static String getReadableFileType(String filePath) {
     final extension = getFileExtension(filePath);
-    
-    if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'].contains(extension)) {
+
+    if ([
+      '.jpg',
+      '.jpeg',
+      '.png',
+      '.gif',
+      '.bmp',
+      '.webp',
+    ].contains(extension)) {
       return 'Image';
     } else if (['.pdf'].contains(extension)) {
       return 'PDF Document';

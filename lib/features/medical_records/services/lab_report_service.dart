@@ -4,8 +4,8 @@ import '../../../data/database/app_database.dart';
 class LabReportService {
   final AppDatabase _database;
 
-  LabReportService({AppDatabase? database}) 
-      : _database = database ?? AppDatabase.instance;
+  LabReportService({AppDatabase? database})
+    : _database = database ?? AppDatabase.instance;
 
   // CRUD Operations
 
@@ -18,13 +18,17 @@ class LabReportService {
         query = query..where((lr) => lr.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (lr) => OrderingTerm(expression: lr.recordDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (lr) =>
+              OrderingTerm(expression: lr.recordDate, mode: OrderingMode.desc),
+        ]);
 
       return await query.get();
     } catch (e) {
-      throw LabReportServiceException('Failed to retrieve lab reports: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to retrieve lab reports: ${e.toString()}',
+      );
     }
   }
 
@@ -33,20 +37,22 @@ class LabReportService {
       if (id.isEmpty) {
         throw const LabReportServiceException('Lab report ID cannot be empty');
       }
-      
+
       return await (_database.select(_database.labReports)
             ..where((lr) => lr.id.equals(id) & lr.isActive.equals(true)))
           .getSingleOrNull();
     } catch (e) {
       if (e is LabReportServiceException) rethrow;
-      throw LabReportServiceException('Failed to retrieve lab report: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to retrieve lab report: ${e.toString()}',
+      );
     }
   }
 
   Future<String> createLabReport(CreateLabReportRequest request) async {
     try {
       _validateCreateLabReportRequest(request);
-      
+
       final labReportId = 'lab_report_${DateTime.now().millisecondsSinceEpoch}';
       final labReportCompanion = LabReportsCompanion(
         id: Value(labReportId),
@@ -73,11 +79,16 @@ class LabReportService {
       return labReportId;
     } catch (e) {
       if (e is LabReportServiceException) rethrow;
-      throw LabReportServiceException('Failed to create lab report: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to create lab report: ${e.toString()}',
+      );
     }
   }
 
-  Future<bool> updateLabReport(String id, UpdateLabReportRequest request) async {
+  Future<bool> updateLabReport(
+    String id,
+    UpdateLabReportRequest request,
+  ) async {
     try {
       if (id.isEmpty) {
         throw const LabReportServiceException('Lab report ID cannot be empty');
@@ -91,28 +102,52 @@ class LabReportService {
       _validateUpdateLabReportRequest(request);
 
       final labReportCompanion = LabReportsCompanion(
-        title: request.title != null ? Value(request.title!.trim()) : const Value.absent(),
-        description: request.description != null ? Value(request.description?.trim()) : const Value.absent(),
-        recordDate: request.recordDate != null ? Value(request.recordDate!) : const Value.absent(),
-        testName: request.testName != null ? Value(request.testName!.trim()) : const Value.absent(),
-        testResults: request.testResults != null ? Value(request.testResults?.trim()) : const Value.absent(),
-        referenceRange: request.referenceRange != null ? Value(request.referenceRange?.trim()) : const Value.absent(),
-        orderingPhysician: request.orderingPhysician != null ? Value(request.orderingPhysician?.trim()) : const Value.absent(),
-        labFacility: request.labFacility != null ? Value(request.labFacility?.trim()) : const Value.absent(),
-        testStatus: request.testStatus != null ? Value(request.testStatus!) : const Value.absent(),
-        collectionDate: request.collectionDate != null ? Value(request.collectionDate!) : const Value.absent(),
-        isCritical: request.isCritical != null ? Value(request.isCritical!) : const Value.absent(),
+        title: request.title != null
+            ? Value(request.title!.trim())
+            : const Value.absent(),
+        description: request.description != null
+            ? Value(request.description?.trim())
+            : const Value.absent(),
+        recordDate: request.recordDate != null
+            ? Value(request.recordDate!)
+            : const Value.absent(),
+        testName: request.testName != null
+            ? Value(request.testName!.trim())
+            : const Value.absent(),
+        testResults: request.testResults != null
+            ? Value(request.testResults?.trim())
+            : const Value.absent(),
+        referenceRange: request.referenceRange != null
+            ? Value(request.referenceRange?.trim())
+            : const Value.absent(),
+        orderingPhysician: request.orderingPhysician != null
+            ? Value(request.orderingPhysician?.trim())
+            : const Value.absent(),
+        labFacility: request.labFacility != null
+            ? Value(request.labFacility?.trim())
+            : const Value.absent(),
+        testStatus: request.testStatus != null
+            ? Value(request.testStatus!)
+            : const Value.absent(),
+        collectionDate: request.collectionDate != null
+            ? Value(request.collectionDate!)
+            : const Value.absent(),
+        isCritical: request.isCritical != null
+            ? Value(request.isCritical!)
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       );
 
-      final rowsAffected = await (_database.update(_database.labReports)
-            ..where((lr) => lr.id.equals(id)))
-          .write(labReportCompanion);
+      final rowsAffected = await (_database.update(
+        _database.labReports,
+      )..where((lr) => lr.id.equals(id))).write(labReportCompanion);
 
       return rowsAffected > 0;
     } catch (e) {
       if (e is LabReportServiceException) rethrow;
-      throw LabReportServiceException('Failed to update lab report: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to update lab report: ${e.toString()}',
+      );
     }
   }
 
@@ -127,91 +162,115 @@ class LabReportService {
         throw const LabReportServiceException('Lab report not found');
       }
 
-      final rowsAffected = await (_database.update(_database.labReports)
-            ..where((lr) => lr.id.equals(id)))
-          .write(LabReportsCompanion(
-            isActive: const Value(false),
-            updatedAt: Value(DateTime.now()),
-          ));
+      final rowsAffected =
+          await (_database.update(
+            _database.labReports,
+          )..where((lr) => lr.id.equals(id))).write(
+            LabReportsCompanion(
+              isActive: const Value(false),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
 
       return rowsAffected > 0;
     } catch (e) {
       if (e is LabReportServiceException) rethrow;
-      throw LabReportServiceException('Failed to delete lab report: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to delete lab report: ${e.toString()}',
+      );
     }
   }
 
   // Query Operations
 
-  Future<List<LabReport>> getLabReportsByTestName(String testName, {String? profileId}) async {
+  Future<List<LabReport>> getLabReportsByTestName(
+    String testName, {
+    String? profileId,
+  }) async {
     try {
       if (testName.isEmpty) {
         throw const LabReportServiceException('Test name cannot be empty');
       }
 
       var query = _database.select(_database.labReports)
-        ..where((lr) => 
-            lr.isActive.equals(true) & 
-            lr.testName.lower().like('%${testName.toLowerCase()}%'));
+        ..where(
+          (lr) =>
+              lr.isActive.equals(true) &
+              lr.testName.lower().like('%${testName.toLowerCase()}%'),
+        );
 
       if (profileId != null) {
         query = query..where((lr) => lr.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (lr) => OrderingTerm(expression: lr.recordDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (lr) =>
+              OrderingTerm(expression: lr.recordDate, mode: OrderingMode.desc),
+        ]);
 
       return await query.get();
     } catch (e) {
       if (e is LabReportServiceException) rethrow;
-      throw LabReportServiceException('Failed to retrieve lab reports by test name: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to retrieve lab reports by test name: ${e.toString()}',
+      );
     }
   }
 
   Future<List<LabReport>> getCriticalLabReports({String? profileId}) async {
     try {
       var query = _database.select(_database.labReports)
-        ..where((lr) => 
-            lr.isActive.equals(true) & 
-            lr.isCritical.equals(true));
+        ..where((lr) => lr.isActive.equals(true) & lr.isCritical.equals(true));
 
       if (profileId != null) {
         query = query..where((lr) => lr.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (lr) => OrderingTerm(expression: lr.recordDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (lr) =>
+              OrderingTerm(expression: lr.recordDate, mode: OrderingMode.desc),
+        ]);
 
       return await query.get();
     } catch (e) {
-      throw LabReportServiceException('Failed to retrieve critical lab reports: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to retrieve critical lab reports: ${e.toString()}',
+      );
     }
   }
 
   Future<List<LabReport>> getPendingLabReports({String? profileId}) async {
     try {
       var query = _database.select(_database.labReports)
-        ..where((lr) => 
-            lr.isActive.equals(true) & 
-            lr.testStatus.equals('pending'));
+        ..where(
+          (lr) => lr.isActive.equals(true) & lr.testStatus.equals('pending'),
+        );
 
       if (profileId != null) {
         query = query..where((lr) => lr.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (lr) => OrderingTerm(expression: lr.collectionDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (lr) => OrderingTerm(
+            expression: lr.collectionDate,
+            mode: OrderingMode.desc,
+          ),
+        ]);
 
       return await query.get();
     } catch (e) {
-      throw LabReportServiceException('Failed to retrieve pending lab reports: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to retrieve pending lab reports: ${e.toString()}',
+      );
     }
   }
 
-  Future<Map<String, int>> getLabReportCountsByStatus({String? profileId}) async {
+  Future<Map<String, int>> getLabReportCountsByStatus({
+    String? profileId,
+  }) async {
     try {
       final Map<String, int> counts = {
         'pending': 0,
@@ -222,11 +281,14 @@ class LabReportService {
       for (final status in counts.keys) {
         var query = _database.selectOnly(_database.labReports)
           ..addColumns([_database.labReports.id.count()])
-          ..where(_database.labReports.isActive.equals(true) & 
-                  _database.labReports.testStatus.equals(status));
+          ..where(
+            _database.labReports.isActive.equals(true) &
+                _database.labReports.testStatus.equals(status),
+          );
 
         if (profileId != null) {
-          query = query..where(_database.labReports.profileId.equals(profileId));
+          query = query
+            ..where(_database.labReports.profileId.equals(profileId));
         }
 
         final result = await query.getSingle();
@@ -235,7 +297,9 @@ class LabReportService {
 
       return counts;
     } catch (e) {
-      throw LabReportServiceException('Failed to retrieve lab report counts by status: ${e.toString()}');
+      throw LabReportServiceException(
+        'Failed to retrieve lab report counts by status: ${e.toString()}',
+      );
     }
   }
 
@@ -278,9 +342,11 @@ class LabReportService {
     if (!_isValidStatus(request.testStatus)) {
       throw LabReportServiceException('Invalid status: ${request.testStatus}');
     }
-    if (request.collectionDate != null && 
+    if (request.collectionDate != null &&
         request.collectionDate!.isAfter(DateTime.now())) {
-      throw const LabReportServiceException('Collection date cannot be in the future');
+      throw const LabReportServiceException(
+        'Collection date cannot be in the future',
+      );
     }
   }
 
@@ -294,9 +360,11 @@ class LabReportService {
     if (request.testStatus != null && !_isValidStatus(request.testStatus!)) {
       throw LabReportServiceException('Invalid status: ${request.testStatus}');
     }
-    if (request.collectionDate != null && 
+    if (request.collectionDate != null &&
         request.collectionDate!.isAfter(DateTime.now())) {
-      throw const LabReportServiceException('Collection date cannot be in the future');
+      throw const LabReportServiceException(
+        'Collection date cannot be in the future',
+      );
     }
   }
 
@@ -369,9 +437,9 @@ class UpdateLabReportRequest {
 
 class LabReportServiceException implements Exception {
   final String message;
-  
+
   const LabReportServiceException(this.message);
-  
+
   @override
   String toString() => 'LabReportServiceException: $message';
 }

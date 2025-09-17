@@ -7,14 +7,16 @@ import 'package:timezone/data/latest_all.dart' as tz;
 class NotificationConfig {
   static const String _channelId = 'health_box_reminders';
   static const String _channelName = 'HealthBox Medication Reminders';
-  static const String _channelDescription = 'Notifications for medication and appointment reminders';
+  static const String _channelDescription =
+      'Notifications for medication and appointment reminders';
 
   static FlutterLocalNotificationsPlugin? _notificationsPlugin;
-  static final StreamController<NotificationResponse> _notificationStream = 
+  static final StreamController<NotificationResponse> _notificationStream =
       StreamController<NotificationResponse>.broadcast();
 
   /// Stream for handling notification responses
-  static Stream<NotificationResponse> get notificationStream => _notificationStream.stream;
+  static Stream<NotificationResponse> get notificationStream =>
+      _notificationStream.stream;
 
   /// Get the singleton instance of FlutterLocalNotificationsPlugin
   static FlutterLocalNotificationsPlugin get instance {
@@ -25,7 +27,7 @@ class NotificationConfig {
   /// Initialize notification settings and permissions
   static Future<bool> initialize() async {
     tz.initializeTimeZones();
-    
+
     // Android initialization settings
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -33,21 +35,23 @@ class NotificationConfig {
     // iOS initialization settings
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-      requestAlertPermission: false, // We'll request these separately
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
+          requestAlertPermission: false, // We'll request these separately
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        );
 
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-      macOS: initializationSettingsDarwin,
-    );
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsDarwin,
+          macOS: initializationSettingsDarwin,
+        );
 
     final bool? result = await instance.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
-      onDidReceiveBackgroundNotificationResponse: _onDidReceiveBackgroundNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse:
+          _onDidReceiveBackgroundNotificationResponse,
     );
 
     // Request permissions for Android 13+ and iOS
@@ -61,29 +65,30 @@ class NotificationConfig {
     bool granted = false;
 
     if (Platform.isIOS || Platform.isMacOS) {
-      granted = await instance
+      granted =
+          await instance
               .resolvePlatformSpecificImplementation<
-                  IOSFlutterLocalNotificationsPlugin>()
-              ?.requestPermissions(
-                alert: true,
-                badge: true,
-                sound: true,
-              ) ??
+                IOSFlutterLocalNotificationsPlugin
+              >()
+              ?.requestPermissions(alert: true, badge: true, sound: true) ??
           false;
     } else if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          instance.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+          instance
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
 
       // Request notification permission for Android 13+
-      final bool? notificationPermission = 
-          await androidImplementation?.requestNotificationsPermission();
-      
+      final bool? notificationPermission = await androidImplementation
+          ?.requestNotificationsPermission();
+
       // Request exact alarm permission for Android 12+
-      final bool? exactAlarmPermission = 
-          await androidImplementation?.requestExactAlarmsPermission();
-      
-      granted = (notificationPermission ?? true) && (exactAlarmPermission ?? true);
+      final bool? exactAlarmPermission = await androidImplementation
+          ?.requestExactAlarmsPermission();
+
+      granted =
+          (notificationPermission ?? true) && (exactAlarmPermission ?? true);
     }
 
     return granted;
@@ -93,15 +98,19 @@ class NotificationConfig {
   static Future<bool> areNotificationsEnabled() async {
     if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          instance.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+          instance
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
       return await androidImplementation?.areNotificationsEnabled() ?? false;
     } else if (Platform.isIOS || Platform.isMacOS) {
-      final IOSFlutterLocalNotificationsPlugin? iosImplementation =
-          instance.resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>();
+      final IOSFlutterLocalNotificationsPlugin? iosImplementation = instance
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
       final permissions = await iosImplementation?.checkPermissions();
-      return permissions?.isEnabled == true && permissions?.isAlertEnabled == true;
+      return permissions?.isEnabled == true &&
+          permissions?.isAlertEnabled == true;
     }
     return false;
   }
@@ -142,13 +151,17 @@ class NotificationConfig {
       );
 
   /// Handle notification response when user taps on notification
-  static void _onDidReceiveNotificationResponse(NotificationResponse response) async {
+  static void _onDidReceiveNotificationResponse(
+    NotificationResponse response,
+  ) async {
     _notificationStream.add(response);
   }
 
   /// Handle notification response when app is in background
   @pragma('vm:entry-point')
-  static void _onDidReceiveBackgroundNotificationResponse(NotificationResponse response) async {
+  static void _onDidReceiveBackgroundNotificationResponse(
+    NotificationResponse response,
+  ) async {
     // Handle background notification response
     // Note: This runs in a separate isolate, so it has limited capabilities
     print('Background notification received: ${response.payload}');
@@ -162,7 +175,7 @@ class NotificationConfig {
       showsUserInterface: true,
     ),
     const AndroidNotificationAction(
-      'skip_medication', 
+      'skip_medication',
       'Skip',
       showsUserInterface: false,
     ),
@@ -178,10 +191,7 @@ class NotificationConfig {
     DarwinNotificationCategory(
       _channelId,
       actions: [
-        DarwinNotificationAction.plain(
-          'take_medication',
-          'Take Medication',
-        ),
+        DarwinNotificationAction.plain('take_medication', 'Take Medication'),
         DarwinNotificationAction.plain(
           'skip_medication',
           'Skip',
@@ -189,10 +199,7 @@ class NotificationConfig {
             DarwinNotificationActionOption.destructive,
           },
         ),
-        DarwinNotificationAction.plain(
-          'snooze_medication',
-          'Snooze 15 min',
-        ),
+        DarwinNotificationAction.plain('snooze_medication', 'Snooze 15 min'),
       ],
     ),
   ];

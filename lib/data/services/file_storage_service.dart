@@ -3,6 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:drift/drift.dart';
+import 'package:image/image.dart' as img;
 import '../repositories/attachment_dao.dart';
 import '../database/app_database.dart';
 import 'storage_service.dart';
@@ -10,7 +11,7 @@ import 'storage_service.dart';
 class FileStorageService {
   final AttachmentDao _attachmentDao;
   final StorageService _storageService;
-  
+
   late final Directory _attachmentsDirectory;
   late final Directory _thumbnailsDirectory;
   bool _isInitialized = false;
@@ -19,8 +20,9 @@ class FileStorageService {
     AttachmentDao? attachmentDao,
     StorageService? storageService,
     AppDatabase? database,
-  })  : _attachmentDao = attachmentDao ?? AttachmentDao(database ?? AppDatabase.instance),
-        _storageService = storageService ?? StorageService();
+  }) : _attachmentDao =
+           attachmentDao ?? AttachmentDao(database ?? AppDatabase.instance),
+       _storageService = storageService ?? StorageService();
 
   // Initialize file storage service
   Future<void> initialize() async {
@@ -28,23 +30,29 @@ class FileStorageService {
       if (_isInitialized) return;
 
       await _storageService.initialize();
-      
+
       final documentsDirectory = await getApplicationDocumentsDirectory();
-      _attachmentsDirectory = Directory(path.join(documentsDirectory.path, 'attachments'));
-      _thumbnailsDirectory = Directory(path.join(documentsDirectory.path, 'thumbnails'));
+      _attachmentsDirectory = Directory(
+        path.join(documentsDirectory.path, 'attachments'),
+      );
+      _thumbnailsDirectory = Directory(
+        path.join(documentsDirectory.path, 'thumbnails'),
+      );
 
       // Create directories if they don't exist
       if (!await _attachmentsDirectory.exists()) {
         await _attachmentsDirectory.create(recursive: true);
       }
-      
+
       if (!await _thumbnailsDirectory.exists()) {
         await _thumbnailsDirectory.create(recursive: true);
       }
 
       _isInitialized = true;
     } catch (e) {
-      throw FileStorageServiceException('Failed to initialize file storage service: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to initialize file storage service: ${e.toString()}',
+      );
     }
   }
 
@@ -59,7 +67,7 @@ class FileStorageService {
   }) async {
     try {
       await _ensureInitialized();
-      
+
       if (!await sourceFile.exists()) {
         throw const FileStorageServiceException('Source file does not exist');
       }
@@ -68,7 +76,7 @@ class FileStorageService {
       final fileId = 'file_${DateTime.now().millisecondsSinceEpoch}';
       final fileExtension = path.extension(fileName);
       final storedFileName = '$fileId$fileExtension';
-      
+
       // Determine storage path
       final storagePath = path.join(_attachmentsDirectory.path, storedFileName);
       final destinationFile = File(storagePath);
@@ -117,14 +125,16 @@ class FileStorageService {
       return fileId;
     } catch (e) {
       if (e is FileStorageServiceException) rethrow;
-      throw FileStorageServiceException('Failed to store file: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to store file: ${e.toString()}',
+      );
     }
   }
 
   Future<File?> retrieveFile(String fileId) async {
     try {
       await _ensureInitialized();
-      
+
       final attachment = await _attachmentDao.getAttachmentById(fileId);
       if (attachment == null) {
         return null;
@@ -139,7 +149,9 @@ class FileStorageService {
 
       return file;
     } catch (e) {
-      throw FileStorageServiceException('Failed to retrieve file: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to retrieve file: ${e.toString()}',
+      );
     }
   }
 
@@ -147,17 +159,22 @@ class FileStorageService {
     try {
       final file = await retrieveFile(fileId);
       if (file == null) return null;
-      
+
       return await file.readAsBytes();
     } catch (e) {
-      throw FileStorageServiceException('Failed to retrieve file data: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to retrieve file data: ${e.toString()}',
+      );
     }
   }
 
-  Future<bool> deleteFile(String fileId, {bool deletePhysicalFile = true}) async {
+  Future<bool> deleteFile(
+    String fileId, {
+    bool deletePhysicalFile = true,
+  }) async {
     try {
       await _ensureInitialized();
-      
+
       final attachment = await _attachmentDao.getAttachmentById(fileId);
       if (attachment == null) {
         return false;
@@ -172,7 +189,7 @@ class FileStorageService {
 
         // Delete thumbnail if exists
         await _deleteThumbnail(fileId);
-        
+
         // Delete metadata
         await _deleteFileMetadata(fileId);
       }
@@ -180,7 +197,9 @@ class FileStorageService {
       // Remove from database
       return await _attachmentDao.deleteAttachment(fileId);
     } catch (e) {
-      throw FileStorageServiceException('Failed to delete file: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to delete file: ${e.toString()}',
+      );
     }
   }
 
@@ -189,7 +208,7 @@ class FileStorageService {
   Future<FileInfo?> getFileInfo(String fileId) async {
     try {
       await _ensureInitialized();
-      
+
       final attachment = await _attachmentDao.getAttachmentById(fileId);
       if (attachment == null) {
         return null;
@@ -197,9 +216,9 @@ class FileStorageService {
 
       final file = File(attachment.filePath);
       final fileExists = await file.exists();
-      
+
       final metadata = await _retrieveFileMetadata(fileId);
-      
+
       return FileInfo(
         id: fileId,
         fileName: attachment.fileName,
@@ -213,7 +232,9 @@ class FileStorageService {
         metadata: metadata,
       );
     } catch (e) {
-      throw FileStorageServiceException('Failed to get file info: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to get file info: ${e.toString()}',
+      );
     }
   }
 
@@ -224,7 +245,7 @@ class FileStorageService {
 
       final metadata = await _retrieveFileMetadata(fileId);
       final expectedHash = metadata?['fileHash'];
-      
+
       if (expectedHash == null) {
         // No hash stored, calculate and store it now
         final currentHash = await _calculateFileHash(file);
@@ -245,29 +266,39 @@ class FileStorageService {
     try {
       final metadata = await _retrieveFileMetadata(fileId);
       final thumbnailPath = metadata?['thumbnailPath'];
-      
+
       if (thumbnailPath == null) return null;
-      
+
       final thumbnailFile = File(thumbnailPath);
       if (!await thumbnailFile.exists()) return null;
-      
+
       return thumbnailFile;
     } catch (e) {
       return null;
     }
   }
 
-  Future<String?> generateThumbnail(String fileId, {int maxWidth = 200, int maxHeight = 200}) async {
+  Future<String?> generateThumbnail(
+    String fileId, {
+    int maxWidth = 200,
+    int maxHeight = 200,
+  }) async {
     try {
       final file = await retrieveFile(fileId);
       if (file == null) return null;
 
       final attachment = await _attachmentDao.getAttachmentById(fileId);
-      if (attachment == null || !_supportsThumbnailerGeneration(attachment.fileType)) {
+      if (attachment == null ||
+          !_supportsThumbnailerGeneration(attachment.fileType)) {
         return null;
       }
 
-      return await _generateThumbnail(file, fileId, maxWidth: maxWidth, maxHeight: maxHeight);
+      return await _generateThumbnail(
+        file,
+        fileId,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+      );
     } catch (e) {
       return null;
     }
@@ -284,18 +315,22 @@ class FileStorageService {
   }) async {
     try {
       if (sourceFiles.length != fileNames.length) {
-        throw const FileStorageServiceException('Source files and file names lists must have the same length');
+        throw const FileStorageServiceException(
+          'Source files and file names lists must have the same length',
+        );
       }
 
       final fileIds = <String>[];
-      
+
       for (int i = 0; i < sourceFiles.length; i++) {
         try {
           final fileId = await storeFile(
             recordId: recordId,
             sourceFile: sourceFiles[i],
             fileName: fileNames[i],
-            description: descriptions != null && i < descriptions.length ? descriptions[i] : null,
+            description: descriptions != null && i < descriptions.length
+                ? descriptions[i]
+                : null,
             generateThumbnail: generateThumbnails,
           );
           fileIds.add(fileId);
@@ -308,17 +343,25 @@ class FileStorageService {
       return fileIds;
     } catch (e) {
       if (e is FileStorageServiceException) rethrow;
-      throw FileStorageServiceException('Failed to store multiple files: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to store multiple files: ${e.toString()}',
+      );
     }
   }
 
-  Future<int> deleteMultipleFiles(List<String> fileIds, {bool deletePhysicalFiles = true}) async {
+  Future<int> deleteMultipleFiles(
+    List<String> fileIds, {
+    bool deletePhysicalFiles = true,
+  }) async {
     try {
       int deletedCount = 0;
-      
+
       for (final fileId in fileIds) {
         try {
-          if (await deleteFile(fileId, deletePhysicalFile: deletePhysicalFiles)) {
+          if (await deleteFile(
+            fileId,
+            deletePhysicalFile: deletePhysicalFiles,
+          )) {
             deletedCount++;
           }
         } catch (e) {
@@ -329,7 +372,9 @@ class FileStorageService {
 
       return deletedCount;
     } catch (e) {
-      throw FileStorageServiceException('Failed to delete multiple files: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to delete multiple files: ${e.toString()}',
+      );
     }
   }
 
@@ -338,17 +383,17 @@ class FileStorageService {
   Future<List<String>> findOrphanedFiles() async {
     try {
       await _ensureInitialized();
-      
+
       final orphanedFiles = <String>[];
-      
+
       // Get all files in attachments directory
       final attachmentFiles = await _attachmentsDirectory.list().toList();
-      
+
       for (final entity in attachmentFiles) {
         if (entity is File) {
           final fileName = path.basename(entity.path);
           final fileId = path.basenameWithoutExtension(fileName);
-          
+
           // Check if attachment exists in database
           final attachment = await _attachmentDao.getAttachmentById(fileId);
           if (attachment == null) {
@@ -359,7 +404,9 @@ class FileStorageService {
 
       return orphanedFiles;
     } catch (e) {
-      throw FileStorageServiceException('Failed to find orphaned files: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to find orphaned files: ${e.toString()}',
+      );
     }
   }
 
@@ -367,7 +414,7 @@ class FileStorageService {
     try {
       final orphanedFiles = await findOrphanedFiles();
       int deletedCount = 0;
-      
+
       for (final filePath in orphanedFiles) {
         try {
           await File(filePath).delete();
@@ -380,32 +427,41 @@ class FileStorageService {
 
       // Also cleanup orphaned database records
       final orphanedRecords = await _attachmentDao.cleanupOrphanedRecords();
-      
+
       return deletedCount + orphanedRecords;
     } catch (e) {
-      throw FileStorageServiceException('Failed to cleanup orphaned files: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to cleanup orphaned files: ${e.toString()}',
+      );
     }
   }
 
   Future<StorageAnalytics> getStorageAnalytics() async {
     try {
       await _ensureInitialized();
-      
+
       final allAttachments = await _attachmentDao.getAllAttachments();
       final totalFiles = allAttachments.length;
-      final totalSize = allAttachments.fold<int>(0, (sum, attachment) => sum + attachment.fileSize);
-      
+      final totalSize = allAttachments.fold<int>(
+        0,
+        (sum, attachment) => sum + attachment.fileSize,
+      );
+
       final fileTypeCounts = <String, int>{};
       final fileTypeSizes = <String, int>{};
-      
+
       for (final attachment in allAttachments) {
-        fileTypeCounts[attachment.fileType] = (fileTypeCounts[attachment.fileType] ?? 0) + 1;
-        fileTypeSizes[attachment.fileType] = (fileTypeSizes[attachment.fileType] ?? 0) + attachment.fileSize;
+        fileTypeCounts[attachment.fileType] =
+            (fileTypeCounts[attachment.fileType] ?? 0) + 1;
+        fileTypeSizes[attachment.fileType] =
+            (fileTypeSizes[attachment.fileType] ?? 0) + attachment.fileSize;
       }
 
       final orphanedFiles = await findOrphanedFiles();
-      final largeFiles = allAttachments.where((a) => a.fileSize > 10 * 1024 * 1024).length; // Files > 10MB
-      
+      final largeFiles = allAttachments
+          .where((a) => a.fileSize > 10 * 1024 * 1024)
+          .length; // Files > 10MB
+
       return StorageAnalytics(
         totalFiles: totalFiles,
         totalSize: totalSize,
@@ -416,7 +472,9 @@ class FileStorageService {
         averageFileSize: totalFiles > 0 ? totalSize ~/ totalFiles : 0,
       );
     } catch (e) {
-      throw FileStorageServiceException('Failed to get storage analytics: ${e.toString()}');
+      throw FileStorageServiceException(
+        'Failed to get storage analytics: ${e.toString()}',
+      );
     }
   }
 
@@ -430,7 +488,7 @@ class FileStorageService {
 
   String _detectFileType(String fileName) {
     final extension = path.extension(fileName).toLowerCase();
-    
+
     switch (extension) {
       case '.jpg':
       case '.jpeg':
@@ -455,17 +513,38 @@ class FileStorageService {
     return fileType == 'image' || fileType == 'pdf';
   }
 
-  Future<String?> _generateThumbnail(File sourceFile, String fileId, {int maxWidth = 200, int maxHeight = 200}) async {
+  Future<String?> _generateThumbnail(
+    File sourceFile,
+    String fileId, {
+    int maxWidth = 200,
+    int maxHeight = 200,
+  }) async {
     try {
-      // This is a placeholder implementation
-      // In a real app, you would use image processing libraries like image or flutter_native_image
       final thumbnailName = 'thumb_$fileId.jpg';
       final thumbnailPath = path.join(_thumbnailsDirectory.path, thumbnailName);
-      
-      // For now, just copy the original file as thumbnail
-      // In production, you would resize and convert the image
-      await sourceFile.copy(thumbnailPath);
-      
+
+      // Read the original image
+      final originalBytes = await sourceFile.readAsBytes();
+      final originalImage = img.decodeImage(originalBytes);
+
+      if (originalImage == null) {
+        // If not a valid image, just copy the file
+        await sourceFile.copy(thumbnailPath);
+        return thumbnailPath;
+      }
+
+      // Generate thumbnail - resize to fit within maxWidth x maxHeight while maintaining aspect ratio
+      final thumbnail = img.copyResize(
+        originalImage,
+        width: maxWidth,
+        height: maxHeight,
+        maintainAspect: true,
+      );
+
+      // Convert to JPEG for smaller file size
+      final thumbnailBytes = img.encodeJpg(thumbnail, quality: 85);
+      await File(thumbnailPath).writeAsBytes(thumbnailBytes);
+
       return thumbnailPath;
     } catch (e) {
       return null;
@@ -475,8 +554,10 @@ class FileStorageService {
   Future<void> _deleteThumbnail(String fileId) async {
     try {
       final thumbnailName = 'thumb_$fileId.jpg';
-      final thumbnailFile = File(path.join(_thumbnailsDirectory.path, thumbnailName));
-      
+      final thumbnailFile = File(
+        path.join(_thumbnailsDirectory.path, thumbnailName),
+      );
+
       if (await thumbnailFile.exists()) {
         await thumbnailFile.delete();
       }
@@ -495,9 +576,15 @@ class FileStorageService {
     }
   }
 
-  Future<void> _storeFileMetadata(String fileId, Map<String, dynamic> metadata) async {
+  Future<void> _storeFileMetadata(
+    String fileId,
+    Map<String, dynamic> metadata,
+  ) async {
     try {
-      await _storageService.storeSecureJsonData('file_metadata_$fileId', metadata);
+      await _storageService.storeSecureJsonData(
+        'file_metadata_$fileId',
+        metadata,
+      );
     } catch (e) {
       // Ignore metadata storage errors
     }
@@ -505,15 +592,21 @@ class FileStorageService {
 
   Future<Map<String, dynamic>?> _retrieveFileMetadata(String fileId) async {
     try {
-      return await _storageService.retrieveSecureJsonData('file_metadata_$fileId');
+      return await _storageService.retrieveSecureJsonData(
+        'file_metadata_$fileId',
+      );
     } catch (e) {
       return null;
     }
   }
 
-  Future<void> _updateFileMetadata(String fileId, Map<String, dynamic> updates) async {
+  Future<void> _updateFileMetadata(
+    String fileId,
+    Map<String, dynamic> updates,
+  ) async {
     try {
-      final existingMetadata = await _retrieveFileMetadata(fileId) ?? <String, dynamic>{};
+      final existingMetadata =
+          await _retrieveFileMetadata(fileId) ?? <String, dynamic>{};
       existingMetadata.addAll(updates);
       await _storeFileMetadata(fileId, existingMetadata);
     } catch (e) {
@@ -592,16 +685,17 @@ class StorageAnalytics {
   });
 
   String get formattedTotalSize => FileInfo._formatFileSize(totalSize);
-  String get formattedAverageFileSize => FileInfo._formatFileSize(averageFileSize);
+  String get formattedAverageFileSize =>
+      FileInfo._formatFileSize(averageFileSize);
 }
 
 // Exceptions
 
 class FileStorageServiceException implements Exception {
   final String message;
-  
+
   const FileStorageServiceException(this.message);
-  
+
   @override
   String toString() => 'FileStorageServiceException: $message';
 }

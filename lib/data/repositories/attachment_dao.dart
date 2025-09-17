@@ -8,10 +8,12 @@ class AttachmentDao {
   AttachmentDao(this._database);
 
   Future<List<Attachment>> getAllAttachments() async {
-    return await (_database.select(_database.attachments)
-          ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
-          ]))
+    return await (_database.select(_database.attachments)..orderBy([
+          (attachment) => OrderingTerm(
+            expression: attachment.createdAt,
+            mode: OrderingMode.desc,
+          ),
+        ]))
         .get();
   }
 
@@ -19,7 +21,10 @@ class AttachmentDao {
     return await (_database.select(_database.attachments)
           ..where((attachment) => attachment.recordId.equals(recordId))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
@@ -28,7 +33,10 @@ class AttachmentDao {
     return await (_database.select(_database.attachments)
           ..where((attachment) => attachment.fileType.equals(fileType))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
@@ -46,39 +54,61 @@ class AttachmentDao {
   }
 
   Future<Attachment?> getAttachmentById(String id) async {
-    return await (_database.select(_database.attachments)
-          ..where((attachment) => attachment.id.equals(id)))
-        .getSingleOrNull();
+    return await (_database.select(
+      _database.attachments,
+    )..where((attachment) => attachment.id.equals(id))).getSingleOrNull();
   }
 
   Future<List<Attachment>> searchAttachments(String searchTerm) async {
     final searchPattern = '%${searchTerm.toLowerCase()}%';
-    
+
     return await (_database.select(_database.attachments)
-          ..where((attachment) => 
-              attachment.fileName.lower().like(searchPattern) |
-              attachment.description.lower().like(searchPattern))
+          ..where(
+            (attachment) =>
+                attachment.fileName.lower().like(searchPattern) |
+                attachment.description.lower().like(searchPattern),
+          )
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
 
-  Future<List<Attachment>> getAttachmentsByFileSizeRange(int minSize, int maxSize) async {
+  Future<List<Attachment>> getAttachmentsByFileSizeRange(
+    int minSize,
+    int maxSize,
+  ) async {
     return await (_database.select(_database.attachments)
-          ..where((attachment) => attachment.fileSize.isBetweenValues(minSize, maxSize))
+          ..where(
+            (attachment) =>
+                attachment.fileSize.isBetweenValues(minSize, maxSize),
+          )
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.fileSize, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.fileSize,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
 
-  Future<List<Attachment>> getLargeAttachments({int sizeThresholdMB = 10}) async {
+  Future<List<Attachment>> getLargeAttachments({
+    int sizeThresholdMB = 10,
+  }) async {
     final sizeThresholdBytes = sizeThresholdMB * 1024 * 1024;
     return await (_database.select(_database.attachments)
-          ..where((attachment) => attachment.fileSize.isBiggerThanValue(sizeThresholdBytes))
+          ..where(
+            (attachment) =>
+                attachment.fileSize.isBiggerThanValue(sizeThresholdBytes),
+          )
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.fileSize, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.fileSize,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
@@ -86,7 +116,10 @@ class AttachmentDao {
   Future<List<Attachment>> getRecentAttachments({int limit = 10}) async {
     return await (_database.select(_database.attachments)
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ])
           ..limit(limit))
         .get();
@@ -96,7 +129,10 @@ class AttachmentDao {
     return await (_database.select(_database.attachments)
           ..where((attachment) => attachment.isSynced.equals(false))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
@@ -105,19 +141,28 @@ class AttachmentDao {
     return await (_database.select(_database.attachments)
           ..where((attachment) => attachment.isSynced.equals(true))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
 
   Future<List<Attachment>> getAttachmentsCreatedInDateRange(
-    DateTime startDate, 
-    DateTime endDate
+    DateTime startDate,
+    DateTime endDate,
   ) async {
     return await (_database.select(_database.attachments)
-          ..where((attachment) => attachment.createdAt.isBetweenValues(startDate, endDate))
+          ..where(
+            (attachment) =>
+                attachment.createdAt.isBetweenValues(startDate, endDate),
+          )
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
@@ -127,51 +172,50 @@ class AttachmentDao {
     return attachment.id.value;
   }
 
-  Future<bool> updateAttachment(String id, AttachmentsCompanion attachment) async {
-    final rowsAffected = await (_database.update(_database.attachments)
-          ..where((a) => a.id.equals(id)))
-        .write(attachment);
-    
+  Future<bool> updateAttachment(
+    String id,
+    AttachmentsCompanion attachment,
+  ) async {
+    final rowsAffected = await (_database.update(
+      _database.attachments,
+    )..where((a) => a.id.equals(id))).write(attachment);
+
     return rowsAffected > 0;
   }
 
   Future<bool> updateFileName(String id, String newFileName) async {
-    final rowsAffected = await (_database.update(_database.attachments)
-          ..where((a) => a.id.equals(id)))
-        .write(AttachmentsCompanion(
-          fileName: Value(newFileName),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.attachments)
+              ..where((a) => a.id.equals(id)))
+            .write(AttachmentsCompanion(fileName: Value(newFileName)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> updateFilePath(String id, String newFilePath) async {
-    final rowsAffected = await (_database.update(_database.attachments)
-          ..where((a) => a.id.equals(id)))
-        .write(AttachmentsCompanion(
-          filePath: Value(newFilePath),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.attachments)
+              ..where((a) => a.id.equals(id)))
+            .write(AttachmentsCompanion(filePath: Value(newFilePath)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> updateDescription(String id, String? description) async {
-    final rowsAffected = await (_database.update(_database.attachments)
-          ..where((a) => a.id.equals(id)))
-        .write(AttachmentsCompanion(
-          description: Value(description),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.attachments)
+              ..where((a) => a.id.equals(id)))
+            .write(AttachmentsCompanion(description: Value(description)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> markAsSynced(String id, bool isSynced) async {
-    final rowsAffected = await (_database.update(_database.attachments)
-          ..where((a) => a.id.equals(id)))
-        .write(AttachmentsCompanion(
-          isSynced: Value(isSynced),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.attachments)
+              ..where((a) => a.id.equals(id)))
+            .write(AttachmentsCompanion(isSynced: Value(isSynced)));
+
     return rowsAffected > 0;
   }
 
@@ -184,14 +228,17 @@ class AttachmentDao {
       }
     }
 
-    final rowsAffected = await (_database.delete(_database.attachments)
-          ..where((a) => a.id.equals(id)))
-        .go();
-    
+    final rowsAffected = await (_database.delete(
+      _database.attachments,
+    )..where((a) => a.id.equals(id))).go();
+
     return rowsAffected > 0;
   }
 
-  Future<int> deleteAttachmentsByRecordId(String recordId, {bool deleteFiles = false}) async {
+  Future<int> deleteAttachmentsByRecordId(
+    String recordId, {
+    bool deleteFiles = false,
+  }) async {
     // Optionally delete physical files
     if (deleteFiles) {
       final attachments = await getAttachmentsByRecordId(recordId);
@@ -200,9 +247,9 @@ class AttachmentDao {
       }
     }
 
-    return await (_database.delete(_database.attachments)
-          ..where((a) => a.recordId.equals(recordId)))
-        .go();
+    return await (_database.delete(
+      _database.attachments,
+    )..where((a) => a.recordId.equals(recordId))).go();
   }
 
   Future<int> getAttachmentCount() async {
@@ -270,10 +317,12 @@ class AttachmentDao {
 
   // Stream operations for real-time updates
   Stream<List<Attachment>> watchAllAttachments() {
-    return (_database.select(_database.attachments)
-          ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
-          ]))
+    return (_database.select(_database.attachments)..orderBy([
+          (attachment) => OrderingTerm(
+            expression: attachment.createdAt,
+            mode: OrderingMode.desc,
+          ),
+        ]))
         .watch();
   }
 
@@ -281,7 +330,10 @@ class AttachmentDao {
     return (_database.select(_database.attachments)
           ..where((attachment) => attachment.recordId.equals(recordId))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .watch();
   }
@@ -296,19 +348,21 @@ class AttachmentDao {
   }
 
   Future<bool> attachmentExists(String id) async {
-    final count = await (_database.selectOnly(_database.attachments)
-          ..addColumns([_database.attachments.id.count()])
-          ..where(_database.attachments.id.equals(id)))
-        .getSingle();
+    final count =
+        await (_database.selectOnly(_database.attachments)
+              ..addColumns([_database.attachments.id.count()])
+              ..where(_database.attachments.id.equals(id)))
+            .getSingle();
 
     return (count.read(_database.attachments.id.count()) ?? 0) > 0;
   }
 
   Future<bool> filePathExists(String filePath) async {
-    final count = await (_database.selectOnly(_database.attachments)
-          ..addColumns([_database.attachments.id.count()])
-          ..where(_database.attachments.filePath.equals(filePath)))
-        .getSingle();
+    final count =
+        await (_database.selectOnly(_database.attachments)
+              ..addColumns([_database.attachments.id.count()])
+              ..where(_database.attachments.filePath.equals(filePath)))
+            .getSingle();
 
     return (count.read(_database.attachments.id.count()) ?? 0) > 0;
   }
@@ -316,10 +370,17 @@ class AttachmentDao {
   Future<List<String>> getAllFilePaths() async {
     final query = _database.selectOnly(_database.attachments)
       ..addColumns([_database.attachments.filePath])
-      ..orderBy([OrderingTerm(expression: _database.attachments.createdAt, mode: OrderingMode.desc)]);
+      ..orderBy([
+        OrderingTerm(
+          expression: _database.attachments.createdAt,
+          mode: OrderingMode.desc,
+        ),
+      ]);
 
     final results = await query.get();
-    return results.map((result) => result.read(_database.attachments.filePath)!).toList();
+    return results
+        .map((result) => result.read(_database.attachments.filePath)!)
+        .toList();
   }
 
   Future<List<String>> getOrphanedFilePaths() async {
@@ -340,15 +401,17 @@ class AttachmentDao {
     final orphanedPaths = await getOrphanedFilePaths();
     if (orphanedPaths.isEmpty) return 0;
 
-    return await (_database.delete(_database.attachments)
-          ..where((a) => a.filePath.isIn(orphanedPaths)))
-        .go();
+    return await (_database.delete(
+      _database.attachments,
+    )..where((a) => a.filePath.isIn(orphanedPaths))).go();
   }
 
   // Bulk operations
-  Future<List<String>> createMultipleAttachments(List<AttachmentsCompanion> attachments) async {
+  Future<List<String>> createMultipleAttachments(
+    List<AttachmentsCompanion> attachments,
+  ) async {
     final List<String> ids = [];
-    
+
     for (final attachmentCompanion in attachments) {
       try {
         final id = await createAttachment(attachmentCompanion);
@@ -358,19 +421,23 @@ class AttachmentDao {
         continue;
       }
     }
-    
+
     return ids;
   }
 
-  Future<int> markMultipleAsSynced(List<String> attachmentIds, bool isSynced) async {
+  Future<int> markMultipleAsSynced(
+    List<String> attachmentIds,
+    bool isSynced,
+  ) async {
     return await (_database.update(_database.attachments)
           ..where((a) => a.id.isIn(attachmentIds)))
-        .write(AttachmentsCompanion(
-          isSynced: Value(isSynced),
-        ));
+        .write(AttachmentsCompanion(isSynced: Value(isSynced)));
   }
 
-  Future<int> deleteMultipleAttachments(List<String> attachmentIds, {bool deleteFiles = false}) async {
+  Future<int> deleteMultipleAttachments(
+    List<String> attachmentIds, {
+    bool deleteFiles = false,
+  }) async {
     // Optionally delete physical files
     if (deleteFiles) {
       for (final id in attachmentIds) {
@@ -381,9 +448,9 @@ class AttachmentDao {
       }
     }
 
-    return await (_database.delete(_database.attachments)
-          ..where((a) => a.id.isIn(attachmentIds)))
-        .go();
+    return await (_database.delete(
+      _database.attachments,
+    )..where((a) => a.id.isIn(attachmentIds))).go();
   }
 
   // File operations
@@ -421,12 +488,14 @@ class AttachmentDao {
     }
   }
 
-
   Stream<List<Attachment>> watchAttachmentsByFileType(String fileType) {
     return (_database.select(_database.attachments)
           ..where((attachment) => attachment.fileType.equals(fileType))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .watch();
   }
@@ -435,22 +504,27 @@ class AttachmentDao {
     return (_database.select(_database.attachments)
           ..where((attachment) => attachment.isSynced.equals(false))
           ..orderBy([
-            (attachment) => OrderingTerm(expression: attachment.createdAt, mode: OrderingMode.desc),
+            (attachment) => OrderingTerm(
+              expression: attachment.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .watch();
   }
 
   Stream<Attachment?> watchAttachment(String id) {
-    return (_database.select(_database.attachments)
-          ..where((attachment) => attachment.id.equals(id)))
-        .watchSingleOrNull();
+    return (_database.select(
+      _database.attachments,
+    )..where((attachment) => attachment.id.equals(id))).watchSingleOrNull();
   }
 
   Stream<int> watchAttachmentCount() {
     final query = _database.selectOnly(_database.attachments)
       ..addColumns([_database.attachments.id.count()]);
 
-    return query.watchSingle().map((result) => result.read(_database.attachments.id.count()) ?? 0);
+    return query.watchSingle().map(
+      (result) => result.read(_database.attachments.id.count()) ?? 0,
+    );
   }
 
   Stream<int> watchUnsyncedAttachmentCount() {
@@ -458,18 +532,28 @@ class AttachmentDao {
       ..addColumns([_database.attachments.id.count()])
       ..where(_database.attachments.isSynced.equals(false));
 
-    return query.watchSingle().map((result) => result.read(_database.attachments.id.count()) ?? 0);
+    return query.watchSingle().map(
+      (result) => result.read(_database.attachments.id.count()) ?? 0,
+    );
   }
 
   Stream<int> watchTotalFileSize() {
     final query = _database.selectOnly(_database.attachments)
       ..addColumns([_database.attachments.fileSize.sum()]);
 
-    return query.watchSingle().map((result) => result.read(_database.attachments.fileSize.sum())?.toInt() ?? 0);
+    return query.watchSingle().map(
+      (result) =>
+          result.read(_database.attachments.fileSize.sum())?.toInt() ?? 0,
+    );
   }
 
   // File type validation
-  static const List<String> validFileTypes = ['image', 'pdf', 'document', 'other'];
+  static const List<String> validFileTypes = [
+    'image',
+    'pdf',
+    'document',
+    'other',
+  ];
 
   bool isValidFileType(String fileType) {
     return validFileTypes.contains(fileType);
@@ -477,7 +561,7 @@ class AttachmentDao {
 
   String detectFileType(String fileName) {
     final extension = fileName.split('.').last.toLowerCase();
-    
+
     switch (extension) {
       case 'jpg':
       case 'jpeg':

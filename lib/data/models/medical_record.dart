@@ -7,9 +7,12 @@ class MedicalRecords extends Table {
   TextColumn get title => text().withLength(min: 1, max: 200).named('title')();
   TextColumn get description => text().nullable().named('description')();
   DateTimeColumn get recordDate => dateTime().named('record_date')();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime).named('created_at')();
-  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime).named('updated_at')();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true)).named('is_active')();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime).named('created_at')();
+  DateTimeColumn get updatedAt =>
+      dateTime().withDefault(currentDateAndTime).named('updated_at')();
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true)).named('is_active')();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -18,10 +21,10 @@ class MedicalRecords extends Table {
   List<String> get customConstraints => [
     // Record type constraint
     'CHECK (record_type IN (\'prescription\', \'lab_report\', \'medication\', \'vaccination\', \'allergy\', \'chronic_condition\'))',
-    
+
     // Title constraint (non-empty)
     'CHECK (LENGTH(TRIM(title)) > 0)',
-    
+
     // Record date constraint (not future date for most record types)
     'CHECK (record_date <= CURRENT_TIMESTAMP OR record_type = \'vaccination\')',
   ];

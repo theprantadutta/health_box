@@ -7,11 +7,11 @@ class TagDao {
   TagDao(this._database);
 
   Future<List<Tag>> getAllTags() async {
-    return await (_database.select(_database.tags)
-          ..orderBy([
-            (tag) => OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
-            (tag) => OrderingTerm(expression: tag.name),
-          ]))
+    return await (_database.select(_database.tags)..orderBy([
+          (tag) =>
+              OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
+          (tag) => OrderingTerm(expression: tag.name),
+        ]))
         .get();
   }
 
@@ -19,7 +19,10 @@ class TagDao {
     return await (_database.select(_database.tags)
           ..where((tag) => tag.usageCount.isBiggerThanValue(0))
           ..orderBy([
-            (tag) => OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
+            (tag) => OrderingTerm(
+              expression: tag.usageCount,
+              mode: OrderingMode.desc,
+            ),
             (tag) => OrderingTerm(expression: tag.name),
           ])
           ..limit(limit))
@@ -29,7 +32,10 @@ class TagDao {
   Future<List<Tag>> getRecentlyCreatedTags({int limit = 10}) async {
     return await (_database.select(_database.tags)
           ..orderBy([
-            (tag) => OrderingTerm(expression: tag.createdAt, mode: OrderingMode.desc),
+            (tag) => OrderingTerm(
+              expression: tag.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ])
           ..limit(limit))
         .get();
@@ -39,32 +45,40 @@ class TagDao {
     return await (_database.select(_database.tags)
           ..where((tag) => tag.usageCount.equals(0))
           ..orderBy([
-            (tag) => OrderingTerm(expression: tag.createdAt, mode: OrderingMode.desc),
+            (tag) => OrderingTerm(
+              expression: tag.createdAt,
+              mode: OrderingMode.desc,
+            ),
           ]))
         .get();
   }
 
   Future<Tag?> getTagById(String id) async {
-    return await (_database.select(_database.tags)
-          ..where((tag) => tag.id.equals(id)))
-        .getSingleOrNull();
+    return await (_database.select(
+      _database.tags,
+    )..where((tag) => tag.id.equals(id))).getSingleOrNull();
   }
 
   Future<Tag?> getTagByName(String name) async {
-    return await (_database.select(_database.tags)
-          ..where((tag) => tag.name.equals(name)))
-        .getSingleOrNull();
+    return await (_database.select(
+      _database.tags,
+    )..where((tag) => tag.name.equals(name))).getSingleOrNull();
   }
 
   Future<List<Tag>> searchTagsByName(String searchTerm) async {
     final searchPattern = '%${searchTerm.toLowerCase()}%';
-    
+
     return await (_database.select(_database.tags)
-          ..where((tag) => 
-              tag.name.lower().like(searchPattern) |
-              tag.description.lower().like(searchPattern))
+          ..where(
+            (tag) =>
+                tag.name.lower().like(searchPattern) |
+                tag.description.lower().like(searchPattern),
+          )
           ..orderBy([
-            (tag) => OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
+            (tag) => OrderingTerm(
+              expression: tag.usageCount,
+              mode: OrderingMode.desc,
+            ),
             (tag) => OrderingTerm(expression: tag.name),
           ]))
         .get();
@@ -73,9 +87,7 @@ class TagDao {
   Future<List<Tag>> getTagsByColor(String color) async {
     return await (_database.select(_database.tags)
           ..where((tag) => tag.color.equals(color))
-          ..orderBy([
-            (tag) => OrderingTerm(expression: tag.name),
-          ]))
+          ..orderBy([(tag) => OrderingTerm(expression: tag.name)]))
         .get();
   }
 
@@ -83,7 +95,10 @@ class TagDao {
     return await (_database.select(_database.tags)
           ..where((tag) => tag.usageCount.isBetweenValues(minUsage, maxUsage))
           ..orderBy([
-            (tag) => OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
+            (tag) => OrderingTerm(
+              expression: tag.usageCount,
+              mode: OrderingMode.desc,
+            ),
             (tag) => OrderingTerm(expression: tag.name),
           ]))
         .get();
@@ -92,9 +107,7 @@ class TagDao {
   Future<List<Tag>> getTagsByCategory(String category) async {
     return await (_database.select(_database.tags)
           ..where((tag) => tag.category.equals(category))
-          ..orderBy([
-            (tag) => OrderingTerm(expression: tag.name),
-          ]))
+          ..orderBy([(tag) => OrderingTerm(expression: tag.name)]))
         .get();
   }
 
@@ -103,7 +116,11 @@ class TagDao {
     return tag.id.value;
   }
 
-  Future<String> createTagIfNotExists(String name, String color, {String? description}) async {
+  Future<String> createTagIfNotExists(
+    String name,
+    String color, {
+    String? description,
+  }) async {
     final existingTag = await getTagByName(name);
     if (existingTag != null) {
       return existingTag.id;
@@ -122,10 +139,10 @@ class TagDao {
   }
 
   Future<bool> updateTag(String id, TagsCompanion tag) async {
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(tag);
-    
+    final rowsAffected = await (_database.update(
+      _database.tags,
+    )..where((t) => t.id.equals(id))).write(tag);
+
     return rowsAffected > 0;
   }
 
@@ -136,32 +153,26 @@ class TagDao {
       return false; // Name conflict
     }
 
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(TagsCompanion(
-          name: Value(newName),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.tags)..where((t) => t.id.equals(id)))
+            .write(TagsCompanion(name: Value(newName)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> updateTagColor(String id, String newColor) async {
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(TagsCompanion(
-          color: Value(newColor),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.tags)..where((t) => t.id.equals(id)))
+            .write(TagsCompanion(color: Value(newColor)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> updateTagDescription(String id, String? description) async {
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(TagsCompanion(
-          description: Value(description),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.tags)..where((t) => t.id.equals(id)))
+            .write(TagsCompanion(description: Value(description)));
+
     return rowsAffected > 0;
   }
 
@@ -169,12 +180,10 @@ class TagDao {
     final tag = await getTagById(id);
     if (tag == null) return false;
 
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(TagsCompanion(
-          usageCount: Value(tag.usageCount + 1),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.tags)..where((t) => t.id.equals(id)))
+            .write(TagsCompanion(usageCount: Value(tag.usageCount + 1)));
+
     return rowsAffected > 0;
   }
 
@@ -182,39 +191,35 @@ class TagDao {
     final tag = await getTagById(id);
     if (tag == null || tag.usageCount <= 0) return false;
 
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(TagsCompanion(
-          usageCount: Value(tag.usageCount - 1),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.tags)..where((t) => t.id.equals(id)))
+            .write(TagsCompanion(usageCount: Value(tag.usageCount - 1)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> setUsageCount(String id, int count) async {
     if (count < 0) return false;
 
-    final rowsAffected = await (_database.update(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .write(TagsCompanion(
-          usageCount: Value(count),
-        ));
-    
+    final rowsAffected =
+        await (_database.update(_database.tags)..where((t) => t.id.equals(id)))
+            .write(TagsCompanion(usageCount: Value(count)));
+
     return rowsAffected > 0;
   }
 
   Future<bool> deleteTag(String id) async {
-    final rowsAffected = await (_database.delete(_database.tags)
-          ..where((t) => t.id.equals(id)))
-        .go();
-    
+    final rowsAffected = await (_database.delete(
+      _database.tags,
+    )..where((t) => t.id.equals(id))).go();
+
     return rowsAffected > 0;
   }
 
   Future<int> deleteUnusedTags() async {
-    return await (_database.delete(_database.tags)
-          ..where((t) => t.usageCount.equals(0)))
-        .go();
+    return await (_database.delete(
+      _database.tags,
+    )..where((t) => t.usageCount.equals(0))).go();
   }
 
   Future<int> getTotalTagCount() async {
@@ -244,10 +249,7 @@ class TagDao {
 
   Future<Map<String, int>> getColorStatistics() async {
     final query = _database.selectOnly(_database.tags)
-      ..addColumns([
-        _database.tags.color,
-        _database.tags.id.count(),
-      ])
+      ..addColumns([_database.tags.color, _database.tags.id.count()])
       ..groupBy([_database.tags.color]);
 
     final results = await query.get();
@@ -263,10 +265,11 @@ class TagDao {
   }
 
   Future<bool> tagExists(String id) async {
-    final count = await (_database.selectOnly(_database.tags)
-          ..addColumns([_database.tags.id.count()])
-          ..where(_database.tags.id.equals(id)))
-        .getSingle();
+    final count =
+        await (_database.selectOnly(_database.tags)
+              ..addColumns([_database.tags.id.count()])
+              ..where(_database.tags.id.equals(id)))
+            .getSingle();
 
     return (count.read(_database.tags.id.count()) ?? 0) > 0;
   }
@@ -306,7 +309,7 @@ class TagDao {
   // Bulk operations
   Future<List<String>> createMultipleTags(List<TagsCompanion> tags) async {
     final List<String> ids = [];
-    
+
     for (final tagCompanion in tags) {
       try {
         final id = await createTag(tagCompanion);
@@ -316,47 +319,47 @@ class TagDao {
         continue;
       }
     }
-    
+
     return ids;
   }
 
   Future<int> incrementMultipleUsageCounts(List<String> tagIds) async {
     int totalAffected = 0;
-    
+
     for (final id in tagIds) {
       if (await incrementUsageCount(id)) {
         totalAffected++;
       }
     }
-    
+
     return totalAffected;
   }
 
   Future<int> decrementMultipleUsageCounts(List<String> tagIds) async {
     int totalAffected = 0;
-    
+
     for (final id in tagIds) {
       if (await decrementUsageCount(id)) {
         totalAffected++;
       }
     }
-    
+
     return totalAffected;
   }
 
   Future<int> deleteMultipleTags(List<String> tagIds) async {
-    return await (_database.delete(_database.tags)
-          ..where((t) => t.id.isIn(tagIds)))
-        .go();
+    return await (_database.delete(
+      _database.tags,
+    )..where((t) => t.id.isIn(tagIds))).go();
   }
 
   // Stream operations for real-time updates
   Stream<List<Tag>> watchAllTags() {
-    return (_database.select(_database.tags)
-          ..orderBy([
-            (tag) => OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
-            (tag) => OrderingTerm(expression: tag.name),
-          ]))
+    return (_database.select(_database.tags)..orderBy([
+          (tag) =>
+              OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
+          (tag) => OrderingTerm(expression: tag.name),
+        ]))
         .watch();
   }
 
@@ -364,7 +367,10 @@ class TagDao {
     return (_database.select(_database.tags)
           ..where((tag) => tag.usageCount.isBiggerThanValue(0))
           ..orderBy([
-            (tag) => OrderingTerm(expression: tag.usageCount, mode: OrderingMode.desc),
+            (tag) => OrderingTerm(
+              expression: tag.usageCount,
+              mode: OrderingMode.desc,
+            ),
             (tag) => OrderingTerm(expression: tag.name),
           ])
           ..limit(limit))
@@ -372,16 +378,18 @@ class TagDao {
   }
 
   Stream<Tag?> watchTag(String id) {
-    return (_database.select(_database.tags)
-          ..where((tag) => tag.id.equals(id)))
-        .watchSingleOrNull();
+    return (_database.select(
+      _database.tags,
+    )..where((tag) => tag.id.equals(id))).watchSingleOrNull();
   }
 
   Stream<int> watchTotalTagCount() {
     final query = _database.selectOnly(_database.tags)
       ..addColumns([_database.tags.id.count()]);
 
-    return query.watchSingle().map((result) => result.read(_database.tags.id.count()) ?? 0);
+    return query.watchSingle().map(
+      (result) => result.read(_database.tags.id.count()) ?? 0,
+    );
   }
 
   // Helper method to generate unique tag IDs

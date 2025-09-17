@@ -18,6 +18,7 @@ import '../models/chronic_condition.dart';
 import '../models/tag.dart';
 import '../models/attachment.dart';
 import '../models/reminder.dart';
+import '../models/record_tag.dart';
 import '../models/emergency_card.dart';
 
 part 'app_database.g.dart';
@@ -36,6 +37,8 @@ part 'app_database.g.dart';
     Attachments,
     Reminders,
     EmergencyCards,
+    RecordTags,
+    SearchHistory,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -75,7 +78,7 @@ class AppDatabase extends _$AppDatabase {
         // Create indexes for better query performance
         final indexes = [
           'CREATE INDEX IF NOT EXISTS idx_medical_records_profile_id ON medical_records(profile_id);',
-          'CREATE INDEX IF NOT EXISTS idx_medical_records_record_date ON medical_records(record_date);', 
+          'CREATE INDEX IF NOT EXISTS idx_medical_records_record_date ON medical_records(record_date);',
           'CREATE INDEX IF NOT EXISTS idx_medical_records_is_active ON medical_records(is_active);',
           'CREATE INDEX IF NOT EXISTS idx_reminders_scheduled_time ON reminders(scheduled_time);',
           'CREATE INDEX IF NOT EXISTS idx_reminders_is_active ON reminders(is_active);',
@@ -111,7 +114,9 @@ class AppDatabase extends _$AppDatabase {
           password: encryptionKey,
         );
 
-        debugPrint('Encrypted SQLCipher database executor created successfully');
+        debugPrint(
+          'Encrypted SQLCipher database executor created successfully',
+        );
         return database;
       } catch (e) {
         debugPrint('Encrypted database setup error: $e');

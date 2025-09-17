@@ -9,7 +9,8 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
   // Initialize the notification service
@@ -20,7 +21,9 @@ class NotificationService {
       // Initialize timezone data
       tz.initializeTimeZones();
 
-      const androidInitialization = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const androidInitialization = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
       const iosInitialization = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
@@ -44,7 +47,9 @@ class NotificationService {
 
       return success == true;
     } catch (e) {
-      throw NotificationServiceException('Failed to initialize notification service: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to initialize notification service: ${e.toString()}',
+      );
     }
   }
 
@@ -56,23 +61,28 @@ class NotificationService {
       }
 
       // Android permissions
-      final androidImplementation = _notificationsPlugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      
+      final androidImplementation = _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+
       if (androidImplementation != null) {
-        final granted = await androidImplementation.requestNotificationsPermission();
+        final granted = await androidImplementation
+            .requestNotificationsPermission();
         if (granted != true) {
           return false;
         }
-        
+
         // Request exact alarm permission for Android 12+
         await androidImplementation.requestExactAlarmsPermission();
       }
 
       // iOS permissions
-      final iosImplementation = _notificationsPlugin.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>();
-      
+      final iosImplementation = _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+
       if (iosImplementation != null) {
         await iosImplementation.requestPermissions(
           alert: true,
@@ -83,7 +93,9 @@ class NotificationService {
 
       return true;
     } catch (e) {
-      throw NotificationServiceException('Failed to request permissions: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to request permissions: ${e.toString()}',
+      );
     }
   }
 
@@ -98,12 +110,14 @@ class NotificationService {
   }) async {
     try {
       if (!_isInitialized) {
-        throw const NotificationServiceException('Notification service not initialized');
+        throw const NotificationServiceException(
+          'Notification service not initialized',
+        );
       }
 
       final id = reminderId.hashCode;
       const channelKey = 'medication_reminders';
-      
+
       final title = 'Medication Reminder';
       final body = 'Time to take $medicationName ($dosage)';
       final payload = json.encode({
@@ -168,7 +182,9 @@ class NotificationService {
         );
       }
     } catch (e) {
-      throw NotificationServiceException('Failed to schedule medication reminder: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to schedule medication reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -183,12 +199,14 @@ class NotificationService {
   }) async {
     try {
       if (!_isInitialized) {
-        throw const NotificationServiceException('Notification service not initialized');
+        throw const NotificationServiceException(
+          'Notification service not initialized',
+        );
       }
 
       final id = reminderId.hashCode;
       const channelKey = 'general_reminders';
-      
+
       final payload = json.encode({
         'type': 'general_reminder',
         'reminderId': reminderId,
@@ -237,12 +255,19 @@ class NotificationService {
         );
       }
     } catch (e) {
-      throw NotificationServiceException('Failed to schedule general reminder: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to schedule general reminder: ${e.toString()}',
+      );
     }
   }
 
   // Generic schedule notification method for compatibility
-  Future<void> scheduleNotification(String reminderId, String title, String body, DateTime scheduledTime) async {
+  Future<void> scheduleNotification(
+    String reminderId,
+    String title,
+    String body,
+    DateTime scheduledTime,
+  ) async {
     await scheduleGeneralReminder(
       reminderId: reminderId,
       title: title,
@@ -252,8 +277,14 @@ class NotificationService {
     );
   }
 
-  // Generic schedule repeating notification method for compatibility  
-  Future<void> scheduleRepeatingNotification(String reminderId, String title, String body, DateTime scheduledTime, String frequency) async {
+  // Generic schedule repeating notification method for compatibility
+  Future<void> scheduleRepeatingNotification(
+    String reminderId,
+    String title,
+    String body,
+    DateTime scheduledTime,
+    String frequency,
+  ) async {
     await scheduleGeneralReminder(
       reminderId: reminderId,
       title: title,
@@ -272,13 +303,15 @@ class NotificationService {
   }) async {
     try {
       if (!_isInitialized) {
-        throw const NotificationServiceException('Notification service not initialized');
+        throw const NotificationServiceException(
+          'Notification service not initialized',
+        );
       }
 
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       final channelKey = _getChannelKeyForType(type);
       final channelName = _getChannelNameForType(type);
-      
+
       final androidDetails = AndroidNotificationDetails(
         channelKey,
         channelName,
@@ -301,7 +334,9 @@ class NotificationService {
         payload: payload,
       );
     } catch (e) {
-      throw NotificationServiceException('Failed to show immediate notification: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to show immediate notification: ${e.toString()}',
+      );
     }
   }
 
@@ -311,7 +346,9 @@ class NotificationService {
       final id = reminderId.hashCode;
       await _notificationsPlugin.cancel(id);
     } catch (e) {
-      throw NotificationServiceException('Failed to cancel notification: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to cancel notification: ${e.toString()}',
+      );
     }
   }
 
@@ -320,7 +357,9 @@ class NotificationService {
     try {
       await _notificationsPlugin.cancelAll();
     } catch (e) {
-      throw NotificationServiceException('Failed to cancel all notifications: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to cancel all notifications: ${e.toString()}',
+      );
     }
   }
 
@@ -329,16 +368,20 @@ class NotificationService {
     try {
       return await _notificationsPlugin.pendingNotificationRequests();
     } catch (e) {
-      throw NotificationServiceException('Failed to get pending notifications: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to get pending notifications: ${e.toString()}',
+      );
     }
   }
 
   // Check if notifications are enabled
   Future<bool> areNotificationsEnabled() async {
     try {
-      final androidImplementation = _notificationsPlugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      
+      final androidImplementation = _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+
       if (androidImplementation != null) {
         final enabled = await androidImplementation.areNotificationsEnabled();
         return enabled ?? false;
@@ -364,7 +407,8 @@ class NotificationService {
 
       // Schedule a new notification for the snooze time
       final snoozeTime = DateTime.now().add(Duration(minutes: minutes));
-      final snoozedReminderId = '${reminderId}_snoozed_${DateTime.now().millisecondsSinceEpoch}';
+      final snoozedReminderId =
+          '${reminderId}_snoozed_${DateTime.now().millisecondsSinceEpoch}';
 
       await scheduleGeneralReminder(
         reminderId: snoozedReminderId,
@@ -374,16 +418,20 @@ class NotificationService {
         additionalData: payload,
       );
     } catch (e) {
-      throw NotificationServiceException('Failed to snooze notification: ${e.toString()}');
+      throw NotificationServiceException(
+        'Failed to snooze notification: ${e.toString()}',
+      );
     }
   }
 
   // Private helper methods
 
   Future<void> _createNotificationChannels() async {
-    final androidImplementation = _notificationsPlugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    
+    final androidImplementation = _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
     if (androidImplementation != null) {
       // Medication reminders channel
       const medicationChannel = AndroidNotificationChannel(
@@ -457,7 +505,7 @@ class NotificationService {
 
   void _handleNotificationAction(Map<String, dynamic> data, String? actionId) {
     final type = data['type'] as String?;
-    
+
     switch (actionId) {
       case 'taken':
         if (type == 'medication_reminder') {
@@ -530,19 +578,15 @@ class NotificationService {
 
 // Enums
 
-enum NotificationType {
-  medication,
-  appointment,
-  general,
-}
+enum NotificationType { medication, appointment, general }
 
 // Exceptions
 
 class NotificationServiceException implements Exception {
   final String message;
-  
+
   const NotificationServiceException(this.message);
-  
+
   @override
   String toString() => 'NotificationServiceException: $message';
 }

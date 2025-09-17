@@ -3,23 +3,31 @@ import 'package:drift/drift.dart';
 class ChronicConditions extends Table {
   TextColumn get id => text().named('id')();
   TextColumn get profileId => text().named('profile_id')();
-  TextColumn get recordType => text().withDefault(const Constant('chronic_condition')).named('record_type')();
+  TextColumn get recordType => text()
+      .withDefault(const Constant('chronic_condition'))
+      .named('record_type')();
   TextColumn get title => text().withLength(min: 1, max: 200).named('title')();
   TextColumn get description => text().nullable().named('description')();
   DateTimeColumn get recordDate => dateTime().named('record_date')();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime).named('created_at')();
-  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime).named('updated_at')();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true)).named('is_active')();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime).named('created_at')();
+  DateTimeColumn get updatedAt =>
+      dateTime().withDefault(currentDateAndTime).named('updated_at')();
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true)).named('is_active')();
 
   // ChronicCondition-specific fields
-  TextColumn get conditionName => text().withLength(min: 1, max: 100).named('condition_name')();
+  TextColumn get conditionName =>
+      text().withLength(min: 1, max: 100).named('condition_name')();
   DateTimeColumn get diagnosisDate => dateTime().named('diagnosis_date')();
-  TextColumn get diagnosingProvider => text().nullable().named('diagnosing_provider')();
+  TextColumn get diagnosingProvider =>
+      text().nullable().named('diagnosing_provider')();
   TextColumn get severity => text().named('severity')();
   TextColumn get status => text().named('status')();
   TextColumn get treatment => text().nullable().named('treatment')();
   TextColumn get managementPlan => text().nullable().named('management_plan')();
-  TextColumn get relatedMedications => text().nullable().named('related_medications')(); // JSON array
+  TextColumn get relatedMedications =>
+      text().nullable().named('related_medications')(); // JSON array
 
   @override
   Set<Column> get primaryKey => {id};
@@ -40,11 +48,7 @@ class ConditionSeverity {
   static const String moderate = 'moderate';
   static const String severe = 'severe';
 
-  static const List<String> allSeverities = [
-    mild,
-    moderate,
-    severe,
-  ];
+  static const List<String> allSeverities = [mild, moderate, severe];
 
   static bool isValidSeverity(String severity) {
     return allSeverities.contains(severity);
@@ -57,11 +61,7 @@ class ConditionStatus {
   static const String managed = 'managed';
   static const String resolved = 'resolved';
 
-  static const List<String> allStatuses = [
-    active,
-    managed,
-    resolved,
-  ];
+  static const List<String> allStatuses = [active, managed, resolved];
 
   static bool isValidStatus(String status) {
     return allStatuses.contains(status);
@@ -96,4 +96,3 @@ class ConditionCategories {
     other,
   ];
 }
-

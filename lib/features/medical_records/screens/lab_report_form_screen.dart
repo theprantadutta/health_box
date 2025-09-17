@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../shared/providers/medical_records_providers.dart';
+import '../services/lab_report_service.dart';
 
 class LabReportFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -7,7 +9,8 @@ class LabReportFormScreen extends ConsumerStatefulWidget {
   const LabReportFormScreen({super.key, this.profileId});
 
   @override
-  ConsumerState<LabReportFormScreen> createState() => _LabReportFormScreenState();
+  ConsumerState<LabReportFormScreen> createState() =>
+      _LabReportFormScreenState();
 }
 
 class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
@@ -15,6 +18,11 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
   final _titleController = TextEditingController();
   final _testNameController = TextEditingController();
   final _resultsController = TextEditingController();
+  final _labFacilityController = TextEditingController();
+  final _orderingPhysicianController = TextEditingController();
+  bool _isLoading = false;
+  DateTime? _testDate;
+
   @override
   void initState() {
     super.initState();
@@ -27,12 +35,7 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
         title: const Text('New Lab Report'),
         actions: [
           TextButton(
-            onPressed: () {
-              // TODO: Implement save logic
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Lab report form - T058 placeholder')),
-              );
-            },
+            onPressed: _isLoading ? null : _saveLabReport,
             child: const Text('SAVE'),
           ),
         ],
@@ -71,5 +74,72 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveLabReport() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final service = ref.read(labReportServiceProvider);
+      final selectedProfileId = widget.profileId;
+      if (selectedProfileId == null) {
+        throw Exception('No profile selected');
+      }
+
+      final request = CreateLabReportRequest(
+        profileId: selectedProfileId,
+        title: _titleController.text.trim(),
+        description: _resultsController.text.trim().isEmpty
+            ? null
+            : _resultsController.text.trim(),
+        recordDate: _testDate ?? DateTime.now(),
+        testName: _testNameController.text.trim().isEmpty
+            ? 'Lab Test'
+            : _testNameController.text.trim(),
+        testResults: _resultsController.text.trim().isEmpty
+            ? null
+            : _resultsController.text.trim(),
+        labFacility: _labFacilityController.text.trim().isEmpty
+            ? null
+            : _labFacilityController.text.trim(),
+        orderingPhysician: _orderingPhysicianController.text.trim().isEmpty
+            ? null
+            : _orderingPhysicianController.text.trim(),
+        collectionDate: _testDate,
+      );
+
+      await service.createLabReport(request);
+
+      // Refresh medical records providers
+      ref.invalidate(allMedicalRecordsProvider);
+      ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Lab report saved successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save lab report: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 }

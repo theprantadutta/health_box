@@ -4,11 +4,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:health_box/main.dart' as app;
 
 /// Integration test for medication reminder functionality
-/// 
-/// User Story: "As a user taking multiple medications, I want to receive 
-/// timely reminders so I never miss a dose and can track my medication 
+///
+/// User Story: "As a user taking multiple medications, I want to receive
+/// timely reminders so I never miss a dose and can track my medication
 /// adherence accurately."
-/// 
+///
 /// Test Coverage:
 /// - Creating medication reminders with various schedules
 /// - Notification triggering and handling
@@ -18,7 +18,7 @@ import 'package:health_box/main.dart' as app;
 /// - Reminder customization and preferences
 /// - Integration with medication records
 /// - Missed dose tracking and reporting
-/// 
+///
 /// This test MUST fail until medication reminder system is implemented.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +44,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('New Medication Reminder'), findsOneWidget);
-      
+
       // Link to existing medication or create new
       await tester.tap(find.byKey(const Key('select_medication_button')));
       await tester.pumpAndSettle();
@@ -53,16 +53,13 @@ void main() {
 
       // Create medication first
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Lisinopril'
+        find.byKey(const Key('medication_name_field')),
+        'Lisinopril',
       );
+      await tester.enterText(find.byKey(const Key('dosage_field')), '10mg');
       await tester.enterText(
-        find.byKey(const Key('dosage_field')), 
-        '10mg'
-      );
-      await tester.enterText(
-        find.byKey(const Key('frequency_field')), 
-        'Once daily'
+        find.byKey(const Key('frequency_field')),
+        'Once daily',
       );
 
       await tester.tap(find.byKey(const Key('save_medication_button')));
@@ -73,18 +70,18 @@ void main() {
 
       // Set reminder details
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Morning Blood Pressure Medication'
+        find.byKey(const Key('reminder_title_field')),
+        'Morning Blood Pressure Medication',
       );
       await tester.enterText(
-        find.byKey(const Key('reminder_description_field')), 
-        'Take with water, preferably before breakfast'
+        find.byKey(const Key('reminder_description_field')),
+        'Take with water, preferably before breakfast',
       );
 
       // Set time - 8:00 AM
       await tester.tap(find.byKey(const Key('reminder_time_field')));
       await tester.pumpAndSettle();
-      
+
       // Mock time picker selection
       await tester.tap(find.text('8'));
       await tester.tap(find.text('00'));
@@ -124,7 +121,9 @@ void main() {
       expect(find.byIcon(Icons.notifications_active), findsOneWidget);
     });
 
-    testWidgets('create complex medication schedule with multiple doses', (tester) async {
+    testWidgets('create complex medication schedule with multiple doses', (
+      tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -144,21 +143,18 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Metformin'
+        find.byKey(const Key('medication_name_field')),
+        'Metformin',
       );
-      await tester.enterText(
-        find.byKey(const Key('dosage_field')), 
-        '500mg'
-      );
+      await tester.enterText(find.byKey(const Key('dosage_field')), '500mg');
 
       await tester.tap(find.byKey(const Key('save_medication_button')));
       await tester.pumpAndSettle();
 
       // Set reminder title
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Diabetes Medication'
+        find.byKey(const Key('reminder_title_field')),
+        'Diabetes Medication',
       );
 
       // Set frequency to twice daily
@@ -169,7 +165,7 @@ void main() {
 
       // Configure multiple time slots
       expect(find.text('Configure Time Slots'), findsOneWidget);
-      
+
       // Morning dose
       await tester.tap(find.byKey(const Key('add_time_slot_button')));
       await tester.pumpAndSettle();
@@ -223,7 +219,10 @@ void main() {
       expect(find.text('Medication Reminder'), findsOneWidget);
       expect(find.text('Morning Blood Pressure Medication'), findsOneWidget);
       expect(find.text('Time to take Lisinopril 10mg'), findsOneWidget);
-      expect(find.text('Take with water, preferably before breakfast'), findsOneWidget);
+      expect(
+        find.text('Take with water, preferably before breakfast'),
+        findsOneWidget,
+      );
 
       // Should show action buttons
       expect(find.byKey(const Key('taken_button')), findsOneWidget);
@@ -254,7 +253,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Snooze Reminder'), findsOneWidget);
-      
+
       // Should show snooze options
       expect(find.text('5 minutes'), findsOneWidget);
       expect(find.text('15 minutes'), findsOneWidget);
@@ -266,7 +265,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Reminder snoozed for 15 minutes'), findsOneWidget);
-      
+
       // Should show snooze indicator
       expect(find.byIcon(Icons.snooze), findsOneWidget);
       expect(find.text('Snoozed until 8:15 AM'), findsOneWidget);
@@ -283,13 +282,16 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Skip This Dose?'), findsOneWidget);
-      expect(find.text('This will be recorded as a missed dose'), findsOneWidget);
-      
+      expect(
+        find.text('This will be recorded as a missed dose'),
+        findsOneWidget,
+      );
+
       await tester.tap(find.byKey(const Key('confirm_skip_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Dose marked as skipped'), findsOneWidget);
-      
+
       // Should update missed dose tracking
       expect(find.byIcon(Icons.warning), findsOneWidget);
     });
@@ -334,7 +336,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Missed Doses'), findsOneWidget);
-      
+
       // Should show missed dose history
       expect(find.text('Yesterday, 8:00 AM'), findsOneWidget);
       expect(find.text('Lisinopril - Skipped'), findsOneWidget);
@@ -343,7 +345,7 @@ void main() {
       // Step 4: Generate adherence report
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
-      
+
       await tester.tap(find.byKey(const Key('generate_report_button')));
       await tester.pumpAndSettle();
 
@@ -366,7 +368,7 @@ void main() {
 
       // Step 1: Configure global reminder preferences
       expect(find.text('Reminder Preferences'), findsOneWidget);
-      
+
       // Default snooze duration
       expect(find.text('Default Snooze Duration'), findsOneWidget);
       await tester.tap(find.byKey(const Key('default_snooze_dropdown')));
@@ -388,7 +390,7 @@ void main() {
       // Step 2: Configure reminder window settings
       expect(find.text('Reminder Window'), findsOneWidget);
       expect(find.text('How early/late reminders can trigger'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('reminder_window_slider')));
       await tester.pumpAndSettle();
 
@@ -443,8 +445,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Weekly Vitamin D'
+        find.byKey(const Key('reminder_title_field')),
+        'Weekly Vitamin D',
       );
 
       // Set to weekly frequency
@@ -483,15 +485,15 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Birth Control'
+        find.byKey(const Key('medication_name_field')),
+        'Birth Control',
       );
       await tester.tap(find.byKey(const Key('save_medication_button')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Monthly Injection'
+        find.byKey(const Key('reminder_title_field')),
+        'Monthly Injection',
       );
 
       // Set to monthly frequency
@@ -537,12 +539,12 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('current_pills_field')), 
-        '25'
+        find.byKey(const Key('current_pills_field')),
+        '25',
       );
       await tester.enterText(
-        find.byKey(const Key('pills_per_dose_field')), 
-        '1'
+        find.byKey(const Key('pills_per_dose_field')),
+        '1',
       );
 
       // Enable low stock alerts
@@ -550,8 +552,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('low_stock_threshold_field')), 
-        '7'
+        find.byKey(const Key('low_stock_threshold_field')),
+        '7',
       );
 
       await tester.tap(find.byKey(const Key('save_medication_button')));
@@ -577,14 +579,14 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Refill Reminder'), findsOneWidget);
-      
+
       await tester.enterText(
-        find.byKey(const Key('pharmacy_name_field')), 
-        'CVS Pharmacy'
+        find.byKey(const Key('pharmacy_name_field')),
+        'CVS Pharmacy',
       );
       await tester.enterText(
-        find.byKey(const Key('prescription_number_field')), 
-        'RX123456'
+        find.byKey(const Key('prescription_number_field')),
+        'RX123456',
       );
 
       await tester.tap(find.byKey(const Key('set_refill_reminder_button')));
@@ -614,15 +616,15 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Albuterol Inhaler'
+        find.byKey(const Key('medication_name_field')),
+        'Albuterol Inhaler',
       );
       await tester.tap(find.byKey(const Key('save_medication_button')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Emergency Inhaler'
+        find.byKey(const Key('reminder_title_field')),
+        'Emergency Inhaler',
       );
 
       // Set as PRN medication
@@ -633,14 +635,14 @@ void main() {
 
       // Configure PRN settings
       expect(find.text('PRN Configuration'), findsOneWidget);
-      
+
       await tester.enterText(
-        find.byKey(const Key('max_doses_per_day_field')), 
-        '4'
+        find.byKey(const Key('max_doses_per_day_field')),
+        '4',
       );
       await tester.enterText(
-        find.byKey(const Key('min_interval_minutes_field')), 
-        '240'
+        find.byKey(const Key('min_interval_minutes_field')),
+        '240',
       );
 
       // Set emergency contact notification
@@ -668,8 +670,8 @@ void main() {
       // Should prompt for reason/symptoms
       expect(find.text('Why are you taking this?'), findsOneWidget);
       await tester.enterText(
-        find.byKey(const Key('symptoms_field')), 
-        'Shortness of breath during exercise'
+        find.byKey(const Key('symptoms_field')),
+        'Shortness of breath during exercise',
       );
 
       await tester.tap(find.byKey(const Key('confirm_taken_button')));
@@ -693,20 +695,20 @@ void main() {
 
       // Step 1: Add medication that may interact
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Warfarin'
+        find.byKey(const Key('medication_name_field')),
+        'Warfarin',
       );
-      await tester.enterText(
-        find.byKey(const Key('dosage_field')), 
-        '5mg'
-      );
+      await tester.enterText(find.byKey(const Key('dosage_field')), '5mg');
 
       await tester.tap(find.byKey(const Key('save_medication_button')));
       await tester.pumpAndSettle();
 
       // Step 2: System should check for interactions with existing medications
       expect(find.text('Potential Drug Interaction'), findsOneWidget);
-      expect(find.text('Warfarin may interact with Lisinopril'), findsOneWidget);
+      expect(
+        find.text('Warfarin may interact with Lisinopril'),
+        findsOneWidget,
+      );
       expect(find.text('Increased risk of hyperkalemia'), findsOneWidget);
 
       // Should show action options
@@ -719,7 +721,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Medication added with warning'), findsOneWidget);
-      
+
       // Should show interaction warning on medication list
       expect(find.byIcon(Icons.warning), findsOneWidget);
       expect(find.text('Drug interaction warning'), findsOneWidget);

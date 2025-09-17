@@ -1,9 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../shared/providers/medical_records_providers.dart';
-import '../../../shared/providers/profile_providers.dart';
+import 'package:drift/drift.dart' as drift;
+import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../data/database/app_database.dart';
 import '../../medical_records/screens/medical_record_detail_screen.dart';
+
+// Provider for recent medical records based on selected profile
+final recentMedicalRecordsProvider = FutureProvider<List<MedicalRecord>>((
+  ref,
+) async {
+  final selectedProfile = await ref.watch(simpleSelectedProfileProvider.future);
+
+  if (selectedProfile == null) {
+    return <MedicalRecord>[];
+  }
+
+  try {
+    final database = AppDatabase.instance;
+    var query = database.select(database.medicalRecords)
+      ..where(
+        (record) =>
+            record.profileId.equals(selectedProfile.id) &
+            record.isActive.equals(true),
+      )
+      ..orderBy([
+        (record) => drift.OrderingTerm(
+          expression: record.recordDate,
+          mode: drift.OrderingMode.desc,
+        ),
+      ])
+      ..limit(5);
+
+    return await query.get();
+  } catch (e) {
+    print('Error loading recent records: $e');
+    return <MedicalRecord>[];
+  }
+});
 
 class RecentActivityWidget extends ConsumerWidget {
   const RecentActivityWidget({super.key});
@@ -11,58 +44,204 @@ class RecentActivityWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final profileState = ref.watch(profileNotifierProvider);
-    final recentRecordsAsync = ref.watch(recentMedicalRecordsProvider({
-      'limit': 5,
-      'profileId': profileState.selectedProfile?.id,
-    }));
+    final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.history,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Recent Activity',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+    return selectedProfileAsync.when(
+      loading: () => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.history,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Recent Activity',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'Loading profile...',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
                   ),
                 ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Full activity log - Coming with navigation integration'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      error: (error, stack) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.history,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Recent Activity',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-                  },
-                  child: const Text('View All'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildEmptyActivityState(context),
+            ],
+          ),
+        ),
+      ),
+      data: (selectedProfile) {
+        // If no profile is selected, show empty state immediately
+        if (selectedProfile == null) {
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.history,
+                        color: theme.colorScheme.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Recent Activity',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEmptyActivityState(context),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Use the provider defined outside build method
+        final recentRecordsAsync = ref.watch(recentMedicalRecordsProvider);
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.history,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Recent Activity',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Full activity log - Coming with navigation integration',
+                            ),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        minimumSize: const Size(0, 32),
+                      ),
+                      child: const Text(
+                        'View All',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                recentRecordsAsync.when(
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          SizedBox(height: 12),
+                          Text(
+                            'Loading recent activity...',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  error: (error, stack) => _buildErrorState(context, error),
+                  data: (records) => records.isEmpty
+                      ? _buildEmptyActivityState(context)
+                      : _buildActivityList(context, records),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            recentRecordsAsync.when(
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              error: (error, stack) => _buildErrorState(context, error),
-              data: (records) => _buildActivityList(context, records),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -73,16 +252,9 @@ class RecentActivityWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: theme.colorScheme.error,
-            size: 48,
-          ),
+          Icon(Icons.error_outline, color: theme.colorScheme.error, size: 48),
           const SizedBox(height: 8),
-          Text(
-            'Error loading activity',
-            style: theme.textTheme.titleSmall,
-          ),
+          Text('Error loading activity', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
             error.toString(),
@@ -98,51 +270,64 @@ class RecentActivityWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildActivityList(BuildContext context, List<MedicalRecord> records) {
+  Widget _buildEmptyActivityState(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (records.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Icon(
-              Icons.inbox_outlined,
-              color: theme.colorScheme.primary,
-              size: 48,
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Icon(
+            Icons.inbox_outlined,
+            color: theme.colorScheme.primary,
+            size: 48,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'No recent activity',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'No recent activity',
-              style: theme.textTheme.titleSmall,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Your medical records and activities will appear here',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Your medical records and activities will appear here',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Navigate to add medical record - T054 already implemented'),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Add your first medical record to see activity here',
                   ),
-                );
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Add Record'),
+                ),
+              );
+            },
+            icon: const Icon(Icons.add, size: 16),
+            label: const Text('Add Record'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivityList(BuildContext context, List<MedicalRecord> records) {
+    if (records.isEmpty) {
+      return _buildEmptyActivityState(context);
     }
 
     return Column(
-      children: records.map((record) => _buildActivityItem(context, record)).toList(),
+      children: records
+          .map((record) => _buildActivityItem(context, record))
+          .toList(),
     );
   }
 
@@ -156,10 +341,8 @@ class RecentActivityWidget extends ConsumerWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => MedicalRecordDetailScreen(
-              recordId: record.id,
-              record: record,
-            ),
+            builder: (context) =>
+                MedicalRecordDetailScreen(recordId: record.id, record: record),
           ),
         );
       },
@@ -170,7 +353,9 @@ class RecentActivityWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           color: isRecent
               ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              : theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.5,
+                ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: theme.colorScheme.outline.withValues(alpha: 0.2),
@@ -193,7 +378,7 @@ class RecentActivityWidget extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 12),
-            
+
             // Activity Details
             Expanded(
               child: Column(
@@ -213,7 +398,10 @@ class RecentActivityWidget extends ConsumerWidget {
                       ),
                       if (isRecent)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: theme.colorScheme.primary,
                             borderRadius: BorderRadius.circular(8),
@@ -267,7 +455,7 @@ class RecentActivityWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             // Arrow Icon
             Icon(
               Icons.arrow_forward_ios,

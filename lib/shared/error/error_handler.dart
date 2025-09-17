@@ -142,7 +142,7 @@ class ErrorHandler {
     bool recover = true,
   }) async {
     final appException = _convertToAppException(error, stackTrace);
-    
+
     if (kDebugMode) {
       debugPrint('Error handled: ${appException.message}');
       if (appException.stackTrace != null) {
@@ -166,7 +166,7 @@ class ErrorHandler {
     }
 
     final errorMessage = error?.toString() ?? 'Unknown error occurred';
-    
+
     if (error is FormatException || error is ArgumentError) {
       return ValidationException(
         message: errorMessage,
@@ -252,7 +252,7 @@ class ErrorHandler {
         notify: notify,
         recover: recover,
       );
-      
+
       if (fallback != null) {
         return fallback;
       }
@@ -275,7 +275,7 @@ class ErrorHandler {
         notify: notify,
         recover: recover,
       );
-      
+
       if (fallback != null) {
         return fallback;
       }
@@ -291,10 +291,7 @@ class ErrorHandler {
 }
 
 extension ErrorHandlerExtension<T> on Future<T> {
-  Future<T> handleErrors({
-    bool notify = true,
-    bool recover = true,
-  }) {
+  Future<T> handleErrors({bool notify = true, bool recover = true}) {
     return ErrorHandler().runGuarded(
       () => this,
       notify: notify,

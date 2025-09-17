@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import '../../data/database/app_database.dart';
 import '../../data/repositories/profile_dao.dart';
 import 'tag_service.dart';
@@ -12,9 +13,9 @@ class SearchService {
     AppDatabase? database,
     ProfileDao? profileDao,
     TagService? tagService,
-  })  : _database = database ?? AppDatabase.instance,
-        _profileDao = profileDao ?? ProfileDao(database ?? AppDatabase.instance),
-        _tagService = tagService ?? TagService();
+  }) : _database = database ?? AppDatabase.instance,
+       _profileDao = profileDao ?? ProfileDao(database ?? AppDatabase.instance),
+       _tagService = tagService ?? TagService();
 
   // Full-text search across all entities
   Future<SearchResults> searchAll({
@@ -49,9 +50,10 @@ class SearchService {
       medicalRecords: results[1] as List<MedicalRecord>,
       tags: results[2] as List<Tag>,
       query: query,
-      totalResults: (results[0] as List).length + 
-                   (results[1] as List).length + 
-                   (results[2] as List).length,
+      totalResults:
+          (results[0] as List).length +
+          (results[1] as List).length +
+          (results[2] as List).length,
     );
   }
 
@@ -63,7 +65,9 @@ class SearchService {
     try {
       return await _profileDao.getProfilesByName(query);
     } catch (e) {
-      throw SearchServiceException('Failed to search profiles: ${e.toString()}');
+      throw SearchServiceException(
+        'Failed to search profiles: ${e.toString()}',
+      );
     }
   }
 
@@ -79,11 +83,13 @@ class SearchService {
   }) async {
     try {
       final searchPattern = '%${query.toLowerCase()}%';
-      
+
       var selectQuery = _database.select(_database.medicalRecords)
-        ..where((record) =>
-            record.title.lower().like(searchPattern) |
-            record.description.lower().like(searchPattern));
+        ..where(
+          (record) =>
+              record.title.lower().like(searchPattern) |
+              record.description.lower().like(searchPattern),
+        );
 
       // Filter by profile
       if (profileId != null) {
@@ -100,7 +106,9 @@ class SearchService {
       // Filter by date range
       if (startDate != null) {
         selectQuery = selectQuery
-          ..where((record) => record.recordDate.isBiggerOrEqualValue(startDate));
+          ..where(
+            (record) => record.recordDate.isBiggerOrEqualValue(startDate),
+          );
       }
       if (endDate != null) {
         selectQuery = selectQuery
@@ -109,17 +117,38 @@ class SearchService {
 
       selectQuery = selectQuery
         ..orderBy([
-          (record) => OrderingTerm(expression: record.recordDate, mode: OrderingMode.desc),
+          (record) => OrderingTerm(
+            expression: record.recordDate,
+            mode: OrderingMode.desc,
+          ),
         ])
         ..limit(limit);
 
       var results = await selectQuery.get();
 
-      // TODO: Filter by tags when recordTags table is implemented
+      // Filter by tags if provided
+      if (tagIds != null && tagIds.isNotEmpty) {
+        final filteredResults = <MedicalRecord>[];
+        for (final record in results) {
+          // Check if record has any of the specified tags
+          final recordTags = await (_database.select(
+            _database.recordTags,
+          )..where((row) => row.recordId.equals(record.id))).get();
+          final recordTagIds = recordTags.map((tag) => tag.tagId).toList();
+
+          // If any of the required tag IDs match record tag IDs, include the record
+          if (tagIds.any((tagId) => recordTagIds.contains(tagId))) {
+            filteredResults.add(record);
+          }
+        }
+        return filteredResults;
+      }
 
       return results;
     } catch (e) {
-      throw SearchServiceException('Failed to search medical records: ${e.toString()}');
+      throw SearchServiceException(
+        'Failed to search medical records: ${e.toString()}',
+      );
     }
   }
 
@@ -156,9 +185,11 @@ class SearchService {
       if (textQuery != null && textQuery.trim().isNotEmpty) {
         final searchPattern = '%${textQuery.toLowerCase()}%';
         selectQuery = selectQuery
-          ..where((record) => 
-              record.title.lower().like(searchPattern) |
-              record.description.lower().like(searchPattern));
+          ..where(
+            (record) =>
+                record.title.lower().like(searchPattern) |
+                record.description.lower().like(searchPattern),
+          );
       }
 
       // Profile filter
@@ -176,7 +207,9 @@ class SearchService {
       // Date range filter
       if (startDate != null) {
         selectQuery = selectQuery
-          ..where((record) => record.recordDate.isBiggerOrEqualValue(startDate));
+          ..where(
+            (record) => record.recordDate.isBiggerOrEqualValue(startDate),
+          );
       }
       if (endDate != null) {
         selectQuery = selectQuery
@@ -187,13 +220,18 @@ class SearchService {
 
       selectQuery = selectQuery
         ..orderBy([
-          (record) => OrderingTerm(expression: record.recordDate, mode: OrderingMode.desc),
+          (record) => OrderingTerm(
+            expression: record.recordDate,
+            mode: OrderingMode.desc,
+          ),
         ])
         ..limit(limit);
 
       return await selectQuery.get();
     } catch (e) {
-      throw SearchServiceException('Failed to perform advanced search: ${e.toString()}');
+      throw SearchServiceException(
+        'Failed to perform advanced search: ${e.toString()}',
+      );
     }
   }
 
@@ -218,35 +256,98 @@ class SearchService {
         recentSearches: results[3],
       );
     } catch (e) {
-      throw SearchServiceException('Failed to get search suggestions: ${e.toString()}');
+      throw SearchServiceException(
+        'Failed to get search suggestions: ${e.toString()}',
+      );
     }
   }
 
   // Save search query for future suggestions
   Future<void> saveSearchQuery(String query) async {
-    // TODO: Implement when searchHistory table is added
-    return;
+    if (query.trim().isEmpty) return;
+
+    try {
+      final trimmedQuery = query.trim().toLowerCase();
+
+      // Check if query already exists
+      final existingEntries = await ((_database.select(
+        _database.searchHistory,
+      )..where((row) => row.query.equals(trimmedQuery))).get());
+
+      if (existingEntries.isNotEmpty) {
+        // Update use count for existing query
+        final existingEntry = existingEntries.first;
+        await _database
+            .update(_database.searchHistory)
+            .replace(
+              existingEntry.copyWith(
+                useCount: existingEntry.useCount + 1,
+                createdAt: DateTime.now(),
+              ),
+            );
+      } else {
+        // Insert new query
+        await _database
+            .into(_database.searchHistory)
+            .insert(
+              SearchHistoryCompanion.insert(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                query: trimmedQuery,
+                createdAt: Value(DateTime.now()),
+              ),
+            );
+      }
+    } catch (e) {
+      // Fail silently for search history
+      debugPrint('Failed to save search query: $e');
+    }
   }
 
   // Get popular searches
   Future<List<String>> getPopularSearches({int limit = 10}) async {
-    // TODO: Implement when searchHistory table is added
-    return [];
+    try {
+      final popularSearches =
+          await (_database.select(_database.searchHistory)
+                ..orderBy([
+                  (row) => OrderingTerm(
+                    expression: row.useCount,
+                    mode: OrderingMode.desc,
+                  ),
+                  (row) => OrderingTerm(
+                    expression: row.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+                ])
+                ..limit(limit))
+              .get();
+
+      return popularSearches.map((entry) => entry.query).toList();
+    } catch (e) {
+      debugPrint('Failed to get popular searches: $e');
+      return [];
+    }
   }
 
   // Clear search history
   Future<void> clearSearchHistory() async {
-    // TODO: Implement when searchHistory table is added
-    return;
+    try {
+      await _database.delete(_database.searchHistory).go();
+    } catch (e) {
+      debugPrint('Failed to clear search history: $e');
+      throw SearchServiceException(
+        'Failed to clear search history: ${e.toString()}',
+      );
+    }
   }
 
   // Private helper methods
 
-
   Future<List<String>> _getProfileSuggestions(String query) async {
     try {
       final profiles = await _profileDao.getProfilesByName(query);
-      return profiles.map((profile) => '${profile.firstName} ${profile.lastName}').toList();
+      return profiles
+          .map((profile) => '${profile.firstName} ${profile.lastName}')
+          .toList();
     } catch (e) {
       return [];
     }
@@ -254,8 +355,14 @@ class SearchService {
 
   Future<List<String>> _getRecordTypeSuggestions(String query) async {
     try {
-      final recordTypes = ['prescription', 'lab_report', 'appointment', 'vaccination', 'surgery'];
-      
+      final recordTypes = [
+        'prescription',
+        'lab_report',
+        'appointment',
+        'vaccination',
+        'surgery',
+      ];
+
       return recordTypes
           .where((type) => type.toLowerCase().contains(query.toLowerCase()))
           .toList();
@@ -274,10 +381,24 @@ class SearchService {
   }
 
   Future<List<String>> _getRecentSearches() async {
-    // TODO: Implement when searchHistory table is added
-    return [];
-  }
+    try {
+      final recentSearches =
+          await (_database.select(_database.searchHistory)
+                ..orderBy([
+                  (row) => OrderingTerm(
+                    expression: row.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+                ])
+                ..limit(5))
+              .get();
 
+      return recentSearches.map((entry) => entry.query).toList();
+    } catch (e) {
+      debugPrint('Failed to get recent searches: $e');
+      return [];
+    }
+  }
 }
 
 // Data Transfer Objects
@@ -334,12 +455,7 @@ class SearchSuggestions {
   }
 
   List<String> get allSuggestions {
-    return [
-      ...profiles,
-      ...recordTypes,
-      ...tags,
-      ...recentSearches,
-    ];
+    return [...profiles, ...recordTypes, ...tags, ...recentSearches];
   }
 }
 
@@ -388,13 +504,13 @@ class SearchFilter {
 
   bool get hasActiveFilters {
     return profileId != null ||
-           (recordTypes?.isNotEmpty ?? false) ||
-           (tagIds?.isNotEmpty ?? false) ||
-           startDate != null ||
-           endDate != null ||
-           severity != null ||
-           hasAttachments != null ||
-           hasReminders != null;
+        (recordTypes?.isNotEmpty ?? false) ||
+        (tagIds?.isNotEmpty ?? false) ||
+        startDate != null ||
+        endDate != null ||
+        severity != null ||
+        hasAttachments != null ||
+        hasReminders != null;
   }
 }
 
@@ -402,9 +518,9 @@ class SearchFilter {
 
 class SearchServiceException implements Exception {
   final String message;
-  
+
   const SearchServiceException(this.message);
-  
+
   @override
   String toString() => 'SearchServiceException: $message';
 }

@@ -32,10 +32,7 @@ class AccessibilityUtils {
       hint: hint,
       button: true,
       excludeSemantics: excludeSemantics ?? false,
-      child: InkWell(
-        onTap: onPressed,
-        child: child,
-      ),
+      child: InkWell(onTap: onPressed, child: child),
     );
   }
 
@@ -52,10 +49,7 @@ class AccessibilityUtils {
       button: onTap != null,
       excludeSemantics: excludeSemantics ?? false,
       child: Card(
-        child: InkWell(
-          onTap: onTap,
-          child: child,
-        ),
+        child: InkWell(onTap: onTap, child: child),
       ),
     );
   }
@@ -149,12 +143,7 @@ class AccessibilityUtils {
       label: semanticLabel,
       hint: hint,
       excludeSemantics: true,
-      child: Icon(
-        icon,
-        size: size,
-        color: color,
-        semanticLabel: semanticLabel,
-      ),
+      child: Icon(icon, size: size, color: color, semanticLabel: semanticLabel),
     );
   }
 

@@ -8,35 +8,34 @@ import '../widgets/vitals_chart_widget.dart';
 class VitalsTrackingScreen extends ConsumerStatefulWidget {
   final String profileId;
 
-  const VitalsTrackingScreen({
-    super.key,
-    required this.profileId,
-  });
+  const VitalsTrackingScreen({super.key, required this.profileId});
 
   @override
-  ConsumerState<VitalsTrackingScreen> createState() => _VitalsTrackingScreenState();
+  ConsumerState<VitalsTrackingScreen> createState() =>
+      _VitalsTrackingScreenState();
 }
 
 class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
     with TickerProviderStateMixin {
   final AnalyticsService _analyticsService = AnalyticsService();
-  
+
   // UI State
   VitalType _selectedVitalType = VitalType.bloodPressure;
   TimeRange _selectedTimeRange = TimeRange.month;
   bool _isLoading = false;
   bool _showAddForm = false;
-  
+
   // Data
   VitalStatistics? _statistics;
   List<VitalReading> _readings = [];
   Map<VitalType, VitalStatistics> _allStatistics = {};
-  
+
   // Form controllers
   final TextEditingController _valueController = TextEditingController();
-  final TextEditingController _secondaryValueController = TextEditingController();
+  final TextEditingController _secondaryValueController =
+      TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-  
+
   // Animation
   late TabController _tabController;
 
@@ -49,9 +48,9 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
 
   Future<void> _loadData() async {
     if (!mounted) return;
-    
+
     setState(() => _isLoading = true);
-    
+
     try {
       // Load readings for selected vital type and time range
       final readings = await _analyticsService.getVitalReadings(
@@ -59,20 +58,20 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         type: _selectedVitalType,
         timeRange: _selectedTimeRange,
       );
-      
+
       // Load statistics
       final statistics = await _analyticsService.getVitalStatistics(
         profileId: widget.profileId,
         type: _selectedVitalType,
         timeRange: _selectedTimeRange,
       );
-      
+
       // Load all statistics for overview
       final allStats = await _analyticsService.getAllVitalStatistics(
         profileId: widget.profileId,
         timeRange: _selectedTimeRange,
       );
-      
+
       if (mounted) {
         setState(() {
           _readings = readings;
@@ -110,10 +109,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadData,
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
         ],
       ),
       body: _isLoading
@@ -139,7 +135,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
       children: [
         // Vital type and time range selectors
         _buildSelectors(),
-        
+
         // Chart
         Expanded(
           child: _readings.isEmpty
@@ -153,7 +149,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                   ),
                 ),
         ),
-        
+
         // Recent readings list
         if (_readings.isNotEmpty) _buildRecentReadings(),
       ],
@@ -166,7 +162,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
     }
 
     final stats = _statistics!;
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -174,36 +170,56 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
           // Vital type selector
           _buildVitalTypeSelector(),
           const SizedBox(height: 16),
-          
+
           // Summary cards
           Row(
             children: [
-              Expanded(child: _buildStatCard('Total Readings', '${stats.totalReadings}')),
+              Expanded(
+                child: _buildStatCard(
+                  'Total Readings',
+                  '${stats.totalReadings}',
+                ),
+              ),
               const SizedBox(width: 8),
-              Expanded(child: _buildStatCard('Average', stats.average.toStringAsFixed(1))),
+              Expanded(
+                child: _buildStatCard(
+                  'Average',
+                  stats.average.toStringAsFixed(1),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(child: _buildStatCard('Minimum', stats.minimum.toStringAsFixed(1))),
+              Expanded(
+                child: _buildStatCard(
+                  'Minimum',
+                  stats.minimum.toStringAsFixed(1),
+                ),
+              ),
               const SizedBox(width: 8),
-              Expanded(child: _buildStatCard('Maximum', stats.maximum.toStringAsFixed(1))),
+              Expanded(
+                child: _buildStatCard(
+                  'Maximum',
+                  stats.maximum.toStringAsFixed(1),
+                ),
+              ),
             ],
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Trend analysis
           _buildTrendCard(stats.trend),
-          
+
           const SizedBox(height: 16),
-          
+
           // Status distribution
           _buildStatusDistributionCard(stats.statusDistribution),
-          
+
           const SizedBox(height: 16),
-          
+
           // Detailed readings
           _buildDetailedReadingsList(stats.readings.take(10).toList()),
         ],
@@ -223,7 +239,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
           // Time range selector
           _buildTimeRangeSelector(),
           const SizedBox(height: 16),
-          
+
           // Overview cards for each vital type
           for (final entry in _allStatistics.entries) ...[
             _buildVitalOverviewCard(entry.key, entry.value),
@@ -326,9 +342,9 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
           const SizedBox(height: 16),
           Text(
             'No ${_analyticsService.getVitalTypeDisplayName(_selectedVitalType).toLowerCase()} data',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.grey,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: Colors.grey),
           ),
           const SizedBox(height: 8),
           const Text(
@@ -342,7 +358,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
 
   Widget _buildRecentReadings() {
     final recentReadings = _readings.take(3).toList();
-    
+
     return Container(
       height: 120,
       padding: const EdgeInsets.all(16.0),
@@ -426,7 +442,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
   Widget _buildTrendCard(VitalTrend trend) {
     Color trendColor;
     IconData trendIcon;
-    
+
     switch (trend.direction) {
       case TrendDirection.increasing:
         trendColor = Colors.red;
@@ -481,7 +497,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
 
   Widget _buildStatusDistributionCard(Map<VitalStatus, int> distribution) {
     final total = distribution.values.fold(0, (sum, count) => sum + count);
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -507,7 +523,9 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                   const SizedBox(width: 8),
                   Text(_getStatusDisplayName(entry.key)),
                   const Spacer(),
-                  Text('${entry.value} (${(entry.value / total * 100).toStringAsFixed(1)}%)'),
+                  Text(
+                    '${entry.value} (${(entry.value / total * 100).toStringAsFixed(1)}%)',
+                  ),
                 ],
               ),
               const SizedBox(height: 4),
@@ -538,22 +556,31 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          reading.displayValue + (reading.unit != null ? ' ${reading.unit}' : ''),
+                          reading.displayValue +
+                              (reading.unit != null ? ' ${reading.unit}' : ''),
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         Text(
                           '${reading.timestamp.day}/${reading.timestamp.month}/${reading.timestamp.year} '
                           '${reading.timestamp.hour.toString().padLeft(2, '0')}:'
                           '${reading.timestamp.minute.toString().padLeft(2, '0')}',
-                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(reading.status).withValues(alpha: 0.2),
+                      color: _getStatusColor(
+                        reading.status,
+                      ).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -588,13 +615,21 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                 Expanded(
                   child: Text(
                     _analyticsService.getVitalTypeDisplayName(type),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
-                    color: _getTrendColor(stats.trend.direction).withValues(alpha: 0.2),
+                    color: _getTrendColor(
+                      stats.trend.direction,
+                    ).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -626,9 +661,14 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Latest', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      const Text(
+                        'Latest',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
                       Text(
-                        stats.readings.isNotEmpty ? stats.readings.last.displayValue : 'N/A',
+                        stats.readings.isNotEmpty
+                            ? stats.readings.last.displayValue
+                            : 'N/A',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -638,7 +678,10 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Average', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      const Text(
+                        'Average',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
                       Text(
                         stats.average.toStringAsFixed(1),
                         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -650,7 +693,10 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Text('Readings', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      const Text(
+                        'Readings',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
                       Text(
                         '${stats.totalReadings}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -698,7 +744,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Vital type dropdown
           DropdownButtonFormField<VitalType>(
             initialValue: _selectedVitalType,
@@ -719,7 +765,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
             },
           ),
           const SizedBox(height: 16),
-          
+
           // Value inputs
           Row(
             children: [
@@ -731,7 +777,9 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
                         ? 'Systolic'
                         : 'Value',
                     border: const OutlineInputBorder(),
-                    suffixText: _analyticsService.getVitalTypeUnit(_selectedVitalType),
+                    suffixText: _analyticsService.getVitalTypeUnit(
+                      _selectedVitalType,
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -752,7 +800,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Notes
           TextFormField(
             controller: _notesController,
@@ -763,7 +811,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
             maxLines: 2,
           ),
           const SizedBox(height: 16),
-          
+
           // Action buttons
           Row(
             children: [
@@ -826,7 +874,9 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         secondaryValue: secondaryValue,
         unit: _analyticsService.getVitalTypeUnit(_selectedVitalType),
         timestamp: DateTime.now(),
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
       );
 
       await _analyticsService.addVitalReading(reading);

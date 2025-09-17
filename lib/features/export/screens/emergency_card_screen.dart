@@ -11,13 +11,11 @@ import '../../medical_records/services/medical_records_service.dart';
 class EmergencyCardScreen extends ConsumerStatefulWidget {
   final String profileId;
 
-  const EmergencyCardScreen({
-    super.key,
-    required this.profileId,
-  });
+  const EmergencyCardScreen({super.key, required this.profileId});
 
   @override
-  ConsumerState<EmergencyCardScreen> createState() => _EmergencyCardScreenState();
+  ConsumerState<EmergencyCardScreen> createState() =>
+      _EmergencyCardScreenState();
 }
 
 class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
@@ -86,25 +84,33 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
       // Load existing config
       final existingConfig = await _emergencyCardService!
           .getEmergencyCardConfig(widget.profileId);
-      
+
       if (existingConfig != null) {
-        _emergencyContactController.text = existingConfig.emergencyContact ?? '';
-        _secondaryContactController.text = existingConfig.secondaryContact ?? '';
+        _emergencyContactController.text =
+            existingConfig.emergencyContact ?? '';
+        _secondaryContactController.text =
+            existingConfig.secondaryContact ?? '';
         _insuranceInfoController.text = existingConfig.insuranceInfo ?? '';
         _additionalNotesController.text = existingConfig.additionalNotes ?? '';
-        
+
         _selectedAllergies = List.from(existingConfig.criticalAllergies);
         _selectedMedications = List.from(existingConfig.currentMedications);
         _selectedConditions = List.from(existingConfig.medicalConditions);
       }
 
       // Load available medical records
-      _availableAllergies = await _medicalRecordsService!
-          .searchRecords(profileId: widget.profileId, recordType: 'allergy');
-      _availableMedications = await _medicalRecordsService!
-          .searchRecords(profileId: widget.profileId, recordType: 'medication');
-      _availableConditions = await _medicalRecordsService!
-          .searchRecords(profileId: widget.profileId, recordType: 'chronic_condition');
+      _availableAllergies = await _medicalRecordsService!.searchRecords(
+        profileId: widget.profileId,
+        recordType: 'allergy',
+      );
+      _availableMedications = await _medicalRecordsService!.searchRecords(
+        profileId: widget.profileId,
+        recordType: 'medication',
+      );
+      _availableConditions = await _medicalRecordsService!.searchRecords(
+        profileId: widget.profileId,
+        recordType: 'chronic_condition',
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -166,7 +172,11 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error, size: 64, color: Theme.of(context).colorScheme.error),
+              Icon(
+                Icons.error,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
+              ),
               const SizedBox(height: 16),
               Text('Error loading profile: ${error.toString()}'),
               const SizedBox(height: 16),
@@ -250,7 +260,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
                               ? const SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : const Icon(Icons.picture_as_pdf),
                           label: const Text('Generate PDF'),
@@ -341,9 +353,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           children: [
             Text(
               'Personal Information',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildInfoTile('Name', '${profile.firstName} ${profile.lastName}'),
@@ -370,9 +382,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           children: [
             Text(
               'Emergency Contacts',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -419,9 +431,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           children: [
             Text(
               'Medical Information',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildMedicalSection(
@@ -465,9 +477,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           children: [
             Text(
               'Card Options',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
@@ -509,9 +521,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           children: [
             Text(
               'Additional Notes',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -558,19 +570,23 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: available.map((record) => FilterChip(
-              label: Text(record.title),
-              selected: selected.contains(record.title),
-              onSelected: (isSelected) {
-                setState(() {
-                  if (isSelected) {
-                    selected.add(record.title);
-                  } else {
-                    selected.remove(record.title);
-                  }
-                });
-              },
-            )).toList(),
+            children: available
+                .map(
+                  (record) => FilterChip(
+                    label: Text(record.title),
+                    selected: selected.contains(record.title),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        if (isSelected) {
+                          selected.add(record.title);
+                        } else {
+                          selected.remove(record.title);
+                        }
+                      });
+                    },
+                  ),
+                )
+                .toList(),
           ),
           const SizedBox(height: 8),
         ],
@@ -600,9 +616,9 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
             width: 120,
             child: Text(
               '$label:',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
           Expanded(
@@ -655,7 +671,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
     try {
       final config = _getCurrentConfig();
       await _emergencyCardService!.saveEmergencyCardConfig(config);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -687,7 +703,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
 
     try {
       await _saveConfiguration();
-      
+
       final filePath = await _emergencyCardService!.generateEmergencyCard(
         widget.profileId,
         includeQRCode: _includeQRCode,
@@ -698,7 +714,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
             ? _additionalNotesController.text.trim()
             : null,
       );
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -733,7 +749,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         widget.profileId,
         size: 300.0,
       );
-      
+
       if (mounted) {
         showDialog(
           context: context,
@@ -808,22 +824,18 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
   void _shareFile(String filePath) {
     // Implementation would depend on platform-specific sharing
     // This would typically use share_plus package
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('File saved to: $filePath'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('File saved to: $filePath')));
   }
 
   void _shareQRCode(Uint8List qrBytes) {
     // Implementation would depend on platform-specific sharing
     // This would typically use share_plus package
     Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('QR code ready to share'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('QR code ready to share')));
   }
 
   String _formatDate(DateTime date) {

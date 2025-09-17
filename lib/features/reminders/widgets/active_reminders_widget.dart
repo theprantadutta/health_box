@@ -33,7 +33,11 @@ class ActiveRemindersWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref, List<Reminder> reminders) {
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref,
+    List<Reminder> reminders,
+  ) {
     final displayReminders = maxItems != null && reminders.length > maxItems!
         ? reminders.take(maxItems!).toList()
         : reminders;
@@ -47,8 +51,12 @@ class ActiveRemindersWidget extends ConsumerWidget {
       child: Column(
         children: [
           if (showHeader) _buildHeader(context, reminders.length),
-          ...displayReminders.map((reminder) => _buildReminderTile(context, ref, reminder)),
-          if (maxItems != null && reminders.length > maxItems! && onViewAll != null)
+          ...displayReminders.map(
+            (reminder) => _buildReminderTile(context, ref, reminder),
+          ),
+          if (maxItems != null &&
+              reminders.length > maxItems! &&
+              onViewAll != null)
             _buildViewAllButton(context, reminders.length - maxItems!),
         ],
       ),
@@ -67,9 +75,9 @@ class ActiveRemindersWidget extends ConsumerWidget {
           const SizedBox(width: 8),
           Text(
             'Active Reminders',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const Spacer(),
           if (totalCount > 0)
@@ -92,7 +100,11 @@ class ActiveRemindersWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildReminderTile(BuildContext context, WidgetRef ref, Reminder reminder) {
+  Widget _buildReminderTile(
+    BuildContext context,
+    WidgetRef ref,
+    Reminder reminder,
+  ) {
     final isOverdue = _isOverdue(reminder);
     final nextOccurrence = _getNextOccurrence(reminder);
 
@@ -100,9 +112,9 @@ class ActiveRemindersWidget extends ConsumerWidget {
       leading: _buildReminderIcon(context, reminder, isOverdue),
       title: Text(
         reminder.title,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +153,8 @@ class ActiveRemindersWidget extends ConsumerWidget {
         children: [
           _buildStatusIndicator(context, reminder, isOverdue),
           PopupMenuButton<String>(
-            onSelected: (action) => _handleAction(context, ref, action, reminder),
+            onSelected: (action) =>
+                _handleAction(context, ref, action, reminder),
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'toggle',
@@ -184,7 +197,11 @@ class ActiveRemindersWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildReminderIcon(BuildContext context, Reminder reminder, bool isOverdue) {
+  Widget _buildReminderIcon(
+    BuildContext context,
+    Reminder reminder,
+    bool isOverdue,
+  ) {
     IconData iconData;
     Color? color;
 
@@ -236,7 +253,11 @@ class ActiveRemindersWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusIndicator(BuildContext context, Reminder reminder, bool isOverdue) {
+  Widget _buildStatusIndicator(
+    BuildContext context,
+    Reminder reminder,
+    bool isOverdue,
+  ) {
     if (!reminder.isActive) {
       return Container(
         padding: const EdgeInsets.all(4),
@@ -259,25 +280,14 @@ class ActiveRemindersWidget extends ConsumerWidget {
           color: Colors.red,
           shape: BoxShape.circle,
         ),
-        child: const Icon(
-          Icons.warning,
-          size: 12,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.warning, size: 12, color: Colors.white),
       );
     }
 
     return Container(
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.green,
-        shape: BoxShape.circle,
-      ),
-      child: const Icon(
-        Icons.check,
-        size: 12,
-        color: Colors.white,
-      ),
+      decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+      child: const Icon(Icons.check, size: 12, color: Colors.white),
     );
   }
 
@@ -312,9 +322,7 @@ class ActiveRemindersWidget extends ConsumerWidget {
     return const Card(
       child: Padding(
         padding: EdgeInsets.all(32.0),
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+        child: Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -383,7 +391,12 @@ class ActiveRemindersWidget extends ConsumerWidget {
     );
   }
 
-  void _handleAction(BuildContext context, WidgetRef ref, String action, Reminder reminder) {
+  void _handleAction(
+    BuildContext context,
+    WidgetRef ref,
+    String action,
+    Reminder reminder,
+  ) {
     switch (action) {
       case 'toggle':
         _toggleReminder(context, ref, reminder);
@@ -400,11 +413,18 @@ class ActiveRemindersWidget extends ConsumerWidget {
     }
   }
 
-  Future<void> _toggleReminder(BuildContext context, WidgetRef ref, Reminder reminder) async {
+  Future<void> _toggleReminder(
+    BuildContext context,
+    WidgetRef ref,
+    Reminder reminder,
+  ) async {
     try {
       final reminderService = ref.read(reminderServiceProvider);
-      await reminderService.toggleReminderActive(reminder.id, !reminder.isActive);
-      
+      await reminderService.toggleReminderActive(
+        reminder.id,
+        !reminder.isActive,
+      );
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -426,19 +446,21 @@ class ActiveRemindersWidget extends ConsumerWidget {
     }
   }
 
-  Future<void> _snoozeReminder(BuildContext context, WidgetRef ref, Reminder reminder) async {
+  Future<void> _snoozeReminder(
+    BuildContext context,
+    WidgetRef ref,
+    Reminder reminder,
+  ) async {
     final minutes = await _showSnoozeDialog(context);
     if (minutes == null) return;
 
     try {
       final reminderScheduler = ReminderScheduler();
       await reminderScheduler.snoozeReminder(reminder.id, minutes: minutes);
-      
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Reminder snoozed for $minutes minutes'),
-          ),
+          SnackBar(content: Text('Reminder snoozed for $minutes minutes')),
         );
       }
     } catch (e) {
@@ -453,20 +475,22 @@ class ActiveRemindersWidget extends ConsumerWidget {
     }
   }
 
-  Future<void> _deleteReminder(BuildContext context, WidgetRef ref, Reminder reminder) async {
+  Future<void> _deleteReminder(
+    BuildContext context,
+    WidgetRef ref,
+    Reminder reminder,
+  ) async {
     final confirm = await _showDeleteDialog(context, reminder);
     if (!confirm) return;
 
     try {
       final reminderService = ref.read(reminderServiceProvider);
       await reminderService.deleteReminder(reminder.id);
-      
+
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Reminder deleted'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Reminder deleted')));
       }
     } catch (e) {
       if (context.mounted) {
@@ -512,7 +536,10 @@ class ActiveRemindersWidget extends ConsumerWidget {
     );
   }
 
-  Future<bool> _showDeleteDialog(BuildContext context, Reminder reminder) async {
+  Future<bool> _showDeleteDialog(
+    BuildContext context,
+    Reminder reminder,
+  ) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -531,7 +558,7 @@ class ActiveRemindersWidget extends ConsumerWidget {
         ],
       ),
     );
-    
+
     return result ?? false;
   }
 
@@ -542,7 +569,8 @@ class ActiveRemindersWidget extends ConsumerWidget {
 
   bool _isOverdue(Reminder reminder) {
     return reminder.scheduledTime.isBefore(DateTime.now()) &&
-        (reminder.lastSent == null || reminder.lastSent!.isBefore(reminder.scheduledTime));
+        (reminder.lastSent == null ||
+            reminder.lastSent!.isBefore(reminder.scheduledTime));
   }
 
   DateTime? _getNextOccurrence(Reminder reminder) {

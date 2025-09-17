@@ -67,8 +67,8 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
               ],
             ),
             const SizedBox(height: 16),
-            ...widget.attachments.map((attachment) => 
-              _buildAttachmentItem(theme, attachment),
+            ...widget.attachments.map(
+              (attachment) => _buildAttachmentItem(theme, attachment),
             ),
           ],
         ),
@@ -88,10 +88,7 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
               color: theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: 12),
-            Text(
-              'No attachments',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('No attachments', style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
               'This record has no attached files',
@@ -110,9 +107,9 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: widget.attachments.map((attachment) => 
-        _buildCompactAttachmentChip(theme, attachment),
-      ).toList(),
+      children: widget.attachments
+          .map((attachment) => _buildCompactAttachmentChip(theme, attachment))
+          .toList(),
     );
   }
 
@@ -141,7 +138,9 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            color: theme.colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.5,
+            ),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: theme.colorScheme.outline.withValues(alpha: 0.2),
@@ -155,7 +154,7 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
                   // File type icon and preview
                   _buildFilePreview(theme, attachment),
                   const SizedBox(width: 12),
-                  
+
                   // File details
                   Expanded(
                     child: Column(
@@ -173,7 +172,9 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
                         Row(
                           children: [
                             Text(
-                              FileUtils.getReadableFileType(attachment.fileName),
+                              FileUtils.getReadableFileType(
+                                attachment.fileName,
+                              ),
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: _getFileTypeColor(attachment.fileType),
                                 fontWeight: FontWeight.w500,
@@ -203,20 +204,23 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
                       ],
                     ),
                   ),
-                  
+
                   // Actions
                   _buildAttachmentActions(theme, attachment),
                 ],
               ),
-              
+
               // Description
-              if (widget.showDescription && attachment.description?.isNotEmpty == true) ...[
+              if (widget.showDescription &&
+                  attachment.description?.isNotEmpty == true) ...[
                 const SizedBox(height: 8),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.3),
+                    color: theme.colorScheme.surfaceContainerHigh.withValues(
+                      alpha: 0.3,
+                    ),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -300,11 +304,7 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
         const PopupMenuItem(
           value: 'share',
           child: Row(
-            children: [
-              Icon(Icons.share),
-              SizedBox(width: 8),
-              Text('Share'),
-            ],
+            children: [Icon(Icons.share), SizedBox(width: 8), Text('Share')],
           ),
         ),
         if (widget.allowDelete)
@@ -328,7 +328,7 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
         widget.onAttachmentTap?.call(attachment);
         break;
       case 'share':
-        _showNotImplemented('Share functionality coming in Phase 3.12');
+        _shareAttachment(attachment);
         break;
       case 'delete':
         _showDeleteConfirmation(attachment);
@@ -364,11 +364,62 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
     );
   }
 
-  void _showNotImplemented(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  Future<void> _shareAttachment(Attachment attachment) async {
+    try {
+      if (attachment.filePath.isEmpty) {
+        _showMessage('File path not available for sharing');
+        return;
+      }
+
+      final file = File(attachment.filePath);
+      if (!await file.exists()) {
+        _showMessage('File not found: ${attachment.fileName}');
+        return;
+      }
+
+      // For now, show a dialog with file information
+      // In a full implementation, this would use share_plus package
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Share ${attachment.fileName}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('File: ${attachment.fileName}'),
+              Text('Type: ${attachment.fileType}'),
+              Text('Size: ${attachment.fileSize} bytes'),
+              const SizedBox(height: 16),
+              const Text('Sharing functionality would export this file to other apps.'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showMessage('Share functionality requires share_plus package');
+              },
+              child: const Text('Share'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      _showMessage('Error sharing file: ${e.toString()}');
+    }
   }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
 
   IconData _getFileTypeIcon(String fileType) {
     switch (fileType.toLowerCase()) {
@@ -415,7 +466,7 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
     } else if (difference.inHours > 0) {

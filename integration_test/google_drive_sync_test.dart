@@ -5,11 +5,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:health_box/main.dart' as app;
 
 /// Integration test for Google Drive synchronization functionality
-/// 
-/// User Story: "As a user, I want to optionally sync my medical data 
-/// to Google Drive so I can access my records from multiple devices 
+///
+/// User Story: "As a user, I want to optionally sync my medical data
+/// to Google Drive so I can access my records from multiple devices
 /// and have a secure backup in the cloud."
-/// 
+///
 /// Test Coverage:
 /// - Google Drive authentication and authorization
 /// - Initial sync setup and configuration
@@ -19,7 +19,7 @@ import 'package:health_box/main.dart' as app;
 /// - Selective sync with privacy controls
 /// - Sync status monitoring and error handling
 /// - Encryption of data before cloud storage
-/// 
+///
 /// This test MUST fail until Google Drive sync is implemented.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +41,10 @@ void main() {
       expect(find.text('Google Drive Sync'), findsOneWidget);
       expect(find.text('Secure cloud backup and sync'), findsOneWidget);
       expect(find.text('Status: Not Connected'), findsOneWidget);
-      expect(find.byKey(const Key('connect_google_drive_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('connect_google_drive_button')),
+        findsOneWidget,
+      );
 
       // Should show sync benefits
       expect(find.text('✓ Access records from any device'), findsOneWidget);
@@ -54,7 +57,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Connect to Google Drive'), findsOneWidget);
-      expect(find.text('HealthBox needs permission to store encrypted medical data'), findsOneWidget);
+      expect(
+        find.text('HealthBox needs permission to store encrypted medical data'),
+        findsOneWidget,
+      );
 
       // Should show permissions requested
       expect(find.text('Permissions Required:'), findsOneWidget);
@@ -111,11 +117,14 @@ void main() {
       await tester.tap(find.byKey(const Key('wifi_only_toggle')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Sync only on WiFi to save mobile data'), findsOneWidget);
+      expect(
+        find.text('Sync only on WiFi to save mobile data'),
+        findsOneWidget,
+      );
 
       // Step 2: Configure what to sync
       expect(find.text('Data to Sync'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('sync_profiles_toggle')));
       await tester.tap(find.byKey(const Key('sync_medical_records_toggle')));
       await tester.tap(find.byKey(const Key('sync_reminders_toggle')));
@@ -136,16 +145,22 @@ void main() {
 
       // Step 3: Configure privacy and encryption settings
       expect(find.text('Privacy & Security'), findsOneWidget);
-      
+
       // Verify encryption is always enabled
       expect(find.text('End-to-end encryption: Enabled'), findsOneWidget);
-      expect(find.text('Your data is encrypted before leaving your device'), findsOneWidget);
-      
+      expect(
+        find.text('Your data is encrypted before leaving your device'),
+        findsOneWidget,
+      );
+
       // Configure additional privacy options
       await tester.tap(find.byKey(const Key('exclude_attachments_toggle')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Attachments will be stored locally only'), findsOneWidget);
+      expect(
+        find.text('Attachments will be stored locally only'),
+        findsOneWidget,
+      );
 
       // Step 4: Save sync configuration
       await tester.tap(find.byKey(const Key('save_sync_settings_button')));
@@ -169,8 +184,14 @@ void main() {
 
       // Step 1: Initiate first sync
       expect(find.text('Initial Sync'), findsOneWidget);
-      expect(find.text('Upload your existing data to Google Drive'), findsOneWidget);
-      expect(find.byKey(const Key('start_initial_sync_button')), findsOneWidget);
+      expect(
+        find.text('Upload your existing data to Google Drive'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('start_initial_sync_button')),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byKey(const Key('start_initial_sync_button')));
       await tester.pumpAndSettle();
@@ -178,7 +199,7 @@ void main() {
       // Step 2: Show sync preparation
       expect(find.text('Preparing Sync...'), findsOneWidget);
       expect(find.text('Analyzing local data'), findsOneWidget);
-      
+
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
       // Should show what will be synced
@@ -223,7 +244,9 @@ void main() {
       expect(find.byIcon(Icons.cloud_done), findsOneWidget);
     });
 
-    testWidgets('handle sync conflicts between local and cloud data', (tester) async {
+    testWidgets('handle sync conflicts between local and cloud data', (
+      tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -244,8 +267,13 @@ void main() {
 
       // Step 2: Show conflict detection
       expect(find.text('Sync Conflicts Detected'), findsOneWidget);
-      expect(find.text('Some records have been modified both locally and in the cloud'), findsOneWidget);
-      
+      expect(
+        find.text(
+          'Some records have been modified both locally and in the cloud',
+        ),
+        findsOneWidget,
+      );
+
       expect(find.text('3 conflicts need resolution'), findsOneWidget);
       expect(find.byKey(const Key('resolve_conflicts_button')), findsOneWidget);
 
@@ -254,7 +282,7 @@ void main() {
 
       // Step 3: Resolve individual conflicts
       expect(find.text('Resolve Sync Conflicts'), findsOneWidget);
-      
+
       // First conflict - prescription record
       expect(find.text('Conflict 1 of 3'), findsOneWidget);
       expect(find.text('Prescription: Lisinopril'), findsOneWidget);
@@ -289,7 +317,7 @@ void main() {
       // Should show merge preview
       expect(find.text('Merge Preview'), findsOneWidget);
       expect(find.text('Combined data from both versions'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('confirm_merge_button')));
       await tester.pumpAndSettle();
 
@@ -301,7 +329,7 @@ void main() {
       // Step 5: Complete conflict resolution
       expect(find.text('All Conflicts Resolved'), findsOneWidget);
       expect(find.text('Applying changes...'), findsOneWidget);
-      
+
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       expect(find.text('Sync Completed'), findsOneWidget);
@@ -323,8 +351,14 @@ void main() {
 
       // Step 1: Check for cloud data
       expect(find.text('Restore from Google Drive'), findsOneWidget);
-      expect(find.text('Found existing data in your Google Drive'), findsOneWidget);
-      expect(find.byKey(const Key('restore_from_cloud_button')), findsOneWidget);
+      expect(
+        find.text('Found existing data in your Google Drive'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('restore_from_cloud_button')),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byKey(const Key('restore_from_cloud_button')));
       await tester.pumpAndSettle();
@@ -339,7 +373,7 @@ void main() {
 
       // Step 3: Configure restore options
       expect(find.text('Restore Options'), findsOneWidget);
-      
+
       // Choose what to restore
       await tester.tap(find.byKey(const Key('restore_profiles_toggle')));
       await tester.tap(find.byKey(const Key('restore_records_toggle')));
@@ -408,9 +442,15 @@ void main() {
 
       // Step 2: View sync history
       expect(find.text('Recent Sync Activity'), findsOneWidget);
-      expect(find.text('Jan 15, 2:30 PM - Upload complete (3 records)'), findsOneWidget);
+      expect(
+        find.text('Jan 15, 2:30 PM - Upload complete (3 records)'),
+        findsOneWidget,
+      );
       expect(find.text('Jan 15, 8:15 AM - Auto sync complete'), findsOneWidget);
-      expect(find.text('Jan 14, 6:45 PM - Download complete (1 record)'), findsOneWidget);
+      expect(
+        find.text('Jan 14, 6:45 PM - Download complete (1 record)'),
+        findsOneWidget,
+      );
 
       // Step 3: Simulate sync error
       await tester.tap(find.byKey(const Key('force_sync_error_button')));
@@ -469,7 +509,7 @@ void main() {
 
       // Step 1: Review sync permissions
       expect(find.text('Sync Privacy & Permissions'), findsOneWidget);
-      
+
       expect(find.text('Current Permissions'), findsOneWidget);
       expect(find.text('✓ Access HealthBox folder'), findsOneWidget);
       expect(find.text('✓ Create and modify files'), findsOneWidget);
@@ -478,29 +518,37 @@ void main() {
 
       // Step 2: Configure data exclusions
       expect(find.text('Data Privacy Controls'), findsOneWidget);
-      
+
       // Exclude sensitive record types
       await tester.tap(find.byKey(const Key('exclude_mental_health_toggle')));
-      await tester.tap(find.byKey(const Key('exclude_reproductive_health_toggle')));
+      await tester.tap(
+        find.byKey(const Key('exclude_reproductive_health_toggle')),
+      );
       await tester.pumpAndSettle();
 
-      expect(find.text('Mental health records will not be synced'), findsOneWidget);
-      expect(find.text('Reproductive health records will not be synced'), findsOneWidget);
+      expect(
+        find.text('Mental health records will not be synced'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Reproductive health records will not be synced'),
+        findsOneWidget,
+      );
 
       // Step 3: Configure sharing permissions
       expect(find.text('Family Sharing'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('enable_family_sharing_toggle')));
       await tester.pumpAndSettle();
 
       expect(find.text('Share data with family members'), findsOneWidget);
-      
+
       // Configure family member permissions
       await tester.tap(find.byKey(const Key('family_permissions_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Family Member Permissions'), findsOneWidget);
-      
+
       // Jane can view John's records
       await tester.tap(find.byKey(const Key('jane_view_john_toggle')));
       // But John cannot view Jane's records
@@ -513,7 +561,7 @@ void main() {
       // Step 4: Review audit log
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
-      
+
       await tester.tap(find.byKey(const Key('sync_audit_log_button')));
       await tester.pumpAndSettle();
 
@@ -521,10 +569,22 @@ void main() {
       expect(find.text('Track all sync activities'), findsOneWidget);
 
       // Should show detailed audit entries
-      expect(find.text('Jan 15, 2:35 PM - Record uploaded (Prescription)'), findsOneWidget);
-      expect(find.text('Jan 15, 2:34 PM - Record encrypted before upload'), findsOneWidget);
-      expect(find.text('Jan 15, 2:30 PM - Sync initiated by user'), findsOneWidget);
-      expect(find.text('Jan 15, 8:15 AM - Auto sync completed'), findsOneWidget);
+      expect(
+        find.text('Jan 15, 2:35 PM - Record uploaded (Prescription)'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Jan 15, 2:34 PM - Record encrypted before upload'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Jan 15, 2:30 PM - Sync initiated by user'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Jan 15, 8:15 AM - Auto sync completed'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('disconnect and reconnect Google Drive sync', (tester) async {
@@ -544,7 +604,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Disconnect Google Drive?'), findsOneWidget);
-      expect(find.text('This will stop syncing but keep your cloud data'), findsOneWidget);
+      expect(
+        find.text('This will stop syncing but keep your cloud data'),
+        findsOneWidget,
+      );
 
       // Show options for what to do with local data
       expect(find.text('Local data options:'), findsOneWidget);
@@ -562,7 +625,10 @@ void main() {
       expect(find.byIcon(Icons.cloud_off), findsOneWidget);
 
       // Should show reconnect option
-      expect(find.byKey(const Key('reconnect_google_drive_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('reconnect_google_drive_button')),
+        findsOneWidget,
+      );
       expect(find.text('Your data remains safe locally'), findsOneWidget);
 
       // Step 3: Reconnect to Google Drive
@@ -570,7 +636,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Reconnect to Google Drive'), findsOneWidget);
-      expect(find.text('Restore sync with your existing cloud data'), findsOneWidget);
+      expect(
+        find.text('Restore sync with your existing cloud data'),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byKey(const Key('authorize_google_button')));
       await tester.pumpAndSettle();
@@ -582,7 +651,7 @@ void main() {
       // Step 4: Handle reconnection data merge
       expect(find.text('Reconnection Complete'), findsOneWidget);
       expect(find.text('Checking for data changes...'), findsOneWidget);
-      
+
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
       expect(find.text('Data Sync Required'), findsOneWidget);
@@ -629,13 +698,19 @@ void main() {
 
       // Should show connectivity warning
       expect(find.text('Limited Connectivity Detected'), findsOneWidget);
-      expect(find.text('You are on mobile data with weak signal'), findsOneWidget);
+      expect(
+        find.text('You are on mobile data with weak signal'),
+        findsOneWidget,
+      );
       expect(find.text('Sync may be slow or fail'), findsOneWidget);
 
       // Show options for handling poor connectivity
       expect(find.byKey(const Key('sync_anyway_button')), findsOneWidget);
       expect(find.byKey(const Key('wait_for_wifi_button')), findsOneWidget);
-      expect(find.byKey(const Key('sync_essential_only_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('sync_essential_only_button')),
+        findsOneWidget,
+      );
 
       // Choose to sync essential data only
       await tester.tap(find.byKey(const Key('sync_essential_only_button')));
@@ -650,9 +725,12 @@ void main() {
       expect(find.text('Essential Sync Complete'), findsOneWidget);
       expect(find.text('✓ 3 critical records synced'), findsOneWidget);
       expect(find.text('12 non-essential records pending'), findsOneWidget);
-      
+
       // Should schedule full sync for later
-      expect(find.text('Full sync scheduled for WiFi connection'), findsOneWidget);
+      expect(
+        find.text('Full sync scheduled for WiFi connection'),
+        findsOneWidget,
+      );
 
       // Step 4: Simulate WiFi restoration
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
@@ -666,7 +744,7 @@ void main() {
 
       // Should automatically start full sync
       expect(find.text('WiFi Connected - Starting Full Sync'), findsOneWidget);
-      
+
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       expect(find.text('Full Sync Complete'), findsOneWidget);
@@ -713,15 +791,24 @@ void main() {
       expect(find.text('Status: Inactive'), findsOneWidget);
 
       // Options for inactive device
-      expect(find.byKey(const Key('revoke_device_access_button')), findsOneWidget);
-      expect(find.byKey(const Key('send_sync_notification_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('revoke_device_access_button')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('send_sync_notification_button')),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byKey(const Key('revoke_device_access_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Revoke Device Access?'), findsOneWidget);
-      expect(find.text('This device will no longer be able to sync'), findsOneWidget);
-      
+      expect(
+        find.text('This device will no longer be able to sync'),
+        findsOneWidget,
+      );
+
       await tester.tap(find.byKey(const Key('confirm_revoke_button')));
       await tester.pumpAndSettle();
 

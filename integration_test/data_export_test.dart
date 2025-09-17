@@ -4,11 +4,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:health_box/main.dart' as app;
 
 /// Integration test for data export and sharing functionality
-/// 
-/// User Story: "As a user, I want to export and share my medical data 
-/// in various formats so I can provide comprehensive health information 
+///
+/// User Story: "As a user, I want to export and share my medical data
+/// in various formats so I can provide comprehensive health information
 /// to healthcare providers and keep backup copies."
-/// 
+///
 /// Test Coverage:
 /// - Exporting medical records in multiple formats (PDF, CSV, JSON)
 /// - Generating emergency medical cards
@@ -18,7 +18,7 @@ import 'package:health_box/main.dart' as app;
 /// - Sharing exported files
 /// - Emergency QR codes generation
 /// - Export history tracking
-/// 
+///
 /// This test MUST fail until export/sharing functionality is implemented.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,10 @@ void main() {
 
       // Step 1: Verify export screen
       expect(find.text('Export Medical Data'), findsOneWidget);
-      expect(find.text('Share your health information securely'), findsOneWidget);
+      expect(
+        find.text('Share your health information securely'),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('export_options')), findsOneWidget);
 
       // Step 2: Configure PDF export
@@ -53,9 +56,18 @@ void main() {
 
       // Configure what to include
       expect(find.text('What to Include'), findsOneWidget);
-      expect(find.byKey(const Key('include_prescriptions_toggle')), findsOneWidget);
-      expect(find.byKey(const Key('include_lab_reports_toggle')), findsOneWidget);
-      expect(find.byKey(const Key('include_medications_toggle')), findsOneWidget);
+      expect(
+        find.byKey(const Key('include_prescriptions_toggle')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('include_lab_reports_toggle')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('include_medications_toggle')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('include_allergies_toggle')), findsOneWidget);
 
       // Enable all record types
@@ -81,7 +93,10 @@ void main() {
 
       // Should show export progress
       expect(find.text('Generating PDF Export...'), findsOneWidget);
-      expect(find.byKey(const Key('export_progress_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('export_progress_indicator')),
+        findsOneWidget,
+      );
 
       // Wait for export to complete
       await tester.pumpAndSettle(const Duration(seconds: 3));
@@ -114,7 +129,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('CSV Export Options'), findsOneWidget);
-      expect(find.text('Data will be exported in spreadsheet format'), findsOneWidget);
+      expect(
+        find.text('Data will be exported in spreadsheet format'),
+        findsOneWidget,
+      );
 
       // Configure CSV-specific options
       await tester.tap(find.byKey(const Key('include_headers_toggle')));
@@ -136,12 +154,21 @@ void main() {
 
       // Step 3: Verify CSV export results
       expect(find.text('CSV Export Complete'), findsOneWidget);
-      
+
       // Should create multiple CSV files
-      expect(find.text('family_medical_records_prescriptions.csv'), findsOneWidget);
-      expect(find.text('family_medical_records_lab_reports.csv'), findsOneWidget);
-      expect(find.text('family_medical_records_medications.csv'), findsOneWidget);
-      
+      expect(
+        find.text('family_medical_records_prescriptions.csv'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('family_medical_records_lab_reports.csv'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('family_medical_records_medications.csv'),
+        findsOneWidget,
+      );
+
       expect(find.text('3 files created'), findsOneWidget);
       expect(find.text('Total size: 1.8 MB'), findsOneWidget);
     });
@@ -167,12 +194,12 @@ void main() {
 
       // Set encryption password
       await tester.enterText(
-        find.byKey(const Key('encryption_password_field')), 
-        'SecurePassword123!'
+        find.byKey(const Key('encryption_password_field')),
+        'SecurePassword123!',
       );
       await tester.enterText(
-        find.byKey(const Key('confirm_password_field')), 
-        'SecurePassword123!'
+        find.byKey(const Key('confirm_password_field')),
+        'SecurePassword123!',
       );
 
       // Choose encryption strength
@@ -196,7 +223,10 @@ void main() {
 
       // Step 3: Verify encrypted export
       expect(find.text('Encrypted Export Complete'), findsOneWidget);
-      expect(find.text('john_doe_medical_records_encrypted.zip'), findsOneWidget);
+      expect(
+        find.text('john_doe_medical_records_encrypted.zip'),
+        findsOneWidget,
+      );
       expect(find.byIcon(Icons.security), findsOneWidget);
       expect(find.text('AES-256 Encrypted'), findsOneWidget);
 
@@ -205,7 +235,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Share Encrypted File'), findsOneWidget);
-      expect(find.text('Remember to share the password separately'), findsOneWidget);
+      expect(
+        find.text('Remember to share the password separately'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('generate emergency medical card', (tester) async {
@@ -220,7 +253,10 @@ void main() {
 
       // Step 1: Verify emergency cards screen
       expect(find.text('Emergency Medical Cards'), findsOneWidget);
-      expect(find.text('Quick access to critical health information'), findsOneWidget);
+      expect(
+        find.text('Quick access to critical health information'),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('create_card_button')), findsOneWidget);
 
       // Step 2: Create new emergency card
@@ -237,13 +273,13 @@ void main() {
 
       // Configure card contents
       expect(find.text('Critical Information'), findsOneWidget);
-      
+
       // Add critical allergies
       await tester.tap(find.byKey(const Key('add_allergy_button')));
       await tester.pumpAndSettle();
       await tester.enterText(
-        find.byKey(const Key('allergy_field')), 
-        'Penicillin - Severe reaction'
+        find.byKey(const Key('allergy_field')),
+        'Penicillin - Severe reaction',
       );
       await tester.tap(find.byKey(const Key('save_allergy_button')));
       await tester.pumpAndSettle();
@@ -258,8 +294,8 @@ void main() {
       await tester.tap(find.byKey(const Key('add_condition_button')));
       await tester.pumpAndSettle();
       await tester.enterText(
-        find.byKey(const Key('condition_field')), 
-        'Hypertension'
+        find.byKey(const Key('condition_field')),
+        'Hypertension',
       );
       await tester.tap(find.byKey(const Key('save_condition_button')));
       await tester.pumpAndSettle();
@@ -268,12 +304,12 @@ void main() {
       await tester.tap(find.byKey(const Key('add_emergency_contact_button')));
       await tester.pumpAndSettle();
       await tester.enterText(
-        find.byKey(const Key('contact_name_field')), 
-        'Jane Doe (Spouse)'
+        find.byKey(const Key('contact_name_field')),
+        'Jane Doe (Spouse)',
       );
       await tester.enterText(
-        find.byKey(const Key('contact_phone_field')), 
-        '+1-555-123-4567'
+        find.byKey(const Key('contact_phone_field')),
+        '+1-555-123-4567',
       );
       await tester.tap(find.byKey(const Key('save_contact_button')));
       await tester.pumpAndSettle();
@@ -300,7 +336,7 @@ void main() {
       // Step 5: Verify card generation
       expect(find.text('Emergency Card Created'), findsOneWidget);
       expect(find.text('john_doe_emergency_card.pdf'), findsOneWidget);
-      
+
       expect(find.byKey(const Key('preview_card_button')), findsOneWidget);
       expect(find.byKey(const Key('print_card_button')), findsOneWidget);
       expect(find.byKey(const Key('save_to_wallet_button')), findsOneWidget);
@@ -347,7 +383,9 @@ void main() {
       expect(find.text('QR Code Contents'), findsOneWidget);
       await tester.tap(find.byKey(const Key('include_allergies_toggle')));
       await tester.tap(find.byKey(const Key('include_medications_toggle')));
-      await tester.tap(find.byKey(const Key('include_emergency_contacts_toggle')));
+      await tester.tap(
+        find.byKey(const Key('include_emergency_contacts_toggle')),
+      );
       await tester.pumpAndSettle();
 
       // Step 2: Generate QR code
@@ -357,7 +395,7 @@ void main() {
       // Step 3: Verify QR code generation
       expect(find.text('QR Code Generated'), findsOneWidget);
       expect(find.byKey(const Key('qr_code_image')), findsOneWidget);
-      
+
       // Should show sharing and saving options
       expect(find.byKey(const Key('save_qr_image_button')), findsOneWidget);
       expect(find.byKey(const Key('share_qr_code_button')), findsOneWidget);
@@ -463,7 +501,10 @@ void main() {
 
       // Step 1: Verify import screen
       expect(find.text('Import Medical Data'), findsOneWidget);
-      expect(find.text('Import previously exported health records'), findsOneWidget);
+      expect(
+        find.text('Import previously exported health records'),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('select_file_button')), findsOneWidget);
 
       // Step 2: Select import file
@@ -488,7 +529,7 @@ void main() {
 
       // Step 4: Configure import options
       expect(find.text('Import Options'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('skip_duplicates_toggle')));
       await tester.tap(find.byKey(const Key('merge_profiles_toggle')));
       await tester.pumpAndSettle();
@@ -553,16 +594,16 @@ void main() {
 
       expect(find.text('Email Medical Records'), findsOneWidget);
       await tester.enterText(
-        find.byKey(const Key('recipient_email_field')), 
-        'doctor@clinic.com'
+        find.byKey(const Key('recipient_email_field')),
+        'doctor@clinic.com',
       );
       await tester.enterText(
-        find.byKey(const Key('subject_field')), 
-        'Medical Records for John Doe'
+        find.byKey(const Key('subject_field')),
+        'Medical Records for John Doe',
       );
       await tester.enterText(
-        find.byKey(const Key('message_field')), 
-        'Please find attached my medical records for review.'
+        find.byKey(const Key('message_field')),
+        'Please find attached my medical records for review.',
       );
 
       await tester.tap(find.byKey(const Key('send_email_button')));
@@ -578,7 +619,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Save to Cloud Storage'), findsOneWidget);
-      
+
       // Should show available cloud services
       expect(find.text('Google Drive'), findsOneWidget);
       expect(find.text('Dropbox'), findsOneWidget);
@@ -598,7 +639,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Create Secure Link'), findsOneWidget);
-      expect(find.text('Generate a password-protected download link'), findsOneWidget);
+      expect(
+        find.text('Generate a password-protected download link'),
+        findsOneWidget,
+      );
 
       // Configure link options
       await tester.tap(find.byKey(const Key('expiry_dropdown')));
@@ -607,13 +651,19 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('download_limit_field')));
-      await tester.enterText(find.byKey(const Key('download_limit_field')), '3');
+      await tester.enterText(
+        find.byKey(const Key('download_limit_field')),
+        '3',
+      );
 
       await tester.tap(find.byKey(const Key('create_link_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Secure Link Created'), findsOneWidget);
-      expect(find.text('https://secure.healthbox.app/dl/abc123'), findsOneWidget);
+      expect(
+        find.text('https://secure.healthbox.app/dl/abc123'),
+        findsOneWidget,
+      );
       expect(find.text('Password: HealthBox2023!'), findsOneWidget);
       expect(find.text('Expires: 7 days'), findsOneWidget);
       expect(find.text('Download limit: 3'), findsOneWidget);
@@ -636,7 +686,10 @@ void main() {
 
       // Step 1: Verify export history screen
       expect(find.text('Export History'), findsOneWidget);
-      expect(find.text('View and manage your previous exports'), findsOneWidget);
+      expect(
+        find.text('View and manage your previous exports'),
+        findsOneWidget,
+      );
 
       // Should show list of previous exports
       expect(find.byKey(const Key('export_history_list')), findsOneWidget);
@@ -674,8 +727,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Delete Export?'), findsOneWidget);
-      expect(find.text('This will permanently remove the exported file'), findsOneWidget);
-      
+      expect(
+        find.text('This will permanently remove the exported file'),
+        findsOneWidget,
+      );
+
       await tester.tap(find.byKey(const Key('confirm_delete_button')));
       await tester.pumpAndSettle();
 
@@ -688,7 +744,9 @@ void main() {
       expect(find.text('Most recent: 3 days ago'), findsOneWidget);
     });
 
-    testWidgets('handle large file export with progress tracking', (tester) async {
+    testWidgets('handle large file export with progress tracking', (
+      tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -714,8 +772,11 @@ void main() {
 
       // Step 3: Monitor export progress
       expect(find.text('Exporting Large Dataset...'), findsOneWidget);
-      expect(find.byKey(const Key('detailed_progress_indicator')), findsOneWidget);
-      
+      expect(
+        find.byKey(const Key('detailed_progress_indicator')),
+        findsOneWidget,
+      );
+
       // Should show detailed progress stages
       expect(find.text('Collecting records... (1/5)'), findsOneWidget);
       await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -736,10 +797,16 @@ void main() {
       expect(find.text('Large Export Complete'), findsOneWidget);
       expect(find.text('all_family_medical_records.pdf'), findsOneWidget);
       expect(find.text('File size: 14.7 MB'), findsOneWidget);
-      expect(find.text('3 profiles, 127 records, 45 attachments'), findsOneWidget);
+      expect(
+        find.text('3 profiles, 127 records, 45 attachments'),
+        findsOneWidget,
+      );
 
       // Should warn about file size for sharing
-      expect(find.text('⚠ Large file - consider using cloud sharing'), findsOneWidget);
+      expect(
+        find.text('⚠ Large file - consider using cloud sharing'),
+        findsOneWidget,
+      );
     });
   });
 }

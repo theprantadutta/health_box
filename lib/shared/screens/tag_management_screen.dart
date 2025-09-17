@@ -7,7 +7,8 @@ class TagManagementScreen extends ConsumerStatefulWidget {
   const TagManagementScreen({super.key});
 
   @override
-  ConsumerState<TagManagementScreen> createState() => _TagManagementScreenState();
+  ConsumerState<TagManagementScreen> createState() =>
+      _TagManagementScreenState();
 }
 
 class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
@@ -45,9 +46,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
               stream: _tagService.watchAllTags(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
+                  return Center(child: Text('Error: ${snapshot.error}'));
                 }
 
                 if (!snapshot.hasData) {
@@ -125,7 +124,10 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
                 Expanded(
                   child: PopupMenuButton<String?>(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: theme.colorScheme.outline),
                         borderRadius: BorderRadius.circular(8),
@@ -189,10 +191,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
             color: theme.colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: 16),
-          Text(
-            'No tags found',
-            style: theme.textTheme.headlineSmall,
-          ),
+          Text('No tags found', style: theme.textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text(
             _searchQuery.isNotEmpty
@@ -247,7 +246,10 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
               children: [
                 if (tag.category != null) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(4),
@@ -270,7 +272,10 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
                 if (tag.isSystem) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.errorContainer,
                       borderRadius: BorderRadius.circular(4),
@@ -293,11 +298,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
             const PopupMenuItem(
               value: 'edit',
               child: Row(
-                children: [
-                  Icon(Icons.edit),
-                  SizedBox(width: 8),
-                  Text('Edit'),
-                ],
+                children: [Icon(Icons.edit), SizedBox(width: 8), Text('Edit')],
               ),
             ),
             if (!tag.isSystem)
@@ -322,9 +323,14 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
 
     if (_searchQuery.isNotEmpty) {
       filtered = filtered
-          .where((tag) =>
-              tag.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              (tag.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false))
+          .where(
+            (tag) =>
+                tag.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                (tag.description?.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ??
+                    false),
+          )
           .toList();
     }
 
@@ -333,7 +339,9 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
     }
 
     if (_selectedCategory != null) {
-      filtered = filtered.where((tag) => tag.category == _selectedCategory).toList();
+      filtered = filtered
+          .where((tag) => tag.category == _selectedCategory)
+          .toList();
     }
 
     return filtered;
@@ -360,7 +368,9 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
 
   void _showTagDialog({Tag? tag}) {
     final nameController = TextEditingController(text: tag?.name ?? '');
-    final descriptionController = TextEditingController(text: tag?.description ?? '');
+    final descriptionController = TextEditingController(
+      text: tag?.description ?? '',
+    );
     Color selectedColor = _parseColor(tag?.color ?? '#2196F3');
     String? selectedCategory = tag?.category;
 
@@ -408,10 +418,22 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
                     },
                     items: const [
                       DropdownMenuItem(value: null, child: Text('None')),
-                      DropdownMenuItem(value: 'Medical', child: Text('Medical')),
-                      DropdownMenuItem(value: 'Medication', child: Text('Medication')),
-                      DropdownMenuItem(value: 'Appointment', child: Text('Appointment')),
-                      DropdownMenuItem(value: 'Personal', child: Text('Personal')),
+                      DropdownMenuItem(
+                        value: 'Medical',
+                        child: Text('Medical'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Medication',
+                        child: Text('Medication'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Appointment',
+                        child: Text('Appointment'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Personal',
+                        child: Text('Personal'),
+                      ),
                     ],
                   ),
                 ),
@@ -484,9 +506,9 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
     String? category,
   ) async {
     if (name.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tag name is required')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Tag name is required')));
       return;
     }
 
@@ -494,8 +516,11 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
       if (existingTag == null) {
         final request = CreateTagRequest(
           name: name.trim(),
-          description: description.trim().isNotEmpty ? description.trim() : null,
-          color: '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
+          description: description.trim().isNotEmpty
+              ? description.trim()
+              : null,
+          color:
+              '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
           category: category,
         );
         await _tagService.createTag(request);
@@ -507,8 +532,11 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
       } else {
         final request = UpdateTagRequest(
           name: name.trim(),
-          description: description.trim().isNotEmpty ? description.trim() : null,
-          color: '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
+          description: description.trim().isNotEmpty
+              ? description.trim()
+              : null,
+          color:
+              '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
           category: category,
         );
         await _tagService.updateTag(existingTag.id, request);
@@ -523,9 +551,9 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     }
   }
@@ -567,9 +595,9 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
     } catch (e) {
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     }
   }
@@ -594,9 +622,13 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
                 Text('Total Usage: ${stats.totalUsage}'),
                 Text('Average Usage: ${stats.averageUsage.toStringAsFixed(1)}'),
                 const SizedBox(height: 16),
-                const Text('Categories:', style: TextStyle(fontWeight: FontWeight.bold)),
-                ...stats.categoryCounts.entries.map((entry) =>
-                    Text('${entry.key}: ${entry.value}')),
+                const Text(
+                  'Categories:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                ...stats.categoryCounts.entries.map(
+                  (entry) => Text('${entry.key}: ${entry.value}'),
+                ),
               ],
             ),
             actions: [
@@ -628,7 +660,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
   List<Color> _getTagColors() {
     return [
       const Color(0xFF2196F3), // Blue
-      const Color(0xFF4CAF50), // Green  
+      const Color(0xFF4CAF50), // Green
       const Color(0xFFF44336), // Red
       const Color(0xFFFF9800), // Orange
       const Color(0xFF9C27B0), // Purple

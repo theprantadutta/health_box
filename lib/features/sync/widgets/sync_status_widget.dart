@@ -42,13 +42,9 @@ class _SyncStatusWidgetState extends ConsumerState<SyncStatusWidget>
       vsync: this,
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
     // Start pulsing for active states
     if (_isActiveStatus(_currentStatus)) {
@@ -126,7 +122,8 @@ class _SyncStatusWidgetState extends ConsumerState<SyncStatusWidget>
                       children: [
                         Text(
                           _getStatusTitle(),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
                                 color: _getStatusColor(),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -135,9 +132,8 @@ class _SyncStatusWidgetState extends ConsumerState<SyncStatusWidget>
                           const SizedBox(height: 4),
                           Text(
                             _getStatusDescription(),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: Colors.grey[600]),
                           ),
                         ],
                       ],
@@ -171,21 +167,13 @@ class _SyncStatusWidgetState extends ConsumerState<SyncStatusWidget>
         builder: (context, child) {
           return Transform.scale(
             scale: _pulseAnimation.value,
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
+            child: Icon(icon, color: color, size: 24),
           );
         },
       );
     }
 
-    return Icon(
-      icon,
-      color: color,
-      size: 24,
-    );
+    return Icon(icon, color: color, size: 24);
   }
 
   Widget _buildProgressIndicator() {
@@ -225,11 +213,7 @@ class _SyncStatusWidgetState extends ConsumerState<SyncStatusWidget>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.warning,
-            size: 16,
-            color: Colors.white,
-          ),
+          const Icon(Icons.warning, size: 16, color: Colors.white),
           const SizedBox(width: 4),
           Text(
             '${_pendingConflicts.length}',
@@ -248,17 +232,13 @@ class _SyncStatusWidgetState extends ConsumerState<SyncStatusWidget>
     final timeAgo = _getTimeAgo(_lastSyncTime!);
     return Row(
       children: [
-        Icon(
-          Icons.schedule,
-          size: 16,
-          color: Colors.grey[600],
-        ),
+        Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
         const SizedBox(width: 4),
         Text(
           'Last sync: $timeAgo',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
         ),
       ],
     );

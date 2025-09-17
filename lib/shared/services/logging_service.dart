@@ -60,7 +60,7 @@ class LogEntry {
       tag: json['tag'] as String?,
       context: json['context'] as Map<String, dynamic>?,
       error: json['error'],
-      stackTrace: json['stackTrace'] != null 
+      stackTrace: json['stackTrace'] != null
           ? StackTrace.fromString(json['stackTrace'] as String)
           : null,
     );
@@ -75,19 +75,19 @@ class LogEntry {
       buffer.write(' [$tag]');
     }
     buffer.write(' $message');
-    
+
     if (context != null && context!.isNotEmpty) {
       buffer.write(' | Context: ${jsonEncode(context)}');
     }
-    
+
     if (error != null) {
       buffer.write('\nError: $error');
     }
-    
+
     if (stackTrace != null) {
       buffer.write('\nStack Trace:\n$stackTrace');
     }
-    
+
     return buffer.toString();
   }
 }
@@ -180,13 +180,13 @@ class FileLogWriter implements LogWriter {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final logDir = Directory('${directory.path}/logs');
-      
+
       if (!await logDir.exists()) {
         await logDir.create(recursive: true);
       }
 
       _logFile = File('${logDir.path}/$_fileName');
-      
+
       if (await _logFile!.exists()) {
         _currentSize = await _logFile!.length();
       } else {
@@ -212,7 +212,7 @@ class FileLogWriter implements LogWriter {
       for (int i = _maxFiles - 1; i >= 1; i--) {
         final oldFile = File('${logDir.path}/$baseName.$i.log');
         final newFile = File('${logDir.path}/$baseName.${i + 1}.log');
-        
+
         if (await oldFile.exists()) {
           if (i == _maxFiles - 1) {
             await oldFile.delete();
@@ -241,7 +241,7 @@ class FileLogWriter implements LogWriter {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final logDir = Directory('${directory.path}/logs');
-      
+
       if (!await logDir.exists()) {
         return [];
       }
@@ -287,7 +287,7 @@ class LoggingService with ErrorHandlerMixin {
   final int _bufferSize = 100;
 
   LogLevel get minLevel => _minLevel;
-  
+
   set minLevel(LogLevel level) {
     _minLevel = level;
   }
@@ -323,10 +323,7 @@ class LoggingService with ErrorHandlerMixin {
       tag: 'ErrorHandler',
       error: error.originalError ?? error,
       stackTrace: error.stackTrace,
-      context: {
-        'code': error.code,
-        'type': error.runtimeType.toString(),
-      },
+      context: {'code': error.code, 'type': error.runtimeType.toString()},
     );
   }
 
@@ -507,14 +504,43 @@ void logInfo(String message, {String? tag, Map<String, dynamic>? context}) {
   logger.info(message, tag: tag, context: context);
 }
 
-void logWarning(String message, {String? tag, Map<String, dynamic>? context, Object? error}) {
+void logWarning(
+  String message, {
+  String? tag,
+  Map<String, dynamic>? context,
+  Object? error,
+}) {
   logger.warning(message, tag: tag, context: context, error: error);
 }
 
-void logError(String message, {String? tag, Map<String, dynamic>? context, Object? error, StackTrace? stackTrace}) {
-  logger.error(message, tag: tag, context: context, error: error, stackTrace: stackTrace);
+void logError(
+  String message, {
+  String? tag,
+  Map<String, dynamic>? context,
+  Object? error,
+  StackTrace? stackTrace,
+}) {
+  logger.error(
+    message,
+    tag: tag,
+    context: context,
+    error: error,
+    stackTrace: stackTrace,
+  );
 }
 
-void logFatal(String message, {String? tag, Map<String, dynamic>? context, Object? error, StackTrace? stackTrace}) {
-  logger.fatal(message, tag: tag, context: context, error: error, stackTrace: stackTrace);
+void logFatal(
+  String message, {
+  String? tag,
+  Map<String, dynamic>? context,
+  Object? error,
+  StackTrace? stackTrace,
+}) {
+  logger.fatal(
+    message,
+    tag: tag,
+    context: context,
+    error: error,
+    stackTrace: stackTrace,
+  );
 }

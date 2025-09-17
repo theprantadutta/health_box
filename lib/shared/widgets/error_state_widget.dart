@@ -37,21 +37,13 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     if (widget.showAnimation) {
       _animationController.forward();
@@ -67,7 +59,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     Widget content = Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -89,7 +81,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Error Title
             Text(
               widget.title,
@@ -100,7 +92,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            
+
             // Error Message
             Text(
               widget.message,
@@ -111,14 +103,14 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
-            
+
             // Retry Button
             if (widget.onRetry != null) ...[
               const SizedBox(height: 24),
-              GradientButton(
+              HealthButton(
                 onPressed: widget.onRetry,
-                style: GradientButtonStyle.primary,
-                size: GradientButtonSize.medium,
+                style: HealthButtonStyle.primary,
+                size: HealthButtonSize.medium,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -143,10 +135,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
       builder: (context, child) {
         return FadeTransition(
           opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: content,
-          ),
+          child: ScaleTransition(scale: _scaleAnimation, child: content),
         );
       },
     );

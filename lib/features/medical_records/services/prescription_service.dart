@@ -9,8 +9,10 @@ class PrescriptionService {
   PrescriptionService({
     MedicalRecordDao? medicalRecordDao,
     AppDatabase? database,
-  })  : _database = database ?? AppDatabase.instance,
-        _medicalRecordDao = medicalRecordDao ?? MedicalRecordDao(database ?? AppDatabase.instance);
+  }) : _database = database ?? AppDatabase.instance,
+       _medicalRecordDao =
+           medicalRecordDao ??
+           MedicalRecordDao(database ?? AppDatabase.instance);
 
   // CRUD Operations
 
@@ -18,37 +20,50 @@ class PrescriptionService {
     try {
       return await _medicalRecordDao.getAllPrescriptions(profileId: profileId);
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve prescriptions: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescriptions: ${e.toString()}',
+      );
     }
   }
 
   Future<List<Prescription>> getActivePrescriptions({String? profileId}) async {
     try {
-      return await _medicalRecordDao.getActivePrescriptions(profileId: profileId);
+      return await _medicalRecordDao.getActivePrescriptions(
+        profileId: profileId,
+      );
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve active prescriptions: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve active prescriptions: ${e.toString()}',
+      );
     }
   }
 
   Future<Prescription?> getPrescriptionById(String id) async {
     try {
       if (id.isEmpty) {
-        throw const PrescriptionServiceException('Prescription ID cannot be empty');
+        throw const PrescriptionServiceException(
+          'Prescription ID cannot be empty',
+        );
       }
-      
-      final prescriptions = await _database.select(_database.prescriptions).get();
+
+      final prescriptions = await _database
+          .select(_database.prescriptions)
+          .get();
       return prescriptions.where((p) => p.id == id).firstOrNull;
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to retrieve prescription: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescription: ${e.toString()}',
+      );
     }
   }
 
   Future<String> createPrescription(CreatePrescriptionRequest request) async {
     try {
       _validateCreatePrescriptionRequest(request);
-      
-      final prescriptionId = 'prescription_${DateTime.now().millisecondsSinceEpoch}';
+
+      final prescriptionId =
+          'prescription_${DateTime.now().millisecondsSinceEpoch}';
       final prescriptionCompanion = PrescriptionsCompanion(
         id: Value(prescriptionId),
         profileId: Value(request.profileId),
@@ -75,14 +90,21 @@ class PrescriptionService {
       return await _medicalRecordDao.createPrescription(prescriptionCompanion);
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to create prescription: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to create prescription: ${e.toString()}',
+      );
     }
   }
 
-  Future<bool> updatePrescription(String id, UpdatePrescriptionRequest request) async {
+  Future<bool> updatePrescription(
+    String id,
+    UpdatePrescriptionRequest request,
+  ) async {
     try {
       if (id.isEmpty) {
-        throw const PrescriptionServiceException('Prescription ID cannot be empty');
+        throw const PrescriptionServiceException(
+          'Prescription ID cannot be empty',
+        );
       }
 
       final existingPrescription = await getPrescriptionById(id);
@@ -93,37 +115,67 @@ class PrescriptionService {
       _validateUpdatePrescriptionRequest(request);
 
       final prescriptionCompanion = PrescriptionsCompanion(
-        title: request.title != null ? Value(request.title!.trim()) : const Value.absent(),
-        description: request.description != null ? Value(request.description?.trim()) : const Value.absent(),
-        recordDate: request.recordDate != null ? Value(request.recordDate!) : const Value.absent(),
-        medicationName: request.medicationName != null ? Value(request.medicationName!.trim()) : const Value.absent(),
-        dosage: request.dosage != null ? Value(request.dosage!.trim()) : const Value.absent(),
-        frequency: request.frequency != null ? Value(request.frequency!.trim()) : const Value.absent(),
-        instructions: request.instructions != null ? Value(request.instructions?.trim()) : const Value.absent(),
-        prescribingDoctor: request.prescribingDoctor != null ? Value(request.prescribingDoctor?.trim()) : const Value.absent(),
-        pharmacy: request.pharmacy != null ? Value(request.pharmacy?.trim()) : const Value.absent(),
-        startDate: request.startDate != null ? Value(request.startDate) : const Value.absent(),
-        endDate: request.endDate != null ? Value(request.endDate) : const Value.absent(),
-        refillsRemaining: request.refillsRemaining != null ? Value(request.refillsRemaining) : const Value.absent(),
-        isPrescriptionActive: request.isPrescriptionActive != null ? Value(request.isPrescriptionActive!) : const Value.absent(),
+        title: request.title != null
+            ? Value(request.title!.trim())
+            : const Value.absent(),
+        description: request.description != null
+            ? Value(request.description?.trim())
+            : const Value.absent(),
+        recordDate: request.recordDate != null
+            ? Value(request.recordDate!)
+            : const Value.absent(),
+        medicationName: request.medicationName != null
+            ? Value(request.medicationName!.trim())
+            : const Value.absent(),
+        dosage: request.dosage != null
+            ? Value(request.dosage!.trim())
+            : const Value.absent(),
+        frequency: request.frequency != null
+            ? Value(request.frequency!.trim())
+            : const Value.absent(),
+        instructions: request.instructions != null
+            ? Value(request.instructions?.trim())
+            : const Value.absent(),
+        prescribingDoctor: request.prescribingDoctor != null
+            ? Value(request.prescribingDoctor?.trim())
+            : const Value.absent(),
+        pharmacy: request.pharmacy != null
+            ? Value(request.pharmacy?.trim())
+            : const Value.absent(),
+        startDate: request.startDate != null
+            ? Value(request.startDate)
+            : const Value.absent(),
+        endDate: request.endDate != null
+            ? Value(request.endDate)
+            : const Value.absent(),
+        refillsRemaining: request.refillsRemaining != null
+            ? Value(request.refillsRemaining)
+            : const Value.absent(),
+        isPrescriptionActive: request.isPrescriptionActive != null
+            ? Value(request.isPrescriptionActive!)
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       );
 
-      final rowsAffected = await (_database.update(_database.prescriptions)
-            ..where((p) => p.id.equals(id)))
-          .write(prescriptionCompanion);
+      final rowsAffected = await (_database.update(
+        _database.prescriptions,
+      )..where((p) => p.id.equals(id))).write(prescriptionCompanion);
 
       return rowsAffected > 0;
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to update prescription: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to update prescription: ${e.toString()}',
+      );
     }
   }
 
   Future<bool> deletePrescription(String id) async {
     try {
       if (id.isEmpty) {
-        throw const PrescriptionServiceException('Prescription ID cannot be empty');
+        throw const PrescriptionServiceException(
+          'Prescription ID cannot be empty',
+        );
       }
 
       final existingPrescription = await getPrescriptionById(id);
@@ -131,187 +183,247 @@ class PrescriptionService {
         throw const PrescriptionServiceException('Prescription not found');
       }
 
-      final rowsAffected = await (_database.update(_database.prescriptions)
-            ..where((p) => p.id.equals(id)))
-          .write(PrescriptionsCompanion(
-            isActive: const Value(false),
-            updatedAt: Value(DateTime.now()),
-          ));
+      final rowsAffected =
+          await (_database.update(
+            _database.prescriptions,
+          )..where((p) => p.id.equals(id))).write(
+            PrescriptionsCompanion(
+              isActive: const Value(false),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
 
       return rowsAffected > 0;
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to delete prescription: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to delete prescription: ${e.toString()}',
+      );
     }
   }
 
   // Prescription-specific Operations
 
-  Future<List<Prescription>> getPrescriptionsByMedication(String medicationName, {String? profileId}) async {
+  Future<List<Prescription>> getPrescriptionsByMedication(
+    String medicationName, {
+    String? profileId,
+  }) async {
     try {
       if (medicationName.isEmpty) {
-        throw const PrescriptionServiceException('Medication name cannot be empty');
+        throw const PrescriptionServiceException(
+          'Medication name cannot be empty',
+        );
       }
 
       var query = _database.select(_database.prescriptions)
-        ..where((p) => 
-            p.isActive.equals(true) & 
-            p.medicationName.lower().like('%${medicationName.toLowerCase()}%'));
+        ..where(
+          (p) =>
+              p.isActive.equals(true) &
+              p.medicationName.lower().like(
+                '%${medicationName.toLowerCase()}%',
+              ),
+        );
 
       if (profileId != null) {
         query = query..where((p) => p.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (p) => OrderingTerm(expression: p.recordDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (p) =>
+              OrderingTerm(expression: p.recordDate, mode: OrderingMode.desc),
+        ]);
 
       return await query.get();
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to retrieve prescriptions by medication: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescriptions by medication: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<Prescription>> getPrescriptionsByDoctor(String doctorName, {String? profileId}) async {
+  Future<List<Prescription>> getPrescriptionsByDoctor(
+    String doctorName, {
+    String? profileId,
+  }) async {
     try {
       if (doctorName.isEmpty) {
         throw const PrescriptionServiceException('Doctor name cannot be empty');
       }
 
       var query = _database.select(_database.prescriptions)
-        ..where((p) => 
-            p.isActive.equals(true) & 
-            p.prescribingDoctor.isNotNull() &
-            p.prescribingDoctor.lower().like('%${doctorName.toLowerCase()}%'));
+        ..where(
+          (p) =>
+              p.isActive.equals(true) &
+              p.prescribingDoctor.isNotNull() &
+              p.prescribingDoctor.lower().like('%${doctorName.toLowerCase()}%'),
+        );
 
       if (profileId != null) {
         query = query..where((p) => p.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (p) => OrderingTerm(expression: p.recordDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (p) =>
+              OrderingTerm(expression: p.recordDate, mode: OrderingMode.desc),
+        ]);
 
       return await query.get();
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to retrieve prescriptions by doctor: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescriptions by doctor: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<Prescription>> getExpiredPrescriptions({String? profileId}) async {
+  Future<List<Prescription>> getExpiredPrescriptions({
+    String? profileId,
+  }) async {
     try {
       final now = DateTime.now();
-      
+
       var query = _database.select(_database.prescriptions)
-        ..where((p) => 
-            p.isActive.equals(true) & 
-            p.endDate.isNotNull() &
-            p.endDate.isSmallerThanValue(now));
+        ..where(
+          (p) =>
+              p.isActive.equals(true) &
+              p.endDate.isNotNull() &
+              p.endDate.isSmallerThanValue(now),
+        );
 
       if (profileId != null) {
         query = query..where((p) => p.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (p) => OrderingTerm(expression: p.endDate, mode: OrderingMode.desc),
-      ]);
+      query = query
+        ..orderBy([
+          (p) => OrderingTerm(expression: p.endDate, mode: OrderingMode.desc),
+        ]);
 
       return await query.get();
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve expired prescriptions: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve expired prescriptions: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<Prescription>> getExpiringPrescriptions({int daysAhead = 30, String? profileId}) async {
+  Future<List<Prescription>> getExpiringPrescriptions({
+    int daysAhead = 30,
+    String? profileId,
+  }) async {
     try {
       final now = DateTime.now();
       final futureDate = now.add(Duration(days: daysAhead));
-      
+
       var query = _database.select(_database.prescriptions)
-        ..where((p) => 
-            p.isActive.equals(true) & 
-            p.endDate.isNotNull() &
-            p.endDate.isBiggerThanValue(now) &
-            p.endDate.isSmallerOrEqualValue(futureDate));
+        ..where(
+          (p) =>
+              p.isActive.equals(true) &
+              p.endDate.isNotNull() &
+              p.endDate.isBiggerThanValue(now) &
+              p.endDate.isSmallerOrEqualValue(futureDate),
+        );
 
       if (profileId != null) {
         query = query..where((p) => p.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (p) => OrderingTerm(expression: p.endDate),
-      ]);
+      query = query..orderBy([(p) => OrderingTerm(expression: p.endDate)]);
 
       return await query.get();
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve expiring prescriptions: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve expiring prescriptions: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<Prescription>> getPrescriptionsNeedingRefill({String? profileId}) async {
+  Future<List<Prescription>> getPrescriptionsNeedingRefill({
+    String? profileId,
+  }) async {
     try {
       var query = _database.select(_database.prescriptions)
-        ..where((p) => 
-            p.isActive.equals(true) & 
-            p.isPrescriptionActive.equals(true) &
-            p.refillsRemaining.isNotNull() &
-            p.refillsRemaining.isSmallerOrEqualValue(2));
+        ..where(
+          (p) =>
+              p.isActive.equals(true) &
+              p.isPrescriptionActive.equals(true) &
+              p.refillsRemaining.isNotNull() &
+              p.refillsRemaining.isSmallerOrEqualValue(2),
+        );
 
       if (profileId != null) {
         query = query..where((p) => p.profileId.equals(profileId));
       }
 
-      query = query..orderBy([
-        (p) => OrderingTerm(expression: p.refillsRemaining),
-      ]);
+      query = query
+        ..orderBy([(p) => OrderingTerm(expression: p.refillsRemaining)]);
 
       return await query.get();
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve prescriptions needing refill: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescriptions needing refill: ${e.toString()}',
+      );
     }
   }
 
   Future<bool> markPrescriptionAsInactive(String id) async {
     try {
       if (id.isEmpty) {
-        throw const PrescriptionServiceException('Prescription ID cannot be empty');
+        throw const PrescriptionServiceException(
+          'Prescription ID cannot be empty',
+        );
       }
 
-      final rowsAffected = await (_database.update(_database.prescriptions)
-            ..where((p) => p.id.equals(id)))
-          .write(PrescriptionsCompanion(
-            isPrescriptionActive: const Value(false),
-            updatedAt: Value(DateTime.now()),
-          ));
+      final rowsAffected =
+          await (_database.update(
+            _database.prescriptions,
+          )..where((p) => p.id.equals(id))).write(
+            PrescriptionsCompanion(
+              isPrescriptionActive: const Value(false),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
 
       return rowsAffected > 0;
     } catch (e) {
-      throw PrescriptionServiceException('Failed to mark prescription as inactive: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to mark prescription as inactive: ${e.toString()}',
+      );
     }
   }
 
   Future<bool> updateRefillsRemaining(String id, int refills) async {
     try {
       if (id.isEmpty) {
-        throw const PrescriptionServiceException('Prescription ID cannot be empty');
+        throw const PrescriptionServiceException(
+          'Prescription ID cannot be empty',
+        );
       }
       if (refills < 0) {
-        throw const PrescriptionServiceException('Refills remaining cannot be negative');
+        throw const PrescriptionServiceException(
+          'Refills remaining cannot be negative',
+        );
       }
 
-      final rowsAffected = await (_database.update(_database.prescriptions)
-            ..where((p) => p.id.equals(id)))
-          .write(PrescriptionsCompanion(
-            refillsRemaining: Value(refills),
-            updatedAt: Value(DateTime.now()),
-          ));
+      final rowsAffected =
+          await (_database.update(
+            _database.prescriptions,
+          )..where((p) => p.id.equals(id))).write(
+            PrescriptionsCompanion(
+              refillsRemaining: Value(refills),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
 
       return rowsAffected > 0;
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to update refills remaining: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to update refills remaining: ${e.toString()}',
+      );
     }
   }
 
@@ -322,14 +434,20 @@ class PrescriptionService {
         throw const PrescriptionServiceException('Prescription not found');
       }
 
-      if (prescription.refillsRemaining == null || prescription.refillsRemaining! <= 0) {
+      if (prescription.refillsRemaining == null ||
+          prescription.refillsRemaining! <= 0) {
         throw const PrescriptionServiceException('No refills remaining');
       }
 
-      return await updateRefillsRemaining(id, prescription.refillsRemaining! - 1);
+      return await updateRefillsRemaining(
+        id,
+        prescription.refillsRemaining! - 1,
+      );
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
-      throw PrescriptionServiceException('Failed to decrement refills remaining: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to decrement refills remaining: ${e.toString()}',
+      );
     }
   }
 
@@ -342,21 +460,32 @@ class PrescriptionService {
         ..where(_database.prescriptions.isActive.equals(true));
 
       if (profileId != null) {
-        query = query..where(_database.prescriptions.profileId.equals(profileId));
+        query = query
+          ..where(_database.prescriptions.profileId.equals(profileId));
       }
 
       final result = await query.getSingle();
       return result.read(_database.prescriptions.id.count()) ?? 0;
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve prescription count: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescription count: ${e.toString()}',
+      );
     }
   }
 
-  Future<Map<String, int>> getPrescriptionCountsByStatus({String? profileId}) async {
+  Future<Map<String, int>> getPrescriptionCountsByStatus({
+    String? profileId,
+  }) async {
     try {
-      final activePrescriptions = await getActivePrescriptions(profileId: profileId);
-      final expiredPrescriptions = await getExpiredPrescriptions(profileId: profileId);
-      final needRefillPrescriptions = await getPrescriptionsNeedingRefill(profileId: profileId);
+      final activePrescriptions = await getActivePrescriptions(
+        profileId: profileId,
+      );
+      final expiredPrescriptions = await getExpiredPrescriptions(
+        profileId: profileId,
+      );
+      final needRefillPrescriptions = await getPrescriptionsNeedingRefill(
+        profileId: profileId,
+      );
 
       return {
         'active': activePrescriptions.length,
@@ -365,11 +494,16 @@ class PrescriptionService {
         'total': activePrescriptions.length + expiredPrescriptions.length,
       };
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve prescription counts by status: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve prescription counts by status: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<String>> getMostPrescribedMedications({String? profileId, int limit = 10}) async {
+  Future<List<String>> getMostPrescribedMedications({
+    String? profileId,
+    int limit = 10,
+  }) async {
     try {
       var query = _database.selectOnly(_database.prescriptions)
         ..addColumns([
@@ -379,12 +513,18 @@ class PrescriptionService {
         ..where(_database.prescriptions.isActive.equals(true));
 
       if (profileId != null) {
-        query = query..where(_database.prescriptions.profileId.equals(profileId));
+        query = query
+          ..where(_database.prescriptions.profileId.equals(profileId));
       }
 
       query = query
         ..groupBy([_database.prescriptions.medicationName])
-        ..orderBy([OrderingTerm(expression: _database.prescriptions.id.count(), mode: OrderingMode.desc)])
+        ..orderBy([
+          OrderingTerm(
+            expression: _database.prescriptions.id.count(),
+            mode: OrderingMode.desc,
+          ),
+        ])
         ..limit(limit);
 
       final results = await query.get();
@@ -392,7 +532,9 @@ class PrescriptionService {
           .map((result) => result.read(_database.prescriptions.medicationName)!)
           .toList();
     } catch (e) {
-      throw PrescriptionServiceException('Failed to retrieve most prescribed medications: ${e.toString()}');
+      throw PrescriptionServiceException(
+        'Failed to retrieve most prescribed medications: ${e.toString()}',
+      );
     }
   }
 
@@ -433,13 +575,19 @@ class PrescriptionService {
       throw const PrescriptionServiceException('Title cannot be empty');
     }
     if (request.title.length > 200) {
-      throw const PrescriptionServiceException('Title cannot exceed 200 characters');
+      throw const PrescriptionServiceException(
+        'Title cannot exceed 200 characters',
+      );
     }
     if (request.medicationName.trim().isEmpty) {
-      throw const PrescriptionServiceException('Medication name cannot be empty');
+      throw const PrescriptionServiceException(
+        'Medication name cannot be empty',
+      );
     }
     if (request.medicationName.length > 100) {
-      throw const PrescriptionServiceException('Medication name cannot exceed 100 characters');
+      throw const PrescriptionServiceException(
+        'Medication name cannot exceed 100 characters',
+      );
     }
     if (request.dosage.trim().isEmpty) {
       throw const PrescriptionServiceException('Dosage cannot be empty');
@@ -448,11 +596,15 @@ class PrescriptionService {
       throw const PrescriptionServiceException('Frequency cannot be empty');
     }
     if (request.refillsRemaining != null && request.refillsRemaining! < 0) {
-      throw const PrescriptionServiceException('Refills remaining cannot be negative');
+      throw const PrescriptionServiceException(
+        'Refills remaining cannot be negative',
+      );
     }
     if (request.startDate != null && request.endDate != null) {
       if (request.startDate!.isAfter(request.endDate!)) {
-        throw const PrescriptionServiceException('Start date cannot be after end date');
+        throw const PrescriptionServiceException(
+          'Start date cannot be after end date',
+        );
       }
     }
   }
@@ -462,13 +614,21 @@ class PrescriptionService {
       throw const PrescriptionServiceException('Title cannot be empty');
     }
     if (request.title != null && request.title!.length > 200) {
-      throw const PrescriptionServiceException('Title cannot exceed 200 characters');
+      throw const PrescriptionServiceException(
+        'Title cannot exceed 200 characters',
+      );
     }
-    if (request.medicationName != null && request.medicationName!.trim().isEmpty) {
-      throw const PrescriptionServiceException('Medication name cannot be empty');
+    if (request.medicationName != null &&
+        request.medicationName!.trim().isEmpty) {
+      throw const PrescriptionServiceException(
+        'Medication name cannot be empty',
+      );
     }
-    if (request.medicationName != null && request.medicationName!.length > 100) {
-      throw const PrescriptionServiceException('Medication name cannot exceed 100 characters');
+    if (request.medicationName != null &&
+        request.medicationName!.length > 100) {
+      throw const PrescriptionServiceException(
+        'Medication name cannot exceed 100 characters',
+      );
     }
     if (request.dosage != null && request.dosage!.trim().isEmpty) {
       throw const PrescriptionServiceException('Dosage cannot be empty');
@@ -477,11 +637,15 @@ class PrescriptionService {
       throw const PrescriptionServiceException('Frequency cannot be empty');
     }
     if (request.refillsRemaining != null && request.refillsRemaining! < 0) {
-      throw const PrescriptionServiceException('Refills remaining cannot be negative');
+      throw const PrescriptionServiceException(
+        'Refills remaining cannot be negative',
+      );
     }
     if (request.startDate != null && request.endDate != null) {
       if (request.startDate!.isAfter(request.endDate!)) {
-        throw const PrescriptionServiceException('Start date cannot be after end date');
+        throw const PrescriptionServiceException(
+          'Start date cannot be after end date',
+        );
       }
     }
   }
@@ -559,9 +723,9 @@ class UpdatePrescriptionRequest {
 
 class PrescriptionServiceException implements Exception {
   final String message;
-  
+
   const PrescriptionServiceException(this.message);
-  
+
   @override
   String toString() => 'PrescriptionServiceException: $message';
 }

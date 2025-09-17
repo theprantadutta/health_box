@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/onboarding_providers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../data/database/app_database.dart';
 
 import '../../screens/main_app_screen.dart';
 import '../../screens/onboarding_screen.dart';
@@ -24,7 +25,8 @@ import '../../features/ocr/services/ocr_service.dart';
 import '../../features/reminders/screens/reminders_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -47,28 +49,19 @@ class AppRoutes {
 }
 
 class PlaceholderScreen extends StatelessWidget {
-  const PlaceholderScreen({
-    super.key,
-    required this.title,
-  });
-  
+  const PlaceholderScreen({super.key, required this.title});
+
   final String title;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: Text(title)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.construction,
-              size: 64,
-              color: Colors.grey,
-            ),
+            Icon(Icons.construction, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               '$title - Coming Soon',
@@ -91,7 +84,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: 'onboarding',
         builder: (context, state) => const OnboardingScreen(),
       ),
-      
+
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -101,35 +94,33 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.dashboard,
             name: 'dashboard',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: DashboardScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: DashboardScreen()),
           ),
-          
+
           GoRoute(
             path: AppRoutes.profiles,
             name: 'profiles',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: ProfileListScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: ProfileListScreen()),
             routes: [
               GoRoute(
                 path: 'form',
                 name: 'profile-form',
                 builder: (context, state) {
-                  // For now, pass null - the profile will be passed via navigation parameters
-                  return const ProfileFormScreen();
+                  // Check if a profile was passed via extra parameter for editing
+                  final profile = state.extra as FamilyMemberProfile?;
+                  return ProfileFormScreen(profile: profile);
                 },
               ),
             ],
           ),
-          
+
           GoRoute(
             path: AppRoutes.medicalRecords,
             name: 'medical-records',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: MedicalRecordListScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: MedicalRecordListScreen()),
             routes: [
               GoRoute(
                 path: 'detail/:recordId',
@@ -164,21 +155,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          
+
           GoRoute(
             path: AppRoutes.reminders,
             name: 'reminders',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: RemindersScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: RemindersScreen()),
           ),
-          
+
           GoRoute(
             path: AppRoutes.settings,
             name: 'settings',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: settings.SettingsScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: settings.SettingsScreen()),
             routes: [
               GoRoute(
                 path: 'export',
@@ -194,7 +183,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 path: 'emergency-card',
                 name: 'emergency-card',
                 builder: (context, state) {
-                  final profileId = state.uri.queryParameters['profileId'] ?? '';
+                  final profileId =
+                      state.uri.queryParameters['profileId'] ?? '';
                   return EmergencyCardScreen(profileId: profileId);
                 },
               ),
@@ -205,7 +195,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          
+
           // Additional screens not in main navigation
           GoRoute(
             path: AppRoutes.vitalsTracking,
@@ -215,7 +205,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               return VitalsTrackingScreen(profileId: profileId);
             },
           ),
-          
+
           GoRoute(
             path: AppRoutes.ocrScan,
             name: 'ocr-scan',
@@ -230,20 +220,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
     ],
-    
+
     errorBuilder: (context, state) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Page Not Found'),
-      ),
+      appBar: AppBar(title: const Text('Page Not Found')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               'Page not found: ${state.uri}',
@@ -258,22 +242,46 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
     ),
-    
+
     redirect: (context, state) async {
-      // Check if user is accessing onboarding page
-      if (state.uri.toString() == AppRoutes.onboarding) {
-        return null; // Allow access to onboarding
+      final currentPath = state.uri.toString();
+
+      // Always allow access to onboarding
+      if (currentPath == AppRoutes.onboarding) {
+        return null;
       }
 
-      // Check if onboarding is completed
       try {
-        final onboardingCompleted = ref.read(onboardingCompletedProvider);
-        return onboardingCompleted.when(
-          data: (isCompleted) => isCompleted ? null : AppRoutes.onboarding,
-          loading: () => AppRoutes.onboarding,
-          error: (_, __) => AppRoutes.onboarding,
-        );
+        final prefs = await SharedPreferences.getInstance();
+        final isOnboardingCompleted =
+            prefs.getBool('onboarding_completed') ?? false;
+
+        // If onboarding not completed, redirect to onboarding
+        if (!isOnboardingCompleted) {
+          return AppRoutes.onboarding;
+        }
+
+        // Allow access to profile form (needed for mandatory profile creation)
+        if (currentPath == AppRoutes.profiles ||
+            currentPath == AppRoutes.profileForm) {
+          return null;
+        }
+
+        // Check if at least one profile exists
+        final database = AppDatabase.instance;
+        final profilesQuery = await database
+            .select(database.familyMemberProfiles)
+            .get();
+        final hasProfiles = profilesQuery.isNotEmpty;
+
+        // If no profiles exist, redirect to profile creation
+        if (!hasProfiles) {
+          return AppRoutes.profileForm;
+        }
+
+        return null; // Allow access to requested route
       } catch (e) {
+        // If there's any error, default to showing onboarding
         return AppRoutes.onboarding;
       }
     },
@@ -282,7 +290,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
 extension GoRouterExtension on GoRouter {
   String get location => routeInformationProvider.value.uri.toString();
-  
+
   void pushAndClearStack(String location) {
     while (canPop()) {
       pop();

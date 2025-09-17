@@ -97,7 +97,7 @@ enum SyncState {
   uploading,
   downloading,
   error,
-  conflicted
+  conflicted,
 }
 
 class SyncStatus {
@@ -188,9 +188,4 @@ class SyncConflict {
   });
 }
 
-enum ConflictResolution {
-  useLocal,
-  useRemote,
-  merge,
-  createDuplicate
-}
+enum ConflictResolution { useLocal, useRemote, merge, createDuplicate }

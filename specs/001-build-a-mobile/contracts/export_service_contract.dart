@@ -98,18 +98,18 @@ abstract class EmergencyCardServiceContract {
 }
 
 enum ExportFormat {
-  pdf,           // PDF report with formatting
-  csv,           // Comma-separated values
-  json,          // JSON with full data structure
-  encryptedZip,  // Encrypted ZIP archive
-  plainZip       // Unencrypted ZIP archive
+  pdf, // PDF report with formatting
+  csv, // Comma-separated values
+  json, // JSON with full data structure
+  encryptedZip, // Encrypted ZIP archive
+  plainZip, // Unencrypted ZIP archive
 }
 
 enum EmergencyCardFormat {
-  pdfCard,       // Credit card sized PDF
-  pdfFull,       // Full page PDF with details
-  image,         // PNG image for phone wallpaper
-  qrCode         // QR code only
+  pdfCard, // Credit card sized PDF
+  pdfFull, // Full page PDF with details
+  image, // PNG image for phone wallpaper
+  qrCode, // QR code only
 }
 
 class ImportResult {

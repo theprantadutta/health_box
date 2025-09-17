@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../shared/widgets/modern_card.dart';
 import '../shared/theme/app_theme.dart';
+import '../shared/animations/stagger_animations.dart';
 import '../shared/providers/accessibility_providers.dart';
 import '../shared/providers/onboarding_providers.dart';
 import '../shared/providers/app_providers.dart';
+import '../shared/providers/simple_profile_providers.dart';
+import '../shared/providers/settings_providers.dart';
 import '../shared/navigation/app_router.dart';
 import '../data/database/app_database.dart';
 
@@ -17,6 +20,14 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  final TextEditingController _deleteConfirmationController = TextEditingController();
+
+  @override
+  void dispose() {
+    _deleteConfirmationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -27,55 +38,55 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       appBar: AppBar(
         title: const Text(
           'Settings',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: BoxDecoration(
-            gradient: AppTheme.getPrimaryGradient(isDarkMode),
+            color: AppTheme.getPrimaryColor(isDarkMode),
           ),
         ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: StaggerAnimations.staggeredList(
           children: [
             // User Profile Section
             _buildProfileSection(),
             const SizedBox(height: 16),
-            
+
             // App Preferences
             _buildAppPreferencesSection(),
             const SizedBox(height: 16),
-            
+
             // Accessibility Settings
             _buildAccessibilitySection(accessibilitySettings),
             const SizedBox(height: 16),
-            
+
             // Data Management
             _buildDataManagementSection(),
             const SizedBox(height: 16),
-            
+
             // Privacy & Security
             _buildPrivacySection(),
             const SizedBox(height: 16),
-            
+
             // Backup & Sync
             _buildBackupSyncSection(),
             const SizedBox(height: 16),
-            
+
             // Support & About
             _buildSupportSection(),
             const SizedBox(height: 16),
-            
+
             // Advanced Settings
             _buildAdvancedSection(),
           ],
+          staggerDelay: AppTheme.microDuration,
+          direction: StaggerDirection.bottomToTop,
+          animationType: StaggerAnimationType.fadeSlide,
         ),
       ),
     );
@@ -83,41 +94,103 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildProfileSection() {
     return ModernCard(
+      medicalTheme: MedicalCardTheme.primary,
       elevation: CardElevation.medium,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.high,
+      borderRadius: BorderRadius.circular(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.person,
-                color: Theme.of(context).colorScheme.primary,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColorLight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.person_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Text(
                 'Profile',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              child: const Icon(Icons.person, color: Colors.white),
-            ),
-            title: const Text('Health Box User'),
-            subtitle: const Text('Tap to edit profile information'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // TODO: Navigate to profile editing
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Profile editing coming soon'),
+
+          Consumer(
+            builder: (context, ref, child) {
+              final selectedProfileAsync = ref.watch(
+                simpleSelectedProfileProvider,
+              );
+
+              return selectedProfileAsync.when(
+                loading: () => ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: const Icon(Icons.person, color: Colors.white),
+                  ),
+                  title: const Text('Health Box User'),
+                  subtitle: const Text('Loading profile...'),
+                  trailing: const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
                 ),
+                error: (error, stack) => ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: const Icon(Icons.person, color: Colors.white),
+                  ),
+                  title: const Text('Health Box User'),
+                  subtitle: const Text('Error loading profile'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Error loading profile data'),
+                      ),
+                    );
+                  },
+                ),
+                data: (selectedProfile) {
+                  final displayName = selectedProfile != null
+                      ? '${selectedProfile.firstName} ${selectedProfile.lastName}'
+                      : 'Health Box User';
+
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: const Icon(Icons.person, color: Colors.white),
+                    ),
+                    title: Text(displayName),
+                    subtitle: const Text('Tap to edit profile information'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      if (selectedProfile != null) {
+                        context.push(
+                          AppRoutes.profileForm,
+                          extra: selectedProfile,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No profile selected')),
+                        );
+                      }
+                    },
+                  );
+                },
               );
             },
           ),
@@ -128,7 +201,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildAppPreferencesSection() {
     final themeMode = ref.watch(themeModeProvider);
-    
+
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -143,14 +216,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'App Preferences',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Theme Settings
           ListTile(
             leading: Icon(
@@ -161,7 +234,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showThemeSelector(),
           ),
-          
+
           // Language Settings
           ListTile(
             leading: const Icon(Icons.language),
@@ -169,21 +242,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             subtitle: const Text('English'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Language selection coming soon'),
-                ),
-              );
+              _showLanguageSelection();
             },
           ),
-          
+
           // Notifications
           SwitchListTile(
             secondary: const Icon(Icons.notifications),
             title: const Text('Notifications'),
             subtitle: const Text('Receive reminders and alerts'),
-            value: true, // TODO: Connect to actual setting
+            value: ref.watch(notificationsEnabledProvider),
             onChanged: (value) {
+              ref.read(settingsNotifierProvider.notifier).toggleNotifications(value);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -193,12 +263,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               );
             },
           ),
+
+          // Reminders
+          ListTile(
+            leading: const Icon(Icons.alarm),
+            title: const Text('Reminders'),
+            subtitle: const Text('Manage your medication and health reminders'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.reminders),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildAccessibilitySection(AccessibilitySettings accessibilitySettings) {
+  Widget _buildAccessibilitySection(
+    AccessibilitySettings accessibilitySettings,
+  ) {
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -213,25 +294,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'Accessibility',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // High Contrast Mode
           SwitchListTile(
             secondary: const Icon(Icons.contrast),
             title: const Text('High Contrast Mode'),
-            subtitle: const Text('Improve visibility with high contrast colors'),
+            subtitle: const Text(
+              'Improve visibility with high contrast colors',
+            ),
             value: accessibilitySettings.highContrast,
             onChanged: (value) {
               ref.read(highContrastModeProvider.notifier).state = value;
             },
           ),
-          
+
           // Large Text Mode
           SwitchListTile(
             secondary: const Icon(Icons.format_size),
@@ -242,7 +325,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ref.read(largeTextModeProvider.notifier).state = value;
             },
           ),
-          
+
           // Reduced Animations
           SwitchListTile(
             secondary: const Icon(Icons.animation),
@@ -266,21 +349,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.storage,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              Icon(Icons.storage, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Data Management',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           ListTile(
             leading: const Icon(Icons.file_download),
             title: const Text('Export Data'),
@@ -288,7 +368,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.export),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.file_upload),
             title: const Text('Import Data'),
@@ -296,7 +376,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.import),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.medical_information),
             title: const Text('Emergency Card'),
@@ -304,14 +384,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.emergencyCard),
           ),
-          
+
           FutureBuilder<int>(
             future: AppDatabase.instance.getDatabaseSize(),
             builder: (context, snapshot) {
-              final sizeText = snapshot.hasData 
+              final sizeText = snapshot.hasData
                   ? '${(snapshot.data! / 1024 / 1024).toStringAsFixed(2)} MB'
                   : 'Calculating...';
-              
+
               return ListTile(
                 leading: const Icon(Icons.info_outline),
                 title: const Text('Database Size'),
@@ -343,14 +423,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'Privacy & Security',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           SwitchListTile(
             secondary: const Icon(Icons.lock),
             title: const Text('Database Encryption'),
@@ -358,7 +438,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             value: true,
             onChanged: null, // Always encrypted
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy Policy'),
@@ -366,7 +446,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showPrivacyPolicy(),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.article),
             title: const Text('Terms of Service'),
@@ -394,14 +474,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'Backup & Sync',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           ListTile(
             leading: const Icon(Icons.cloud),
             title: const Text('Google Drive Sync'),
@@ -409,7 +489,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.sync),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.backup),
             title: const Text('Create Backup'),
@@ -417,13 +497,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: _createBackup,
           ),
-          
+
           SwitchListTile(
             secondary: const Icon(Icons.schedule),
             title: const Text('Auto Backup'),
             subtitle: const Text('Automatically backup daily'),
-            value: false, // TODO: Connect to actual setting
+            value: ref.watch(autoBackupEnabledProvider),
             onChanged: (value) {
+              ref.read(settingsNotifierProvider.notifier).toggleAutoBackup(value);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -446,21 +527,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.help,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              Icon(Icons.help, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Support & About',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           ListTile(
             leading: const Icon(Icons.help_center),
             title: const Text('Help Center'),
@@ -468,7 +546,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showHelpCenter(),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.feedback),
             title: const Text('Send Feedback'),
@@ -476,7 +554,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _sendFeedback(),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About Health Box'),
@@ -504,21 +582,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'Advanced',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           ListTile(
             leading: const Icon(Icons.bug_report),
             title: const Text('Debug Mode'),
             subtitle: const Text('Enable debug logging'),
             trailing: Switch(
-              value: false, // TODO: Connect to actual setting
+              value: ref.watch(debugModeEnabledProvider),
               onChanged: (value) {
+                ref.read(settingsNotifierProvider.notifier).toggleDebugMode(value);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -529,14 +608,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               },
             ),
           ),
-          
+
           ListTile(
             leading: const Icon(Icons.restore),
             title: const Text('Reset Onboarding'),
             subtitle: const Text('Show onboarding screens again'),
             onTap: _resetOnboarding,
           ),
-          
+
           ListTile(
             leading: Icon(
               Icons.delete_forever,
@@ -544,9 +623,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             title: Text(
               'Clear All Data',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.error,
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             subtitle: const Text('Permanently delete all data'),
             onTap: _showClearDataDialog,
@@ -570,7 +647,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   void _showThemeSelector() {
     final currentTheme = ref.read(themeModeProvider);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -584,10 +661,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               groupValue: currentTheme,
               onChanged: (value) {
                 if (value != null) {
-                  // TODO: Fix theme provider to be StateNotifier
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Theme change coming soon')),
-                  );
+                  ref.read(appNotifierProvider.notifier).setDarkMode(false);
                   Navigator.pop(context);
                 }
               },
@@ -598,10 +672,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               groupValue: currentTheme,
               onChanged: (value) {
                 if (value != null) {
-                  // TODO: Fix theme provider to be StateNotifier
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Theme change coming soon')),
-                  );
+                  ref.read(appNotifierProvider.notifier).setDarkMode(true);
                   Navigator.pop(context);
                 }
               },
@@ -612,10 +683,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               groupValue: currentTheme,
               onChanged: (value) {
                 if (value != null) {
-                  // TODO: Fix theme provider to be StateNotifier
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Theme change coming soon')),
-                  );
+                  // For system theme, we'll follow the system brightness
+                  final brightness = MediaQuery.of(context).platformBrightness;
+                  ref.read(appNotifierProvider.notifier).setDarkMode(brightness == Brightness.dark);
                   Navigator.pop(context);
                 }
               },
@@ -637,9 +707,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await AppDatabase.instance.vacuumDatabase();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Database optimized successfully'),
-          ),
+          const SnackBar(content: Text('Database optimized successfully')),
         );
         setState(() {}); // Refresh database size
       }
@@ -659,11 +727,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       final backupPath = await AppDatabase.instance.backupDatabase();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Backup created: $backupPath'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Backup created: $backupPath')));
       }
     } catch (e) {
       if (mounted) {
@@ -692,11 +758,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () async {
-              await ref.read(onboardingNotifierProvider.notifier).resetOnboarding();
+              await ref
+                  .read(onboardingNotifierProvider.notifier)
+                  .resetOnboarding();
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Onboarding reset. Restart the app to see changes.'),
+                  content: Text(
+                    'Onboarding reset. Restart the app to see changes.',
+                  ),
                 ),
               );
             },
@@ -739,22 +809,116 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _confirmClearData() {
+    _deleteConfirmationController.clear();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Final Confirmation'),
-        content: const Text(
-          'Type "DELETE ALL" to confirm permanent data deletion:',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Final Confirmation'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Type "DELETE ALL" to confirm permanent data deletion:',
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _deleteConfirmationController,
+                decoration: const InputDecoration(
+                  hintText: 'DELETE ALL',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ],
           ),
-          // TODO: Implement actual data clearing with text confirmation
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: _deleteConfirmationController.text == 'DELETE ALL'
+                  ? () async {
+                      Navigator.pop(context);
+                      await _performDataClearing();
+                    }
+                  : null,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('DELETE ALL DATA'),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _performDataClearing() async {
+    try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 16),
+              Text('Clearing all data...'),
+            ],
+          ),
+        ),
+      );
+
+      // Clear database - we'll need to add this method to the database
+      final database = ref.read(appDatabaseProvider);
+
+      // Clear all tables
+      await database.delete(database.familyMemberProfiles).go();
+      await database.delete(database.medicalRecords).go();
+      await database.delete(database.prescriptions).go();
+      await database.delete(database.medications).go();
+      await database.delete(database.labReports).go();
+      await database.delete(database.vaccinations).go();
+      await database.delete(database.allergies).go();
+      await database.delete(database.chronicConditions).go();
+      await database.delete(database.tags).go();
+      await database.delete(database.attachments).go();
+      await database.delete(database.reminders).go();
+      await database.delete(database.emergencyCards).go();
+
+      // Clear SharedPreferences
+      final prefs = ref.read(sharedPreferencesProvider);
+      await prefs.clear();
+
+      // Reset onboarding
+      await ref.read(onboardingNotifierProvider.notifier).resetOnboarding();
+
+      Navigator.pop(context); // Close loading dialog
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All data has been permanently deleted'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.pop(context); // Close loading dialog
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to clear data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _showPrivacyPolicy() {
@@ -804,17 +968,80 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showHelpCenter() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Help Center opening soon'),
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Help Center opening soon')));
+  }
+
+  void _showLanguageSelection() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Language'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Text('🇺🇸'),
+              title: const Text('English'),
+              trailing: const Icon(Icons.check),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+            ListTile(
+              leading: const Text('🇪🇸'),
+              title: const Text('Español'),
+              subtitle: const Text('Coming in future update'),
+              enabled: false,
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Text('🇫🇷'),
+              title: const Text('Français'),
+              subtitle: const Text('Coming in future update'),
+              enabled: false,
+              onTap: () {},
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }
 
   void _sendFeedback() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Feedback form coming soon'),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Send Feedback'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('We value your feedback! Please reach out to us through:'),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.email),
+              title: const Text('Email Support'),
+              subtitle: const Text('support@healthbox.app'),
+              onTap: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Email functionality requires url_launcher package')),
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }

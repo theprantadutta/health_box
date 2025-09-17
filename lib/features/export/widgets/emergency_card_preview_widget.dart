@@ -52,7 +52,9 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+        color: Theme.of(
+          context,
+        ).colorScheme.primaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
@@ -170,7 +172,8 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
                 _buildCurrentMedicationsSection(context),
                 const SizedBox(height: 12),
                 _buildMedicalConditionsSection(context),
-                if (config.additionalNotes != null && config.additionalNotes!.isNotEmpty) ...[
+                if (config.additionalNotes != null &&
+                    config.additionalNotes!.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   _buildAdditionalNotesSection(context),
                 ],
@@ -178,55 +181,41 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(
-            flex: 1,
-            child: _buildQRCodeSection(context),
-          ),
+          Expanded(flex: 1, child: _buildQRCodeSection(context)),
         ],
       ),
     );
   }
 
-  Widget _buildPersonalInfoSection(BuildContext context, FamilyMemberProfile profile) {
-    return _buildSection(
-      context,
-      'PERSONAL INFORMATION',
-      [
-        _buildInfoRow('Date of Birth:', _formatDate(profile.dateOfBirth)),
-        _buildInfoRow('Gender:', profile.gender),
-        if (profile.bloodType != null)
-          _buildInfoRow('Blood Type:', profile.bloodType!),
-        if (profile.height != null)
-          _buildInfoRow('Height:', '${profile.height}cm'),
-        if (profile.weight != null)
-          _buildInfoRow('Weight:', '${profile.weight}kg'),
-      ],
-    );
+  Widget _buildPersonalInfoSection(
+    BuildContext context,
+    FamilyMemberProfile profile,
+  ) {
+    return _buildSection(context, 'PERSONAL INFORMATION', [
+      _buildInfoRow('Date of Birth:', _formatDate(profile.dateOfBirth)),
+      _buildInfoRow('Gender:', profile.gender),
+      if (profile.bloodType != null)
+        _buildInfoRow('Blood Type:', profile.bloodType!),
+      if (profile.height != null)
+        _buildInfoRow('Height:', '${profile.height}cm'),
+      if (profile.weight != null)
+        _buildInfoRow('Weight:', '${profile.weight}kg'),
+    ]);
   }
 
   Widget _buildEmergencyContactsSection(BuildContext context) {
-    return _buildSection(
-      context,
-      'EMERGENCY CONTACTS',
-      [
-        if (config.emergencyContact != null)
-          Text(
-            config.emergencyContact!,
-            style: const TextStyle(fontSize: 10),
-          ),
-        if (config.secondaryContact != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            config.secondaryContact!,
-            style: const TextStyle(fontSize: 10),
-          ),
-        ],
-        if (config.insuranceInfo != null) ...[
-          const SizedBox(height: 4),
-          _buildInfoRow('Insurance:', config.insuranceInfo!, fontSize: 10),
-        ],
+    return _buildSection(context, 'EMERGENCY CONTACTS', [
+      if (config.emergencyContact != null)
+        Text(config.emergencyContact!, style: const TextStyle(fontSize: 10)),
+      if (config.secondaryContact != null) ...[
+        const SizedBox(height: 4),
+        Text(config.secondaryContact!, style: const TextStyle(fontSize: 10)),
       ],
-    );
+      if (config.insuranceInfo != null) ...[
+        const SizedBox(height: 4),
+        _buildInfoRow('Insurance:', config.insuranceInfo!, fontSize: 10),
+      ],
+    ]);
   }
 
   Widget _buildCriticalAllergiesSection(BuildContext context) {
@@ -235,21 +224,28 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
       'CRITICAL ALLERGIES',
       config.criticalAllergies.isEmpty
           ? [const Text('None reported', style: TextStyle(fontSize: 10))]
-          : config.criticalAllergies.map((allergy) => Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('• ', style: TextStyle(fontSize: 10, color: Colors.red)),
-                  Expanded(
-                    child: Text(
-                      allergy,
-                      style: const TextStyle(fontSize: 10),
+          : config.criticalAllergies
+                .map(
+                  (allergy) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '• ',
+                          style: TextStyle(fontSize: 10, color: Colors.red),
+                        ),
+                        Expanded(
+                          child: Text(
+                            allergy,
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            )).toList(),
+                )
+                .toList(),
       backgroundColor: Colors.red.shade50,
       borderColor: Colors.red,
       titleColor: Colors.red,
@@ -262,21 +258,26 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
       'CURRENT MEDICATIONS',
       config.currentMedications.isEmpty
           ? [const Text('None reported', style: TextStyle(fontSize: 10))]
-          : config.currentMedications.take(8).map((medication) => Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('• ', style: TextStyle(fontSize: 10)),
-                  Expanded(
-                    child: Text(
-                      medication,
-                      style: const TextStyle(fontSize: 10),
+          : config.currentMedications
+                .take(8)
+                .map(
+                  (medication) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('• ', style: TextStyle(fontSize: 10)),
+                        Expanded(
+                          child: Text(
+                            medication,
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            )).toList(),
+                )
+                .toList(),
     );
   }
 
@@ -286,35 +287,33 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
       'MEDICAL CONDITIONS',
       config.medicalConditions.isEmpty
           ? [const Text('None reported', style: TextStyle(fontSize: 10))]
-          : config.medicalConditions.take(6).map((condition) => Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('• ', style: TextStyle(fontSize: 10)),
-                  Expanded(
-                    child: Text(
-                      condition,
-                      style: const TextStyle(fontSize: 10),
+          : config.medicalConditions
+                .take(6)
+                .map(
+                  (condition) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('• ', style: TextStyle(fontSize: 10)),
+                        Expanded(
+                          child: Text(
+                            condition,
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            )).toList(),
+                )
+                .toList(),
     );
   }
 
   Widget _buildAdditionalNotesSection(BuildContext context) {
-    return _buildSection(
-      context,
-      'ADDITIONAL NOTES',
-      [
-        Text(
-          config.additionalNotes!,
-          style: const TextStyle(fontSize: 10),
-        ),
-      ],
-    );
+    return _buildSection(context, 'ADDITIONAL NOTES', [
+      Text(config.additionalNotes!, style: const TextStyle(fontSize: 10)),
+    ]);
   }
 
   Widget _buildSection(
@@ -364,17 +363,11 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
             width: 60,
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: TextStyle(fontSize: fontSize),
-            ),
+            child: Text(value, style: TextStyle(fontSize: fontSize)),
           ),
         ],
       ),
@@ -460,9 +453,9 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
           children: [
             Text(
               'Preview Actions',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             Row(
@@ -499,10 +492,7 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             'Preview Error',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(message, textAlign: TextAlign.center),
@@ -536,10 +526,7 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
         child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: 600,
-            maxHeight: 800,
-          ),
+          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
           child: Column(
             children: [
               AppBar(
@@ -557,12 +544,15 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   child: Consumer(
                     builder: (context, ref, child) {
-                      final profileAsync = ref.watch(profileByIdProvider(profileId));
+                      final profileAsync = ref.watch(
+                        profileByIdProvider(profileId),
+                      );
                       return profileAsync.when(
                         data: (profile) => profile != null
                             ? _buildCard(context, profile)
                             : _buildError('Profile not found'),
-                        loading: () => const Center(child: CircularProgressIndicator()),
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
                         error: (error, stack) => _buildError(error.toString()),
                       );
                     },

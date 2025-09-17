@@ -17,7 +17,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Use provided record or fetch by ID
-    final recordAsync = record != null 
+    final recordAsync = record != null
         ? AsyncValue.data(record!)
         : ref.watch(medicalRecordByIdProvider(recordId));
 
@@ -32,7 +32,8 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
             tooltip: 'Edit Record',
           ),
           PopupMenuButton<String>(
-            onSelected: (value) => _handleMenuAction(context, value, recordAsync.value),
+            onSelected: (value) =>
+                _handleMenuAction(context, value, recordAsync.value),
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'share',
@@ -61,7 +62,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
       body: recordAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => _buildErrorState(context, error),
-        data: (record) => record == null 
+        data: (record) => record == null
             ? _buildRecordNotFound(context)
             : _buildRecordDetail(context, ref, record),
       ),
@@ -88,8 +89,8 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
             error.toString(),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
@@ -122,8 +123,8 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
             'The medical record you\'re looking for doesn\'t exist or has been deleted',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
@@ -136,7 +137,11 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecordDetail(BuildContext context, WidgetRef ref, MedicalRecord record) {
+  Widget _buildRecordDetail(
+    BuildContext context,
+    WidgetRef ref,
+    MedicalRecord record,
+  ) {
     final profileAsync = ref.watch(profileByIdProvider(record.profileId));
     final theme = Theme.of(context);
 
@@ -173,10 +178,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                   ),
                   if (record.description?.isNotEmpty == true) ...[
                     const SizedBox(height: 8),
-                    Text(
-                      record.description!,
-                      style: theme.textTheme.bodyLarge,
-                    ),
+                    Text(record.description!, style: theme.textTheme.bodyLarge),
                   ],
                 ],
               ),
@@ -224,7 +226,9 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                   children: [
                     CircleAvatar(
                       radius: 24,
-                      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+                      backgroundColor: theme.colorScheme.primary.withValues(
+                        alpha: 0.1,
+                      ),
                       child: Icon(
                         Icons.person,
                         color: theme.colorScheme.primary,
@@ -236,7 +240,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            profile != null 
+                            profile != null
                                 ? '${profile.firstName} ${profile.lastName}'
                                 : 'Unknown Profile',
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -310,8 +314,8 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                     'Status',
                     record.isActive ? 'Active' : 'Inactive',
                     record.isActive ? Icons.check_circle : Icons.cancel,
-                    valueColor: record.isActive 
-                        ? Colors.green 
+                    valueColor: record.isActive
+                        ? Colors.green
                         : theme.colorScheme.onSurfaceVariant,
                   ),
                 ],
@@ -397,11 +401,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getRecordTypeIcon(recordType),
-            size: 16,
-            color: color,
-          ),
+          Icon(_getRecordTypeIcon(recordType), size: 16, color: color),
           const SizedBox(width: 6),
           Text(
             recordType,
@@ -427,11 +427,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          size: 20,
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
+        Icon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -446,9 +442,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: valueColor,
-                ),
+                style: theme.textTheme.bodyMedium?.copyWith(color: valueColor),
               ),
             ],
           ),
@@ -554,7 +548,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
   int _calculateAge(DateTime dateOfBirth) {
     final now = DateTime.now();
     int age = now.year - dateOfBirth.year;
-    if (now.month < dateOfBirth.month || 
+    if (now.month < dateOfBirth.month ||
         (now.month == dateOfBirth.month && now.day < dateOfBirth.day)) {
       age--;
     }
@@ -566,19 +560,27 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Edit ${record.recordType} - Will be implemented in T056-T058'),
+        content: Text(
+          'Edit ${record.recordType} - Will be implemented in T056-T058',
+        ),
       ),
     );
   }
 
-  void _handleMenuAction(BuildContext context, String action, MedicalRecord? record) {
+  void _handleMenuAction(
+    BuildContext context,
+    String action,
+    MedicalRecord? record,
+  ) {
     if (record == null) return;
 
     switch (action) {
       case 'share':
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Share functionality will be implemented in Phase 3.12'),
+            content: Text(
+              'Share functionality will be implemented in Phase 3.12',
+            ),
           ),
         );
         break;
@@ -607,7 +609,9 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
               Navigator.of(context).pop(); // Return to previous screen
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Delete functionality will be implemented with service integration'),
+                  content: Text(
+                    'Delete functionality will be implemented with service integration',
+                  ),
                 ),
               );
             },

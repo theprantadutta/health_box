@@ -13,21 +13,27 @@ class ImportScreen extends ConsumerStatefulWidget {
 
 class _ImportScreenState extends ConsumerState<ImportScreen> {
   final ImportService _importService = ImportService();
-  
+
   // Form state
   String? _selectedFilePath;
   ImportFormat _selectedFormat = ImportFormat.json;
   ImportMode _selectedMode = ImportMode.merge;
   bool _createMissingProfiles = true;
   bool _updateExistingRecords = true;
-  List<String> _allowedEntityTypes = ['profiles', 'medicalRecords', 'reminders', 'tags', 'attachments'];
-  
+  List<String> _allowedEntityTypes = [
+    'profiles',
+    'medicalRecords',
+    'reminders',
+    'tags',
+    'attachments',
+  ];
+
   // UI state
   bool _isValidating = false;
   bool _isImporting = false;
   double _importProgress = 0.0;
   String _importStatus = '';
-  
+
   // Validation results
   ImportResult? _validationResult;
   bool _showValidationDetails = false;
@@ -132,7 +138,10 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                           ),
                           Text(
                             _selectedFilePath!,
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -158,7 +167,11 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
               child: ElevatedButton.icon(
                 onPressed: _selectFile,
                 icon: const Icon(Icons.file_open),
-                label: Text(_selectedFilePath == null ? 'Choose File' : 'Choose Different File'),
+                label: Text(
+                  _selectedFilePath == null
+                      ? 'Choose File'
+                      : 'Choose Different File',
+                ),
               ),
             ),
           ],
@@ -314,7 +327,13 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      final allTypes = ['profiles', 'medicalRecords', 'reminders', 'tags', 'attachments'];
+                      final allTypes = [
+                        'profiles',
+                        'medicalRecords',
+                        'reminders',
+                        'tags',
+                        'attachments',
+                      ];
                       if (_allowedEntityTypes.length == allTypes.length) {
                         _allowedEntityTypes.clear();
                       } else {
@@ -322,12 +341,22 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                       }
                     });
                   },
-                  child: Text(_allowedEntityTypes.length == 5 ? 'Deselect All' : 'Select All'),
+                  child: Text(
+                    _allowedEntityTypes.length == 5
+                        ? 'Deselect All'
+                        : 'Select All',
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            for (final entityType in ['profiles', 'medicalRecords', 'reminders', 'tags', 'attachments'])
+            for (final entityType in [
+              'profiles',
+              'medicalRecords',
+              'reminders',
+              'tags',
+              'attachments',
+            ])
               CheckboxListTile(
                 title: Text(_getEntityTypeDisplayName(entityType)),
                 subtitle: Text(_getEntityTypeDescription(entityType)),
@@ -368,7 +397,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: _isValidating ? null : _validateFile,
-                icon: _isValidating 
+                icon: _isValidating
                     ? const SizedBox(
                         width: 16,
                         height: 16,
@@ -388,7 +417,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
     if (_validationResult == null) return const SizedBox.shrink();
 
     final result = _validationResult!;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -405,19 +434,26 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                 Expanded(
                   child: Text(
                     'Validation Results',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 TextButton(
                   onPressed: () {
-                    setState(() => _showValidationDetails = !_showValidationDetails);
+                    setState(
+                      () => _showValidationDetails = !_showValidationDetails,
+                    );
                   },
-                  child: Text(_showValidationDetails ? 'Hide Details' : 'Show Details'),
+                  child: Text(
+                    _showValidationDetails ? 'Hide Details' : 'Show Details',
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            
+
             // Summary
             Container(
               padding: const EdgeInsets.all(12),
@@ -433,10 +469,14 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    result.success ? 'File is valid and ready to import' : 'File has validation errors',
+                    result.success
+                        ? 'File is valid and ready to import'
+                        : 'File has validation errors',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: result.success ? Colors.green[800] : Colors.red[800],
+                      color: result.success
+                          ? Colors.green[800]
+                          : Colors.red[800],
                     ),
                   ),
                   if (result.error != null) ...[
@@ -449,7 +489,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                 ],
               ),
             ),
-            
+
             // Validation issues summary
             if (result.validationIssues.isNotEmpty) ...[
               const SizedBox(height: 16),
@@ -460,7 +500,10 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                     const SizedBox(width: 4),
                     Text(
                       '${result.validationIssues.where((i) => i.severity == ValidationSeverity.error).length} Errors',
-                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const SizedBox(width: 16),
                   ],
@@ -469,12 +512,15 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                     const SizedBox(width: 4),
                     Text(
                       '${result.validationIssues.where((i) => i.severity == ValidationSeverity.warning).length} Warnings',
-                      style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ],
               ),
-              
+
               if (_showValidationDetails) ...[
                 const SizedBox(height: 16),
                 const Text(
@@ -487,7 +533,9 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: result.validationIssues.map((issue) => _buildValidationIssueItem(issue)).toList(),
+                      children: result.validationIssues
+                          .map((issue) => _buildValidationIssueItem(issue))
+                          .toList(),
                     ),
                   ),
                 ),
@@ -502,7 +550,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
   Widget _buildValidationIssueItem(ValidationIssue issue) {
     Color color;
     IconData icon;
-    
+
     switch (issue.severity) {
       case ValidationSeverity.error:
         color = Colors.red;
@@ -529,19 +577,13 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  issue.message,
-                  style: TextStyle(color: color),
-                ),
+                Text(issue.message, style: TextStyle(color: color)),
                 if (issue.field != null || issue.lineNumber != null)
                   Text(
                     '${issue.field != null ? 'Field: ${issue.field}' : ''}'
                     '${issue.field != null && issue.lineNumber != null ? ', ' : ''}'
                     '${issue.lineNumber != null ? 'Line: ${issue.lineNumber}' : ''}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
               ],
             ),
@@ -552,7 +594,8 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
   }
 
   Widget _buildImportButton() {
-    final bool canImport = !_isImporting &&
+    final bool canImport =
+        !_isImporting &&
         _selectedFilePath != null &&
         _allowedEntityTypes.isNotEmpty &&
         (_validationResult?.success ?? false);
@@ -563,9 +606,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         onPressed: canImport ? _performImport : null,
         icon: const Icon(Icons.upload),
         label: const Text('Import Data'),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(16),
-        ),
+        style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
       ),
     );
   }
@@ -583,7 +624,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         setState(() {
           _selectedFilePath = file.path;
           _validationResult = null;
-          
+
           // Auto-detect format based on file extension
           final extension = file.extension?.toLowerCase();
           switch (extension) {
@@ -678,11 +719,13 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _showImportErrorDialog(ImportResult(
-          success: false,
-          error: e.toString(),
-          format: _selectedFormat.name,
-        ));
+        _showImportErrorDialog(
+          ImportResult(
+            success: false,
+            error: e.toString(),
+            format: _selectedFormat.name,
+          ),
+        );
       }
     } finally {
       if (mounted) {
@@ -744,7 +787,9 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Failed to import data:\n\n${result.error ?? 'Unknown error'}'),
+            Text(
+              'Failed to import data:\n\n${result.error ?? 'Unknown error'}',
+            ),
             if (result.totalErrors > 0) ...[
               const SizedBox(height: 8),
               Text('${result.totalErrors} errors occurred during import.'),

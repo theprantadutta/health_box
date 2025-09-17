@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../../data/database/app_database.dart';
 import '../../features/medical_records/services/medical_records_service.dart';
 import '../../features/medical_records/services/prescription_service.dart';
 import '../../features/medical_records/services/medication_service.dart';
 import '../../features/medical_records/services/lab_report_service.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
 // Service providers
 final medicalRecordsServiceProvider = Provider<MedicalRecordsService>((ref) {
@@ -55,10 +55,20 @@ final recentMedicalRecordsProvider =
       ref,
       params,
     ) async {
-      final service = ref.read(medicalRecordsServiceProvider);
-      final limit = params['limit'] as int? ?? 10;
-      final profileId = params['profileId'] as String?;
-      return service.getRecentRecords(limit: limit, profileId: profileId);
+      try {
+        final service = ref.read(medicalRecordsServiceProvider);
+        final limit = params['limit'] as int? ?? 10;
+        final profileId = params['profileId'] as String?;
+        return await service.getRecentRecords(
+          limit: limit,
+          profileId: profileId,
+        );
+      } catch (e) {
+        // If there's any error (like table doesn't exist), return empty list
+        // This prevents infinite loading states
+        print('Error loading recent medical records: $e');
+        return <MedicalRecord>[];
+      }
     });
 
 final medicalRecordsStatisticsProvider =

@@ -6,17 +6,9 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
-enum OCRSource {
-  camera,
-  gallery,
-}
+enum OCRSource { camera, gallery }
 
-enum OCRType {
-  prescription,
-  medicalReport,
-  labResult,
-  general,
-}
+enum OCRType { prescription, medicalReport, labResult, general }
 
 class OCRResult {
   final bool success;
@@ -38,7 +30,8 @@ class OCRResult {
   });
 
   bool get hasText => text != null && text!.isNotEmpty;
-  bool get hasStructuredData => extractedData != null && extractedData!.isNotEmpty;
+  bool get hasStructuredData =>
+      extractedData != null && extractedData!.isNotEmpty;
 }
 
 class ExtractedMedication {
@@ -59,13 +52,13 @@ class ExtractedMedication {
   });
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'dosage': dosage,
-        'frequency': frequency,
-        'duration': duration,
-        'instructions': instructions,
-        'confidence': confidence,
-      };
+    'name': name,
+    'dosage': dosage,
+    'frequency': frequency,
+    'duration': duration,
+    'instructions': instructions,
+    'confidence': confidence,
+  };
 }
 
 class OCRService {
@@ -75,19 +68,23 @@ class OCRService {
 
   final Logger _logger = Logger();
   final ImagePicker _imagePicker = ImagePicker();
-  
+
   late final TextRecognizer _textRecognizer;
   bool _initialized = false;
 
   Future<void> initialize() async {
     if (_initialized) return;
-    
+
     try {
       _textRecognizer = GoogleMlKit.vision.textRecognizer();
       _initialized = true;
       _logger.i('OCR Service initialized successfully');
     } catch (e, stackTrace) {
-      _logger.e('Failed to initialize OCR service', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to initialize OCR service',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -130,11 +127,7 @@ class OCRService {
       return await scanFromFile(imageFile.path, type: type);
     } catch (e, stackTrace) {
       _logger.e('OCR scan failed', error: e, stackTrace: stackTrace);
-      return OCRResult(
-        success: false,
-        error: e.toString(),
-        type: type,
-      );
+      return OCRResult(success: false, error: e.toString(), type: type);
     }
   }
 
@@ -185,11 +178,7 @@ class OCRService {
       );
     } catch (e, stackTrace) {
       _logger.e('OCR processing failed', error: e, stackTrace: stackTrace);
-      return OCRResult(
-        success: false,
-        error: e.toString(),
-        type: type,
-      );
+      return OCRResult(success: false, error: e.toString(), type: type);
     }
   }
 
@@ -203,7 +192,10 @@ class OCRService {
       final inputImage = InputImage.fromBytes(
         bytes: imageBytes,
         metadata: InputImageMetadata(
-          size: const Size(800, 600), // Default size - should be actual image size
+          size: const Size(
+            800,
+            600,
+          ), // Default size - should be actual image size
           rotation: InputImageRotation.rotation0deg,
           format: InputImageFormat.nv21,
           bytesPerRow: 800,
@@ -247,25 +239,27 @@ class OCRService {
         type: type,
       );
     } catch (e, stackTrace) {
-      _logger.e('OCR processing from bytes failed', error: e, stackTrace: stackTrace);
-      return OCRResult(
-        success: false,
-        error: e.toString(),
-        type: type,
+      _logger.e(
+        'OCR processing from bytes failed',
+        error: e,
+        stackTrace: stackTrace,
       );
+      return OCRResult(success: false, error: e.toString(), type: type);
     }
   }
 
-  Future<Map<String, dynamic>> _extractPrescriptionData(RecognizedText recognizedText) async {
+  Future<Map<String, dynamic>> _extractPrescriptionData(
+    RecognizedText recognizedText,
+  ) async {
     final data = <String, dynamic>{};
     final medications = <ExtractedMedication>[];
-    
+
     // Common prescription patterns
     final medicationPattern = RegExp(
       r'(?:^|\n)\s*([A-Z][a-zA-Z\s]+(?:mg|ML|tablets?|capsules?)?)\s*[\n\-:]?\s*([0-9]+(?:\.[0-9]+)?\s*(?:mg|ML|tablets?|capsules?)?)?',
       multiLine: true,
     );
-    
+
     final frequencyPattern = RegExp(
       r'(?:take|use|apply)\s+([0-9]+)\s+(?:time[s]?\s+(?:per\s+|a\s+)?(?:day|daily|week|month)|(?:daily|twice\s+daily|morning|evening))',
       caseSensitive: false,
@@ -273,11 +267,11 @@ class OCRService {
 
     final text = recognizedText.text;
     final medicationMatches = medicationPattern.allMatches(text);
-    
+
     for (final match in medicationMatches) {
       final name = match.group(1)?.trim();
       final dosage = match.group(2)?.trim();
-      
+
       if (name != null && name.length > 2) {
         // Look for frequency information near this medication
         String? frequency;
@@ -286,18 +280,20 @@ class OCRService {
           frequency = frequencyMatch.group(1);
         }
 
-        medications.add(ExtractedMedication(
-          name: name,
-          dosage: dosage,
-          frequency: frequency,
-          confidence: 0.7, // Basic confidence score
-        ));
+        medications.add(
+          ExtractedMedication(
+            name: name,
+            dosage: dosage,
+            frequency: frequency,
+            confidence: 0.7, // Basic confidence score
+          ),
+        );
       }
     }
 
     data['medications'] = medications.map((m) => m.toJson()).toList();
     data['rawText'] = text;
-    
+
     // Extract doctor/clinic information
     final doctorPattern = RegExp(
       r'(?:Dr\.?\s+|Doctor\s+)([A-Z][a-zA-Z\s]+)',
@@ -321,7 +317,9 @@ class OCRService {
     return data;
   }
 
-  Future<Map<String, dynamic>> _extractMedicalReportData(RecognizedText recognizedText) async {
+  Future<Map<String, dynamic>> _extractMedicalReportData(
+    RecognizedText recognizedText,
+  ) async {
     final data = <String, dynamic>{};
     final text = recognizedText.text;
 
@@ -359,7 +357,9 @@ class OCRService {
     return data;
   }
 
-  Future<Map<String, dynamic>> _extractLabResultData(RecognizedText recognizedText) async {
+  Future<Map<String, dynamic>> _extractLabResultData(
+    RecognizedText recognizedText,
+  ) async {
     final data = <String, dynamic>{};
     final text = recognizedText.text;
     final results = <Map<String, dynamic>>[];
@@ -392,7 +392,9 @@ class OCRService {
     return data;
   }
 
-  Future<Map<String, dynamic>> _extractGeneralData(RecognizedText recognizedText) async {
+  Future<Map<String, dynamic>> _extractGeneralData(
+    RecognizedText recognizedText,
+  ) async {
     final data = <String, dynamic>{};
     final text = recognizedText.text;
 
@@ -432,12 +434,13 @@ class OCRService {
           // We'll use text length and character patterns as a proxy
           final text = element.text;
           double confidence = 0.5; // Base confidence
-          
+
           // Boost confidence for longer, well-formatted text
           if (text.length > 5) confidence += 0.2;
-          if (RegExp(r'^[A-Za-z0-9\s\.,:\-]+$').hasMatch(text)) confidence += 0.2;
+          if (RegExp(r'^[A-Za-z0-9\s\.,:\-]+$').hasMatch(text))
+            confidence += 0.2;
           if (text.contains(RegExp(r'[A-Z]'))) confidence += 0.1;
-          
+
           totalConfidence += confidence;
           elementCount++;
         }
@@ -474,7 +477,7 @@ class OCRService {
 
   List<String> getSuggestions(String query) {
     if (query.length < 2) return [];
-    
+
     final medications = getCommonMedications();
     return medications
         .where((med) => med.toLowerCase().contains(query.toLowerCase()))
@@ -486,18 +489,20 @@ class OCRService {
     try {
       final file = File(imagePath);
       if (!await file.exists()) return false;
-      
+
       final fileSize = await file.length();
-      
+
       // Check file size (should be reasonable for processing)
-      if (fileSize > 10 * 1024 * 1024) { // 10MB limit
+      if (fileSize > 10 * 1024 * 1024) {
+        // 10MB limit
         return false;
       }
-      
-      if (fileSize < 1024) { // Too small
+
+      if (fileSize < 1024) {
+        // Too small
         return false;
       }
-      
+
       return true;
     } catch (e) {
       _logger.w('Failed to check image suitability', error: e);

@@ -48,12 +48,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
     'general',
   ];
 
-  final List<String> _frequencies = [
-    'once',
-    'daily',
-    'weekly',
-    'monthly',
-  ];
+  final List<String> _frequencies = ['once', 'daily', 'weekly', 'monthly'];
 
   final List<String> _daysOfWeekLabels = [
     'Monday',
@@ -82,7 +77,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       _selectedTime = TimeOfDay.fromDateTime(reminder.scheduledTime);
       _isActive = reminder.isActive;
       _snoozeMinutes = reminder.snoozeMinutes;
-      
+
       // Parse days of week if present
       if (reminder.daysOfWeek != null) {
         try {
@@ -103,7 +98,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
           _selectedDaysOfWeek = [];
         }
       }
-      
+
       // Parse time slots if present
       if (reminder.timeSlots != null) {
         try {
@@ -156,7 +151,8 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
                 const SizedBox(height: 16),
                 _buildDaysOfWeekSelector(),
               ],
-              if (_selectedFrequency == 'daily' && _selectedType == 'medication') ...[
+              if (_selectedFrequency == 'daily' &&
+                  _selectedType == 'medication') ...[
                 const SizedBox(height: 16),
                 _buildTimeSlotsEditor(),
               ],
@@ -263,10 +259,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Schedule',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        Text('Schedule', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -297,10 +290,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Days of Week',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        Text('Days of Week', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -333,10 +323,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Time Slots',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            Text('Time Slots', style: Theme.of(context).textTheme.titleSmall),
             IconButton(
               onPressed: _addTimeSlot,
               icon: const Icon(Icons.add),
@@ -375,9 +362,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         const SizedBox(height: 8),
         DropdownButtonFormField<int>(
           initialValue: _snoozeMinutes,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
+          decoration: const InputDecoration(border: OutlineInputBorder()),
           items: [5, 10, 15, 30, 60, 120].map((minutes) {
             return DropdownMenuItem(
               value: minutes,
@@ -414,10 +399,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (widget.onCancel != null)
-          TextButton(
-            onPressed: widget.onCancel,
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: widget.onCancel, child: const Text('Cancel')),
         const SizedBox(width: 16),
         ElevatedButton(
           onPressed: _isLoading ? null : _saveReminder,
@@ -434,8 +416,10 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
   }
 
   String _formatTypeLabel(String type) {
-    return type.split('_').map((word) => 
-        word[0].toUpperCase() + word.substring(1)).join(' ');
+    return type
+        .split('_')
+        .map((word) => word[0].toUpperCase() + word.substring(1))
+        .join(' ');
   }
 
   String _formatFrequencyLabel(String frequency) {
@@ -449,7 +433,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-    
+
     if (date != null) {
       setState(() {
         _selectedDateTime = DateTime(
@@ -468,7 +452,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       context: context,
       initialTime: _selectedTime,
     );
-    
+
     if (time != null) {
       setState(() {
         _selectedTime = time;
@@ -488,7 +472,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    
+
     if (time != null) {
       setState(() {
         _timeSlots.add(time);
@@ -507,7 +491,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
       context: context,
       initialTime: _timeSlots[index],
     );
-    
+
     if (time != null) {
       setState(() {
         _timeSlots[index] = time;
@@ -526,7 +510,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
 
     try {
       final reminderService = ref.read(reminderServiceProvider);
-      
+
       if (widget.reminder == null) {
         // Create new reminder
         final request = CreateReminderRequest(
@@ -546,7 +530,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
           isActive: _isActive,
           snoozeMinutes: _snoozeMinutes,
         );
-        
+
         final reminderId = await reminderService.createReminder(request);
         widget.onReminderCreated?.call(reminderId);
       } else {
@@ -567,18 +551,18 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
           isActive: _isActive,
           snoozeMinutes: _snoozeMinutes,
         );
-        
+
         await reminderService.updateReminder(widget.reminder!.id, request);
         widget.onReminderUpdated?.call();
       }
-      
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              widget.reminder == null 
+              widget.reminder == null
                   ? 'Reminder created successfully'
-                  : 'Reminder updated successfully'
+                  : 'Reminder updated successfully',
             ),
             backgroundColor: Colors.green,
           ),

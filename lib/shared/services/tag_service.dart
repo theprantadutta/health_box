@@ -5,10 +5,8 @@ import '../../data/repositories/tag_dao.dart';
 class TagService {
   final TagDao _tagDao;
 
-  TagService({
-    TagDao? tagDao,
-    AppDatabase? database,
-  }) : _tagDao = tagDao ?? TagDao(database ?? AppDatabase.instance);
+  TagService({TagDao? tagDao, AppDatabase? database})
+    : _tagDao = tagDao ?? TagDao(database ?? AppDatabase.instance);
 
   // CRUD Operations
 
@@ -40,26 +38,32 @@ class TagService {
       return await _tagDao.getTagByName(name.trim());
     } catch (e) {
       if (e is TagServiceException) rethrow;
-      throw TagServiceException('Failed to retrieve tag by name: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to retrieve tag by name: ${e.toString()}',
+      );
     }
   }
 
   Future<String> createTag(CreateTagRequest request) async {
     try {
       _validateCreateTagRequest(request);
-      
+
       // Check if tag already exists
       final existingTag = await _tagDao.getTagByName(request.name.trim());
       if (existingTag != null) {
         throw TagServiceException('Tag "${request.name}" already exists');
       }
-      
+
       final tagId = 'tag_${DateTime.now().millisecondsSinceEpoch}';
       final tagCompanion = TagsCompanion(
         id: Value(tagId),
         name: Value(request.name.trim()),
-        description: request.description != null ? Value(request.description!.trim()) : const Value.absent(),
-        color: request.color != null ? Value(request.color!) : const Value.absent(),
+        description: request.description != null
+            ? Value(request.description!.trim())
+            : const Value.absent(),
+        color: request.color != null
+            ? Value(request.color!)
+            : const Value.absent(),
         icon: Value(request.icon),
         category: Value(request.category),
         isSystem: Value(request.isSystem),
@@ -98,11 +102,21 @@ class TagService {
       }
 
       final tagCompanion = TagsCompanion(
-        name: request.name != null ? Value(request.name!.trim()) : const Value.absent(),
-        description: request.description != null ? Value(request.description?.trim()) : const Value.absent(),
-        color: request.color != null ? Value(request.color!) : const Value.absent(),
-        icon: request.icon != null ? Value(request.icon!) : const Value.absent(),
-        category: request.category != null ? Value(request.category!) : const Value.absent(),
+        name: request.name != null
+            ? Value(request.name!.trim())
+            : const Value.absent(),
+        description: request.description != null
+            ? Value(request.description?.trim())
+            : const Value.absent(),
+        color: request.color != null
+            ? Value(request.color!)
+            : const Value.absent(),
+        icon: request.icon != null
+            ? Value(request.icon!)
+            : const Value.absent(),
+        category: request.category != null
+            ? Value(request.category!)
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       );
 
@@ -141,7 +155,9 @@ class TagService {
     try {
       return await _tagDao.incrementUsageCount(tagId);
     } catch (e) {
-      throw TagServiceException('Failed to increment tag usage: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to increment tag usage: ${e.toString()}',
+      );
     }
   }
 
@@ -149,7 +165,9 @@ class TagService {
     try {
       return await _tagDao.decrementUsageCount(tagId);
     } catch (e) {
-      throw TagServiceException('Failed to decrement tag usage: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to decrement tag usage: ${e.toString()}',
+      );
     }
   }
 
@@ -159,7 +177,9 @@ class TagService {
     try {
       return await _tagDao.getPopularTags(limit: limit);
     } catch (e) {
-      throw TagServiceException('Failed to retrieve popular tags: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to retrieve popular tags: ${e.toString()}',
+      );
     }
   }
 
@@ -167,7 +187,9 @@ class TagService {
     try {
       return await _tagDao.getRecentlyCreatedTags(limit: limit);
     } catch (e) {
-      throw TagServiceException('Failed to retrieve recently created tags: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to retrieve recently created tags: ${e.toString()}',
+      );
     }
   }
 
@@ -175,7 +197,9 @@ class TagService {
     try {
       return await _tagDao.getUnusedTags();
     } catch (e) {
-      throw TagServiceException('Failed to retrieve unused tags: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to retrieve unused tags: ${e.toString()}',
+      );
     }
   }
 
@@ -183,7 +207,9 @@ class TagService {
     try {
       return await _tagDao.getTagsByCategory(category);
     } catch (e) {
-      throw TagServiceException('Failed to retrieve tags by category: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to retrieve tags by category: ${e.toString()}',
+      );
     }
   }
 
@@ -238,7 +264,7 @@ class TagService {
     try {
       final unusedTags = await getUnusedTags();
       final nonSystemTags = unusedTags.where((tag) => !tag.isSystem).toList();
-      
+
       int deletedCount = 0;
       for (final tag in nonSystemTags) {
         try {
@@ -250,7 +276,9 @@ class TagService {
       }
       return deletedCount;
     } catch (e) {
-      throw TagServiceException('Failed to cleanup unused tags: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to cleanup unused tags: ${e.toString()}',
+      );
     }
   }
 
@@ -261,13 +289,18 @@ class TagService {
       final allTags = await _tagDao.getAllTags();
       final popularTags = await _tagDao.getPopularTags(limit: 10);
       final unusedTags = await _tagDao.getUnusedTags();
-      
+
       final systemTags = allTags.where((tag) => tag.isSystem).length;
       final userTags = allTags.where((tag) => !tag.isSystem).length;
-      
-      final totalUsage = allTags.fold<int>(0, (sum, tag) => sum + tag.usageCount);
-      final averageUsage = allTags.isNotEmpty ? totalUsage / allTags.length : 0.0;
-      
+
+      final totalUsage = allTags.fold<int>(
+        0,
+        (sum, tag) => sum + tag.usageCount,
+      );
+      final averageUsage = allTags.isNotEmpty
+          ? totalUsage / allTags.length
+          : 0.0;
+
       final categoryCounts = <String, int>{};
       for (final tag in allTags) {
         final category = tag.category ?? 'Other';
@@ -285,7 +318,9 @@ class TagService {
         categoryCounts: categoryCounts,
       );
     } catch (e) {
-      throw TagServiceException('Failed to retrieve tag statistics: ${e.toString()}');
+      throw TagServiceException(
+        'Failed to retrieve tag statistics: ${e.toString()}',
+      );
     }
   }
 
@@ -324,7 +359,8 @@ class TagService {
     }
   }
 
-  Future<String> getOrCreateTag(String name, {
+  Future<String> getOrCreateTag(
+    String name, {
     String? description,
     String? color,
     String? icon,
@@ -335,7 +371,7 @@ class TagService {
       if (existingTag != null) {
         return existingTag.id;
       }
-      
+
       final request = CreateTagRequest(
         name: name,
         description: description,
@@ -343,7 +379,7 @@ class TagService {
         icon: icon,
         category: category,
       );
-      
+
       return await createTag(request);
     } catch (e) {
       throw TagServiceException('Failed to get or create tag: ${e.toString()}');
@@ -360,7 +396,9 @@ class TagService {
       throw const TagServiceException('Tag name cannot exceed 50 characters');
     }
     if (request.description != null && request.description!.length > 255) {
-      throw const TagServiceException('Tag description cannot exceed 255 characters');
+      throw const TagServiceException(
+        'Tag description cannot exceed 255 characters',
+      );
     }
     if (request.color != null && !_isValidColor(request.color!)) {
       throw const TagServiceException('Invalid color format');
@@ -375,7 +413,9 @@ class TagService {
       throw const TagServiceException('Tag name cannot exceed 50 characters');
     }
     if (request.description != null && request.description!.length > 255) {
-      throw const TagServiceException('Tag description cannot exceed 255 characters');
+      throw const TagServiceException(
+        'Tag description cannot exceed 255 characters',
+      );
     }
     if (request.color != null && !_isValidColor(request.color!)) {
       throw const TagServiceException('Invalid color format');
@@ -449,9 +489,9 @@ class TagStatistics {
 
 class TagServiceException implements Exception {
   final String message;
-  
+
   const TagServiceException(this.message);
-  
+
   @override
   String toString() => 'TagServiceException: $message';
 }

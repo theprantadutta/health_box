@@ -33,7 +33,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
     // In a real app, these would come from SharedPreferences or similar
     setState(() {
       _autoSyncEnabled = false; // Load from preferences
-      _defaultConflictResolution = ConflictResolution.manual; // Load from preferences
+      _defaultConflictResolution =
+          ConflictResolution.manual; // Load from preferences
       _syncFrequencyHours = 24; // Load from preferences
     });
   }
@@ -61,7 +62,9 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Successfully signed in as ${_googleDriveService.currentUser?.email}'),
+            content: Text(
+              'Successfully signed in as ${_googleDriveService.currentUser?.email}',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -125,11 +128,14 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         } else if (result.conflicts.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${result.conflicts.length} conflicts need resolution'),
+              content: Text(
+                '${result.conflicts.length} conflicts need resolution',
+              ),
               backgroundColor: Colors.orange,
               action: SnackBarAction(
                 label: 'Resolve',
-                onPressed: () => _showConflictResolutionDialog(result.conflicts),
+                onPressed: () =>
+                    _showConflictResolutionDialog(result.conflicts),
               ),
             ),
           );
@@ -160,7 +166,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
             const SizedBox(height: 8),
             for (final conflict in conflicts.take(3))
               Text('• ${conflict.entityType}: ${conflict.entityId}'),
-            if (conflicts.length > 3) Text('... and ${conflicts.length - 3} more'),
+            if (conflicts.length > 3)
+              Text('... and ${conflicts.length - 3} more'),
           ],
         ),
         actions: [
@@ -211,7 +218,11 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(success ? 'Backup deleted successfully' : 'Failed to delete backup'),
+              content: Text(
+                success
+                    ? 'Backup deleted successfully'
+                    : 'Failed to delete backup',
+              ),
               backgroundColor: success ? Colors.green : Colors.red,
             ),
           );
@@ -261,8 +272,13 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                   if (_googleDriveService.isSignedIn) ...[
                     ListTile(
                       leading: const Icon(Icons.account_circle),
-                      title: Text(_googleDriveService.currentUser?.displayName ?? 'Unknown'),
-                      subtitle: Text(_googleDriveService.currentUser?.email ?? 'No email'),
+                      title: Text(
+                        _googleDriveService.currentUser?.displayName ??
+                            'Unknown',
+                      ),
+                      subtitle: Text(
+                        _googleDriveService.currentUser?.email ?? 'No email',
+                      ),
                       trailing: TextButton(
                         onPressed: _isLoading ? null : _signOut,
                         child: const Text('Sign Out'),
@@ -304,7 +320,9 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                   const SizedBox(height: 12),
                   SwitchListTile(
                     title: const Text('Auto Sync'),
-                    subtitle: const Text('Automatically sync data when changes are made'),
+                    subtitle: const Text(
+                      'Automatically sync data when changes are made',
+                    ),
                     value: _autoSyncEnabled,
                     onChanged: _googleDriveService.isSignedIn
                         ? (value) {
@@ -318,7 +336,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     subtitle: Text('Every $_syncFrequencyHours hours'),
                     trailing: DropdownButton<int>(
                       value: _syncFrequencyHours,
-                      onChanged: _googleDriveService.isSignedIn && _autoSyncEnabled
+                      onChanged:
+                          _googleDriveService.isSignedIn && _autoSyncEnabled
                           ? (value) {
                               if (value != null) {
                                 setState(() => _syncFrequencyHours = value);
@@ -337,7 +356,9 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                   ),
                   ListTile(
                     title: const Text('Default Conflict Resolution'),
-                    subtitle: Text(_getConflictResolutionText(_defaultConflictResolution)),
+                    subtitle: Text(
+                      _getConflictResolutionText(_defaultConflictResolution),
+                    ),
                     trailing: DropdownButton<ConflictResolution>(
                       value: _defaultConflictResolution,
                       onChanged: (value) {
@@ -431,7 +452,11 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                 children: [
                   const Text(
                     'Danger Zone',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   const Text(

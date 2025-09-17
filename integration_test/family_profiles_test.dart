@@ -4,11 +4,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:health_box/main.dart' as app;
 
 /// Integration test for multiple family profiles management
-/// 
-/// User Story: "As a parent/caregiver, I want to manage medical records 
-/// for multiple family members so I can keep track of everyone's health 
+///
+/// User Story: "As a parent/caregiver, I want to manage medical records
+/// for multiple family members so I can keep track of everyone's health
 /// information in one secure app."
-/// 
+///
 /// Test Coverage:
 /// - Creating multiple family member profiles
 /// - Switching between different profiles
@@ -17,13 +17,15 @@ import 'package:health_box/main.dart' as app;
 /// - Deleting/archiving profiles
 /// - Profile-specific medical records
 /// - Family member search and filtering
-/// 
+///
 /// This test MUST fail until family profiles management is implemented.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Multiple Family Profiles Management Integration Tests', () {
-    testWidgets('create and manage multiple family member profiles', (tester) async {
+    testWidgets('create and manage multiple family member profiles', (
+      tester,
+    ) async {
       // Start the app and assume initial profile already exists
       app.main();
       await tester.pumpAndSettle();
@@ -48,10 +50,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Add Family Member'), findsOneWidget);
-      
+
       await tester.enterText(find.byKey(const Key('first_name_field')), 'Jane');
       await tester.enterText(find.byKey(const Key('last_name_field')), 'Doe');
-      await tester.enterText(find.byKey(const Key('middle_name_field')), 'Marie');
+      await tester.enterText(
+        find.byKey(const Key('middle_name_field')),
+        'Marie',
+      );
 
       // Set date of birth
       await tester.tap(find.byKey(const Key('date_of_birth_field')));
@@ -84,7 +89,10 @@ void main() {
       await tester.tap(find.byKey(const Key('add_profile_fab')));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(const Key('first_name_field')), 'Tommy');
+      await tester.enterText(
+        find.byKey(const Key('first_name_field')),
+        'Tommy',
+      );
       await tester.enterText(find.byKey(const Key('last_name_field')), 'Doe');
 
       // Child date of birth (more recent)
@@ -119,7 +127,7 @@ void main() {
 
       // Should be on dashboard
       expect(find.text('Dashboard'), findsOneWidget);
-      
+
       // Test profile selector dropdown
       await tester.tap(find.byKey(const Key('profile_selector')));
       await tester.pumpAndSettle();
@@ -161,10 +169,13 @@ void main() {
 
       // Step 2: Modify profile information
       expect(find.text('Edit Profile'), findsOneWidget);
-      
+
       // Clear and update middle name
-      await tester.enterText(find.byKey(const Key('middle_name_field')), 'Michael');
-      
+      await tester.enterText(
+        find.byKey(const Key('middle_name_field')),
+        'Michael',
+      );
+
       // Update blood type
       await tester.tap(find.byKey(const Key('blood_type_dropdown')));
       await tester.pumpAndSettle();
@@ -177,8 +188,8 @@ void main() {
 
       // Add emergency contact
       await tester.enterText(
-        find.byKey(const Key('emergency_contact_field')), 
-        'Dr. Smith - (555) 999-8888'
+        find.byKey(const Key('emergency_contact_field')),
+        'Dr. Smith - (555) 999-8888',
       );
 
       // Save changes
@@ -193,7 +204,9 @@ void main() {
       expect(find.text('75 kg'), findsOneWidget);
     });
 
-    testWidgets('profile data isolation between family members', (tester) async {
+    testWidgets('profile data isolation between family members', (
+      tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -210,13 +223,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Lisinopril'
+        find.byKey(const Key('medication_name_field')),
+        'Lisinopril',
       );
-      await tester.enterText(
-        find.byKey(const Key('dosage_field')), 
-        '10mg'
-      );
+      await tester.enterText(find.byKey(const Key('dosage_field')), '10mg');
 
       await tester.tap(find.byKey(const Key('save_record_button')));
       await tester.pumpAndSettle();
@@ -242,13 +252,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('test_name_field')), 
-        'Blood Test'
+        find.byKey(const Key('test_name_field')),
+        'Blood Test',
       );
-      await tester.enterText(
-        find.byKey(const Key('results_field')), 
-        'Normal'
-      );
+      await tester.enterText(find.byKey(const Key('results_field')), 'Normal');
 
       await tester.tap(find.byKey(const Key('save_record_button')));
       await tester.pumpAndSettle();
@@ -280,10 +287,10 @@ void main() {
 
       // Step 1: Test search functionality
       expect(find.byKey(const Key('profile_search_field')), findsOneWidget);
-      
+
       await tester.enterText(
-        find.byKey(const Key('profile_search_field')), 
-        'Jane'
+        find.byKey(const Key('profile_search_field')),
+        'Jane',
       );
       await tester.pumpAndSettle();
 
@@ -293,10 +300,7 @@ void main() {
       expect(find.text('Tommy Doe'), findsNothing);
 
       // Step 2: Clear search
-      await tester.enterText(
-        find.byKey(const Key('profile_search_field')), 
-        ''
-      );
+      await tester.enterText(find.byKey(const Key('profile_search_field')), '');
       await tester.pumpAndSettle();
 
       // All profiles should be visible again
@@ -347,7 +351,10 @@ void main() {
 
       // Confirm archive
       expect(find.text('Archive Profile?'), findsOneWidget);
-      expect(find.text('This will hide the profile but keep all data.'), findsOneWidget);
+      expect(
+        find.text('This will hide the profile but keep all data.'),
+        findsOneWidget,
+      );
       await tester.tap(find.byKey(const Key('confirm_archive_button')));
       await tester.pumpAndSettle();
 
@@ -397,7 +404,7 @@ void main() {
       // Step 1: Test duplicate name validation
       await tester.enterText(find.byKey(const Key('first_name_field')), 'John');
       await tester.enterText(find.byKey(const Key('last_name_field')), 'Doe');
-      
+
       await tester.tap(find.byKey(const Key('date_of_birth_field')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
@@ -412,24 +419,30 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show duplicate warning
-      expect(find.text('A profile with this name already exists'), findsOneWidget);
+      expect(
+        find.text('A profile with this name already exists'),
+        findsOneWidget,
+      );
       expect(find.text('Continue anyway?'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('cancel_button')));
       await tester.pumpAndSettle();
 
       // Step 2: Test invalid date validation
       await tester.enterText(find.byKey(const Key('first_name_field')), 'Baby');
-      
+
       // Try to set future date of birth
       await tester.tap(find.byKey(const Key('date_of_birth_field')));
       await tester.pumpAndSettle();
       // (Would select future date in real implementation)
-      
+
       await tester.tap(find.byKey(const Key('save_profile_button')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Date of birth cannot be in the future'), findsOneWidget);
+      expect(
+        find.text('Date of birth cannot be in the future'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('family tree view and relationships', (tester) async {
@@ -451,12 +464,12 @@ void main() {
       // Step 2: Verify family tree visualization
       expect(find.text('Family Tree'), findsOneWidget);
       expect(find.byKey(const Key('family_tree_view')), findsOneWidget);
-      
+
       // Should show relationships visually
       expect(find.text('John Doe'), findsOneWidget);
       expect(find.text('Jane Marie Doe'), findsOneWidget);
       expect(find.text('Tommy Doe'), findsOneWidget);
-      
+
       // Relationship lines/connections should be visible
       expect(find.byKey(const Key('relationship_line_spouse')), findsOneWidget);
       expect(find.byKey(const Key('relationship_line_child')), findsWidgets);

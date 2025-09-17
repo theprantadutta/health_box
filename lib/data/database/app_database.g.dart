@@ -145,6 +145,69 @@ class $FamilyMemberProfilesTable extends FamilyMemberProfiles
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _relationshipMeta = const VerificationMeta(
+    'relationship',
+  );
+  @override
+  late final GeneratedColumn<String> relationship = GeneratedColumn<String>(
+    'relationship',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _medicalConditionsMeta = const VerificationMeta(
+    'medicalConditions',
+  );
+  @override
+  late final GeneratedColumn<String> medicalConditions =
+      GeneratedColumn<String>(
+        'medical_conditions',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _allergiesMeta = const VerificationMeta(
+    'allergies',
+  );
+  @override
+  late final GeneratedColumn<String> allergies = GeneratedColumn<String>(
+    'allergies',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -198,6 +261,12 @@ class $FamilyMemberProfilesTable extends FamilyMemberProfiles
     emergencyContact,
     insuranceInfo,
     profileImagePath,
+    relationship,
+    phone,
+    email,
+    address,
+    medicalConditions,
+    allergies,
     createdAt,
     updatedAt,
     isActive,
@@ -305,6 +374,48 @@ class $FamilyMemberProfilesTable extends FamilyMemberProfiles
         ),
       );
     }
+    if (data.containsKey('relationship')) {
+      context.handle(
+        _relationshipMeta,
+        relationship.isAcceptableOrUnknown(
+          data['relationship']!,
+          _relationshipMeta,
+        ),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('medical_conditions')) {
+      context.handle(
+        _medicalConditionsMeta,
+        medicalConditions.isAcceptableOrUnknown(
+          data['medical_conditions']!,
+          _medicalConditionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('allergies')) {
+      context.handle(
+        _allergiesMeta,
+        allergies.isAcceptableOrUnknown(data['allergies']!, _allergiesMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -380,6 +491,30 @@ class $FamilyMemberProfilesTable extends FamilyMemberProfiles
         DriftSqlType.string,
         data['${effectivePrefix}profile_image_path'],
       ),
+      relationship: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relationship'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      medicalConditions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medical_conditions'],
+      ),
+      allergies: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}allergies'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -415,6 +550,12 @@ class FamilyMemberProfile extends DataClass
   final String? emergencyContact;
   final String? insuranceInfo;
   final String? profileImagePath;
+  final String? relationship;
+  final String? phone;
+  final String? email;
+  final String? address;
+  final String? medicalConditions;
+  final String? allergies;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isActive;
@@ -431,6 +572,12 @@ class FamilyMemberProfile extends DataClass
     this.emergencyContact,
     this.insuranceInfo,
     this.profileImagePath,
+    this.relationship,
+    this.phone,
+    this.email,
+    this.address,
+    this.medicalConditions,
+    this.allergies,
     required this.createdAt,
     required this.updatedAt,
     required this.isActive,
@@ -463,6 +610,24 @@ class FamilyMemberProfile extends DataClass
     }
     if (!nullToAbsent || profileImagePath != null) {
       map['profile_image_path'] = Variable<String>(profileImagePath);
+    }
+    if (!nullToAbsent || relationship != null) {
+      map['relationship'] = Variable<String>(relationship);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || medicalConditions != null) {
+      map['medical_conditions'] = Variable<String>(medicalConditions);
+    }
+    if (!nullToAbsent || allergies != null) {
+      map['allergies'] = Variable<String>(allergies);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -498,6 +663,24 @@ class FamilyMemberProfile extends DataClass
       profileImagePath: profileImagePath == null && nullToAbsent
           ? const Value.absent()
           : Value(profileImagePath),
+      relationship: relationship == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relationship),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      medicalConditions: medicalConditions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(medicalConditions),
+      allergies: allergies == null && nullToAbsent
+          ? const Value.absent()
+          : Value(allergies),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       isActive: Value(isActive),
@@ -522,6 +705,14 @@ class FamilyMemberProfile extends DataClass
       emergencyContact: serializer.fromJson<String?>(json['emergencyContact']),
       insuranceInfo: serializer.fromJson<String?>(json['insuranceInfo']),
       profileImagePath: serializer.fromJson<String?>(json['profileImagePath']),
+      relationship: serializer.fromJson<String?>(json['relationship']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      email: serializer.fromJson<String?>(json['email']),
+      address: serializer.fromJson<String?>(json['address']),
+      medicalConditions: serializer.fromJson<String?>(
+        json['medicalConditions'],
+      ),
+      allergies: serializer.fromJson<String?>(json['allergies']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       isActive: serializer.fromJson<bool>(json['isActive']),
@@ -543,6 +734,12 @@ class FamilyMemberProfile extends DataClass
       'emergencyContact': serializer.toJson<String?>(emergencyContact),
       'insuranceInfo': serializer.toJson<String?>(insuranceInfo),
       'profileImagePath': serializer.toJson<String?>(profileImagePath),
+      'relationship': serializer.toJson<String?>(relationship),
+      'phone': serializer.toJson<String?>(phone),
+      'email': serializer.toJson<String?>(email),
+      'address': serializer.toJson<String?>(address),
+      'medicalConditions': serializer.toJson<String?>(medicalConditions),
+      'allergies': serializer.toJson<String?>(allergies),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'isActive': serializer.toJson<bool>(isActive),
@@ -562,6 +759,12 @@ class FamilyMemberProfile extends DataClass
     Value<String?> emergencyContact = const Value.absent(),
     Value<String?> insuranceInfo = const Value.absent(),
     Value<String?> profileImagePath = const Value.absent(),
+    Value<String?> relationship = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> email = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<String?> medicalConditions = const Value.absent(),
+    Value<String?> allergies = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
@@ -584,6 +787,14 @@ class FamilyMemberProfile extends DataClass
     profileImagePath: profileImagePath.present
         ? profileImagePath.value
         : this.profileImagePath,
+    relationship: relationship.present ? relationship.value : this.relationship,
+    phone: phone.present ? phone.value : this.phone,
+    email: email.present ? email.value : this.email,
+    address: address.present ? address.value : this.address,
+    medicalConditions: medicalConditions.present
+        ? medicalConditions.value
+        : this.medicalConditions,
+    allergies: allergies.present ? allergies.value : this.allergies,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     isActive: isActive ?? this.isActive,
@@ -612,6 +823,16 @@ class FamilyMemberProfile extends DataClass
       profileImagePath: data.profileImagePath.present
           ? data.profileImagePath.value
           : this.profileImagePath,
+      relationship: data.relationship.present
+          ? data.relationship.value
+          : this.relationship,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      email: data.email.present ? data.email.value : this.email,
+      address: data.address.present ? data.address.value : this.address,
+      medicalConditions: data.medicalConditions.present
+          ? data.medicalConditions.value
+          : this.medicalConditions,
+      allergies: data.allergies.present ? data.allergies.value : this.allergies,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
@@ -633,6 +854,12 @@ class FamilyMemberProfile extends DataClass
           ..write('emergencyContact: $emergencyContact, ')
           ..write('insuranceInfo: $insuranceInfo, ')
           ..write('profileImagePath: $profileImagePath, ')
+          ..write('relationship: $relationship, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('address: $address, ')
+          ..write('medicalConditions: $medicalConditions, ')
+          ..write('allergies: $allergies, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isActive: $isActive')
@@ -641,7 +868,7 @@ class FamilyMemberProfile extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     firstName,
     lastName,
@@ -654,10 +881,16 @@ class FamilyMemberProfile extends DataClass
     emergencyContact,
     insuranceInfo,
     profileImagePath,
+    relationship,
+    phone,
+    email,
+    address,
+    medicalConditions,
+    allergies,
     createdAt,
     updatedAt,
     isActive,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -674,6 +907,12 @@ class FamilyMemberProfile extends DataClass
           other.emergencyContact == this.emergencyContact &&
           other.insuranceInfo == this.insuranceInfo &&
           other.profileImagePath == this.profileImagePath &&
+          other.relationship == this.relationship &&
+          other.phone == this.phone &&
+          other.email == this.email &&
+          other.address == this.address &&
+          other.medicalConditions == this.medicalConditions &&
+          other.allergies == this.allergies &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.isActive == this.isActive);
@@ -693,6 +932,12 @@ class FamilyMemberProfilesCompanion
   final Value<String?> emergencyContact;
   final Value<String?> insuranceInfo;
   final Value<String?> profileImagePath;
+  final Value<String?> relationship;
+  final Value<String?> phone;
+  final Value<String?> email;
+  final Value<String?> address;
+  final Value<String?> medicalConditions;
+  final Value<String?> allergies;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<bool> isActive;
@@ -710,6 +955,12 @@ class FamilyMemberProfilesCompanion
     this.emergencyContact = const Value.absent(),
     this.insuranceInfo = const Value.absent(),
     this.profileImagePath = const Value.absent(),
+    this.relationship = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.address = const Value.absent(),
+    this.medicalConditions = const Value.absent(),
+    this.allergies = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isActive = const Value.absent(),
@@ -728,6 +979,12 @@ class FamilyMemberProfilesCompanion
     this.emergencyContact = const Value.absent(),
     this.insuranceInfo = const Value.absent(),
     this.profileImagePath = const Value.absent(),
+    this.relationship = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.address = const Value.absent(),
+    this.medicalConditions = const Value.absent(),
+    this.allergies = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isActive = const Value.absent(),
@@ -750,6 +1007,12 @@ class FamilyMemberProfilesCompanion
     Expression<String>? emergencyContact,
     Expression<String>? insuranceInfo,
     Expression<String>? profileImagePath,
+    Expression<String>? relationship,
+    Expression<String>? phone,
+    Expression<String>? email,
+    Expression<String>? address,
+    Expression<String>? medicalConditions,
+    Expression<String>? allergies,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<bool>? isActive,
@@ -768,6 +1031,12 @@ class FamilyMemberProfilesCompanion
       if (emergencyContact != null) 'emergency_contact': emergencyContact,
       if (insuranceInfo != null) 'insurance_info': insuranceInfo,
       if (profileImagePath != null) 'profile_image_path': profileImagePath,
+      if (relationship != null) 'relationship': relationship,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      if (address != null) 'address': address,
+      if (medicalConditions != null) 'medical_conditions': medicalConditions,
+      if (allergies != null) 'allergies': allergies,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isActive != null) 'is_active': isActive,
@@ -788,6 +1057,12 @@ class FamilyMemberProfilesCompanion
     Value<String?>? emergencyContact,
     Value<String?>? insuranceInfo,
     Value<String?>? profileImagePath,
+    Value<String?>? relationship,
+    Value<String?>? phone,
+    Value<String?>? email,
+    Value<String?>? address,
+    Value<String?>? medicalConditions,
+    Value<String?>? allergies,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<bool>? isActive,
@@ -806,6 +1081,12 @@ class FamilyMemberProfilesCompanion
       emergencyContact: emergencyContact ?? this.emergencyContact,
       insuranceInfo: insuranceInfo ?? this.insuranceInfo,
       profileImagePath: profileImagePath ?? this.profileImagePath,
+      relationship: relationship ?? this.relationship,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      address: address ?? this.address,
+      medicalConditions: medicalConditions ?? this.medicalConditions,
+      allergies: allergies ?? this.allergies,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
@@ -852,6 +1133,24 @@ class FamilyMemberProfilesCompanion
     if (profileImagePath.present) {
       map['profile_image_path'] = Variable<String>(profileImagePath.value);
     }
+    if (relationship.present) {
+      map['relationship'] = Variable<String>(relationship.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (medicalConditions.present) {
+      map['medical_conditions'] = Variable<String>(medicalConditions.value);
+    }
+    if (allergies.present) {
+      map['allergies'] = Variable<String>(allergies.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -882,6 +1181,12 @@ class FamilyMemberProfilesCompanion
           ..write('emergencyContact: $emergencyContact, ')
           ..write('insuranceInfo: $insuranceInfo, ')
           ..write('profileImagePath: $profileImagePath, ')
+          ..write('relationship: $relationship, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('address: $address, ')
+          ..write('medicalConditions: $medicalConditions, ')
+          ..write('allergies: $allergies, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isActive: $isActive, ')
@@ -10546,6 +10851,626 @@ class EmergencyCardsCompanion extends UpdateCompanion<EmergencyCard> {
   }
 }
 
+class $RecordTagsTable extends RecordTags
+    with TableInfo<$RecordTagsTable, RecordTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecordTagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _recordIdMeta = const VerificationMeta(
+    'recordId',
+  );
+  @override
+  late final GeneratedColumn<String> recordId = GeneratedColumn<String>(
+    'record_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<String> tagId = GeneratedColumn<String>(
+    'tag_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [recordId, tagId, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'record_tags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RecordTag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('record_id')) {
+      context.handle(
+        _recordIdMeta,
+        recordId.isAcceptableOrUnknown(data['record_id']!, _recordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(
+        _tagIdMeta,
+        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {recordId, tagId};
+  @override
+  RecordTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecordTag(
+      recordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_id'],
+      )!,
+      tagId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RecordTagsTable createAlias(String alias) {
+    return $RecordTagsTable(attachedDatabase, alias);
+  }
+}
+
+class RecordTag extends DataClass implements Insertable<RecordTag> {
+  final String recordId;
+  final String tagId;
+  final DateTime createdAt;
+  const RecordTag({
+    required this.recordId,
+    required this.tagId,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['record_id'] = Variable<String>(recordId);
+    map['tag_id'] = Variable<String>(tagId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  RecordTagsCompanion toCompanion(bool nullToAbsent) {
+    return RecordTagsCompanion(
+      recordId: Value(recordId),
+      tagId: Value(tagId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory RecordTag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecordTag(
+      recordId: serializer.fromJson<String>(json['recordId']),
+      tagId: serializer.fromJson<String>(json['tagId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'recordId': serializer.toJson<String>(recordId),
+      'tagId': serializer.toJson<String>(tagId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  RecordTag copyWith({String? recordId, String? tagId, DateTime? createdAt}) =>
+      RecordTag(
+        recordId: recordId ?? this.recordId,
+        tagId: tagId ?? this.tagId,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  RecordTag copyWithCompanion(RecordTagsCompanion data) {
+    return RecordTag(
+      recordId: data.recordId.present ? data.recordId.value : this.recordId,
+      tagId: data.tagId.present ? data.tagId.value : this.tagId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecordTag(')
+          ..write('recordId: $recordId, ')
+          ..write('tagId: $tagId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(recordId, tagId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecordTag &&
+          other.recordId == this.recordId &&
+          other.tagId == this.tagId &&
+          other.createdAt == this.createdAt);
+}
+
+class RecordTagsCompanion extends UpdateCompanion<RecordTag> {
+  final Value<String> recordId;
+  final Value<String> tagId;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const RecordTagsCompanion({
+    this.recordId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecordTagsCompanion.insert({
+    required String recordId,
+    required String tagId,
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : recordId = Value(recordId),
+       tagId = Value(tagId);
+  static Insertable<RecordTag> custom({
+    Expression<String>? recordId,
+    Expression<String>? tagId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (recordId != null) 'record_id': recordId,
+      if (tagId != null) 'tag_id': tagId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecordTagsCompanion copyWith({
+    Value<String>? recordId,
+    Value<String>? tagId,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return RecordTagsCompanion(
+      recordId: recordId ?? this.recordId,
+      tagId: tagId ?? this.tagId,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (recordId.present) {
+      map['record_id'] = Variable<String>(recordId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<String>(tagId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecordTagsCompanion(')
+          ..write('recordId: $recordId, ')
+          ..write('tagId: $tagId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SearchHistoryTable extends SearchHistory
+    with TableInfo<$SearchHistoryTable, SearchHistoryData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SearchHistoryTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _queryMeta = const VerificationMeta('query');
+  @override
+  late final GeneratedColumn<String> query = GeneratedColumn<String>(
+    'query',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filtersMeta = const VerificationMeta(
+    'filters',
+  );
+  @override
+  late final GeneratedColumn<String> filters = GeneratedColumn<String>(
+    'filters',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _useCountMeta = const VerificationMeta(
+    'useCount',
+  );
+  @override
+  late final GeneratedColumn<int> useCount = GeneratedColumn<int>(
+    'use_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    query,
+    filters,
+    createdAt,
+    useCount,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'search_history';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SearchHistoryData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('query')) {
+      context.handle(
+        _queryMeta,
+        query.isAcceptableOrUnknown(data['query']!, _queryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_queryMeta);
+    }
+    if (data.containsKey('filters')) {
+      context.handle(
+        _filtersMeta,
+        filters.isAcceptableOrUnknown(data['filters']!, _filtersMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('use_count')) {
+      context.handle(
+        _useCountMeta,
+        useCount.isAcceptableOrUnknown(data['use_count']!, _useCountMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SearchHistoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SearchHistoryData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      query: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}query'],
+      )!,
+      filters: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}filters'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      useCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}use_count'],
+      )!,
+    );
+  }
+
+  @override
+  $SearchHistoryTable createAlias(String alias) {
+    return $SearchHistoryTable(attachedDatabase, alias);
+  }
+}
+
+class SearchHistoryData extends DataClass
+    implements Insertable<SearchHistoryData> {
+  final String id;
+  final String query;
+  final String? filters;
+  final DateTime createdAt;
+  final int useCount;
+  const SearchHistoryData({
+    required this.id,
+    required this.query,
+    this.filters,
+    required this.createdAt,
+    required this.useCount,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['query'] = Variable<String>(query);
+    if (!nullToAbsent || filters != null) {
+      map['filters'] = Variable<String>(filters);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['use_count'] = Variable<int>(useCount);
+    return map;
+  }
+
+  SearchHistoryCompanion toCompanion(bool nullToAbsent) {
+    return SearchHistoryCompanion(
+      id: Value(id),
+      query: Value(query),
+      filters: filters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filters),
+      createdAt: Value(createdAt),
+      useCount: Value(useCount),
+    );
+  }
+
+  factory SearchHistoryData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SearchHistoryData(
+      id: serializer.fromJson<String>(json['id']),
+      query: serializer.fromJson<String>(json['query']),
+      filters: serializer.fromJson<String?>(json['filters']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      useCount: serializer.fromJson<int>(json['useCount']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'query': serializer.toJson<String>(query),
+      'filters': serializer.toJson<String?>(filters),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'useCount': serializer.toJson<int>(useCount),
+    };
+  }
+
+  SearchHistoryData copyWith({
+    String? id,
+    String? query,
+    Value<String?> filters = const Value.absent(),
+    DateTime? createdAt,
+    int? useCount,
+  }) => SearchHistoryData(
+    id: id ?? this.id,
+    query: query ?? this.query,
+    filters: filters.present ? filters.value : this.filters,
+    createdAt: createdAt ?? this.createdAt,
+    useCount: useCount ?? this.useCount,
+  );
+  SearchHistoryData copyWithCompanion(SearchHistoryCompanion data) {
+    return SearchHistoryData(
+      id: data.id.present ? data.id.value : this.id,
+      query: data.query.present ? data.query.value : this.query,
+      filters: data.filters.present ? data.filters.value : this.filters,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      useCount: data.useCount.present ? data.useCount.value : this.useCount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SearchHistoryData(')
+          ..write('id: $id, ')
+          ..write('query: $query, ')
+          ..write('filters: $filters, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('useCount: $useCount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, query, filters, createdAt, useCount);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SearchHistoryData &&
+          other.id == this.id &&
+          other.query == this.query &&
+          other.filters == this.filters &&
+          other.createdAt == this.createdAt &&
+          other.useCount == this.useCount);
+}
+
+class SearchHistoryCompanion extends UpdateCompanion<SearchHistoryData> {
+  final Value<String> id;
+  final Value<String> query;
+  final Value<String?> filters;
+  final Value<DateTime> createdAt;
+  final Value<int> useCount;
+  final Value<int> rowid;
+  const SearchHistoryCompanion({
+    this.id = const Value.absent(),
+    this.query = const Value.absent(),
+    this.filters = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.useCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SearchHistoryCompanion.insert({
+    required String id,
+    required String query,
+    this.filters = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.useCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       query = Value(query);
+  static Insertable<SearchHistoryData> custom({
+    Expression<String>? id,
+    Expression<String>? query,
+    Expression<String>? filters,
+    Expression<DateTime>? createdAt,
+    Expression<int>? useCount,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (query != null) 'query': query,
+      if (filters != null) 'filters': filters,
+      if (createdAt != null) 'created_at': createdAt,
+      if (useCount != null) 'use_count': useCount,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SearchHistoryCompanion copyWith({
+    Value<String>? id,
+    Value<String>? query,
+    Value<String?>? filters,
+    Value<DateTime>? createdAt,
+    Value<int>? useCount,
+    Value<int>? rowid,
+  }) {
+    return SearchHistoryCompanion(
+      id: id ?? this.id,
+      query: query ?? this.query,
+      filters: filters ?? this.filters,
+      createdAt: createdAt ?? this.createdAt,
+      useCount: useCount ?? this.useCount,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (query.present) {
+      map['query'] = Variable<String>(query.value);
+    }
+    if (filters.present) {
+      map['filters'] = Variable<String>(filters.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (useCount.present) {
+      map['use_count'] = Variable<int>(useCount.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SearchHistoryCompanion(')
+          ..write('id: $id, ')
+          ..write('query: $query, ')
+          ..write('filters: $filters, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('useCount: $useCount, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10563,6 +11488,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AttachmentsTable attachments = $AttachmentsTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
   late final $EmergencyCardsTable emergencyCards = $EmergencyCardsTable(this);
+  late final $RecordTagsTable recordTags = $RecordTagsTable(this);
+  late final $SearchHistoryTable searchHistory = $SearchHistoryTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10580,6 +11507,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     attachments,
     reminders,
     emergencyCards,
+    recordTags,
+    searchHistory,
   ];
 }
 
@@ -10597,6 +11526,12 @@ typedef $$FamilyMemberProfilesTableCreateCompanionBuilder =
       Value<String?> emergencyContact,
       Value<String?> insuranceInfo,
       Value<String?> profileImagePath,
+      Value<String?> relationship,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> address,
+      Value<String?> medicalConditions,
+      Value<String?> allergies,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<bool> isActive,
@@ -10616,6 +11551,12 @@ typedef $$FamilyMemberProfilesTableUpdateCompanionBuilder =
       Value<String?> emergencyContact,
       Value<String?> insuranceInfo,
       Value<String?> profileImagePath,
+      Value<String?> relationship,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> address,
+      Value<String?> medicalConditions,
+      Value<String?> allergies,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<bool> isActive,
@@ -10688,6 +11629,36 @@ class $$FamilyMemberProfilesTableFilterComposer
 
   ColumnFilters<String> get profileImagePath => $composableBuilder(
     column: $table.profileImagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relationship => $composableBuilder(
+    column: $table.relationship,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicalConditions => $composableBuilder(
+    column: $table.medicalConditions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get allergies => $composableBuilder(
+    column: $table.allergies,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10776,6 +11747,36 @@ class $$FamilyMemberProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get relationship => $composableBuilder(
+    column: $table.relationship,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicalConditions => $composableBuilder(
+    column: $table.medicalConditions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get allergies => $composableBuilder(
+    column: $table.allergies,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -10847,6 +11848,28 @@ class $$FamilyMemberProfilesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get relationship => $composableBuilder(
+    column: $table.relationship,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get medicalConditions => $composableBuilder(
+    column: $table.medicalConditions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get allergies =>
+      $composableBuilder(column: $table.allergies, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -10912,6 +11935,12 @@ class $$FamilyMemberProfilesTableTableManager
                 Value<String?> emergencyContact = const Value.absent(),
                 Value<String?> insuranceInfo = const Value.absent(),
                 Value<String?> profileImagePath = const Value.absent(),
+                Value<String?> relationship = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> medicalConditions = const Value.absent(),
+                Value<String?> allergies = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
@@ -10929,6 +11958,12 @@ class $$FamilyMemberProfilesTableTableManager
                 emergencyContact: emergencyContact,
                 insuranceInfo: insuranceInfo,
                 profileImagePath: profileImagePath,
+                relationship: relationship,
+                phone: phone,
+                email: email,
+                address: address,
+                medicalConditions: medicalConditions,
+                allergies: allergies,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isActive: isActive,
@@ -10948,6 +11983,12 @@ class $$FamilyMemberProfilesTableTableManager
                 Value<String?> emergencyContact = const Value.absent(),
                 Value<String?> insuranceInfo = const Value.absent(),
                 Value<String?> profileImagePath = const Value.absent(),
+                Value<String?> relationship = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> medicalConditions = const Value.absent(),
+                Value<String?> allergies = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
@@ -10965,6 +12006,12 @@ class $$FamilyMemberProfilesTableTableManager
                 emergencyContact: emergencyContact,
                 insuranceInfo: insuranceInfo,
                 profileImagePath: profileImagePath,
+                relationship: relationship,
+                phone: phone,
+                email: email,
+                address: address,
+                medicalConditions: medicalConditions,
+                allergies: allergies,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isActive: isActive,
@@ -15402,6 +16449,369 @@ typedef $$EmergencyCardsTableProcessedTableManager =
       EmergencyCard,
       PrefetchHooks Function()
     >;
+typedef $$RecordTagsTableCreateCompanionBuilder =
+    RecordTagsCompanion Function({
+      required String recordId,
+      required String tagId,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$RecordTagsTableUpdateCompanionBuilder =
+    RecordTagsCompanion Function({
+      Value<String> recordId,
+      Value<String> tagId,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$RecordTagsTableFilterComposer
+    extends Composer<_$AppDatabase, $RecordTagsTable> {
+  $$RecordTagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get recordId => $composableBuilder(
+    column: $table.recordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagId => $composableBuilder(
+    column: $table.tagId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RecordTagsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RecordTagsTable> {
+  $$RecordTagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get recordId => $composableBuilder(
+    column: $table.recordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagId => $composableBuilder(
+    column: $table.tagId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RecordTagsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RecordTagsTable> {
+  $$RecordTagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get recordId =>
+      $composableBuilder(column: $table.recordId, builder: (column) => column);
+
+  GeneratedColumn<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$RecordTagsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RecordTagsTable,
+          RecordTag,
+          $$RecordTagsTableFilterComposer,
+          $$RecordTagsTableOrderingComposer,
+          $$RecordTagsTableAnnotationComposer,
+          $$RecordTagsTableCreateCompanionBuilder,
+          $$RecordTagsTableUpdateCompanionBuilder,
+          (
+            RecordTag,
+            BaseReferences<_$AppDatabase, $RecordTagsTable, RecordTag>,
+          ),
+          RecordTag,
+          PrefetchHooks Function()
+        > {
+  $$RecordTagsTableTableManager(_$AppDatabase db, $RecordTagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecordTagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecordTagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RecordTagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> recordId = const Value.absent(),
+                Value<String> tagId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecordTagsCompanion(
+                recordId: recordId,
+                tagId: tagId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String recordId,
+                required String tagId,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecordTagsCompanion.insert(
+                recordId: recordId,
+                tagId: tagId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RecordTagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RecordTagsTable,
+      RecordTag,
+      $$RecordTagsTableFilterComposer,
+      $$RecordTagsTableOrderingComposer,
+      $$RecordTagsTableAnnotationComposer,
+      $$RecordTagsTableCreateCompanionBuilder,
+      $$RecordTagsTableUpdateCompanionBuilder,
+      (RecordTag, BaseReferences<_$AppDatabase, $RecordTagsTable, RecordTag>),
+      RecordTag,
+      PrefetchHooks Function()
+    >;
+typedef $$SearchHistoryTableCreateCompanionBuilder =
+    SearchHistoryCompanion Function({
+      required String id,
+      required String query,
+      Value<String?> filters,
+      Value<DateTime> createdAt,
+      Value<int> useCount,
+      Value<int> rowid,
+    });
+typedef $$SearchHistoryTableUpdateCompanionBuilder =
+    SearchHistoryCompanion Function({
+      Value<String> id,
+      Value<String> query,
+      Value<String?> filters,
+      Value<DateTime> createdAt,
+      Value<int> useCount,
+      Value<int> rowid,
+    });
+
+class $$SearchHistoryTableFilterComposer
+    extends Composer<_$AppDatabase, $SearchHistoryTable> {
+  $$SearchHistoryTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get query => $composableBuilder(
+    column: $table.query,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filters => $composableBuilder(
+    column: $table.filters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get useCount => $composableBuilder(
+    column: $table.useCount,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SearchHistoryTableOrderingComposer
+    extends Composer<_$AppDatabase, $SearchHistoryTable> {
+  $$SearchHistoryTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get query => $composableBuilder(
+    column: $table.query,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filters => $composableBuilder(
+    column: $table.filters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get useCount => $composableBuilder(
+    column: $table.useCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SearchHistoryTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SearchHistoryTable> {
+  $$SearchHistoryTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get query =>
+      $composableBuilder(column: $table.query, builder: (column) => column);
+
+  GeneratedColumn<String> get filters =>
+      $composableBuilder(column: $table.filters, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get useCount =>
+      $composableBuilder(column: $table.useCount, builder: (column) => column);
+}
+
+class $$SearchHistoryTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SearchHistoryTable,
+          SearchHistoryData,
+          $$SearchHistoryTableFilterComposer,
+          $$SearchHistoryTableOrderingComposer,
+          $$SearchHistoryTableAnnotationComposer,
+          $$SearchHistoryTableCreateCompanionBuilder,
+          $$SearchHistoryTableUpdateCompanionBuilder,
+          (
+            SearchHistoryData,
+            BaseReferences<
+              _$AppDatabase,
+              $SearchHistoryTable,
+              SearchHistoryData
+            >,
+          ),
+          SearchHistoryData,
+          PrefetchHooks Function()
+        > {
+  $$SearchHistoryTableTableManager(_$AppDatabase db, $SearchHistoryTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SearchHistoryTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SearchHistoryTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SearchHistoryTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> query = const Value.absent(),
+                Value<String?> filters = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> useCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SearchHistoryCompanion(
+                id: id,
+                query: query,
+                filters: filters,
+                createdAt: createdAt,
+                useCount: useCount,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String query,
+                Value<String?> filters = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> useCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SearchHistoryCompanion.insert(
+                id: id,
+                query: query,
+                filters: filters,
+                createdAt: createdAt,
+                useCount: useCount,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SearchHistoryTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SearchHistoryTable,
+      SearchHistoryData,
+      $$SearchHistoryTableFilterComposer,
+      $$SearchHistoryTableOrderingComposer,
+      $$SearchHistoryTableAnnotationComposer,
+      $$SearchHistoryTableCreateCompanionBuilder,
+      $$SearchHistoryTableUpdateCompanionBuilder,
+      (
+        SearchHistoryData,
+        BaseReferences<_$AppDatabase, $SearchHistoryTable, SearchHistoryData>,
+      ),
+      SearchHistoryData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15429,4 +16839,8 @@ class $AppDatabaseManager {
       $$RemindersTableTableManager(_db, _db.reminders);
   $$EmergencyCardsTableTableManager get emergencyCards =>
       $$EmergencyCardsTableTableManager(_db, _db.emergencyCards);
+  $$RecordTagsTableTableManager get recordTags =>
+      $$RecordTagsTableTableManager(_db, _db.recordTags);
+  $$SearchHistoryTableTableManager get searchHistory =>
+      $$SearchHistoryTableTableManager(_db, _db.searchHistory);
 }

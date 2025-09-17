@@ -27,7 +27,7 @@ class _LoadingAnimationWidgetState extends State<LoadingAnimationWidget>
   @override
   void initState() {
     super.initState();
-    
+
     _rotationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -104,13 +104,15 @@ class _LoadingAnimationWidgetState extends State<LoadingAnimationWidget>
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: AppTheme.getPrimaryGradient(isDarkMode),
+                  color: AppTheme.getPrimaryColor(isDarkMode),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Colors.white,
+                    ),
                     backgroundColor: Colors.white.withValues(alpha: 0.3),
                   ),
                 ),
@@ -128,14 +130,10 @@ class _LoadingAnimationWidgetState extends State<LoadingAnimationWidget>
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: AppTheme.getPrimaryGradient(isDarkMode),
+                  color: AppTheme.getPrimaryColor(isDarkMode),
                 ),
                 child: const Center(
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                    size: 24,
-                  ),
+                  child: Icon(Icons.favorite, color: Colors.white, size: 24),
                 ),
               ),
             );
@@ -151,8 +149,11 @@ class _LoadingAnimationWidgetState extends State<LoadingAnimationWidget>
               builder: (context, child) {
                 final delay = index * 0.33;
                 final animationValue = (_rotationAnimation.value + delay) % 1.0;
-                final scale = 0.5 + (0.5 * (1 - (animationValue - 0.5).abs() * 2).clamp(0.0, 1.0));
-                
+                final scale =
+                    0.5 +
+                    (0.5 *
+                        (1 - (animationValue - 0.5).abs() * 2).clamp(0.0, 1.0));
+
                 return Container(
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   child: Transform.scale(
@@ -181,9 +182,4 @@ class _LoadingAnimationWidgetState extends State<LoadingAnimationWidget>
   }
 }
 
-enum LoadingStyle {
-  simple,
-  gradient,
-  pulse,
-  dots,
-}
+enum LoadingStyle { simple, gradient, pulse, dots }

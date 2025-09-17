@@ -8,9 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class GoogleDriveService {
-  static const List<String> _scopes = [
-    drive.DriveApi.driveFileScope,
-  ];
+  static const List<String> _scopes = [drive.DriveApi.driveFileScope];
 
   static const String _appFolderName = 'HealthBox';
   static const String _backupFileName = 'healthbox_backup.json';
@@ -28,17 +26,18 @@ class GoogleDriveService {
   Future<bool> signIn() async {
     try {
       _logger.d('Attempting Google Sign In');
-      
+
       // Initialize Google Sign In with scopes
       await GoogleSignIn.instance.initialize();
-      
+
       // Check if authentication is supported
       if (GoogleSignIn.instance.supportsAuthenticate()) {
         await GoogleSignIn.instance.authenticate();
       }
-      
+
       // Try lightweight authentication first
-      final account = await GoogleSignIn.instance.attemptLightweightAuthentication();
+      final account = await GoogleSignIn.instance
+          .attemptLightweightAuthentication();
       if (account == null) {
         _logger.w('Authentication failed or cancelled');
         return false;
@@ -59,12 +58,13 @@ class GoogleDriveService {
   Future<bool> signInSilently() async {
     try {
       _logger.d('Attempting silent sign in');
-      
+
       // Initialize first
       await GoogleSignIn.instance.initialize();
-      
+
       // Try lightweight authentication (silent)
-      final account = await GoogleSignIn.instance.attemptLightweightAuthentication();
+      final account = await GoogleSignIn.instance
+          .attemptLightweightAuthentication();
       if (account == null) {
         _logger.d('No stored credentials found');
         return false;
@@ -102,8 +102,9 @@ class GoogleDriveService {
 
     try {
       // Request authorization for Drive API scopes
-      final authorization = await _currentUser!.authorizationClient.authorizeScopes(_scopes);
-      
+      final authorization = await _currentUser!.authorizationClient
+          .authorizeScopes(_scopes);
+
       // Create authenticated client
       final authenticatedClient = auth.authenticatedClient(
         http.Client(),
@@ -121,7 +122,11 @@ class GoogleDriveService {
       _driveApi = drive.DriveApi(authenticatedClient);
       _logger.d('Drive API initialized');
     } catch (e, stackTrace) {
-      _logger.e('Failed to initialize Drive API', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to initialize Drive API',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -130,7 +135,8 @@ class GoogleDriveService {
     if (_driveApi == null) return;
 
     try {
-      final query = "name='$_appFolderName' and mimeType='application/vnd.google-apps.folder' and trashed=false";
+      final query =
+          "name='$_appFolderName' and mimeType='application/vnd.google-apps.folder' and trashed=false";
       final fileList = await _driveApi!.files.list(q: query);
 
       if (fileList.files != null && fileList.files!.isNotEmpty) {
@@ -147,7 +153,11 @@ class GoogleDriveService {
       _appFolderId = createdFolder.id;
       _logger.i('App folder created: $_appFolderId');
     } catch (e, stackTrace) {
-      _logger.e('Failed to ensure app folder exists', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to ensure app folder exists',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -172,14 +182,17 @@ class GoogleDriveService {
       final backupBytes = utf8.encode(backupJson);
 
       final existingBackupId = await _findFileInAppFolder(_backupFileName);
-      
+
       late drive.File backupFile;
       if (existingBackupId != null) {
         _logger.d('Updating existing backup file: $existingBackupId');
         backupFile = await _driveApi!.files.update(
           drive.File()..name = _backupFileName,
           existingBackupId,
-          uploadMedia: drive.Media(Stream.value(backupBytes), backupBytes.length),
+          uploadMedia: drive.Media(
+            Stream.value(backupBytes),
+            backupBytes.length,
+          ),
         );
       } else {
         _logger.d('Creating new backup file');
@@ -187,12 +200,15 @@ class GoogleDriveService {
           drive.File()
             ..name = _backupFileName
             ..parents = [_appFolderId!],
-          uploadMedia: drive.Media(Stream.value(backupBytes), backupBytes.length),
+          uploadMedia: drive.Media(
+            Stream.value(backupBytes),
+            backupBytes.length,
+          ),
         );
       }
 
       await _uploadMetadata(metadata);
-      
+
       _logger.i('Backup uploaded successfully: ${backupFile.id}');
       return true;
     } catch (e, stackTrace) {
@@ -213,10 +229,12 @@ class GoogleDriveService {
         return null;
       }
 
-      final media = await _driveApi!.files.get(
-        backupFileId,
-        downloadOptions: drive.DownloadOptions.fullMedia,
-      ) as drive.Media;
+      final media =
+          await _driveApi!.files.get(
+                backupFileId,
+                downloadOptions: drive.DownloadOptions.fullMedia,
+              )
+              as drive.Media;
 
       final bytes = <int>[];
       await for (final chunk in media.stream) {
@@ -258,10 +276,12 @@ class GoogleDriveService {
         return null;
       }
 
-      final media = await _driveApi!.files.get(
-        metadataFileId,
-        downloadOptions: drive.DownloadOptions.fullMedia,
-      ) as drive.Media;
+      final media =
+          await _driveApi!.files.get(
+                metadataFileId,
+                downloadOptions: drive.DownloadOptions.fullMedia,
+              )
+              as drive.Media;
 
       final bytes = <int>[];
       await for (final chunk in media.stream) {
@@ -288,19 +308,25 @@ class GoogleDriveService {
       final metadataBytes = utf8.encode(metadataJson);
 
       final existingMetadataId = await _findFileInAppFolder(_metadataFileName);
-      
+
       if (existingMetadataId != null) {
         await _driveApi!.files.update(
           drive.File()..name = _metadataFileName,
           existingMetadataId,
-          uploadMedia: drive.Media(Stream.value(metadataBytes), metadataBytes.length),
+          uploadMedia: drive.Media(
+            Stream.value(metadataBytes),
+            metadataBytes.length,
+          ),
         );
       } else {
         await _driveApi!.files.create(
           drive.File()
             ..name = _metadataFileName
             ..parents = [_appFolderId!],
-          uploadMedia: drive.Media(Stream.value(metadataBytes), metadataBytes.length),
+          uploadMedia: drive.Media(
+            Stream.value(metadataBytes),
+            metadataBytes.length,
+          ),
         );
       }
 
@@ -315,7 +341,8 @@ class GoogleDriveService {
     if (_driveApi == null || _appFolderId == null) return null;
 
     try {
-      final query = "name='$fileName' and parents in '$_appFolderId' and trashed=false";
+      final query =
+          "name='$fileName' and parents in '$_appFolderId' and trashed=false";
       final fileList = await _driveApi!.files.list(q: query);
 
       if (fileList.files != null && fileList.files!.isNotEmpty) {
@@ -324,7 +351,11 @@ class GoogleDriveService {
 
       return null;
     } catch (e, stackTrace) {
-      _logger.e('Failed to find file in app folder', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to find file in app folder',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -374,7 +405,7 @@ class GoogleDriveService {
       );
 
       final backups = <Map<String, dynamic>>[];
-      
+
       if (fileList.files != null) {
         for (final file in fileList.files!) {
           if (file.name == _backupFileName || file.name == _metadataFileName) {
@@ -404,7 +435,7 @@ class GoogleDriveService {
     try {
       final about = await _driveApi!.about.get();
       final quota = about.storageQuota;
-      
+
       if (quota != null) {
         final limit = int.tryParse(quota.limit ?? '0') ?? 0;
         final usage = int.tryParse(quota.usage ?? '0') ?? 0;

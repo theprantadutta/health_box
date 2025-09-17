@@ -28,7 +28,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return Scaffold(
       body: ResponsiveUtils.buildResponsiveSafeArea(
         context: context,
@@ -41,7 +41,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   setState(() {
                     _currentPage = page;
                   });
-                  
+
                   if (AccessibilityUtils.isScreenReaderActive(context)) {
                     AccessibilityUtils.announceToScreenReader(
                       'Page ${page + 1} of 3',
@@ -64,7 +64,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _buildWelcomePage(BuildContext context, AppLocalizations? l10n) {
     final theme = Theme.of(context);
-    
+
     return ResponsiveUtils.buildResponsiveContainer(
       context: context,
       child: Column(
@@ -116,27 +116,31 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _buildFeaturesPage(BuildContext context, AppLocalizations? l10n) {
     final theme = Theme.of(context);
-    
+
     final features = [
       {
         'icon': Icons.offline_bolt,
         'title': 'Offline First',
-        'description': 'All your data is stored locally on your device. No internet required for core functionality.',
+        'description':
+            'All your data is stored locally on your device. No internet required for core functionality.',
       },
       {
         'icon': Icons.security,
         'title': 'Encrypted Storage',
-        'description': 'Your medical data is protected with SQLCipher encryption at rest.',
+        'description':
+            'Your medical data is protected with SQLCipher encryption at rest.',
       },
       {
         'icon': Icons.family_restroom,
         'title': 'Family Profiles',
-        'description': 'Manage medical records for your entire family in one secure app.',
+        'description':
+            'Manage medical records for your entire family in one secure app.',
       },
       {
         'icon': Icons.notification_important,
         'title': 'Smart Reminders',
-        'description': 'Never miss medication doses or important medical appointments.',
+        'description':
+            'Never miss medication doses or important medical appointments.',
       },
     ];
 
@@ -161,12 +165,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
           ),
           const SizedBox(height: 32),
-          ...features.map((feature) => _buildFeatureItem(
-                context,
-                feature['icon'] as IconData,
-                feature['title'] as String,
-                feature['description'] as String,
-              )),
+          ...features.map(
+            (feature) => _buildFeatureItem(
+              context,
+              feature['icon'] as IconData,
+              feature['title'] as String,
+              feature['description'] as String,
+            ),
+          ),
         ],
       ),
     );
@@ -179,7 +185,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     String description,
   ) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -220,7 +226,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _buildPrivacyPage(BuildContext context, AppLocalizations? l10n) {
     final theme = Theme.of(context);
-    
+
     return ResponsiveUtils.buildResponsiveContainer(
       context: context,
       child: Column(
@@ -331,7 +337,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget _buildBottomNavigation(BuildContext context, AppLocalizations? l10n) {
     final theme = Theme.of(context);
     final isLastPage = _currentPage == 2;
-    
+
     return Container(
       padding: ResponsiveUtils.getResponsivePadding(context),
       child: Column(
@@ -349,7 +355,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     shape: BoxShape.circle,
                     color: _currentPage == index
                         ? theme.colorScheme.primary
-                        : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                        : theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.3,
+                          ),
                   ),
                 ),
               ),
@@ -371,7 +379,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 )
               else
                 const SizedBox.shrink(),
-              
+
               FilledButton(
                 onPressed: () {
                   if (isLastPage) {
@@ -383,7 +391,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     );
                   }
                 },
-                child: Text(isLastPage ? (l10n?.getStarted ?? 'Get Started') : 'Next'),
+                child: Text(
+                  isLastPage ? (l10n?.getStarted ?? 'Get Started') : 'Next',
+                ),
               ),
             ],
           ),
@@ -396,13 +406,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       // TODO: Implement shared preferences provider
       // await ref.read(sharedPreferencesProvider).setBool('onboarding_complete', true);
-      
+
       if (mounted) {
         // Mark onboarding as completed
-        await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
-        
+        await ref
+            .read(onboardingNotifierProvider.notifier)
+            .completeOnboarding();
+
         context.pushReplacement(AppRoutes.dashboard);
-        
+
         if (AccessibilityUtils.isScreenReaderActive(context)) {
           AccessibilityUtils.announceToScreenReader(
             'Onboarding completed. Welcome to Health Box!',
@@ -413,7 +425,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       debugPrint('Error completing onboarding: $e');
       if (mounted) {
         // Still mark as completed even if there was an error
-        await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+        await ref
+            .read(onboardingNotifierProvider.notifier)
+            .completeOnboarding();
         context.pushReplacement(AppRoutes.dashboard);
       }
     }

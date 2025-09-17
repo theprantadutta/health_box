@@ -31,9 +31,7 @@ class SearchFilterWidget extends StatelessWidget {
                     onPressed: () => onSearchChanged(''),
                   )
                 : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
@@ -42,7 +40,7 @@ class SearchFilterWidget extends StatelessWidget {
           onChanged: onSearchChanged,
         ),
         const SizedBox(height: 12),
-        
+
         // Record Type Filter
         Row(
           children: [
@@ -52,10 +50,10 @@ class SearchFilterWidget extends StatelessWidget {
                 value: selectedRecordType,
                 isExpanded: true,
                 items: recordTypes
-                    .map((type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type),
-                        ))
+                    .map(
+                      (type) =>
+                          DropdownMenuItem(value: type, child: Text(type)),
+                    )
                     .toList(),
                 onChanged: (value) {
                   if (value != null) onRecordTypeChanged(value);

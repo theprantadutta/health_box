@@ -22,10 +22,7 @@ class QuickActionsWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.flash_on,
-                  color: theme.colorScheme.primary,
-                ),
+                Icon(Icons.flash_on, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
                   'Quick Actions',
@@ -36,7 +33,7 @@ class QuickActionsWidget extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // First row of actions
             Row(
               children: [
@@ -61,9 +58,9 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Second row of actions
             Row(
               children: [
@@ -88,9 +85,9 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Third row of actions
             Row(
               children: [
@@ -115,9 +112,9 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Fourth row of actions
             Row(
               children: [
@@ -165,10 +162,7 @@ class QuickActionsWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: color.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -180,11 +174,7 @@ class QuickActionsWidget extends ConsumerWidget {
                 color: color,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 22,
-              ),
+              child: Icon(icon, color: Colors.white, size: 22),
             ),
             const SizedBox(height: 8),
             Text(
@@ -204,66 +194,50 @@ class QuickActionsWidget extends ConsumerWidget {
   }
 
   void _navigateToAddProfile(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ProfileFormScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const ProfileFormScreen()));
   }
 
   void _navigateToAddPrescription(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const PrescriptionFormScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const PrescriptionFormScreen()),
     );
   }
 
   void _navigateToAddMedication(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const MedicationFormScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const MedicationFormScreen()),
     );
   }
 
   void _navigateToAddLabReport(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const LabReportFormScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const LabReportFormScreen()),
     );
   }
 
   void _navigateToSearch(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const MedicalRecordListScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const MedicalRecordListScreen()),
     );
   }
 
   void _navigateToManageProfiles(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ProfileListScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const ProfileListScreen()));
   }
 
   void _showReminderNotImplemented(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Reminder system coming in Phase 3.9'),
-      ),
+      const SnackBar(content: Text('Reminder system coming in Phase 3.9')),
     );
   }
 
   void _showExportNotImplemented(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Data export coming in Phase 3.12'),
-      ),
+      const SnackBar(content: Text('Data export coming in Phase 3.12')),
     );
   }
 }

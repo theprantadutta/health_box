@@ -13,20 +13,21 @@ class ReminderScheduler {
   ReminderScheduler({
     ReminderService? reminderService,
     FlutterLocalNotificationsPlugin? notificationsPlugin,
-  })  : _reminderService = reminderService ?? ReminderService(),
-        _notificationsPlugin = notificationsPlugin ?? NotificationConfig.instance;
+  }) : _reminderService = reminderService ?? ReminderService(),
+       _notificationsPlugin =
+           notificationsPlugin ?? NotificationConfig.instance;
 
   /// Initialize the reminder scheduler
   Future<bool> initialize() async {
     final bool notificationsInitialized = await NotificationConfig.initialize();
-    
+
     if (notificationsInitialized) {
       await NotificationConfig.setupCategories();
       _initializeNotificationHandling();
       // Reschedule all active reminders on app start
       await rescheduleAllActiveReminders();
     }
-    
+
     return notificationsInitialized;
   }
 
@@ -37,9 +38,12 @@ class ReminderScheduler {
         return false;
       }
 
-      final bool permissionGranted = await NotificationConfig.areNotificationsEnabled();
+      final bool permissionGranted =
+          await NotificationConfig.areNotificationsEnabled();
       if (!permissionGranted) {
-        throw const ReminderSchedulerException('Notification permissions not granted');
+        throw const ReminderSchedulerException(
+          'Notification permissions not granted',
+        );
       }
 
       // Cancel any existing notification for this reminder
@@ -56,10 +60,14 @@ class ReminderScheduler {
         case 'monthly':
           return await _scheduleMonthlyReminder(reminder);
         default:
-          throw ReminderSchedulerException('Unsupported frequency: ${reminder.frequency}');
+          throw ReminderSchedulerException(
+            'Unsupported frequency: ${reminder.frequency}',
+          );
       }
     } catch (e) {
-      throw ReminderSchedulerException('Failed to schedule reminder: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to schedule reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -70,7 +78,9 @@ class ReminderScheduler {
       await _notificationsPlugin.cancel(notificationId);
       return true;
     } catch (e) {
-      throw ReminderSchedulerException('Failed to cancel reminder: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to cancel reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -88,7 +98,7 @@ class ReminderScheduler {
       // Schedule new notification for snooze duration
       final snoozeTime = DateTime.now().add(Duration(minutes: minutes));
       final notificationId = _generateNotificationId(reminderId);
-      
+
       await _notificationsPlugin.zonedSchedule(
         notificationId,
         reminder.title,
@@ -101,10 +111,12 @@ class ReminderScheduler {
 
       // Update reminder service
       await _reminderService.snoozeReminder(reminderId, customMinutes: minutes);
-      
+
       return true;
     } catch (e) {
-      throw ReminderSchedulerException('Failed to snooze reminder: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to snooze reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -112,10 +124,10 @@ class ReminderScheduler {
   Future<void> rescheduleAllActiveReminders() async {
     try {
       final activeReminders = await _reminderService.getActiveReminders();
-      
+
       // Cancel all existing notifications first
       await _notificationsPlugin.cancelAll();
-      
+
       for (final reminder in activeReminders) {
         try {
           await scheduleReminder(reminder);
@@ -125,7 +137,9 @@ class ReminderScheduler {
         }
       }
     } catch (e) {
-      throw ReminderSchedulerException('Failed to reschedule active reminders: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to reschedule active reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -134,7 +148,9 @@ class ReminderScheduler {
     try {
       return await _notificationsPlugin.pendingNotificationRequests();
     } catch (e) {
-      throw ReminderSchedulerException('Failed to get pending notifications: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to get pending notifications: ${e.toString()}',
+      );
     }
   }
 
@@ -143,19 +159,25 @@ class ReminderScheduler {
     try {
       await _notificationsPlugin.cancelAll();
     } catch (e) {
-      throw ReminderSchedulerException('Failed to cancel all reminders: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to cancel all reminders: ${e.toString()}',
+      );
     }
   }
 
   /// Initialize notification response listening
   void _initializeNotificationHandling() {
-    NotificationConfig.notificationStream.listen((NotificationResponse response) {
+    NotificationConfig.notificationStream.listen((
+      NotificationResponse response,
+    ) {
       _handleNotificationResponse(response);
     });
   }
 
   /// Handle notification responses
-  Future<void> _handleNotificationResponse(NotificationResponse response) async {
+  Future<void> _handleNotificationResponse(
+    NotificationResponse response,
+  ) async {
     try {
       final payload = response.payload;
       if (payload != null) {
@@ -179,7 +201,10 @@ class ReminderScheduler {
   }
 
   /// Handle notification action responses
-  Future<void> _handleNotificationAction(String action, String reminderId) async {
+  Future<void> _handleNotificationAction(
+    String action,
+    String reminderId,
+  ) async {
     try {
       switch (action) {
         case 'take_medication':
@@ -195,7 +220,9 @@ class ReminderScheduler {
           print('Unknown notification action: $action');
       }
     } catch (e) {
-      throw ReminderSchedulerException('Failed to handle notification action: ${e.toString()}');
+      throw ReminderSchedulerException(
+        'Failed to handle notification action: ${e.toString()}',
+      );
     }
   }
 
@@ -213,12 +240,13 @@ class ReminderScheduler {
   // Private Methods
 
   Future<bool> _scheduleOneTimeReminder(Reminder reminder) async {
-    if (reminder.nextScheduled == null || reminder.nextScheduled!.isBefore(DateTime.now())) {
+    if (reminder.nextScheduled == null ||
+        reminder.nextScheduled!.isBefore(DateTime.now())) {
       return false; // Don't schedule past reminders
     }
 
     final notificationId = _generateNotificationId(reminder.id);
-    
+
     await _notificationsPlugin.zonedSchedule(
       notificationId,
       reminder.title,
@@ -235,14 +263,14 @@ class ReminderScheduler {
   Future<bool> _scheduleDailyReminder(Reminder reminder) async {
     final now = DateTime.now();
     DateTime scheduledTime = reminder.scheduledTime;
-    
+
     // If today's time has passed, schedule for tomorrow
     if (scheduledTime.isBefore(now)) {
       scheduledTime = _getNextDailyOccurrence(scheduledTime);
     }
 
     final notificationId = _generateNotificationId(reminder.id);
-    
+
     await _notificationsPlugin.zonedSchedule(
       notificationId,
       reminder.title,
@@ -260,14 +288,14 @@ class ReminderScheduler {
   Future<bool> _scheduleWeeklyReminder(Reminder reminder) async {
     final now = DateTime.now();
     DateTime scheduledTime = reminder.scheduledTime;
-    
+
     // If this week's time has passed, schedule for next week
     if (scheduledTime.isBefore(now)) {
       scheduledTime = _getNextWeeklyOccurrence(scheduledTime);
     }
 
     final notificationId = _generateNotificationId(reminder.id);
-    
+
     await _notificationsPlugin.zonedSchedule(
       notificationId,
       reminder.title,
@@ -276,7 +304,8 @@ class ReminderScheduler {
       _getNotificationDetails(reminder),
       payload: _createNotificationPayload(reminder),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime, // Repeat weekly
+      matchDateTimeComponents:
+          DateTimeComponents.dayOfWeekAndTime, // Repeat weekly
     );
 
     return true;
@@ -285,14 +314,14 @@ class ReminderScheduler {
   Future<bool> _scheduleMonthlyReminder(Reminder reminder) async {
     final now = DateTime.now();
     DateTime scheduledTime = reminder.scheduledTime;
-    
+
     // If this month's time has passed, schedule for next month
     if (scheduledTime.isBefore(now)) {
       scheduledTime = _getNextMonthlyOccurrence(scheduledTime);
     }
 
     final notificationId = _generateNotificationId(reminder.id);
-    
+
     await _notificationsPlugin.zonedSchedule(
       notificationId,
       reminder.title,
@@ -301,7 +330,8 @@ class ReminderScheduler {
       _getNotificationDetails(reminder),
       payload: _createNotificationPayload(reminder),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime, // Repeat monthly
+      matchDateTimeComponents:
+          DateTimeComponents.dayOfMonthAndTime, // Repeat monthly
     );
 
     return true;
@@ -310,24 +340,24 @@ class ReminderScheduler {
   DateTime _getNextDailyOccurrence(DateTime scheduledTime) {
     final now = DateTime.now();
     DateTime nextTime = DateTime(
-      now.year, 
-      now.month, 
+      now.year,
+      now.month,
       now.day,
       scheduledTime.hour,
       scheduledTime.minute,
     );
-    
+
     if (nextTime.isBefore(now)) {
       nextTime = nextTime.add(const Duration(days: 1));
     }
-    
+
     return nextTime;
   }
 
   DateTime _getNextWeeklyOccurrence(DateTime scheduledTime) {
     final now = DateTime.now();
     int daysToAdd = (scheduledTime.weekday - now.weekday + 7) % 7;
-    
+
     DateTime nextTime = DateTime(
       now.year,
       now.month,
@@ -335,11 +365,11 @@ class ReminderScheduler {
       scheduledTime.hour,
       scheduledTime.minute,
     );
-    
+
     if (nextTime.isBefore(now)) {
       nextTime = nextTime.add(const Duration(days: 7));
     }
-    
+
     return nextTime;
   }
 
@@ -352,7 +382,7 @@ class ReminderScheduler {
       scheduledTime.hour,
       scheduledTime.minute,
     );
-    
+
     if (nextTime.isBefore(now)) {
       nextTime = DateTime(
         now.month == 12 ? now.year + 1 : now.year,
@@ -362,17 +392,20 @@ class ReminderScheduler {
         scheduledTime.minute,
       );
     }
-    
+
     return nextTime;
   }
 
   NotificationDetails _getNotificationDetails(Reminder reminder) {
-    final androidDetails = reminder.type == 'medication' 
+    final androidDetails = reminder.type == 'medication'
         ? AndroidNotificationDetails(
             NotificationConfig.androidNotificationDetails.channelId,
             NotificationConfig.androidNotificationDetails.channelName,
-            channelDescription: NotificationConfig.androidNotificationDetails.channelDescription,
-            importance: NotificationConfig.androidNotificationDetails.importance,
+            channelDescription: NotificationConfig
+                .androidNotificationDetails
+                .channelDescription,
+            importance:
+                NotificationConfig.androidNotificationDetails.importance,
             priority: NotificationConfig.androidNotificationDetails.priority,
             actions: NotificationConfig.medicationActions,
           )
@@ -385,7 +418,10 @@ class ReminderScheduler {
     );
   }
 
-  String _createNotificationPayload(Reminder reminder, {bool isSnooze = false}) {
+  String _createNotificationPayload(
+    Reminder reminder, {
+    bool isSnooze = false,
+  }) {
     return jsonEncode({
       'reminderId': reminder.id,
       'type': reminder.type,
@@ -403,7 +439,7 @@ class ReminderScheduler {
     try {
       await _reminderService.markReminderSent(reminderId);
       await cancelReminder(reminderId);
-      
+
       // If it's a recurring reminder, schedule the next occurrence
       final reminder = await _reminderService.getReminderById(reminderId);
       if (reminder != null && reminder.frequency != 'once') {
@@ -418,7 +454,7 @@ class ReminderScheduler {
     try {
       await _reminderService.markReminderSent(reminderId);
       await cancelReminder(reminderId);
-      
+
       // If it's a recurring reminder, schedule the next occurrence
       final reminder = await _reminderService.getReminderById(reminderId);
       if (reminder != null && reminder.frequency != 'once') {

@@ -22,12 +22,12 @@ class OCRScanScreen extends ConsumerStatefulWidget {
 class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
     with TickerProviderStateMixin {
   final OCRService _ocrService = OCRService();
-  
+
   // UI State
   bool _isProcessing = false;
   OCRResult? _scanResult;
   String? _selectedImagePath;
-  
+
   // Animation controllers
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
@@ -44,13 +44,9 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _pulseAnimation = Tween<double>(
-      begin: 0.9,
-      end: 1.1,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 0.9, end: 1.1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
   }
 
   Future<void> _initializeOCRService() async {
@@ -75,10 +71,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
         title: Text(_getScreenTitle()),
         actions: [
           if (_scanResult != null)
-            IconButton(
-              icon: const Icon(Icons.share),
-              onPressed: _shareResult,
-            ),
+            IconButton(icon: const Icon(Icons.share), onPressed: _shareResult),
         ],
       ),
       body: _buildBody(),
@@ -109,26 +102,25 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
                 // OCR Type Icon and Title
                 _buildOCRTypeHeader(),
                 const SizedBox(height: 32),
-                
+
                 // Scan Options
                 _buildScanOptions(),
                 const SizedBox(height: 32),
-                
+
                 // Tips
                 _buildTips(),
               ],
             ),
           ),
-          
+
           // Preview Image if selected
           if (_selectedImagePath != null) ...[
             _buildImagePreview(),
             const SizedBox(height: 16),
           ],
-          
+
           // Process Button
-          if (_selectedImagePath != null)
-            _buildProcessButton(),
+          if (_selectedImagePath != null) _buildProcessButton(),
         ],
       ),
     );
@@ -152,17 +144,17 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
         const SizedBox(height: 16),
         Text(
           _getScreenTitle(),
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           _getTypeDescription(),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
           textAlign: TextAlign.center,
         ),
       ],
@@ -207,11 +199,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Icon(
-                icon,
-                size: 48,
-                color: Theme.of(context).primaryColor,
-              ),
+              Icon(icon, size: 48, color: Theme.of(context).primaryColor),
               const SizedBox(height: 12),
               Text(
                 title,
@@ -223,10 +211,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -238,7 +223,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
 
   Widget _buildTips() {
     final tips = _getTips();
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -247,17 +232,11 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.lightbulb_outline,
-                  color: Colors.amber[700],
-                ),
+                Icon(Icons.lightbulb_outline, color: Colors.amber[700]),
                 const SizedBox(width: 8),
                 const Text(
                   'Tips for better results',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -301,10 +280,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.transparent,
-                Colors.black.withValues(alpha: 0.5),
-              ],
+              colors: [Colors.transparent, Colors.black.withValues(alpha: 0.5)],
             ),
           ),
           child: Align(
@@ -312,10 +288,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.close, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _selectedImagePath = null;
@@ -342,9 +315,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
               )
             : const Icon(Icons.document_scanner),
         label: Text(_isProcessing ? 'Processing...' : 'Scan Text'),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(16),
-        ),
+        style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
       ),
     );
   }
@@ -362,7 +333,9 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
                 child: Container(
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Icon(
@@ -377,17 +350,12 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
           const SizedBox(height: 24),
           const Text(
             'Scanning document...',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Text(
             'This may take a few seconds',
-            style: TextStyle(
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(color: Colors.grey[600]),
           ),
           const SizedBox(height: 24),
           const CircularProgressIndicator(),
@@ -398,7 +366,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
 
   Widget _buildResultView() {
     final result = _scanResult!;
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -431,9 +399,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
                           const SizedBox(height: 4),
                           Text(
                             result.error!,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                            ),
+                            style: TextStyle(color: Colors.grey[600]),
                           ),
                         ],
                       ],
@@ -443,21 +409,21 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Extracted data (structured)
           if (result.hasStructuredData) ...[
             _buildExtractedDataSection(result.extractedData!),
             const SizedBox(height: 16),
           ],
-          
+
           // Raw text
           if (result.hasText) ...[
             _buildRawTextSection(result.text!),
             const SizedBox(height: 16),
           ],
-          
+
           // Action buttons
           _buildActionButtons(),
         ],
@@ -474,10 +440,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
           children: [
             const Text(
               'Extracted Information',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             _buildDataContent(data),
@@ -490,10 +453,12 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
   Widget _buildDataContent(Map<String, dynamic> data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: data.entries.where((entry) => entry.key != 'rawText').map((entry) {
+      children: data.entries.where((entry) => entry.key != 'rawText').map((
+        entry,
+      ) {
         final key = entry.key;
         final value = entry.value;
-        
+
         if (value is List && key == 'medications') {
           return _buildMedicationsList(value);
         } else if (value is List && key == 'results') {
@@ -524,16 +489,13 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
 
   Widget _buildMedicationsList(List medications) {
     if (medications.isEmpty) return const SizedBox.shrink();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Medications',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.blue,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.blue),
         ),
         const SizedBox(height: 8),
         for (final med in medications) ...[
@@ -571,16 +533,13 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
 
   Widget _buildLabResultsList(List results) {
     if (results.isEmpty) return const SizedBox.shrink();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Lab Results',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.blue,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.blue),
         ),
         const SizedBox(height: 8),
         for (final result in results) ...[
@@ -596,9 +555,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
                       children: [
                         Text(
                           result['testName'] ?? 'Unknown test',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -639,10 +596,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
               children: [
                 const Text(
                   'Scanned Text',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 TextButton.icon(
@@ -726,10 +680,11 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
           source: source,
           type: widget.ocrType,
         );
-        
+
         if (result.success) {
           setState(() {
-            _selectedImagePath = null; // We don't have the path from the service
+            _selectedImagePath =
+                null; // We don't have the path from the service
           });
           _processOCRResult(result);
         } else {
@@ -741,7 +696,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
           source: source,
           type: widget.ocrType,
         );
-        
+
         if (result.success) {
           _processOCRResult(result);
         } else {
@@ -755,7 +710,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
 
   Future<void> _processImage() async {
     if (_selectedImagePath == null) return;
-    
+
     setState(() {
       _isProcessing = true;
     });
@@ -767,7 +722,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
         _selectedImagePath!,
         type: widget.ocrType,
       );
-      
+
       _processOCRResult(result);
     } catch (e) {
       _showErrorSnackBar(e.toString());
@@ -784,7 +739,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
       _scanResult = result;
       _selectedImagePath = null;
     });
-    
+
     if (result.success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -819,28 +774,21 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
       // In a real app, you'd use share_plus package
       _copyToClipboard(_scanResult!.text!);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Text copied to clipboard!'),
-        ),
+        const SnackBar(content: Text('Text copied to clipboard!')),
       );
     }
   }
 
   void _copyToClipboard(String text) {
     // In a real app, you'd use Clipboard.setData
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Text copied to clipboard!'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Text copied to clipboard!')));
   }
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 

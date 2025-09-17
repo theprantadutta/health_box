@@ -12,11 +12,10 @@ class AttachmentService {
   final AttachmentDao _attachmentDao;
   final ImagePicker _imagePicker;
 
-  AttachmentService({
-    AttachmentDao? attachmentDao,
-    AppDatabase? database,
-  })  : _attachmentDao = attachmentDao ?? AttachmentDao(database ?? AppDatabase.instance),
-        _imagePicker = ImagePicker();
+  AttachmentService({AttachmentDao? attachmentDao, AppDatabase? database})
+    : _attachmentDao =
+          attachmentDao ?? AttachmentDao(database ?? AppDatabase.instance),
+      _imagePicker = ImagePicker();
 
   // File Selection Operations
 
@@ -66,7 +65,9 @@ class AttachmentService {
 
       return results;
     } catch (e) {
-      throw AttachmentServiceException('Failed to pick multiple images: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to pick multiple images: ${e.toString()}',
+      );
     }
   }
 
@@ -87,7 +88,7 @@ class AttachmentService {
 
       final platformFile = result.files.first;
       final file = File(platformFile.path!);
-      
+
       final fileType = _determineFileType(platformFile.extension, file.path);
       return await _processPickedFile(file, fileType);
     } catch (e) {
@@ -113,7 +114,10 @@ class AttachmentService {
       for (final platformFile in result.files) {
         if (platformFile.path != null) {
           final file = File(platformFile.path!);
-          final fileType = _determineFileType(platformFile.extension, file.path);
+          final fileType = _determineFileType(
+            platformFile.extension,
+            file.path,
+          );
           final attachmentResult = await _processPickedFile(file, fileType);
           results.add(attachmentResult);
         }
@@ -121,7 +125,9 @@ class AttachmentService {
 
       return results;
     } catch (e) {
-      throw AttachmentServiceException('Failed to pick multiple files: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to pick multiple files: ${e.toString()}',
+      );
     }
   }
 
@@ -136,8 +142,9 @@ class AttachmentService {
     try {
       // Copy file to secure app directory
       final secureFilePath = await _saveFileSecurely(attachmentResult.file);
-      
-      final attachmentId = 'attachment_${DateTime.now().millisecondsSinceEpoch}';
+
+      final attachmentId =
+          'attachment_${DateTime.now().millisecondsSinceEpoch}';
       final attachmentCompanion = AttachmentsCompanion(
         id: Value(attachmentId),
         recordId: Value(recordId),
@@ -154,7 +161,9 @@ class AttachmentService {
 
       return await _attachmentDao.createAttachment(attachmentCompanion);
     } catch (e) {
-      throw AttachmentServiceException('Failed to save attachment: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to save attachment: ${e.toString()}',
+      );
     }
   }
 
@@ -163,7 +172,9 @@ class AttachmentService {
     try {
       return await _attachmentDao.getAttachmentsByRecordId(recordId);
     } catch (e) {
-      throw AttachmentServiceException('Failed to get attachments for record: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to get attachments for record: ${e.toString()}',
+      );
     }
   }
 
@@ -172,7 +183,9 @@ class AttachmentService {
     try {
       return await _attachmentDao.getAttachmentById(attachmentId);
     } catch (e) {
-      throw AttachmentServiceException('Failed to get attachment: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to get attachment: ${e.toString()}',
+      );
     }
   }
 
@@ -194,21 +207,31 @@ class AttachmentService {
       return await _attachmentDao.deleteAttachment(attachmentId);
     } catch (e) {
       if (e is AttachmentServiceException) rethrow;
-      throw AttachmentServiceException('Failed to delete attachment: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to delete attachment: ${e.toString()}',
+      );
     }
   }
 
   /// Update attachment description
-  Future<bool> updateAttachmentDescription(String attachmentId, String? description) async {
+  Future<bool> updateAttachmentDescription(
+    String attachmentId,
+    String? description,
+  ) async {
     try {
       final attachmentCompanion = AttachmentsCompanion(
         description: Value(description),
         updatedAt: Value(DateTime.now()),
       );
 
-      return await _attachmentDao.updateAttachment(attachmentId, attachmentCompanion);
+      return await _attachmentDao.updateAttachment(
+        attachmentId,
+        attachmentCompanion,
+      );
     } catch (e) {
-      throw AttachmentServiceException('Failed to update attachment description: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to update attachment description: ${e.toString()}',
+      );
     }
   }
 
@@ -219,12 +242,16 @@ class AttachmentService {
     try {
       final file = File(attachment.filePath);
       if (!await file.exists()) {
-        throw const AttachmentServiceException('Attachment file not found on disk');
+        throw const AttachmentServiceException(
+          'Attachment file not found on disk',
+        );
       }
       return file;
     } catch (e) {
       if (e is AttachmentServiceException) rethrow;
-      throw AttachmentServiceException('Failed to get attachment file: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to get attachment file: ${e.toString()}',
+      );
     }
   }
 
@@ -235,7 +262,9 @@ class AttachmentService {
       return await file.readAsBytes();
     } catch (e) {
       if (e is AttachmentServiceException) rethrow;
-      throw AttachmentServiceException('Failed to read attachment bytes: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to read attachment bytes: ${e.toString()}',
+      );
     }
   }
 
@@ -243,9 +272,14 @@ class AttachmentService {
   Future<int> getTotalAttachmentSize() async {
     try {
       final attachments = await _attachmentDao.getAllAttachments();
-      return attachments.fold<int>(0, (sum, attachment) => sum + attachment.fileSize);
+      return attachments.fold<int>(
+        0,
+        (sum, attachment) => sum + attachment.fileSize,
+      );
     } catch (e) {
-      throw AttachmentServiceException('Failed to calculate total attachment size: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to calculate total attachment size: ${e.toString()}',
+      );
     }
   }
 
@@ -257,10 +291,22 @@ class AttachmentService {
       final pdfAttachments = await _attachmentDao.getPdfAttachments();
       final documentAttachments = await _attachmentDao.getDocumentAttachments();
 
-      final totalSize = allAttachments.fold<int>(0, (sum, attachment) => sum + attachment.fileSize);
-      final imageSize = imageAttachments.fold<int>(0, (sum, attachment) => sum + attachment.fileSize);
-      final pdfSize = pdfAttachments.fold<int>(0, (sum, attachment) => sum + attachment.fileSize);
-      final documentSize = documentAttachments.fold<int>(0, (sum, attachment) => sum + attachment.fileSize);
+      final totalSize = allAttachments.fold<int>(
+        0,
+        (sum, attachment) => sum + attachment.fileSize,
+      );
+      final imageSize = imageAttachments.fold<int>(
+        0,
+        (sum, attachment) => sum + attachment.fileSize,
+      );
+      final pdfSize = pdfAttachments.fold<int>(
+        0,
+        (sum, attachment) => sum + attachment.fileSize,
+      );
+      final documentSize = documentAttachments.fold<int>(
+        0,
+        (sum, attachment) => sum + attachment.fileSize,
+      );
 
       return AttachmentStorageStats(
         totalFiles: allAttachments.length,
@@ -273,13 +319,18 @@ class AttachmentService {
         documentSize: documentSize,
       );
     } catch (e) {
-      throw AttachmentServiceException('Failed to get storage statistics: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to get storage statistics: ${e.toString()}',
+      );
     }
   }
 
   // Private Helper Methods
 
-  Future<AttachmentResult> _processPickedFile(File file, String fileType) async {
+  Future<AttachmentResult> _processPickedFile(
+    File file,
+    String fileType,
+  ) async {
     final fileName = path.basename(file.path);
     final fileSize = await file.length();
     final mimeType = FileUtils.getMimeType(file.path);
@@ -295,9 +346,9 @@ class AttachmentService {
 
   String _determineFileType(String? extension, String filePath) {
     if (extension == null) return 'unknown';
-    
+
     final ext = extension.toLowerCase();
-    
+
     if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].contains(ext)) {
       return 'image';
     } else if (['pdf'].contains(ext)) {
@@ -316,8 +367,10 @@ class AttachmentService {
   Future<String> _saveFileSecurely(File sourceFile) async {
     try {
       final appDocumentsDir = await getApplicationDocumentsDirectory();
-      final attachmentsDir = Directory(path.join(appDocumentsDir.path, 'attachments'));
-      
+      final attachmentsDir = Directory(
+        path.join(appDocumentsDir.path, 'attachments'),
+      );
+
       if (!await attachmentsDir.exists()) {
         await attachmentsDir.create(recursive: true);
       }
@@ -330,12 +383,14 @@ class AttachmentService {
       await sourceFile.copy(secureFilePath);
       return secureFilePath;
     } catch (e) {
-      throw AttachmentServiceException('Failed to save file securely: ${e.toString()}');
+      throw AttachmentServiceException(
+        'Failed to save file securely: ${e.toString()}',
+      );
     }
   }
 
   // Stream Operations
-  
+
   Stream<List<Attachment>> watchAttachmentsForRecord(String recordId) {
     return _attachmentDao.watchAttachmentsByRecordId(recordId);
   }
@@ -357,11 +412,24 @@ class AttachmentService {
   }
 
   bool isValidImageType(String extension) {
-    return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].contains(extension.toLowerCase());
+    return [
+      'jpg',
+      'jpeg',
+      'png',
+      'gif',
+      'bmp',
+      'webp',
+    ].contains(extension.toLowerCase());
   }
 
   bool isValidDocumentType(String extension) {
-    return ['pdf', 'doc', 'docx', 'txt', 'rtf'].contains(extension.toLowerCase());
+    return [
+      'pdf',
+      'doc',
+      'docx',
+      'txt',
+      'rtf',
+    ].contains(extension.toLowerCase());
   }
 }
 
@@ -414,9 +482,9 @@ class AttachmentStorageStats {
 
 class AttachmentServiceException implements Exception {
   final String message;
-  
+
   const AttachmentServiceException(this.message);
-  
+
   @override
   String toString() => 'AttachmentServiceException: $message';
 }

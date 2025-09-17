@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/database/app_database.dart';
 import '../../features/profiles/services/profile_service.dart';
 
@@ -102,14 +103,71 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   final Ref ref;
 
   Future<void> loadProfiles() async {
+    // Prevent concurrent loading to avoid rebuild loops
+    if (state.isLoading) {
+      return;
+    }
+
+    // Debug logging (can be removed in production)
+    // print('ProfileNotifier.loadProfiles() - Starting...');
     state = state.copyWith(isLoading: true, error: null);
 
     try {
       final service = ref.read(profileServiceProvider);
+      // print('ProfileNotifier.loadProfiles() - Getting all profiles...');
       final profiles = await service.getAllProfiles();
+      // print('ProfileNotifier.loadProfiles() - Got ${profiles.length} profiles');
       state = state.copyWith(profiles: profiles, isLoading: false);
+
+      // Auto-select profile if none is selected
+      if (state.selectedProfile == null && profiles.isNotEmpty) {
+        // print('ProfileNotifier.loadProfiles() - Auto-selecting profile...');
+        await _loadSelectedProfile(profiles);
+        // print('ProfileNotifier.loadProfiles() - Selected profile: ${state.selectedProfile?.firstName ?? 'null'}');
+      } else if (profiles.isEmpty) {
+        // print('ProfileNotifier.loadProfiles() - No profiles found');
+      } else {
+        // print('ProfileNotifier.loadProfiles() - Profile already selected: ${state.selectedProfile?.firstName ?? 'null'}');
+      }
+      // print('ProfileNotifier.loadProfiles() - Completed successfully');
     } catch (error) {
+      // print('ProfileNotifier.loadProfiles() - Error: $error');
       state = state.copyWith(error: error.toString(), isLoading: false);
+    }
+  }
+
+  Future<void> _loadSelectedProfile(List<FamilyMemberProfile> profiles) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final selectedProfileId = prefs.getString('selected_profile_id');
+
+      if (selectedProfileId != null) {
+        // Try to find the previously selected profile
+        final profile = profiles.firstWhere(
+          (p) => p.id == selectedProfileId,
+          orElse: () => profiles.first, // Fallback to first profile
+        );
+        state = state.copyWith(selectedProfile: profile);
+      } else {
+        // No previous selection, select the first profile
+        final firstProfile = profiles.first;
+        state = state.copyWith(selectedProfile: firstProfile);
+        await _saveSelectedProfile(firstProfile.id);
+      }
+    } catch (e) {
+      // If there's any error, just select the first profile
+      if (profiles.isNotEmpty) {
+        state = state.copyWith(selectedProfile: profiles.first);
+      }
+    }
+  }
+
+  Future<void> _saveSelectedProfile(String profileId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('selected_profile_id', profileId);
+    } catch (e) {
+      // Ignore save errors - not critical
     }
   }
 
@@ -171,8 +229,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     }
   }
 
-  void selectProfile(FamilyMemberProfile? profile) {
+  Future<void> selectProfile(FamilyMemberProfile? profile) async {
     state = state.copyWith(selectedProfile: profile);
+    if (profile != null) {
+      await _saveSelectedProfile(profile.id);
+    }
   }
 
   void clearError() {

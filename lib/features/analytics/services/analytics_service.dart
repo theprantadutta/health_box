@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:logger/logger.dart';
 
-
 enum VitalType {
   bloodPressure,
   heartRate,
@@ -16,21 +15,9 @@ enum VitalType {
   bmi,
 }
 
-enum TimeRange {
-  week,
-  month,
-  threeMonths,
-  sixMonths,
-  year,
-  all,
-}
+enum TimeRange { week, month, threeMonths, sixMonths, year, all }
 
-enum TrendDirection {
-  increasing,
-  decreasing,
-  stable,
-  volatile,
-}
+enum TrendDirection { increasing, decreasing, stable, volatile }
 
 class VitalReading {
   final String id;
@@ -75,16 +62,16 @@ class VitalReading {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'profileId': profileId,
-        'type': type.name,
-        'value': value,
-        'secondaryValue': secondaryValue,
-        'unit': unit,
-        'timestamp': timestamp.toIso8601String(),
-        'notes': notes,
-        'metadata': metadata,
-      };
+    'id': id,
+    'profileId': profileId,
+    'type': type.name,
+    'value': value,
+    'secondaryValue': secondaryValue,
+    'unit': unit,
+    'timestamp': timestamp.toIso8601String(),
+    'notes': notes,
+    'metadata': metadata,
+  };
 
   String get displayValue {
     if (secondaryValue != null) {
@@ -100,10 +87,10 @@ class VitalReading {
     switch (type) {
       case VitalType.bloodPressure:
         return value <= ranges['systolic_max']! &&
-               value >= ranges['systolic_min']! &&
-               (secondaryValue == null ||
+            value >= ranges['systolic_min']! &&
+            (secondaryValue == null ||
                 (secondaryValue! <= ranges['diastolic_max']! &&
-                 secondaryValue! >= ranges['diastolic_min']!));
+                    secondaryValue! >= ranges['diastolic_min']!));
       default:
         return value >= ranges['min']! && value <= ranges['max']!;
     }
@@ -111,14 +98,15 @@ class VitalReading {
 
   VitalStatus get status {
     if (isNormal()) return VitalStatus.normal;
-    
+
     final ranges = getNormalRanges(type);
     if (ranges == null) return VitalStatus.normal;
 
     switch (type) {
       case VitalType.bloodPressure:
-        if (value > ranges['systolic_max']! || 
-            (secondaryValue != null && secondaryValue! > ranges['diastolic_max']!)) {
+        if (value > ranges['systolic_max']! ||
+            (secondaryValue != null &&
+                secondaryValue! > ranges['diastolic_max']!)) {
           return VitalStatus.high;
         }
         return VitalStatus.low;
@@ -152,11 +140,7 @@ class VitalReading {
   }
 }
 
-enum VitalStatus {
-  low,
-  normal,
-  high,
-}
+enum VitalStatus { low, normal, high }
 
 class VitalTrend {
   final VitalType type;
@@ -224,8 +208,14 @@ class AnalyticsService {
     DateTime? endDate,
   }) async {
     try {
-      final cacheKey = _getCacheKey(profileId, type, timeRange, startDate, endDate);
-      
+      final cacheKey = _getCacheKey(
+        profileId,
+        type,
+        timeRange,
+        startDate,
+        endDate,
+      );
+
       // Check cache first
       if (_isValidCache() && _readingsCache.containsKey(cacheKey)) {
         return _readingsCache[cacheKey]!;
@@ -233,7 +223,7 @@ class AnalyticsService {
 
       // Calculate date range
       final dateRange = _calculateDateRange(timeRange, startDate, endDate);
-      
+
       // In a real implementation, this would query the database
       // For now, we'll simulate with some sample data
       final readings = await _fetchReadingsFromDatabase(
@@ -249,7 +239,11 @@ class AnalyticsService {
 
       return readings;
     } catch (e, stackTrace) {
-      _logger.e('Failed to get vital readings', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to get vital readings',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return [];
     }
   }
@@ -258,14 +252,20 @@ class AnalyticsService {
     try {
       // In a real implementation, this would save to database
       // For now, we'll simulate saving
-      _logger.d('Adding vital reading: ${reading.type.name} = ${reading.displayValue}');
-      
+      _logger.d(
+        'Adding vital reading: ${reading.type.name} = ${reading.displayValue}',
+      );
+
       // Clear cache to force refresh
       _clearCache();
-      
+
       return reading;
     } catch (e, stackTrace) {
-      _logger.e('Failed to add vital reading', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to add vital reading',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -274,13 +274,17 @@ class AnalyticsService {
     try {
       // In a real implementation, this would update in database
       _logger.d('Updating vital reading: ${reading.id}');
-      
+
       // Clear cache to force refresh
       _clearCache();
-      
+
       return true;
     } catch (e, stackTrace) {
-      _logger.e('Failed to update vital reading', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to update vital reading',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -289,13 +293,17 @@ class AnalyticsService {
     try {
       // In a real implementation, this would delete from database
       _logger.d('Deleting vital reading: $readingId');
-      
+
       // Clear cache to force refresh
       _clearCache();
-      
+
       return true;
     } catch (e, stackTrace) {
-      _logger.e('Failed to delete vital reading', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to delete vital reading',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -343,11 +351,11 @@ class AnalyticsService {
       final average = values.reduce((a, b) => a + b) / values.length;
       final minimum = values.reduce(math.min);
       final maximum = values.reduce(math.max);
-      
+
       // Calculate standard deviation
-      final variance = values
-          .map((v) => math.pow(v - average, 2))
-          .reduce((a, b) => a + b) / values.length;
+      final variance =
+          values.map((v) => math.pow(v - average, 2)).reduce((a, b) => a + b) /
+          values.length;
       final standardDeviation = math.sqrt(variance);
 
       // Calculate trend
@@ -372,7 +380,11 @@ class AnalyticsService {
         statusDistribution: statusDistribution,
       );
     } catch (e, stackTrace) {
-      _logger.e('Failed to get vital statistics', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to get vital statistics',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -382,7 +394,7 @@ class AnalyticsService {
     TimeRange timeRange = TimeRange.month,
   }) async {
     final statistics = <VitalType, VitalStatistics>{};
-    
+
     for (final type in VitalType.values) {
       try {
         final stats = await getVitalStatistics(
@@ -390,7 +402,7 @@ class AnalyticsService {
           type: type,
           timeRange: timeRange,
         );
-        
+
         if (stats.totalReadings > 0) {
           statistics[type] = stats;
         }
@@ -398,7 +410,7 @@ class AnalyticsService {
         _logger.w('Failed to get statistics for ${type.name}', error: e);
       }
     }
-    
+
     return statistics;
   }
 
@@ -407,21 +419,21 @@ class AnalyticsService {
     TimeRange timeRange = TimeRange.month,
   }) async {
     final anomalousReadings = <VitalReading>[];
-    
+
     for (final type in VitalType.values) {
       final readings = await getVitalReadings(
         profileId: profileId,
         type: type,
         timeRange: timeRange,
       );
-      
+
       final abnormalReadings = readings.where((r) => !r.isNormal()).toList();
       anomalousReadings.addAll(abnormalReadings);
     }
-    
+
     // Sort by timestamp (newest first)
     anomalousReadings.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-    
+
     return anomalousReadings;
   }
 
@@ -434,7 +446,7 @@ class AnalyticsService {
         profileId: profileId,
         timeRange: timeRange,
       );
-      
+
       final anomalousReadings = await getAnomalousReadings(
         profileId: profileId,
         timeRange: timeRange,
@@ -445,9 +457,8 @@ class AnalyticsService {
         'generatedAt': DateTime.now().toIso8601String(),
         'timeRange': timeRange.name,
         'summary': _generateReportSummary(allStats, anomalousReadings),
-        'statistics': allStats.map((type, stats) => MapEntry(
-          type.name,
-          {
+        'statistics': allStats.map(
+          (type, stats) => MapEntry(type.name, {
             'totalReadings': stats.totalReadings,
             'average': stats.average,
             'trend': stats.trend.direction.name,
@@ -455,15 +466,22 @@ class AnalyticsService {
             'statusDistribution': stats.statusDistribution.map(
               (status, count) => MapEntry(status.name, count),
             ),
-          },
-        )),
+          }),
+        ),
         'anomalousReadings': anomalousReadings.length,
-        'recommendations': _generateRecommendations(allStats, anomalousReadings),
+        'recommendations': _generateRecommendations(
+          allStats,
+          anomalousReadings,
+        ),
       };
 
       return report;
     } catch (e, stackTrace) {
-      _logger.e('Failed to generate health report', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to generate health report',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -476,27 +494,36 @@ class AnalyticsService {
         changePercent: 0,
         averageValue: readings.isNotEmpty ? readings.first.value : 0,
         readingCount: readings.length,
-        periodStart: readings.isNotEmpty ? readings.first.timestamp : DateTime.now(),
-        periodEnd: readings.isNotEmpty ? readings.last.timestamp : DateTime.now(),
+        periodStart: readings.isNotEmpty
+            ? readings.first.timestamp
+            : DateTime.now(),
+        periodEnd: readings.isNotEmpty
+            ? readings.last.timestamp
+            : DateTime.now(),
         summary: 'Insufficient data for trend analysis',
       );
     }
 
     // Sort by timestamp
     readings.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-    
+
     final firstHalf = readings.take(readings.length ~/ 2).toList();
     final secondHalf = readings.skip(readings.length ~/ 2).toList();
-    
-    final firstAvg = firstHalf.map((r) => r.value).reduce((a, b) => a + b) / firstHalf.length;
-    final secondAvg = secondHalf.map((r) => r.value).reduce((a, b) => a + b) / secondHalf.length;
-    
+
+    final firstAvg =
+        firstHalf.map((r) => r.value).reduce((a, b) => a + b) /
+        firstHalf.length;
+    final secondAvg =
+        secondHalf.map((r) => r.value).reduce((a, b) => a + b) /
+        secondHalf.length;
+
     final changePercent = ((secondAvg - firstAvg) / firstAvg) * 100;
-    final overallAvg = readings.map((r) => r.value).reduce((a, b) => a + b) / readings.length;
-    
+    final overallAvg =
+        readings.map((r) => r.value).reduce((a, b) => a + b) / readings.length;
+
     TrendDirection direction;
     String summary;
-    
+
     if (changePercent.abs() < 5) {
       direction = TrendDirection.stable;
       summary = 'Values remain stable';
@@ -531,12 +558,16 @@ class AnalyticsService {
       return 'No vital signs data available for this period.';
     }
 
-    final totalReadings = stats.values.fold(0, (sum, stat) => sum + stat.totalReadings);
+    final totalReadings = stats.values.fold(
+      0,
+      (sum, stat) => sum + stat.totalReadings,
+    );
     final vitalsTracked = stats.length;
     final anomalousCount = anomalousReadings.length;
 
-    String summary = 'Tracked $vitalsTracked vital signs with $totalReadings total readings. ';
-    
+    String summary =
+        'Tracked $vitalsTracked vital signs with $totalReadings total readings. ';
+
     if (anomalousCount == 0) {
       summary += 'All readings are within normal ranges.';
     } else {
@@ -556,29 +587,42 @@ class AnalyticsService {
       recommendations.add('Continue monitoring your vital signs regularly');
       recommendations.add('Maintain your current healthy lifestyle');
     } else {
-      recommendations.add('Consult with your healthcare provider about abnormal readings');
-      recommendations.add('Consider increasing monitoring frequency for concerning values');
+      recommendations.add(
+        'Consult with your healthcare provider about abnormal readings',
+      );
+      recommendations.add(
+        'Consider increasing monitoring frequency for concerning values',
+      );
     }
 
     // Type-specific recommendations
     for (final entry in stats.entries) {
       final type = entry.key;
       final stat = entry.value;
-      
+
       if (stat.statusDistribution[VitalStatus.high] != null &&
-          stat.statusDistribution[VitalStatus.high]! > stat.totalReadings * 0.3) {
+          stat.statusDistribution[VitalStatus.high]! >
+              stat.totalReadings * 0.3) {
         switch (type) {
           case VitalType.bloodPressure:
-            recommendations.add('Consider reducing sodium intake and increasing physical activity');
+            recommendations.add(
+              'Consider reducing sodium intake and increasing physical activity',
+            );
             break;
           case VitalType.heartRate:
-            recommendations.add('Monitor heart rate during physical activity and rest');
+            recommendations.add(
+              'Monitor heart rate during physical activity and rest',
+            );
             break;
           case VitalType.weight:
-            recommendations.add('Consider consulting a nutritionist for weight management');
+            recommendations.add(
+              'Consider consulting a nutritionist for weight management',
+            );
             break;
           case VitalType.bloodSugar:
-            recommendations.add('Monitor blood sugar levels more frequently and review diet');
+            recommendations.add(
+              'Monitor blood sugar levels more frequently and review diet',
+            );
             break;
           default:
             break;
@@ -597,80 +641,90 @@ class AnalyticsService {
   ) async {
     // Simulate database query with sample data
     await Future.delayed(const Duration(milliseconds: 100));
-    
+
     final readings = <VitalReading>[];
     final random = math.Random();
     final now = DateTime.now();
-    
+
     // Generate sample data for demonstration
     for (int i = 0; i < 30; i++) {
       final timestamp = now.subtract(Duration(days: i));
-      
+
       if (timestamp.isBefore(startDate) || timestamp.isAfter(endDate)) {
         continue;
       }
-      
+
       final types = type != null ? [type] : VitalType.values.take(5);
-      
+
       for (final vitalType in types) {
         switch (vitalType) {
           case VitalType.bloodPressure:
-            readings.add(VitalReading(
-              id: 'bp_${profileId}_$i',
-              profileId: profileId,
-              type: vitalType,
-              value: 110 + random.nextDouble() * 40, // 110-150
-              secondaryValue: 70 + random.nextDouble() * 20, // 70-90
-              unit: 'mmHg',
-              timestamp: timestamp,
-            ));
+            readings.add(
+              VitalReading(
+                id: 'bp_${profileId}_$i',
+                profileId: profileId,
+                type: vitalType,
+                value: 110 + random.nextDouble() * 40, // 110-150
+                secondaryValue: 70 + random.nextDouble() * 20, // 70-90
+                unit: 'mmHg',
+                timestamp: timestamp,
+              ),
+            );
             break;
           case VitalType.heartRate:
-            readings.add(VitalReading(
-              id: 'hr_${profileId}_$i',
-              profileId: profileId,
-              type: vitalType,
-              value: 60 + random.nextDouble() * 40, // 60-100
-              unit: 'bpm',
-              timestamp: timestamp,
-            ));
+            readings.add(
+              VitalReading(
+                id: 'hr_${profileId}_$i',
+                profileId: profileId,
+                type: vitalType,
+                value: 60 + random.nextDouble() * 40, // 60-100
+                unit: 'bpm',
+                timestamp: timestamp,
+              ),
+            );
             break;
           case VitalType.weight:
-            readings.add(VitalReading(
-              id: 'wt_${profileId}_$i',
-              profileId: profileId,
-              type: vitalType,
-              value: 70 + random.nextDouble() * 30, // 70-100
-              unit: 'kg',
-              timestamp: timestamp,
-            ));
+            readings.add(
+              VitalReading(
+                id: 'wt_${profileId}_$i',
+                profileId: profileId,
+                type: vitalType,
+                value: 70 + random.nextDouble() * 30, // 70-100
+                unit: 'kg',
+                timestamp: timestamp,
+              ),
+            );
             break;
           case VitalType.temperature:
-            readings.add(VitalReading(
-              id: 'temp_${profileId}_$i',
-              profileId: profileId,
-              type: vitalType,
-              value: 36.0 + random.nextDouble() * 2, // 36-38
-              unit: '°C',
-              timestamp: timestamp,
-            ));
+            readings.add(
+              VitalReading(
+                id: 'temp_${profileId}_$i',
+                profileId: profileId,
+                type: vitalType,
+                value: 36.0 + random.nextDouble() * 2, // 36-38
+                unit: '°C',
+                timestamp: timestamp,
+              ),
+            );
             break;
           case VitalType.bloodSugar:
-            readings.add(VitalReading(
-              id: 'bs_${profileId}_$i',
-              profileId: profileId,
-              type: vitalType,
-              value: 80 + random.nextDouble() * 80, // 80-160
-              unit: 'mg/dL',
-              timestamp: timestamp,
-            ));
+            readings.add(
+              VitalReading(
+                id: 'bs_${profileId}_$i',
+                profileId: profileId,
+                type: vitalType,
+                value: 80 + random.nextDouble() * 80, // 80-160
+                unit: 'mg/dL',
+                timestamp: timestamp,
+              ),
+            );
             break;
           default:
             break;
         }
       }
     }
-    
+
     return readings;
   }
 
@@ -680,11 +734,11 @@ class AnalyticsService {
     DateTime? endDate,
   ) {
     final now = DateTime.now();
-    
+
     if (startDate != null && endDate != null) {
       return (start: startDate, end: endDate);
     }
-    
+
     switch (timeRange) {
       case TimeRange.week:
         return (start: now.subtract(const Duration(days: 7)), end: now);
@@ -713,7 +767,8 @@ class AnalyticsService {
 
   bool _isValidCache() {
     if (_lastCacheUpdate == null) return false;
-    return DateTime.now().difference(_lastCacheUpdate!) < _cacheValidityDuration;
+    return DateTime.now().difference(_lastCacheUpdate!) <
+        _cacheValidityDuration;
   }
 
   void _clearCache() {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../shared/providers/medical_records_providers.dart';
+import '../services/medication_service.dart';
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -7,7 +9,8 @@ class MedicationFormScreen extends ConsumerStatefulWidget {
   const MedicationFormScreen({super.key, this.profileId});
 
   @override
-  ConsumerState<MedicationFormScreen> createState() => _MedicationFormScreenState();
+  ConsumerState<MedicationFormScreen> createState() =>
+      _MedicationFormScreenState();
 }
 
 class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
@@ -29,12 +32,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
         title: const Text('New Medication'),
         actions: [
           TextButton(
-            onPressed: _isLoading ? null : () {
-              // TODO: Implement save with reminder setup
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Medication form with reminders - T057 placeholder')),
-              );
-            },
+            onPressed: _isLoading ? null : _saveMedication,
             child: const Text('SAVE'),
           ),
         ],
@@ -91,5 +89,72 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveMedication() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final service = ref.read(medicationServiceProvider);
+      final selectedProfileId = widget.profileId;
+
+      if (selectedProfileId == null) {
+        throw Exception('No profile selected');
+      }
+
+      final request = CreateMedicationRequest(
+        profileId: selectedProfileId,
+        title: _nameController.text.trim(),
+        description: '${_dosageController.text.trim()} - ${_frequencyController.text.trim()}',
+        recordDate: DateTime.now(),
+        medicationName: _nameController.text.trim(),
+        dosage: _dosageController.text.trim().isEmpty
+            ? 'As prescribed'
+            : _dosageController.text.trim(),
+        frequency: _frequencyController.text.trim().isEmpty
+            ? 'As needed'
+            : _frequencyController.text.trim(),
+        schedule: _frequencyController.text.trim().isEmpty
+            ? 'Daily'
+            : _frequencyController.text.trim(),
+        startDate: DateTime.now(),
+        reminderEnabled: false,
+        status: 'active',
+        reminderTimes: [],
+      );
+
+      await service.createMedication(request);
+
+      // Refresh medical records providers
+      ref.invalidate(allMedicalRecordsProvider);
+      ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Medication saved successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save medication: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 }

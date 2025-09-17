@@ -7,12 +7,7 @@ import '../error/error_handler.dart';
 
 part 'connectivity_provider.g.dart';
 
-enum ConnectivityState {
-  unknown,
-  online,
-  offline,
-  limited,
-}
+enum ConnectivityState { unknown, online, offline, limited }
 
 class ConnectivityStatus {
   final ConnectivityState state;
@@ -67,7 +62,7 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
   @override
   Future<ConnectivityStatus> build() async {
     _connectivity = Connectivity();
-    
+
     // Set up cleanup on disposal
     ref.onDispose(() {
       _disposed = true;
@@ -76,7 +71,7 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
     });
 
     await _initialize();
-    
+
     return ConnectivityStatus(
       state: ConnectivityState.unknown,
       connectionTypes: [],
@@ -86,17 +81,20 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
 
   Future<void> _initialize() async {
     await runGuarded(() async {
-      logger.debug('Initializing connectivity monitoring', tag: 'ConnectivityProvider');
-      
+      logger.debug(
+        'Initializing connectivity monitoring',
+        tag: 'ConnectivityProvider',
+      );
+
       // Get initial connectivity state
       await _checkConnectivity();
-      
+
       // Start listening for connectivity changes
       _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
         _onConnectivityChanged,
         onError: _onConnectivityError,
       );
-      
+
       // Start periodic connection tests
       _startConnectionTests();
     });
@@ -104,12 +102,9 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
 
   void _onConnectivityChanged(List<ConnectivityResult> result) {
     if (_disposed) return;
-    
-    logger.debug(
-      'Connectivity changed: $result', 
-      tag: 'ConnectivityProvider',
-    );
-    
+
+    logger.debug('Connectivity changed: $result', tag: 'ConnectivityProvider');
+
     runGuarded(() async {
       await _updateConnectivityState(result);
     });
@@ -117,7 +112,7 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
 
   void _onConnectivityError(Object error, StackTrace stackTrace) {
     if (_disposed) return;
-    
+
     logger.error(
       'Connectivity stream error',
       tag: 'ConnectivityProvider',
@@ -126,52 +121,63 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
     );
 
     handleError(error, stackTrace: stackTrace);
-    
-    state = AsyncValue.data(state.value!.copyWith(
-      state: ConnectivityState.unknown,
-      lastError: error.toString(),
-      lastCheck: DateTime.now(),
-    ));
+
+    state = AsyncValue.data(
+      state.value!.copyWith(
+        state: ConnectivityState.unknown,
+        lastError: error.toString(),
+        lastCheck: DateTime.now(),
+      ),
+    );
   }
 
-  Future<void> _updateConnectivityState(List<ConnectivityResult> results) async {
-    final hasConnection = results.any((result) => result != ConnectivityResult.none);
-    
+  Future<void> _updateConnectivityState(
+    List<ConnectivityResult> results,
+  ) async {
+    final hasConnection = results.any(
+      (result) => result != ConnectivityResult.none,
+    );
+
     if (!hasConnection) {
-      state = AsyncValue.data(state.value!.copyWith(
-        state: ConnectivityState.offline,
-        connectionTypes: results,
-        lastCheck: DateTime.now(),
-        lastError: null,
-      ));
+      state = AsyncValue.data(
+        state.value!.copyWith(
+          state: ConnectivityState.offline,
+          connectionTypes: results,
+          lastCheck: DateTime.now(),
+          lastError: null,
+        ),
+      );
       return;
     }
 
     // Test actual internet connectivity
     final isReallyOnline = await _testInternetConnection();
-    
-    state = AsyncValue.data(state.value!.copyWith(
-      state: isReallyOnline 
-          ? ConnectivityState.online 
-          : ConnectivityState.limited,
-      connectionTypes: results,
-      lastCheck: DateTime.now(),
-      lastError: null,
-    ));
+
+    state = AsyncValue.data(
+      state.value!.copyWith(
+        state: isReallyOnline
+            ? ConnectivityState.online
+            : ConnectivityState.limited,
+        connectionTypes: results,
+        lastCheck: DateTime.now(),
+        lastError: null,
+      ),
+    );
   }
 
   Future<bool> _testInternetConnection() async {
     try {
-      final result = await InternetAddress.lookup('google.com')
-          .timeout(_connectionTimeout);
-      
+      final result = await InternetAddress.lookup(
+        'google.com',
+      ).timeout(_connectionTimeout);
+
       final isConnected = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-      
+
       logger.trace(
         'Internet connection test: ${isConnected ? "success" : "failed"}',
         tag: 'ConnectivityProvider',
       );
-      
+
       return isConnected;
     } catch (error) {
       logger.trace(
@@ -194,7 +200,7 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
 
   Future<void> _checkConnectivity() async {
     if (_disposed) return;
-    
+
     try {
       final results = await _connectivity.checkConnectivity();
       await _updateConnectivityState(results);
@@ -205,37 +211,47 @@ class ConnectivityNotifier extends _$ConnectivityNotifier
         error: error,
         stackTrace: stackTrace,
       );
-      
+
       handleError(error, stackTrace: stackTrace);
-      
-      state = AsyncValue.data(state.value!.copyWith(
-        state: ConnectivityState.unknown,
-        lastError: error.toString(),
-        lastCheck: DateTime.now(),
-      ));
+
+      state = AsyncValue.data(
+        state.value!.copyWith(
+          state: ConnectivityState.unknown,
+          lastError: error.toString(),
+          lastCheck: DateTime.now(),
+        ),
+      );
     }
   }
 
   Future<void> refresh() async {
-    logger.debug('Manual connectivity refresh requested', tag: 'ConnectivityProvider');
+    logger.debug(
+      'Manual connectivity refresh requested',
+      tag: 'ConnectivityProvider',
+    );
     await _checkConnectivity();
   }
 
   Future<bool> testConnection() async {
     logger.debug('Testing internet connection', tag: 'ConnectivityProvider');
-    
+
     return runGuarded(() async {
       final isOnline = await _testInternetConnection();
-      
+
       // Update state if connection status changed
       final currentState = state.value!;
-      if ((isOnline && currentState.isOffline) || (!isOnline && currentState.isOnline)) {
-        state = AsyncValue.data(currentState.copyWith(
-          state: isOnline ? ConnectivityState.online : ConnectivityState.limited,
-          lastCheck: DateTime.now(),
-        ));
+      if ((isOnline && currentState.isOffline) ||
+          (!isOnline && currentState.isOnline)) {
+        state = AsyncValue.data(
+          currentState.copyWith(
+            state: isOnline
+                ? ConnectivityState.online
+                : ConnectivityState.limited,
+            lastCheck: DateTime.now(),
+          ),
+        );
       }
-      
+
       return isOnline;
     }, fallback: false);
   }
@@ -318,7 +334,7 @@ class OfflineQueue extends _$OfflineQueue with ErrorHandlerMixin {
       tag: 'OfflineQueue',
       context: {'actionId': action.id},
     );
-    
+
     state = [...state, action];
   }
 
@@ -328,7 +344,7 @@ class OfflineQueue extends _$OfflineQueue with ErrorHandlerMixin {
       tag: 'OfflineQueue',
       context: {'actionId': actionId},
     );
-    
+
     state = state.where((action) => action.id != actionId).toList();
   }
 
@@ -342,16 +358,22 @@ class OfflineQueue extends _$OfflineQueue with ErrorHandlerMixin {
   }
 
   List<OfflineAction> getPendingActions() {
-    return state.where((action) => action.retryCount < action.maxRetries).toList();
+    return state
+        .where((action) => action.retryCount < action.maxRetries)
+        .toList();
   }
 
   List<OfflineAction> getFailedActions() {
-    return state.where((action) => action.retryCount >= action.maxRetries).toList();
+    return state
+        .where((action) => action.retryCount >= action.maxRetries)
+        .toList();
   }
 
   void clearFailedActions() {
     logger.info('Clearing failed offline actions', tag: 'OfflineQueue');
-    state = state.where((action) => action.retryCount < action.maxRetries).toList();
+    state = state
+        .where((action) => action.retryCount < action.maxRetries)
+        .toList();
   }
 
   void clearAllActions() {
@@ -422,12 +444,12 @@ mixin OfflineCapable {
     Map<String, dynamic>? actionData,
   }) {
     final isOnline = (ref as dynamic).read(isOnlineProvider);
-    
+
     if (isOnline) {
       action();
     } else {
       final offlineQueue = (ref as dynamic).read(offlineQueueProvider.notifier);
-      
+
       if (actionType != null) {
         final offlineAction = OfflineAction(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -435,10 +457,10 @@ mixin OfflineCapable {
           data: actionData ?? {},
           createdAt: DateTime.now(),
         );
-        
+
         offlineQueue.addAction(offlineAction);
       }
-      
+
       logger.info(
         'Action queued for when online: ${actionType ?? "unknown"}',
         tag: 'OfflineCapable',

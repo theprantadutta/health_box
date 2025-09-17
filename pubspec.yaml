@@ -50,7 +50,8 @@ dependencies:
 
   # File Operations
   file_picker: ^10.3.2
-  image_picker: ^1.1.2
+  image_picker: ^1.2.0
+  image: ^4.2.0
   archive: ^4.0.7
   csv: ^6.0.0
 

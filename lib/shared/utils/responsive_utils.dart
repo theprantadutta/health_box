@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 
-enum ScreenSize {
-  mobile,
-  tablet,
-  desktop,
-}
+enum ScreenSize { mobile, tablet, desktop }
 
-enum ScreenOrientation {
-  portrait,
-  landscape,
-}
+enum ScreenOrientation { portrait, landscape }
 
 class ResponsiveUtils {
   static const double mobileMaxWidth = 600.0;
   static const double tabletMaxWidth = 1200.0;
-  
+
   static const double compactMaxWidth = 600.0;
   static const double mediumMaxWidth = 840.0;
   static const double expandedMinWidth = 1240.0;
 
   static ScreenSize getScreenSize(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     if (screenWidth < mobileMaxWidth) {
       return ScreenSize.mobile;
     } else if (screenWidth < tabletMaxWidth) {
@@ -68,7 +61,7 @@ class ResponsiveUtils {
 
   static EdgeInsets getResponsivePadding(BuildContext context) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return const EdgeInsets.all(16.0);
@@ -81,7 +74,7 @@ class ResponsiveUtils {
 
   static EdgeInsets getResponsiveHorizontalPadding(BuildContext context) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return const EdgeInsets.symmetric(horizontal: 16.0);
@@ -92,13 +85,14 @@ class ResponsiveUtils {
     }
   }
 
-  static int getGridCrossAxisCount(BuildContext context, {
+  static int getGridCrossAxisCount(
+    BuildContext context, {
     int mobileColumns = 1,
     int tabletColumns = 2,
     int desktopColumns = 3,
   }) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return mobileColumns;
@@ -111,7 +105,7 @@ class ResponsiveUtils {
 
   static double getCardMaxWidth(BuildContext context) {
     final screenWidth = getScreenWidth(context);
-    
+
     if (screenWidth < compactMaxWidth) {
       return screenWidth - 32.0;
     } else if (screenWidth < mediumMaxWidth) {
@@ -128,7 +122,7 @@ class ResponsiveUtils {
     Widget? desktop,
   }) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return mobile ?? tablet ?? desktop ?? const SizedBox.shrink();
@@ -211,7 +205,7 @@ class ResponsiveUtils {
     double desktopScale = 1.2,
   }) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return baseFontSize * mobileScale;
@@ -234,7 +228,7 @@ class ResponsiveUtils {
     BuildContext context,
   ) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return NavigationRailLabelType.none;
@@ -247,7 +241,7 @@ class ResponsiveUtils {
 
   static double getNavigationRailWidth(BuildContext context) {
     final screenSize = getScreenSize(context);
-    
+
     switch (screenSize) {
       case ScreenSize.mobile:
         return 56.0;
@@ -260,7 +254,7 @@ class ResponsiveUtils {
 
   static int getListViewItemsPerRow(BuildContext context) {
     final screenWidth = getScreenWidth(context);
-    
+
     if (screenWidth < compactMaxWidth) {
       return 1;
     } else if (screenWidth < mediumMaxWidth) {

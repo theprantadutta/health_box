@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
-import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/theme/app_theme.dart';
+import '../../../shared/animations/common_transitions.dart';
+import '../../../shared/animations/stagger_animations.dart';
+import '../../../shared/animations/micro_interactions.dart';
 import '../widgets/profile_card.dart';
 import 'profile_form_screen.dart';
 
@@ -27,8 +31,8 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profileState = ref.watch(profileNotifierProvider);
-    final profileNotifier = ref.read(profileNotifierProvider.notifier);
+    final profilesAsync = ref.watch(simpleProfilesProvider);
+    final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
@@ -36,17 +40,14 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
       appBar: AppBar(
         title: const Text(
           'Family Profiles',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: BoxDecoration(
-            gradient: AppTheme.getPrimaryGradient(isDarkMode),
+            color: AppTheme.getPrimaryColor(isDarkMode),
           ),
         ),
         actions: [
@@ -58,104 +59,181 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => profileNotifier.loadProfiles(),
+        onRefresh: () async {
+          ref.invalidate(simpleProfilesProvider);
+          ref.invalidate(simpleSelectedProfileProvider);
+        },
         child: Column(
           children: [
-            // Search and Filter Section
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Search Bar
-                  TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search profiles...',
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() {
-                                  _searchQuery = '';
-                                });
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  // Gender Filter
-                  Row(
-                    children: [
-                      const Text('Filter by gender: '),
-                      Expanded(
-                        child: DropdownButton<String>(
-                          value: _selectedGenderFilter,
-                          isExpanded: true,
-                          items: ['All', 'Male', 'Female', 'Other', 'Unspecified']
-                              .map((gender) => DropdownMenuItem(
-                                    value: gender,
-                                    child: Text(gender),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedGenderFilter = value!;
-                            });
-                          },
+            // Search and Filter Section with premium design
+            CommonTransitions.fadeSlideIn(
+              child: ModernCard(
+                medicalTheme: MedicalCardTheme.neutral,
+                elevation: CardElevation.low,
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    // Premium Search Bar
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        labelText: 'Search Profiles',
+                        hintText: 'Search by name...',
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {
+                                    _searchQuery = '';
+                                  });
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: AppTheme.primaryColorLight,
+                            width: 2,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    // Premium Gender Filter
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.filter_list_rounded,
+                          color: theme.colorScheme.primary,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Filter by gender:',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: theme.colorScheme.outline.withValues(
+                                  alpha: 0.3,
+                                ),
+                              ),
+                            ),
+                            child: DropdownButton<String>(
+                              value: _selectedGenderFilter,
+                              isExpanded: true,
+                              underline: const SizedBox.shrink(),
+                              items:
+                                  [
+                                        'All',
+                                        'Male',
+                                        'Female',
+                                        'Other',
+                                        'Unspecified',
+                                      ]
+                                      .map(
+                                        (gender) => DropdownMenuItem(
+                                          value: gender,
+                                          child: Text(
+                                            gender,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedGenderFilter = value!;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             // Profile List Section
             Expanded(
-              child: _buildProfileList(profileState, profileNotifier),
+              child: _buildProfileList(profilesAsync, selectedProfileAsync),
             ),
           ],
         ),
       ),
-      floatingActionButton: GradientButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _navigateToAddProfile(context),
-        style: GradientButtonStyle.primary,
-        size: GradientButtonSize.medium,
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.person_add, color: Colors.white),
-            SizedBox(width: 8),
-            Text('Add Profile'),
-          ],
+        tooltip: 'Add New Profile',
+        icon: const Icon(Icons.person_add_rounded, size: 20),
+        label: const Text(
+          'Add Profile',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildProfileList(ProfileState state, ProfileNotifier notifier) {
-    if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (state.error != null) {
-      return Center(
+  Widget _buildProfileList(
+    AsyncValue<List<FamilyMemberProfile>> profilesAsync,
+    AsyncValue<FamilyMemberProfile?> selectedProfileAsync,
+  ) {
+    return profilesAsync.when(
+      loading: () => Center(
+        child: CommonTransitions.fadeSlideIn(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MicroInteractions.breathingDots(
+                color: AppTheme.primaryColorLight,
+                dotCount: 3,
+                dotSize: 12.0,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Loading profiles...',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -171,116 +249,178 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              state.error!,
+              error.toString(),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () {
-                notifier.clearError();
-                notifier.loadProfiles();
+                ref.invalidate(simpleProfilesProvider);
+                ref.invalidate(simpleSelectedProfileProvider);
               },
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
             ),
           ],
         ),
-      );
-    }
+      ),
+      data: (profiles) {
+        if (profiles.isEmpty) {
+          return Center(
+            child: CommonTransitions.fadeSlideIn(
+              child: ModernCard(
+                medicalTheme: MedicalCardTheme.success,
+                elevation: CardElevation.low,
+                margin: const EdgeInsets.all(32),
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppTheme.successColor.withValues(
+                          alpha: 0.1,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.family_restroom_rounded,
+                        size: 48,
+                        color: AppTheme.successColor,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'No profiles yet',
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Add your first family member profile to get started with managing your family\'s health',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    HealthButton(
+                      onPressed: () => _navigateToAddProfile(context),
+                      medicalTheme: MedicalButtonTheme.success,
+                      size: HealthButtonSize.medium,
+                      enableHoverEffect: true,
+                      enablePressEffect: true,
+                      enableHaptics: true,
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.person_add_rounded, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
+                            'Add First Profile',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
 
-    if (state.profiles.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.family_restroom,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No profiles yet',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add your first family member profile to get started',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        final filteredProfiles = _filterProfiles(profiles);
+
+        if (filteredProfiles.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.search_off,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No profiles found',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Try adjusting your search or filters',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => _navigateToAddProfile(context),
-              icon: const Icon(Icons.person_add),
-              label: const Text('Add First Profile'),
-            ),
-          ],
-        ),
-      );
-    }
+          );
+        }
 
-    final filteredProfiles = _filterProfiles(state.profiles);
-
-    if (filteredProfiles.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No profiles found',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Try adjusting your search or filters',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: filteredProfiles.length,
-      itemBuilder: (context, index) {
-        final profile = filteredProfiles[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: ProfileCard(
-            profile: profile,
-            isSelected: state.selectedProfile?.id == profile.id,
-            onTap: () => _selectProfile(notifier, profile),
-            onEdit: () => _navigateToEditProfile(context, profile),
-            onDelete: () => _showDeleteConfirmation(context, notifier, profile),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: StaggerAnimations.staggeredList(
+            children: filteredProfiles.map((profile) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: selectedProfileAsync.when(
+                  loading: () => ProfileCard(
+                    profile: profile,
+                    isSelected: false,
+                    onTap: () => _selectProfile(profile),
+                    onEdit: () => _navigateToEditProfile(context, profile),
+                    onDelete: () => _showDeleteConfirmation(context, profile),
+                  ),
+                  error: (_, __) => ProfileCard(
+                    profile: profile,
+                    isSelected: false,
+                    onTap: () => _selectProfile(profile),
+                    onEdit: () => _navigateToEditProfile(context, profile),
+                    onDelete: () => _showDeleteConfirmation(context, profile),
+                  ),
+                  data: (selectedProfile) => ProfileCard(
+                    profile: profile,
+                    isSelected: selectedProfile?.id == profile.id,
+                    onTap: () => _selectProfile(profile),
+                    onEdit: () => _navigateToEditProfile(context, profile),
+                    onDelete: () => _showDeleteConfirmation(context, profile),
+                  ),
+                ),
+              );
+            }).toList(),
+            staggerDelay: AppTheme.microDuration,
+            direction: StaggerDirection.bottomToTop,
+            animationType: StaggerAnimationType.fadeSlide,
           ),
         );
       },
     );
   }
 
-  List<FamilyMemberProfile> _filterProfiles(List<FamilyMemberProfile> profiles) {
+  List<FamilyMemberProfile> _filterProfiles(
+    List<FamilyMemberProfile> profiles,
+  ) {
     var filteredProfiles = profiles;
 
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
       filteredProfiles = filteredProfiles.where((profile) {
-        final fullName = '${profile.firstName} ${profile.lastName}'.toLowerCase();
+        final fullName = '${profile.firstName} ${profile.lastName}'
+            .toLowerCase();
         return fullName.contains(_searchQuery.toLowerCase());
       }).toList();
     }
@@ -295,8 +435,8 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
     return filteredProfiles;
   }
 
-  void _selectProfile(ProfileNotifier notifier, FamilyMemberProfile profile) {
-    notifier.selectProfile(profile);
+  void _selectProfile(FamilyMemberProfile profile) {
+    ref.read(setSelectedProfileProvider).call(profile.id);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Selected ${profile.firstName} ${profile.lastName}'),
@@ -306,14 +446,15 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   }
 
   void _navigateToAddProfile(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ProfileFormScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const ProfileFormScreen()));
   }
 
-  void _navigateToEditProfile(BuildContext context, FamilyMemberProfile profile) {
+  void _navigateToEditProfile(
+    BuildContext context,
+    FamilyMemberProfile profile,
+  ) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ProfileFormScreen(profile: profile),
@@ -323,7 +464,6 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
 
   void _showDeleteConfirmation(
     BuildContext context,
-    ProfileNotifier notifier,
     FamilyMemberProfile profile,
   ) {
     showDialog(
@@ -340,14 +480,33 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
-                notifier.deleteProfile(profile.id);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Deleted ${profile.firstName} ${profile.lastName}\'s profile'),
-                  ),
-                );
+                try {
+                  final profileService = ref.read(simpleProfileServiceProvider);
+                  await profileService.deleteProfile(profile.id);
+                  // Invalidate providers to refresh data
+                  ref.invalidate(simpleProfilesProvider);
+                  ref.invalidate(simpleSelectedProfileProvider);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Deleted ${profile.firstName} ${profile.lastName}\'s profile',
+                        ),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error deleting profile: $e'),
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  }
+                }
               },
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error,

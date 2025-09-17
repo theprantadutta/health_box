@@ -11,7 +11,9 @@ class MedicalRecordsService {
     MedicalRecordDao? medicalRecordDao,
     TagDao? tagDao,
     AppDatabase? database,
-  })  : _medicalRecordDao = medicalRecordDao ?? MedicalRecordDao(database ?? AppDatabase.instance);
+  }) : _medicalRecordDao =
+           medicalRecordDao ??
+           MedicalRecordDao(database ?? AppDatabase.instance);
 
   // CRUD Operations
 
@@ -19,31 +21,41 @@ class MedicalRecordsService {
     try {
       return await _medicalRecordDao.getAllRecords();
     } catch (e) {
-      throw MedicalRecordsServiceException('Failed to retrieve medical records: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve medical records: ${e.toString()}',
+      );
     }
   }
 
   Future<List<MedicalRecord>> getRecordsByProfileId(String profileId) async {
     try {
       if (profileId.isEmpty) {
-        throw const MedicalRecordsServiceException('Profile ID cannot be empty');
+        throw const MedicalRecordsServiceException(
+          'Profile ID cannot be empty',
+        );
       }
       return await _medicalRecordDao.getRecordsByProfileId(profileId);
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to retrieve records for profile: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve records for profile: ${e.toString()}',
+      );
     }
   }
 
   Future<List<MedicalRecord>> getRecordsByType(String recordType) async {
     try {
       if (!MedicalRecordType.isValidType(recordType)) {
-        throw MedicalRecordsServiceException('Invalid record type: $recordType');
+        throw MedicalRecordsServiceException(
+          'Invalid record type: $recordType',
+        );
       }
       return await _medicalRecordDao.getRecordsByType(recordType);
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to retrieve records by type: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve records by type: ${e.toString()}',
+      );
     }
   }
 
@@ -55,14 +67,16 @@ class MedicalRecordsService {
       return await _medicalRecordDao.getRecordById(id);
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to retrieve record: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve record: ${e.toString()}',
+      );
     }
   }
 
   Future<String> createRecord(CreateMedicalRecordRequest request) async {
     try {
       _validateCreateRecordRequest(request);
-      
+
       final recordId = 'record_${DateTime.now().millisecondsSinceEpoch}';
       final recordCompanion = MedicalRecordsCompanion(
         id: Value(recordId),
@@ -79,11 +93,16 @@ class MedicalRecordsService {
       return await _medicalRecordDao.createRecord(recordCompanion);
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to create medical record: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to create medical record: ${e.toString()}',
+      );
     }
   }
 
-  Future<bool> updateRecord(String id, UpdateMedicalRecordRequest request) async {
+  Future<bool> updateRecord(
+    String id,
+    UpdateMedicalRecordRequest request,
+  ) async {
     try {
       if (id.isEmpty) {
         throw const MedicalRecordsServiceException('Record ID cannot be empty');
@@ -97,16 +116,24 @@ class MedicalRecordsService {
       _validateUpdateRecordRequest(request);
 
       final recordCompanion = MedicalRecordsCompanion(
-        title: request.title != null ? Value(request.title!.trim()) : const Value.absent(),
-        description: request.description != null ? Value(request.description?.trim()) : const Value.absent(),
-        recordDate: request.recordDate != null ? Value(request.recordDate!) : const Value.absent(),
+        title: request.title != null
+            ? Value(request.title!.trim())
+            : const Value.absent(),
+        description: request.description != null
+            ? Value(request.description?.trim())
+            : const Value.absent(),
+        recordDate: request.recordDate != null
+            ? Value(request.recordDate!)
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       );
 
       return await _medicalRecordDao.updateRecord(id, recordCompanion);
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to update medical record: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to update medical record: ${e.toString()}',
+      );
     }
   }
 
@@ -124,7 +151,9 @@ class MedicalRecordsService {
       return await _medicalRecordDao.deleteRecord(id);
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to delete medical record: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to delete medical record: ${e.toString()}',
+      );
     }
   }
 
@@ -143,9 +172,15 @@ class MedicalRecordsService {
       List<MedicalRecord> results = [];
 
       if (searchTerm != null && searchTerm.isNotEmpty) {
-        results = await _medicalRecordDao.searchRecords(searchTerm, profileId: profileId);
+        results = await _medicalRecordDao.searchRecords(
+          searchTerm,
+          profileId: profileId,
+        );
       } else if (profileId != null && recordType != null) {
-        results = await _medicalRecordDao.getRecordsByProfileAndType(profileId, recordType);
+        results = await _medicalRecordDao.getRecordsByProfileAndType(
+          profileId,
+          recordType,
+        );
       } else if (profileId != null) {
         results = await _medicalRecordDao.getRecordsByProfileId(profileId);
       } else if (recordType != null) {
@@ -175,7 +210,9 @@ class MedicalRecordsService {
       return results;
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to search medical records: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to search medical records: ${e.toString()}',
+      );
     }
   }
 
@@ -186,31 +223,52 @@ class MedicalRecordsService {
   }) async {
     try {
       if (startDate.isAfter(endDate)) {
-        throw const MedicalRecordsServiceException('Start date cannot be after end date');
+        throw const MedicalRecordsServiceException(
+          'Start date cannot be after end date',
+        );
       }
-      
-      return await _medicalRecordDao.getRecordsInDateRange(startDate, endDate, profileId: profileId);
+
+      return await _medicalRecordDao.getRecordsInDateRange(
+        startDate,
+        endDate,
+        profileId: profileId,
+      );
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to retrieve records in date range: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve records in date range: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<MedicalRecord>> getRecentRecords({int limit = 10, String? profileId}) async {
+  Future<List<MedicalRecord>> getRecentRecords({
+    int limit = 10,
+    String? profileId,
+  }) async {
     try {
       if (limit <= 0) {
-        throw const MedicalRecordsServiceException('Limit must be greater than 0');
+        throw const MedicalRecordsServiceException(
+          'Limit must be greater than 0',
+        );
       }
-      return await _medicalRecordDao.getRecentRecords(limit: limit, profileId: profileId);
+      return await _medicalRecordDao.getRecentRecords(
+        limit: limit,
+        profileId: profileId,
+      );
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to retrieve recent records: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve recent records: ${e.toString()}',
+      );
     }
   }
 
   // Advanced Filtering
 
-  Future<List<MedicalRecord>> getRecordsByMultipleTypes(List<String> recordTypes, {String? profileId}) async {
+  Future<List<MedicalRecord>> getRecordsByMultipleTypes(
+    List<String> recordTypes, {
+    String? profileId,
+  }) async {
     try {
       for (String type in recordTypes) {
         if (!MedicalRecordType.isValidType(type)) {
@@ -219,11 +277,14 @@ class MedicalRecordsService {
       }
 
       List<MedicalRecord> allResults = [];
-      
+
       for (String type in recordTypes) {
         List<MedicalRecord> typeResults;
         if (profileId != null) {
-          typeResults = await _medicalRecordDao.getRecordsByProfileAndType(profileId, type);
+          typeResults = await _medicalRecordDao.getRecordsByProfileAndType(
+            profileId,
+            type,
+          );
         } else {
           typeResults = await _medicalRecordDao.getRecordsByType(type);
         }
@@ -232,15 +293,19 @@ class MedicalRecordsService {
 
       // Sort by record date (newest first)
       allResults.sort((a, b) => b.recordDate.compareTo(a.recordDate));
-      
+
       return allResults;
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to retrieve records by multiple types: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve records by multiple types: ${e.toString()}',
+      );
     }
   }
 
-  Future<FilteredRecordsResult> getFilteredRecords(MedicalRecordFilter filter) async {
+  Future<FilteredRecordsResult> getFilteredRecords(
+    MedicalRecordFilter filter,
+  ) async {
     try {
       List<MedicalRecord> results = await searchRecords(
         searchTerm: filter.searchTerm,
@@ -253,7 +318,11 @@ class MedicalRecordsService {
 
       // Apply additional filters
       if (filter.excludeTypes != null && filter.excludeTypes!.isNotEmpty) {
-        results = results.where((record) => !filter.excludeTypes!.contains(record.recordType)).toList();
+        results = results
+            .where(
+              (record) => !filter.excludeTypes!.contains(record.recordType),
+            )
+            .toList();
       }
 
       return FilteredRecordsResult(
@@ -263,7 +332,9 @@ class MedicalRecordsService {
       );
     } catch (e) {
       if (e is MedicalRecordsServiceException) rethrow;
-      throw MedicalRecordsServiceException('Failed to get filtered records: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to get filtered records: ${e.toString()}',
+      );
     }
   }
 
@@ -278,28 +349,43 @@ class MedicalRecordsService {
         return allRecords.length;
       }
     } catch (e) {
-      throw MedicalRecordsServiceException('Failed to retrieve record count: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve record count: ${e.toString()}',
+      );
     }
   }
 
   Future<Map<String, int>> getRecordCountsByType({String? profileId}) async {
     try {
-      return await _medicalRecordDao.getRecordCountsByType(profileId: profileId);
+      return await _medicalRecordDao.getRecordCountsByType(
+        profileId: profileId,
+      );
     } catch (e) {
-      throw MedicalRecordsServiceException('Failed to retrieve record counts by type: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve record counts by type: ${e.toString()}',
+      );
     }
   }
 
-  Future<MedicalRecordsStatistics> getRecordsStatistics({String? profileId}) async {
+  Future<MedicalRecordsStatistics> getRecordsStatistics({
+    String? profileId,
+  }) async {
     try {
       final recordCounts = await getRecordCountsByType(profileId: profileId);
-      final totalRecords = recordCounts.values.fold(0, (sum, count) => sum + count);
-      final recentRecords = await getRecentRecords(limit: 30, profileId: profileId);
-      
+      final totalRecords = recordCounts.values.fold(
+        0,
+        (sum, count) => sum + count,
+      );
+      final recentRecords = await getRecentRecords(
+        limit: 30,
+        profileId: profileId,
+      );
+
       // Calculate records added in the last 30 days
       final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
-      final recentRecordsCount = recentRecords.where((record) => 
-        record.createdAt.isAfter(thirtyDaysAgo)).length;
+      final recentRecordsCount = recentRecords
+          .where((record) => record.createdAt.isAfter(thirtyDaysAgo))
+          .length;
 
       return MedicalRecordsStatistics(
         totalRecords: totalRecords,
@@ -308,7 +394,9 @@ class MedicalRecordsService {
         mostCommonRecordType: _getMostCommonRecordType(recordCounts),
       );
     } catch (e) {
-      throw MedicalRecordsServiceException('Failed to retrieve records statistics: ${e.toString()}');
+      throw MedicalRecordsServiceException(
+        'Failed to retrieve records statistics: ${e.toString()}',
+      );
     }
   }
 
@@ -371,14 +459,20 @@ class MedicalRecordsService {
       throw const MedicalRecordsServiceException('Title cannot be empty');
     }
     if (request.title.length > 200) {
-      throw const MedicalRecordsServiceException('Title cannot exceed 200 characters');
+      throw const MedicalRecordsServiceException(
+        'Title cannot exceed 200 characters',
+      );
     }
     if (!MedicalRecordType.isValidType(request.recordType)) {
-      throw MedicalRecordsServiceException('Invalid record type: ${request.recordType}');
+      throw MedicalRecordsServiceException(
+        'Invalid record type: ${request.recordType}',
+      );
     }
-    if (request.recordDate.isAfter(DateTime.now()) && 
+    if (request.recordDate.isAfter(DateTime.now()) &&
         request.recordType != MedicalRecordType.vaccination) {
-      throw const MedicalRecordsServiceException('Record date cannot be in the future (except for vaccinations)');
+      throw const MedicalRecordsServiceException(
+        'Record date cannot be in the future (except for vaccinations)',
+      );
     }
   }
 
@@ -387,26 +481,31 @@ class MedicalRecordsService {
       throw const MedicalRecordsServiceException('Title cannot be empty');
     }
     if (request.title != null && request.title!.length > 200) {
-      throw const MedicalRecordsServiceException('Title cannot exceed 200 characters');
+      throw const MedicalRecordsServiceException(
+        'Title cannot exceed 200 characters',
+      );
     }
-    if (request.recordDate != null && request.recordDate!.isAfter(DateTime.now())) {
-      throw const MedicalRecordsServiceException('Record date cannot be in the future');
+    if (request.recordDate != null &&
+        request.recordDate!.isAfter(DateTime.now())) {
+      throw const MedicalRecordsServiceException(
+        'Record date cannot be in the future',
+      );
     }
   }
 
   String? _getMostCommonRecordType(Map<String, int> recordCounts) {
     if (recordCounts.isEmpty) return null;
-    
+
     String? mostCommon;
     int maxCount = 0;
-    
+
     recordCounts.forEach((type, count) {
       if (count > maxCount) {
         maxCount = count;
         mostCommon = type;
       }
     });
-    
+
     return mostCommon;
   }
 }
@@ -491,9 +590,9 @@ class MedicalRecordsStatistics {
 
 class MedicalRecordsServiceException implements Exception {
   final String message;
-  
+
   const MedicalRecordsServiceException(this.message);
-  
+
   @override
   String toString() => 'MedicalRecordsServiceException: $message';
 }

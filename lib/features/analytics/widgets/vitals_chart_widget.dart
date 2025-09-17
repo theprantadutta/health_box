@@ -68,7 +68,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
               // Chart header
               _buildChartHeader(),
               const SizedBox(height: 16),
-              
+
               // Chart
               Expanded(
                 child: AnimatedBuilder(
@@ -78,7 +78,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
                   },
                 ),
               ),
-              
+
               // Chart legend
               if (widget.showNormalRange) ...[
                 const SizedBox(height: 16),
@@ -95,7 +95,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
     final service = AnalyticsService();
     final displayName = service.getVitalTypeDisplayName(widget.vitalType);
     final unit = service.getVitalTypeUnit(widget.vitalType);
-    
+
     return Row(
       children: [
         Icon(_getVitalTypeIcon(widget.vitalType), size: 20),
@@ -113,10 +113,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
               ),
               Text(
                 _getTimeRangeText(),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
           ),
@@ -127,10 +124,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
             children: [
               Text(
                 'Latest',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
               Text(
                 '${widget.readings.last.displayValue} $unit',
@@ -154,7 +148,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
   Widget _buildLineChart() {
     final spots = _generateSpots();
     final normalRange = VitalReading.getNormalRanges(widget.vitalType);
-    
+
     return LineChart(
       LineChartData(
         gridData: FlGridData(
@@ -203,10 +197,9 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         ),
         lineBarsData: [
           LineChartBarData(
-            spots: spots.map((spot) => FlSpot(
-              spot.x,
-              spot.y * _animation.value,
-            )).toList(),
+            spots: spots
+                .map((spot) => FlSpot(spot.x, spot.y * _animation.value))
+                .toList(),
             isCurved: true,
             curveSmoothness: 0.1,
             color: _getVitalTypeColor(widget.vitalType),
@@ -225,7 +218,9 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
             ),
             belowBarData: BarAreaData(
               show: true,
-              color: _getVitalTypeColor(widget.vitalType).withValues(alpha: 0.1),
+              color: _getVitalTypeColor(
+                widget.vitalType,
+              ).withValues(alpha: 0.1),
             ),
           ),
         ],
@@ -261,11 +256,11 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
   Widget _buildBloodPressureChart() {
     final systolicSpots = <FlSpot>[];
     final diastolicSpots = <FlSpot>[];
-    
+
     for (int i = 0; i < widget.readings.length; i++) {
       final reading = widget.readings[i];
       final x = i.toDouble();
-      
+
       systolicSpots.add(FlSpot(x, reading.value));
       if (reading.secondaryValue != null) {
         diastolicSpots.add(FlSpot(x, reading.secondaryValue!));
@@ -321,10 +316,9 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         lineBarsData: [
           // Systolic pressure line
           LineChartBarData(
-            spots: systolicSpots.map((spot) => FlSpot(
-              spot.x,
-              spot.y * _animation.value,
-            )).toList(),
+            spots: systolicSpots
+                .map((spot) => FlSpot(spot.x, spot.y * _animation.value))
+                .toList(),
             isCurved: true,
             curveSmoothness: 0.1,
             color: Colors.red,
@@ -345,10 +339,9 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           // Diastolic pressure line
           if (diastolicSpots.isNotEmpty)
             LineChartBarData(
-              spots: diastolicSpots.map((spot) => FlSpot(
-                spot.x,
-                spot.y * _animation.value,
-              )).toList(),
+              spots: diastolicSpots
+                  .map((spot) => FlSpot(spot.x, spot.y * _animation.value))
+                  .toList(),
               isCurved: true,
               curveSmoothness: 0.1,
               color: Colors.blue,
@@ -405,7 +398,10 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           _buildLegendItem('Diastolic', Colors.blue),
           if (widget.showNormalRange) ...[
             const SizedBox(width: 24),
-            _buildLegendItem('Normal Range', Colors.green.withValues(alpha: 0.3)),
+            _buildLegendItem(
+              'Normal Range',
+              Colors.green.withValues(alpha: 0.3),
+            ),
           ],
         ],
       );
@@ -422,7 +418,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         ],
       );
     }
-    
+
     return const SizedBox.shrink();
   }
 
@@ -439,31 +435,28 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           ),
         ),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12),
-        ),
+        Text(label, style: const TextStyle(fontSize: 12)),
       ],
     );
   }
 
   List<FlSpot> _generateSpots() {
     final spots = <FlSpot>[];
-    
+
     for (int i = 0; i < widget.readings.length; i++) {
       final reading = widget.readings[i];
       spots.add(FlSpot(i.toDouble(), reading.value));
     }
-    
+
     return spots;
   }
 
   ExtraLinesData? _buildNormalRangeLines(Map<String, double> normalRange) {
     final minNormal = normalRange['min'];
     final maxNormal = normalRange['max'];
-    
+
     if (minNormal == null || maxNormal == null) return null;
-    
+
     return ExtraLinesData(
       horizontalLines: [
         HorizontalLine(
@@ -492,7 +485,7 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
           strokeWidth: 2,
           dashArray: [5, 5],
         ),
-        // Normal diastolic range  
+        // Normal diastolic range
         HorizontalLine(
           y: 85,
           color: Colors.green.withValues(alpha: 0.5),
@@ -508,10 +501,10 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
     if (index < 0 || index >= widget.readings.length) {
       return const Text('');
     }
-    
+
     final reading = widget.readings[index];
     final date = reading.timestamp;
-    
+
     String label;
     switch (widget.timeRange) {
       case TimeRange.week:
@@ -529,11 +522,8 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
         label = '${date.month}/${date.year.toString().substring(2)}';
         break;
     }
-    
-    return Text(
-      label,
-      style: const TextStyle(fontSize: 10),
-    );
+
+    return Text(label, style: const TextStyle(fontSize: 10));
   }
 
   String _getTimeRangeText() {
@@ -559,12 +549,12 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
 
   double _calculateGridInterval() {
     if (widget.readings.isEmpty) return 10;
-    
+
     final values = widget.readings.map((r) => r.value).toList();
     final min = values.reduce(math.min);
     final max = values.reduce(math.max);
     final range = max - min;
-    
+
     if (range <= 10) return 2;
     if (range <= 50) return 10;
     if (range <= 100) return 20;
@@ -580,30 +570,30 @@ class _VitalsChartWidgetState extends State<VitalsChartWidget>
 
   double _calculateMinY() {
     if (widget.readings.isEmpty) return 0;
-    
+
     if (widget.vitalType == VitalType.bloodPressure) {
       return 40; // Fixed minimum for blood pressure
     }
-    
+
     final values = widget.readings.map((r) => r.value).toList();
     final min = values.reduce(math.min);
     final range = values.reduce(math.max) - min;
-    
+
     return math.max(0, min - range * 0.1);
   }
 
   double _calculateMaxY() {
     if (widget.readings.isEmpty) return 100;
-    
+
     if (widget.vitalType == VitalType.bloodPressure) {
       return 200; // Fixed maximum for blood pressure
     }
-    
+
     final values = widget.readings.map((r) => r.value).toList();
     final max = values.reduce(math.max);
     final min = values.reduce(math.min);
     final range = max - min;
-    
+
     return max + range * 0.1;
   }
 

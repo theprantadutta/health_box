@@ -5,18 +5,18 @@ import '../../../data/repositories/profile_dao.dart';
 class ProfileService {
   final ProfileDao _profileDao;
 
-  ProfileService({
-    ProfileDao? profileDao,
-    AppDatabase? database,
-  })  : _profileDao = profileDao ?? ProfileDao(database ?? AppDatabase.instance);
+  ProfileService({ProfileDao? profileDao, AppDatabase? database})
+    : _profileDao = profileDao ?? ProfileDao(database ?? AppDatabase.instance);
 
   // CRUD Operations
-  
+
   Future<List<FamilyMemberProfile>> getAllProfiles() async {
     try {
       return await _profileDao.getAllProfiles();
     } catch (e) {
-      throw ProfileServiceException('Failed to retrieve profiles: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve profiles: ${e.toString()}',
+      );
     }
   }
 
@@ -28,7 +28,9 @@ class ProfileService {
       return await _profileDao.getProfileById(id);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to retrieve profile: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve profile: ${e.toString()}',
+      );
     }
   }
 
@@ -39,14 +41,16 @@ class ProfileService {
       }
       return await _profileDao.getProfilesByName(searchTerm);
     } catch (e) {
-      throw ProfileServiceException('Failed to search profiles: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to search profiles: ${e.toString()}',
+      );
     }
   }
 
   Future<String> createProfile(CreateProfileRequest request) async {
     try {
       _validateCreateProfileRequest(request);
-      
+
       final profileId = 'profile_${DateTime.now().millisecondsSinceEpoch}';
       final profileCompanion = FamilyMemberProfilesCompanion(
         id: Value(profileId),
@@ -69,7 +73,9 @@ class ProfileService {
       return await _profileDao.createProfile(profileCompanion);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to create profile: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to create profile: ${e.toString()}',
+      );
     }
   }
 
@@ -88,24 +94,48 @@ class ProfileService {
       _validateUpdateProfileRequest(request);
 
       final profileCompanion = FamilyMemberProfilesCompanion(
-        firstName: request.firstName != null ? Value(request.firstName!.trim()) : const Value.absent(),
-        lastName: request.lastName != null ? Value(request.lastName!.trim()) : const Value.absent(),
-        middleName: request.middleName != null ? Value(request.middleName?.trim()) : const Value.absent(),
-        dateOfBirth: request.dateOfBirth != null ? Value(request.dateOfBirth!) : const Value.absent(),
-        gender: request.gender != null ? Value(request.gender!) : const Value.absent(),
-        bloodType: request.bloodType != null ? Value(request.bloodType) : const Value.absent(),
-        height: request.height != null ? Value(request.height) : const Value.absent(),
-        weight: request.weight != null ? Value(request.weight) : const Value.absent(),
-        emergencyContact: request.emergencyContact != null ? Value(request.emergencyContact?.trim()) : const Value.absent(),
-        insuranceInfo: request.insuranceInfo != null ? Value(request.insuranceInfo?.trim()) : const Value.absent(),
-        profileImagePath: request.profileImagePath != null ? Value(request.profileImagePath?.trim()) : const Value.absent(),
+        firstName: request.firstName != null
+            ? Value(request.firstName!.trim())
+            : const Value.absent(),
+        lastName: request.lastName != null
+            ? Value(request.lastName!.trim())
+            : const Value.absent(),
+        middleName: request.middleName != null
+            ? Value(request.middleName?.trim())
+            : const Value.absent(),
+        dateOfBirth: request.dateOfBirth != null
+            ? Value(request.dateOfBirth!)
+            : const Value.absent(),
+        gender: request.gender != null
+            ? Value(request.gender!)
+            : const Value.absent(),
+        bloodType: request.bloodType != null
+            ? Value(request.bloodType)
+            : const Value.absent(),
+        height: request.height != null
+            ? Value(request.height)
+            : const Value.absent(),
+        weight: request.weight != null
+            ? Value(request.weight)
+            : const Value.absent(),
+        emergencyContact: request.emergencyContact != null
+            ? Value(request.emergencyContact?.trim())
+            : const Value.absent(),
+        insuranceInfo: request.insuranceInfo != null
+            ? Value(request.insuranceInfo?.trim())
+            : const Value.absent(),
+        profileImagePath: request.profileImagePath != null
+            ? Value(request.profileImagePath?.trim())
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       );
 
       return await _profileDao.updateProfile(id, profileCompanion);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to update profile: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to update profile: ${e.toString()}',
+      );
     }
   }
 
@@ -124,7 +154,9 @@ class ProfileService {
       return await _profileDao.deleteProfile(id);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to delete profile: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to delete profile: ${e.toString()}',
+      );
     }
   }
 
@@ -136,7 +168,9 @@ class ProfileService {
 
       return await _profileDao.permanentlyDeleteProfile(id);
     } catch (e) {
-      throw ProfileServiceException('Failed to permanently delete profile: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to permanently delete profile: ${e.toString()}',
+      );
     }
   }
 
@@ -150,11 +184,16 @@ class ProfileService {
       return await _profileDao.getProfilesByGender(gender);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to retrieve profiles by gender: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve profiles by gender: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<FamilyMemberProfile>> getProfilesByAgeRange(int minAge, int maxAge) async {
+  Future<List<FamilyMemberProfile>> getProfilesByAgeRange(
+    int minAge,
+    int maxAge,
+  ) async {
     try {
       if (minAge < 0 || maxAge < 0 || minAge > maxAge) {
         throw const ProfileServiceException('Invalid age range');
@@ -162,11 +201,15 @@ class ProfileService {
       return await _profileDao.getProfilesByAgeRange(minAge, maxAge);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to retrieve profiles by age range: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve profiles by age range: ${e.toString()}',
+      );
     }
   }
 
-  Future<List<FamilyMemberProfile>> getRecentlyUpdatedProfiles({int limit = 10}) async {
+  Future<List<FamilyMemberProfile>> getRecentlyUpdatedProfiles({
+    int limit = 10,
+  }) async {
     try {
       if (limit <= 0) {
         throw const ProfileServiceException('Limit must be greater than 0');
@@ -174,7 +217,9 @@ class ProfileService {
       return await _profileDao.getRecentlyUpdatedProfiles(limit: limit);
     } catch (e) {
       if (e is ProfileServiceException) rethrow;
-      throw ProfileServiceException('Failed to retrieve recently updated profiles: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve recently updated profiles: ${e.toString()}',
+      );
     }
   }
 
@@ -184,7 +229,9 @@ class ProfileService {
     try {
       return await _profileDao.getActiveProfileCount();
     } catch (e) {
-      throw ProfileServiceException('Failed to retrieve profile count: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve profile count: ${e.toString()}',
+      );
     }
   }
 
@@ -193,15 +240,21 @@ class ProfileService {
       final totalProfiles = await _profileDao.getActiveProfileCount();
       final maleProfiles = await _profileDao.getProfilesByGender('Male');
       final femaleProfiles = await _profileDao.getProfilesByGender('Female');
-      final otherGenderProfiles = await _profileDao.getProfilesByGender('Other');
-      final unspecifiedGenderProfiles = await _profileDao.getProfilesByGender('Unspecified');
-      
+      final otherGenderProfiles = await _profileDao.getProfilesByGender(
+        'Other',
+      );
+      final unspecifiedGenderProfiles = await _profileDao.getProfilesByGender(
+        'Unspecified',
+      );
+
       final childrenProfiles = await _profileDao.getProfilesByAgeRange(0, 17);
       final adultProfiles = await _profileDao.getProfilesByAgeRange(18, 64);
       final seniorProfiles = await _profileDao.getProfilesByAgeRange(65, 120);
-      
-      final profilesWithEmergencyContact = await _profileDao.getProfilesWithEmergencyContact();
-      final profilesWithInsurance = await _profileDao.getProfilesWithInsurance();
+
+      final profilesWithEmergencyContact = await _profileDao
+          .getProfilesWithEmergencyContact();
+      final profilesWithInsurance = await _profileDao
+          .getProfilesWithInsurance();
 
       return ProfileStatistics(
         totalProfiles: totalProfiles,
@@ -216,7 +269,9 @@ class ProfileService {
         profilesWithInsuranceCount: profilesWithInsurance.length,
       );
     } catch (e) {
-      throw ProfileServiceException('Failed to retrieve profile statistics: ${e.toString()}');
+      throw ProfileServiceException(
+        'Failed to retrieve profile statistics: ${e.toString()}',
+      );
     }
   }
 
@@ -234,7 +289,7 @@ class ProfileService {
   int calculateAge(DateTime dateOfBirth) {
     final now = DateTime.now();
     int age = now.year - dateOfBirth.year;
-    if (now.month < dateOfBirth.month || 
+    if (now.month < dateOfBirth.month ||
         (now.month == dateOfBirth.month && now.day < dateOfBirth.day)) {
       age--;
     }
@@ -269,16 +324,24 @@ class ProfileService {
       throw const ProfileServiceException('Last name cannot be empty');
     }
     if (request.firstName.length > 50) {
-      throw const ProfileServiceException('First name cannot exceed 50 characters');
+      throw const ProfileServiceException(
+        'First name cannot exceed 50 characters',
+      );
     }
     if (request.lastName.length > 50) {
-      throw const ProfileServiceException('Last name cannot exceed 50 characters');
+      throw const ProfileServiceException(
+        'Last name cannot exceed 50 characters',
+      );
     }
     if (request.middleName != null && request.middleName!.length > 50) {
-      throw const ProfileServiceException('Middle name cannot exceed 50 characters');
+      throw const ProfileServiceException(
+        'Middle name cannot exceed 50 characters',
+      );
     }
     if (request.dateOfBirth.isAfter(DateTime.now())) {
-      throw const ProfileServiceException('Date of birth cannot be in the future');
+      throw const ProfileServiceException(
+        'Date of birth cannot be in the future',
+      );
     }
     if (!_isValidGender(request.gender)) {
       throw ProfileServiceException('Invalid gender: ${request.gender}');
@@ -286,11 +349,17 @@ class ProfileService {
     if (request.bloodType != null && !_isValidBloodType(request.bloodType!)) {
       throw ProfileServiceException('Invalid blood type: ${request.bloodType}');
     }
-    if (request.height != null && (request.height! < 30 || request.height! > 300)) {
-      throw const ProfileServiceException('Height must be between 30 and 300 cm');
+    if (request.height != null &&
+        (request.height! < 30 || request.height! > 300)) {
+      throw const ProfileServiceException(
+        'Height must be between 30 and 300 cm',
+      );
     }
-    if (request.weight != null && (request.weight! < 0.5 || request.weight! > 500)) {
-      throw const ProfileServiceException('Weight must be between 0.5 and 500 kg');
+    if (request.weight != null &&
+        (request.weight! < 0.5 || request.weight! > 500)) {
+      throw const ProfileServiceException(
+        'Weight must be between 0.5 and 500 kg',
+      );
     }
   }
 
@@ -302,16 +371,25 @@ class ProfileService {
       throw const ProfileServiceException('Last name cannot be empty');
     }
     if (request.firstName != null && request.firstName!.length > 50) {
-      throw const ProfileServiceException('First name cannot exceed 50 characters');
+      throw const ProfileServiceException(
+        'First name cannot exceed 50 characters',
+      );
     }
     if (request.lastName != null && request.lastName!.length > 50) {
-      throw const ProfileServiceException('Last name cannot exceed 50 characters');
+      throw const ProfileServiceException(
+        'Last name cannot exceed 50 characters',
+      );
     }
     if (request.middleName != null && request.middleName!.length > 50) {
-      throw const ProfileServiceException('Middle name cannot exceed 50 characters');
+      throw const ProfileServiceException(
+        'Middle name cannot exceed 50 characters',
+      );
     }
-    if (request.dateOfBirth != null && request.dateOfBirth!.isAfter(DateTime.now())) {
-      throw const ProfileServiceException('Date of birth cannot be in the future');
+    if (request.dateOfBirth != null &&
+        request.dateOfBirth!.isAfter(DateTime.now())) {
+      throw const ProfileServiceException(
+        'Date of birth cannot be in the future',
+      );
     }
     if (request.gender != null && !_isValidGender(request.gender!)) {
       throw ProfileServiceException('Invalid gender: ${request.gender}');
@@ -319,11 +397,17 @@ class ProfileService {
     if (request.bloodType != null && !_isValidBloodType(request.bloodType!)) {
       throw ProfileServiceException('Invalid blood type: ${request.bloodType}');
     }
-    if (request.height != null && (request.height! < 30 || request.height! > 300)) {
-      throw const ProfileServiceException('Height must be between 30 and 300 cm');
+    if (request.height != null &&
+        (request.height! < 30 || request.height! > 300)) {
+      throw const ProfileServiceException(
+        'Height must be between 30 and 300 cm',
+      );
     }
-    if (request.weight != null && (request.weight! < 0.5 || request.weight! > 500)) {
-      throw const ProfileServiceException('Weight must be between 0.5 and 500 kg');
+    if (request.weight != null &&
+        (request.weight! < 0.5 || request.weight! > 500)) {
+      throw const ProfileServiceException(
+        'Weight must be between 0.5 and 500 kg',
+      );
     }
   }
 
@@ -332,7 +416,17 @@ class ProfileService {
   }
 
   bool _isValidBloodType(String bloodType) {
-    return ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'Unknown'].contains(bloodType);
+    return [
+      'A+',
+      'A-',
+      'B+',
+      'B-',
+      'AB+',
+      'AB-',
+      'O+',
+      'O-',
+      'Unknown',
+    ].contains(bloodType);
   }
 }
 
@@ -424,9 +518,9 @@ class ProfileStatistics {
 
 class ProfileServiceException implements Exception {
   final String message;
-  
+
   const ProfileServiceException(this.message);
-  
+
   @override
   String toString() => 'ProfileServiceException: $message';
 }

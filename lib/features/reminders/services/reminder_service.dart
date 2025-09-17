@@ -5,10 +5,9 @@ import '../../../data/repositories/reminder_dao.dart';
 class ReminderService {
   final ReminderDao _reminderDao;
 
-  ReminderService({
-    ReminderDao? reminderDao,
-    AppDatabase? database,
-  })  : _reminderDao = reminderDao ?? ReminderDao(database ?? AppDatabase.instance);
+  ReminderService({ReminderDao? reminderDao, AppDatabase? database})
+    : _reminderDao =
+          reminderDao ?? ReminderDao(database ?? AppDatabase.instance);
 
   // CRUD Operations
 
@@ -16,7 +15,9 @@ class ReminderService {
     try {
       return await _reminderDao.getAllReminders();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -24,7 +25,9 @@ class ReminderService {
     try {
       return await _reminderDao.getActiveReminders();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve active reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve active reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -32,7 +35,9 @@ class ReminderService {
     try {
       return await _reminderDao.getUpcomingReminders(within: within);
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve upcoming reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve upcoming reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -40,7 +45,9 @@ class ReminderService {
     try {
       return await _reminderDao.getOverdueReminders();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve overdue reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve overdue reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -52,14 +59,16 @@ class ReminderService {
       return await _reminderDao.getReminderById(id);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to retrieve reminder: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve reminder: ${e.toString()}',
+      );
     }
   }
 
   Future<String> createReminder(CreateReminderRequest request) async {
     try {
       _validateCreateReminderRequest(request);
-      
+
       final reminderId = 'reminder_${DateTime.now().millisecondsSinceEpoch}';
       final reminderCompanion = RemindersCompanion(
         id: Value(reminderId),
@@ -71,14 +80,18 @@ class ReminderService {
         daysOfWeek: Value(request.daysOfWeek),
         timeSlots: Value(request.timeSlots),
         isActive: Value(request.isActive),
-        nextScheduled: Value(_calculateNextScheduledTime(request.scheduledTime, request.frequency)),
+        nextScheduled: Value(
+          _calculateNextScheduledTime(request.scheduledTime, request.frequency),
+        ),
         snoozeMinutes: Value(request.snoozeMinutes),
       );
 
       return await _reminderDao.createReminder(reminderCompanion);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to create reminder: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to create reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -96,23 +109,47 @@ class ReminderService {
       _validateUpdateReminderRequest(request);
 
       final reminderCompanion = RemindersCompanion(
-        title: request.title != null ? Value(request.title!.trim()) : const Value.absent(),
-        description: request.description != null ? Value(request.description?.trim()) : const Value.absent(),
-        scheduledTime: request.scheduledTime != null ? Value(request.scheduledTime!) : const Value.absent(),
-        frequency: request.frequency != null ? Value(request.frequency!) : const Value.absent(),
-        daysOfWeek: request.daysOfWeek != null ? Value(request.daysOfWeek) : const Value.absent(),
-        timeSlots: request.timeSlots != null ? Value(request.timeSlots) : const Value.absent(),
-        isActive: request.isActive != null ? Value(request.isActive!) : const Value.absent(),
-        snoozeMinutes: request.snoozeMinutes != null ? Value(request.snoozeMinutes!) : const Value.absent(),
-        nextScheduled: request.scheduledTime != null && request.frequency != null 
-          ? Value(_calculateNextScheduledTime(request.scheduledTime!, request.frequency!))
-          : const Value.absent(),
+        title: request.title != null
+            ? Value(request.title!.trim())
+            : const Value.absent(),
+        description: request.description != null
+            ? Value(request.description?.trim())
+            : const Value.absent(),
+        scheduledTime: request.scheduledTime != null
+            ? Value(request.scheduledTime!)
+            : const Value.absent(),
+        frequency: request.frequency != null
+            ? Value(request.frequency!)
+            : const Value.absent(),
+        daysOfWeek: request.daysOfWeek != null
+            ? Value(request.daysOfWeek)
+            : const Value.absent(),
+        timeSlots: request.timeSlots != null
+            ? Value(request.timeSlots)
+            : const Value.absent(),
+        isActive: request.isActive != null
+            ? Value(request.isActive!)
+            : const Value.absent(),
+        snoozeMinutes: request.snoozeMinutes != null
+            ? Value(request.snoozeMinutes!)
+            : const Value.absent(),
+        nextScheduled:
+            request.scheduledTime != null && request.frequency != null
+            ? Value(
+                _calculateNextScheduledTime(
+                  request.scheduledTime!,
+                  request.frequency!,
+                ),
+              )
+            : const Value.absent(),
       );
 
       return await _reminderDao.updateReminder(id, reminderCompanion);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to update reminder: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to update reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -130,7 +167,9 @@ class ReminderService {
       return await _reminderDao.deleteReminder(id);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to delete reminder: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to delete reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -147,18 +186,26 @@ class ReminderService {
         throw const ReminderServiceException('Reminder not found');
       }
 
-      final success = await _reminderDao.markReminderSent(id, sentTime: sentTime);
-      
+      final success = await _reminderDao.markReminderSent(
+        id,
+        sentTime: sentTime,
+      );
+
       if (success && reminder.frequency != 'once') {
         // Schedule next occurrence for recurring reminders
-        final nextTime = _calculateNextScheduledTime(reminder.scheduledTime, reminder.frequency);
+        final nextTime = _calculateNextScheduledTime(
+          reminder.scheduledTime,
+          reminder.frequency,
+        );
         await _reminderDao.updateNextScheduledTime(id, nextTime);
       }
 
       return success;
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to mark reminder as sent: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to mark reminder as sent: ${e.toString()}',
+      );
     }
   }
 
@@ -168,10 +215,15 @@ class ReminderService {
         throw const ReminderServiceException('Reminder ID cannot be empty');
       }
 
-      return await _reminderDao.snoozeReminder(id, customMinutes: customMinutes);
+      return await _reminderDao.snoozeReminder(
+        id,
+        customMinutes: customMinutes,
+      );
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to snooze reminder: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to snooze reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -184,7 +236,9 @@ class ReminderService {
       return await _reminderDao.toggleReminderActive(id, isActive);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to toggle reminder active state: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to toggle reminder active state: ${e.toString()}',
+      );
     }
   }
 
@@ -194,7 +248,9 @@ class ReminderService {
         throw const ReminderServiceException('Reminder ID cannot be empty');
       }
       if (newTime.isBefore(DateTime.now())) {
-        throw const ReminderServiceException('Cannot reschedule reminder to past time');
+        throw const ReminderServiceException(
+          'Cannot reschedule reminder to past time',
+        );
       }
 
       final reminder = await _reminderDao.getReminderById(id);
@@ -210,7 +266,9 @@ class ReminderService {
       return await _reminderDao.updateReminder(id, reminderCompanion);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to reschedule reminder: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to reschedule reminder: ${e.toString()}',
+      );
     }
   }
 
@@ -224,7 +282,9 @@ class ReminderService {
         return await _reminderDao.getMedicationReminders();
       }
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve medication reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve medication reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -236,7 +296,9 @@ class ReminderService {
       return await _reminderDao.getRemindersByFrequency(frequency);
     } catch (e) {
       if (e is ReminderServiceException) rethrow;
-      throw ReminderServiceException('Failed to retrieve reminders by frequency: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve reminders by frequency: ${e.toString()}',
+      );
     }
   }
 
@@ -244,7 +306,9 @@ class ReminderService {
     try {
       return await _reminderDao.getTodaysReminders();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve today\'s reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve today\'s reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -255,7 +319,9 @@ class ReminderService {
       }
       return await _reminderDao.searchReminders(searchTerm);
     } catch (e) {
-      throw ReminderServiceException('Failed to search reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to search reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -265,7 +331,9 @@ class ReminderService {
     try {
       return await _reminderDao.getActiveReminderCount();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve active reminder count: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve active reminder count: ${e.toString()}',
+      );
     }
   }
 
@@ -273,7 +341,9 @@ class ReminderService {
     try {
       return await _reminderDao.getOverdueReminderCount();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve overdue reminder count: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve overdue reminder count: ${e.toString()}',
+      );
     }
   }
 
@@ -281,7 +351,9 @@ class ReminderService {
     try {
       return await _reminderDao.getReminderCountsByFrequency();
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve reminder counts by frequency: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve reminder counts by frequency: ${e.toString()}',
+      );
     }
   }
 
@@ -299,7 +371,9 @@ class ReminderService {
         reminderCountsByFrequency: frequencyCounts,
       );
     } catch (e) {
-      throw ReminderServiceException('Failed to retrieve reminder statistics: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to retrieve reminder statistics: ${e.toString()}',
+      );
     }
   }
 
@@ -315,11 +389,16 @@ class ReminderService {
       }
       return deletedCount;
     } catch (e) {
-      throw ReminderServiceException('Failed to bulk delete reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to bulk delete reminders: ${e.toString()}',
+      );
     }
   }
 
-  Future<int> bulkToggleReminders(List<String> reminderIds, bool isActive) async {
+  Future<int> bulkToggleReminders(
+    List<String> reminderIds,
+    bool isActive,
+  ) async {
     try {
       int updatedCount = 0;
       for (final id in reminderIds) {
@@ -329,11 +408,16 @@ class ReminderService {
       }
       return updatedCount;
     } catch (e) {
-      throw ReminderServiceException('Failed to bulk toggle reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to bulk toggle reminders: ${e.toString()}',
+      );
     }
   }
 
-  Future<int> bulkSnoozeReminders(List<String> reminderIds, {int? customMinutes}) async {
+  Future<int> bulkSnoozeReminders(
+    List<String> reminderIds, {
+    int? customMinutes,
+  }) async {
     try {
       int snoozedCount = 0;
       for (final id in reminderIds) {
@@ -343,7 +427,9 @@ class ReminderService {
       }
       return snoozedCount;
     } catch (e) {
-      throw ReminderServiceException('Failed to bulk snooze reminders: ${e.toString()}');
+      throw ReminderServiceException(
+        'Failed to bulk snooze reminders: ${e.toString()}',
+      );
     }
   }
 
@@ -378,10 +464,14 @@ class ReminderService {
 
   bool isOverdue(Reminder reminder) {
     return reminder.scheduledTime.isBefore(DateTime.now()) &&
-        (reminder.lastSent == null || reminder.lastSent!.isBefore(reminder.scheduledTime));
+        (reminder.lastSent == null ||
+            reminder.lastSent!.isBefore(reminder.scheduledTime));
   }
 
-  bool isUpcoming(Reminder reminder, {Duration within = const Duration(hours: 24)}) {
+  bool isUpcoming(
+    Reminder reminder, {
+    Duration within = const Duration(hours: 24),
+  }) {
     final now = DateTime.now();
     final endTime = now.add(within);
     return reminder.nextScheduled != null &&
@@ -404,8 +494,13 @@ class ReminderService {
       case 'weekly':
         return currentTime.add(const Duration(days: 7));
       case 'monthly':
-        return DateTime(currentTime.year, currentTime.month + 1, currentTime.day,
-            currentTime.hour, currentTime.minute);
+        return DateTime(
+          currentTime.year,
+          currentTime.month + 1,
+          currentTime.day,
+          currentTime.hour,
+          currentTime.minute,
+        );
       default:
         return currentTime;
     }
@@ -419,7 +514,9 @@ class ReminderService {
       throw ReminderServiceException('Invalid frequency: ${request.frequency}');
     }
     if (request.snoozeMinutes < 0 || request.snoozeMinutes > 1440) {
-      throw const ReminderServiceException('Snooze minutes must be between 0 and 1440 (24 hours)');
+      throw const ReminderServiceException(
+        'Snooze minutes must be between 0 and 1440 (24 hours)',
+      );
     }
   }
 
@@ -432,7 +529,9 @@ class ReminderService {
     }
     if (request.snoozeMinutes != null &&
         (request.snoozeMinutes! < 0 || request.snoozeMinutes! > 1440)) {
-      throw const ReminderServiceException('Snooze minutes must be between 0 and 1440 (24 hours)');
+      throw const ReminderServiceException(
+        'Snooze minutes must be between 0 and 1440 (24 hours)',
+      );
     }
   }
 
@@ -507,9 +606,9 @@ class ReminderStatistics {
 
 class ReminderServiceException implements Exception {
   final String message;
-  
+
   const ReminderServiceException(this.message);
-  
+
   @override
   String toString() => 'ReminderServiceException: $message';
 }

@@ -9,7 +9,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final upcomingRemindersAsync = ref.watch(upcomingRemindersProvider(const Duration(days: 7)));
+    final upcomingRemindersAsync = ref.watch(
+      upcomingRemindersProvider(const Duration(days: 7)),
+    );
 
     return Card(
       child: Padding(
@@ -22,24 +24,35 @@ class UpcomingRemindersWidget extends ConsumerWidget {
                 Icon(
                   Icons.upcoming,
                   color: theme.colorScheme.primary,
+                  size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'Upcoming Reminders',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    'Upcoming Reminders',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const Spacer(),
                 TextButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('All reminders view - Coming in Phase 3.9'),
+                        content: Text(
+                          'All reminders view - Coming in Phase 3.9',
+                        ),
                       ),
                     );
                   },
-                  child: const Text('View All'),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(0, 32),
+                  ),
+                  child: const Text('View All', style: TextStyle(fontSize: 12)),
                 ),
               ],
             ),
@@ -67,16 +80,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: theme.colorScheme.error,
-            size: 48,
-          ),
+          Icon(Icons.error_outline, color: theme.colorScheme.error, size: 48),
           const SizedBox(height: 8),
-          Text(
-            'Error loading reminders',
-            style: theme.textTheme.titleSmall,
-          ),
+          Text('Error loading reminders', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
             error.toString(),
@@ -106,10 +112,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
               size: 48,
             ),
             const SizedBox(height: 8),
-            Text(
-              'No upcoming reminders',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('No upcoming reminders', style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
               'You\'re all caught up for the next 7 days!',
@@ -140,7 +143,9 @@ class UpcomingRemindersWidget extends ConsumerWidget {
 
     return Column(
       children: [
-        ...displayReminders.map((reminder) => _buildReminderItem(context, reminder)),
+        ...displayReminders.map(
+          (reminder) => _buildReminderItem(context, reminder),
+        ),
         if (reminders.length > 3) ...[
           const SizedBox(height: 8),
           Text(
@@ -159,9 +164,10 @@ class UpcomingRemindersWidget extends ConsumerWidget {
     final scheduledTime = reminder.scheduledTime;
     final now = DateTime.now();
     final isOverdue = scheduledTime.isBefore(now);
-    final isToday = scheduledTime.year == now.year &&
-                    scheduledTime.month == now.month &&
-                    scheduledTime.day == now.day;
+    final isToday =
+        scheduledTime.year == now.year &&
+        scheduledTime.month == now.month &&
+        scheduledTime.day == now.day;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -170,15 +176,15 @@ class UpcomingRemindersWidget extends ConsumerWidget {
         color: isOverdue
             ? theme.colorScheme.errorContainer.withValues(alpha: 0.3)
             : isToday
-                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
+            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isOverdue
               ? theme.colorScheme.error
               : isToday
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outline.withValues(alpha: 0.2),
+              ? theme.colorScheme.primary
+              : theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -191,8 +197,8 @@ class UpcomingRemindersWidget extends ConsumerWidget {
               color: isOverdue
                   ? theme.colorScheme.error
                   : isToday
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.secondary,
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.secondary,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -202,7 +208,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 12),
-          
+
           // Reminder Details
           Expanded(
             child: Column(
@@ -239,7 +245,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
               ],
             ),
           ),
-          
+
           // Status Badge
           if (isOverdue)
             Container(
@@ -298,7 +304,7 @@ class UpcomingRemindersWidget extends ConsumerWidget {
   String _formatReminderTime(DateTime scheduledTime) {
     final now = DateTime.now();
     final difference = scheduledTime.difference(now);
-    
+
     if (scheduledTime.isBefore(now)) {
       // Overdue
       if (difference.inDays.abs() > 0) {

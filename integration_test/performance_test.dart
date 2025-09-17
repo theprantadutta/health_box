@@ -5,11 +5,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:health_box/main.dart' as app;
 
 /// Integration test for large dataset performance
-/// 
-/// User Story: "As a user with years of medical history, I want the app 
-/// to remain fast and responsive even with thousands of medical records 
+///
+/// User Story: "As a user with years of medical history, I want the app
+/// to remain fast and responsive even with thousands of medical records
 /// so I can efficiently manage my comprehensive health data."
-/// 
+///
 /// Test Coverage:
 /// - App performance with large datasets (1000+ records)
 /// - Database query optimization and indexing
@@ -19,7 +19,7 @@ import 'package:health_box/main.dart' as app;
 /// - Memory usage optimization
 /// - Startup time with extensive data
 /// - Real-time updates without performance degradation
-/// 
+///
 /// This test MUST fail until performance optimizations are implemented.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -28,20 +28,26 @@ void main() {
     testWidgets('app startup performance with large dataset', (tester) async {
       // Step 1: Measure app startup time with large dataset
       final startTime = DateTime.now();
-      
+
       app.main();
       await tester.pumpAndSettle();
-      
+
       final endTime = DateTime.now();
       final startupTime = endTime.difference(startTime);
 
       // Step 2: Verify startup performance requirements
-      expect(startupTime.inMilliseconds, lessThan(3000)); // Should start within 3 seconds
-      
+      expect(
+        startupTime.inMilliseconds,
+        lessThan(3000),
+      ); // Should start within 3 seconds
+
       // Verify dashboard loads with data indicators
       expect(find.text('Dashboard'), findsOneWidget);
-      expect(find.text('Loading...'), findsNothing); // Should not show loading after startup
-      
+      expect(
+        find.text('Loading...'),
+        findsNothing,
+      ); // Should not show loading after startup
+
       // Should show summary statistics efficiently
       expect(find.byKey(const Key('total_records_count')), findsOneWidget);
       expect(find.byKey(const Key('recent_records_list')), findsOneWidget);
@@ -51,17 +57,19 @@ void main() {
         'flutter/performance',
         const StandardMessageCodec().encodeMessage('getMemoryUsage'),
       );
-      
+
       // Should use reasonable memory even with large dataset
       expect(memoryInfo, isNotNull);
-      
+
       // Dashboard should show aggregate stats efficiently
       expect(find.text('1,247 total records'), findsOneWidget);
       expect(find.text('5 family members'), findsOneWidget);
       expect(find.text('23 active medications'), findsOneWidget);
     });
 
-    testWidgets('medical records list performance with 1000+ records', (tester) async {
+    testWidgets('medical records list performance with 1000+ records', (
+      tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -73,10 +81,10 @@ void main() {
 
       // Step 1: Measure list loading performance
       final listLoadStart = DateTime.now();
-      
+
       // Should use virtualized scrolling for performance
       expect(find.byKey(const Key('virtualized_records_list')), findsOneWidget);
-      
+
       await tester.pumpAndSettle();
       final listLoadEnd = DateTime.now();
       final listLoadTime = listLoadEnd.difference(listLoadStart);
@@ -86,16 +94,16 @@ void main() {
 
       // Step 2: Test scrolling performance through large list
       final scrollStart = DateTime.now();
-      
+
       // Scroll through several screens of data
       for (int i = 0; i < 10; i++) {
         await tester.drag(
-          find.byKey(const Key('records_list')), 
+          find.byKey(const Key('records_list')),
           const Offset(0, -500),
         );
         await tester.pump(const Duration(milliseconds: 100));
       }
-      
+
       final scrollEnd = DateTime.now();
       final scrollTime = scrollEnd.difference(scrollStart);
 
@@ -108,8 +116,8 @@ void main() {
 
       // Step 4: Test rapid scrolling to end of list
       await tester.fling(
-        find.byKey(const Key('records_list')), 
-        const Offset(0, -10000), 
+        find.byKey(const Key('records_list')),
+        const Offset(0, -10000),
         1000,
       );
       await tester.pumpAndSettle();
@@ -123,7 +131,7 @@ void main() {
         'flutter/performance',
         const StandardMessageCodec().encodeMessage('getFrameRate'),
       );
-      
+
       expect(frameRateInfo, isNotNull);
       // Should maintain smooth 60fps during scrolling
     });
@@ -144,11 +152,13 @@ void main() {
 
       // Measure search response time
       final searchStart = DateTime.now();
-      
+
       await tester.enterText(searchField, 'blood');
-      await tester.pump(const Duration(milliseconds: 100)); // Allow for debounce
+      await tester.pump(
+        const Duration(milliseconds: 100),
+      ); // Allow for debounce
       await tester.pumpAndSettle();
-      
+
       final searchEnd = DateTime.now();
       final searchTime = searchEnd.difference(searchStart);
 
@@ -158,14 +168,14 @@ void main() {
       // Step 2: Verify search results are accurate and fast
       expect(find.text('Search Results'), findsOneWidget);
       expect(find.text('147 results found'), findsOneWidget);
-      
+
       // Should show results with highlighting
       expect(find.textContaining('Blood'), findsWidgets);
 
       // Step 3: Test incremental search performance
       await tester.enterText(searchField, 'blood pressure');
       await tester.pump(const Duration(milliseconds: 100));
-      
+
       final refinedSearchStart = DateTime.now();
       await tester.pumpAndSettle();
       final refinedSearchEnd = DateTime.now();
@@ -256,7 +266,7 @@ void main() {
       // Step 3: Test concurrent database operations
       // Simulate background sync while user is active
       final concurrentStart = DateTime.now();
-      
+
       // Start background sync
       await tester.binding.defaultBinaryMessenger.send(
         'flutter/background_sync',
@@ -276,8 +286,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('note_content_field')), 
-        'Test note during sync'
+        find.byKey(const Key('note_content_field')),
+        'Test note during sync',
       );
       await tester.tap(find.byKey(const Key('save_note_button')));
       await tester.pumpAndSettle();
@@ -346,7 +356,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Streaming Export'), findsOneWidget);
-      expect(find.text('Memory-efficient processing for large datasets'), findsOneWidget);
+      expect(
+        find.text('Memory-efficient processing for large datasets'),
+        findsOneWidget,
+      );
 
       final streamingStart = DateTime.now();
       await tester.tap(find.byKey(const Key('start_streaming_export_button')));
@@ -375,7 +388,11 @@ void main() {
         'flutter/performance',
         const StandardMessageCodec().encodeMessage('getMemoryUsage'),
       );
-      expect(baselineMemory, isNotNull, reason: 'Should capture baseline memory');
+      expect(
+        baselineMemory,
+        isNotNull,
+        reason: 'Should capture baseline memory',
+      );
 
       // Navigate through different sections
       await tester.tap(find.byIcon(Icons.menu));
@@ -387,7 +404,7 @@ void main() {
       // Scroll through entire list
       for (int i = 0; i < 50; i++) {
         await tester.drag(
-          find.byKey(const Key('records_list')), 
+          find.byKey(const Key('records_list')),
           const Offset(0, -300),
         );
         await tester.pump(const Duration(milliseconds: 50));
@@ -400,19 +417,25 @@ void main() {
 
       // Memory should not grow excessively during scrolling
       expect(scrollMemory, isNotNull);
-      
+
       // Step 3: Test memory during search operations
       await tester.enterText(
-        find.byKey(const Key('search_records_field')), 
-        'test search query'
+        find.byKey(const Key('search_records_field')),
+        'test search query',
       );
       await tester.pumpAndSettle();
 
       // Perform multiple searches
-      for (String query in ['blood', 'medication', 'doctor', 'test', 'report']) {
+      for (String query in [
+        'blood',
+        'medication',
+        'doctor',
+        'test',
+        'report',
+      ]) {
         await tester.enterText(
-          find.byKey(const Key('search_records_field')), 
-          query
+          find.byKey(const Key('search_records_field')),
+          query,
         );
         await tester.pump(const Duration(milliseconds: 200));
       }
@@ -484,7 +507,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should use efficient batching
-      expect(find.text('Syncing in batches for optimal performance'), findsOneWidget);
+      expect(
+        find.text('Syncing in batches for optimal performance'),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('batch_progress_indicator')), findsOneWidget);
 
       // Monitor batch progress
@@ -506,7 +532,10 @@ void main() {
 
       // App should remain responsive
       expect(find.text('Dashboard'), findsOneWidget);
-      expect(find.byKey(const Key('sync_in_background_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('sync_in_background_indicator')),
+        findsOneWidget,
+      );
 
       // Wait for sync completion
       await tester.pumpAndSettle(const Duration(seconds: 10));
@@ -539,7 +568,9 @@ void main() {
       expect(find.text('12 changes synchronized'), findsOneWidget);
     });
 
-    testWidgets('real-time updates performance with large datasets', (tester) async {
+    testWidgets('real-time updates performance with large datasets', (
+      tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -550,14 +581,14 @@ void main() {
       await tester.pumpAndSettle();
 
       final searchField = find.byKey(const Key('search_records_field'));
-      
+
       // Type search query character by character
       final searchQuery = 'blood pressure medication';
       for (int i = 0; i < searchQuery.length; i++) {
         final currentQuery = searchQuery.substring(0, i + 1);
         await tester.enterText(searchField, currentQuery);
         await tester.pump(const Duration(milliseconds: 50));
-        
+
         // Each character should update results quickly
         expect(find.byKey(const Key('search_results')), findsOneWidget);
       }
@@ -665,8 +696,8 @@ void main() {
       // Step 3: Test search with maximum dataset
       final maxSearchStart = DateTime.now();
       await tester.enterText(
-        find.byKey(const Key('search_records_field')), 
-        'stress test'
+        find.byKey(const Key('search_records_field')),
+        'stress test',
       );
       await tester.pumpAndSettle();
       final maxSearchEnd = DateTime.now();
@@ -687,8 +718,14 @@ void main() {
       expect(find.text('Recommended: Use streaming export'), findsOneWidget);
 
       // Should suggest optimizations for very large datasets
-      expect(find.byKey(const Key('streaming_export_recommended')), findsOneWidget);
-      expect(find.byKey(const Key('selective_export_recommended')), findsOneWidget);
+      expect(
+        find.byKey(const Key('streaming_export_recommended')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('selective_export_recommended')),
+        findsOneWidget,
+      );
 
       // Step 5: Verify memory stability with maximum data
       final maxMemory = await tester.binding.defaultBinaryMessenger.send(

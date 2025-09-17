@@ -316,7 +316,7 @@
 //         // Test that profile cards have proper semantics
 //         final profileCards = find.byType(Card);
 //         expect(profileCards, findsWidgets);
-        
+
 //         for (final card in tester.widgetList(profileCards)) {
 //           expect(tester.getSemantics(find.byWidget(card)), isNotNull);
 //         }

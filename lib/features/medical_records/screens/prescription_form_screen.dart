@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/providers/medical_records_providers.dart';
+import '../services/prescription_service.dart';
 
 class PrescriptionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
   final Prescription? prescription;
 
-  const PrescriptionFormScreen({
-    super.key,
-    this.profileId,
-    this.prescription,
-  });
+  const PrescriptionFormScreen({super.key, this.profileId, this.prescription});
 
   @override
-  ConsumerState<PrescriptionFormScreen> createState() => _PrescriptionFormScreenState();
+  ConsumerState<PrescriptionFormScreen> createState() =>
+      _PrescriptionFormScreenState();
 }
 
-class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen> {
+class _PrescriptionFormScreenState
+    extends ConsumerState<PrescriptionFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -99,10 +99,7 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
               ),
             )
           else
-            TextButton(
-              onPressed: _savePrescription,
-              child: const Text('SAVE'),
-            ),
+            TextButton(onPressed: _savePrescription, child: const Text('SAVE')),
         ],
       ),
       body: Form(
@@ -112,11 +109,11 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
           children: [
             // Profile Selection
             if (!_isEditing) _buildProfileSelection(profilesAsync),
-            
+
             // Basic Information
             _buildSectionHeader('Basic Information'),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(
@@ -124,10 +121,11 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.title),
               ),
-              validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
+              validator: (value) =>
+                  value?.trim().isEmpty == true ? 'Title is required' : null,
             ),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
@@ -138,17 +136,17 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
               maxLines: 3,
             ),
             const SizedBox(height: 16),
-            
+
             _buildDateField('Record Date *', _recordDate, (date) {
               setState(() => _recordDate = date);
             }),
-            
+
             const SizedBox(height: 24),
-            
+
             // Medication Information
             _buildSectionHeader('Medication Information'),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _medicationNameController,
               decoration: const InputDecoration(
@@ -156,10 +154,12 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.medication),
               ),
-              validator: (value) => value?.trim().isEmpty == true ? 'Medication name is required' : null,
+              validator: (value) => value?.trim().isEmpty == true
+                  ? 'Medication name is required'
+                  : null,
             ),
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -171,7 +171,9 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.straighten),
                     ),
-                    validator: (value) => value?.trim().isEmpty == true ? 'Dosage is required' : null,
+                    validator: (value) => value?.trim().isEmpty == true
+                        ? 'Dosage is required'
+                        : null,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -184,13 +186,15 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.schedule),
                     ),
-                    validator: (value) => value?.trim().isEmpty == true ? 'Frequency is required' : null,
+                    validator: (value) => value?.trim().isEmpty == true
+                        ? 'Frequency is required'
+                        : null,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _instructionsController,
               decoration: const InputDecoration(
@@ -201,13 +205,13 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
               ),
               maxLines: 2,
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Prescription Details
             _buildSectionHeader('Prescription Details'),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _doctorController,
               decoration: const InputDecoration(
@@ -217,7 +221,7 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
               ),
             ),
             const SizedBox(height: 16),
-            
+
             TextFormField(
               controller: _pharmacyController,
               decoration: const InputDecoration(
@@ -227,7 +231,7 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
               ),
             ),
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -244,7 +248,7 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
               ],
             ),
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -269,9 +273,9 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // Save Button
             SizedBox(
               width: double.infinity,
@@ -296,7 +300,9 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
     );
   }
 
-  Widget _buildProfileSelection(AsyncValue<List<FamilyMemberProfile>> profilesAsync) {
+  Widget _buildProfileSelection(
+    AsyncValue<List<FamilyMemberProfile>> profilesAsync,
+  ) {
     return profilesAsync.when(
       loading: () => const CircularProgressIndicator(),
       error: (error, stack) => Text('Error loading profiles: $error'),
@@ -316,11 +322,16 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
                 value: _selectedProfileId,
                 isExpanded: true,
                 hint: const Text('Select family member'),
-                items: profiles.map((profile) => DropdownMenuItem<String?>(
-                  value: profile.id,
-                  child: Text('${profile.firstName} ${profile.lastName}'),
-                )).toList(),
-                onChanged: (value) => setState(() => _selectedProfileId = value),
+                items: profiles
+                    .map(
+                      (profile) => DropdownMenuItem<String?>(
+                        value: profile.id,
+                        child: Text('${profile.firstName} ${profile.lastName}'),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) =>
+                    setState(() => _selectedProfileId = value),
               ),
             ),
           ),
@@ -333,13 +344,17 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 
-  Widget _buildDateField(String label, DateTime? date, ValueChanged<DateTime> onChanged) {
+  Widget _buildDateField(
+    String label,
+    DateTime? date,
+    ValueChanged<DateTime> onChanged,
+  ) {
     return InkWell(
       onTap: () => _selectDate(onChanged),
       child: InputDecorator(
@@ -371,16 +386,82 @@ class _PrescriptionFormScreenState extends ConsumerState<PrescriptionFormScreen>
   }
 
   Future<void> _savePrescription() async {
-    if (!_formKey.currentState!.validate() || _recordDate == null || _selectedProfileId == null) {
+    if (!_formKey.currentState!.validate() ||
+        _recordDate == null ||
+        _selectedProfileId == null) {
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
-      // TODO: Implement actual save logic with PrescriptionService
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-      
+      final service = ref.read(prescriptionServiceProvider);
+      final selectedProfileId = widget.profileId;
+
+      if (selectedProfileId == null) {
+        throw Exception('No profile selected');
+      }
+
+      if (_isEditing && widget.prescription != null) {
+        // Update existing prescription
+        final request = UpdatePrescriptionRequest(
+          title: _titleController.text.trim(),
+          description: _descriptionController.text.trim().isEmpty
+              ? null
+              : _descriptionController.text.trim(),
+          dosage: _dosageController.text.trim().isEmpty
+              ? null
+              : _dosageController.text.trim(),
+          prescribingDoctor: _doctorController.text.trim().isEmpty
+              ? null
+              : _doctorController.text.trim(),
+          pharmacy: _pharmacyController.text.trim().isEmpty
+              ? null
+              : _pharmacyController.text.trim(),
+          startDate: _startDate,
+          endDate: _endDate,
+          refillsRemaining: _refillsController.text.trim().isEmpty
+              ? null
+              : int.tryParse(_refillsController.text.trim()),
+        );
+
+        await service.updatePrescription(widget.prescription!.id, request);
+      } else {
+        // Create new prescription
+        final request = CreatePrescriptionRequest(
+          profileId: selectedProfileId,
+          title: _titleController.text.trim(),
+          description: _descriptionController.text.trim().isEmpty
+              ? null
+              : _descriptionController.text.trim(),
+          recordDate: _startDate ?? DateTime.now(),
+          medicationName: _medicationNameController.text.trim(),
+          dosage: _dosageController.text.trim(),
+          frequency: _frequencyController.text.trim(),
+          instructions: _instructionsController.text.trim().isEmpty
+              ? null
+              : _instructionsController.text.trim(),
+          prescribingDoctor: _doctorController.text.trim().isEmpty
+              ? null
+              : _doctorController.text.trim(),
+          pharmacy: _pharmacyController.text.trim().isEmpty
+              ? null
+              : _pharmacyController.text.trim(),
+          startDate: _startDate,
+          endDate: _endDate,
+          refillsRemaining: _refillsController.text.trim().isEmpty
+              ? null
+              : int.tryParse(_refillsController.text.trim()),
+          isPrescriptionActive: true,
+        );
+
+        await service.createPrescription(request);
+      }
+
+      // Refresh medical records providers
+      ref.invalidate(allMedicalRecordsProvider);
+      ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
+
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(

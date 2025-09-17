@@ -24,10 +24,7 @@ abstract class StorageServiceContract {
 
   // Create database backup
   // Returns: backup file path on success
-  Future<String?> createBackup({
-    String? backupPath,
-    String? password,
-  });
+  Future<String?> createBackup({String? backupPath, String? password});
 
   // Restore from backup
   // Returns: true on successful restore
@@ -69,10 +66,7 @@ abstract class FileStorageServiceContract {
 
   // Delete stored file
   // Returns: true on successful deletion
-  Future<bool> deleteFile({
-    required String recordId,
-    required String fileName,
-  });
+  Future<bool> deleteFile({required String recordId, required String fileName});
 
   // Get file info
   // Returns: FileInfo if exists, null if not found

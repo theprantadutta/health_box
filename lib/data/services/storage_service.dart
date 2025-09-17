@@ -24,16 +24,20 @@ class StorageService {
 
       _documentsDirectory = await getApplicationDocumentsDirectory();
       _cacheDirectory = await getTemporaryDirectory();
-      
+
       // Create secure directory for encrypted files
-      _secureDirectory = Directory(path.join(_documentsDirectory.path, 'secure'));
+      _secureDirectory = Directory(
+        path.join(_documentsDirectory.path, 'secure'),
+      );
       if (!await _secureDirectory.exists()) {
         await _secureDirectory.create(recursive: true);
       }
 
       _isInitialized = true;
     } catch (e) {
-      throw StorageServiceException('Failed to initialize storage service: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to initialize storage service: ${e.toString()}',
+      );
     }
   }
 
@@ -46,7 +50,9 @@ class StorageService {
       final file = File(path.join(_secureDirectory.path, '$key.enc'));
       await file.writeAsBytes(encryptedData);
     } catch (e) {
-      throw StorageServiceException('Failed to store secure data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to store secure data: ${e.toString()}',
+      );
     }
   }
 
@@ -54,7 +60,7 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_secureDirectory.path, '$key.enc'));
-      
+
       if (!await file.exists()) {
         return null;
       }
@@ -62,7 +68,9 @@ class StorageService {
       final encryptedData = await file.readAsBytes();
       return _decryptData(encryptedData);
     } catch (e) {
-      throw StorageServiceException('Failed to retrieve secure data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to retrieve secure data: ${e.toString()}',
+      );
     }
   }
 
@@ -70,15 +78,17 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_secureDirectory.path, '$key.enc'));
-      
+
       if (await file.exists()) {
         await file.delete();
         return true;
       }
-      
+
       return false;
     } catch (e) {
-      throw StorageServiceException('Failed to delete secure data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to delete secure data: ${e.toString()}',
+      );
     }
   }
 
@@ -86,13 +96,15 @@ class StorageService {
     try {
       await _ensureInitialized();
       final files = await _secureDirectory.list().toList();
-      
+
       return files
           .where((entity) => entity is File && entity.path.endsWith('.enc'))
           .map((entity) => path.basenameWithoutExtension(entity.path))
           .toList();
     } catch (e) {
-      throw StorageServiceException('Failed to list secure data keys: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to list secure data keys: ${e.toString()}',
+      );
     }
   }
 
@@ -113,7 +125,7 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_documentsDirectory.path, relativePath));
-      
+
       if (!await file.exists()) {
         return null;
       }
@@ -131,7 +143,9 @@ class StorageService {
       await file.create(recursive: true);
       await file.writeAsBytes(data);
     } catch (e) {
-      throw StorageServiceException('Failed to store binary data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to store binary data: ${e.toString()}',
+      );
     }
   }
 
@@ -139,25 +153,32 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_documentsDirectory.path, relativePath));
-      
+
       if (!await file.exists()) {
         return null;
       }
 
       return await file.readAsBytes();
     } catch (e) {
-      throw StorageServiceException('Failed to retrieve binary data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to retrieve binary data: ${e.toString()}',
+      );
     }
   }
 
   // JSON Storage Operations
 
-  Future<void> storeJsonData(String relativePath, Map<String, dynamic> data) async {
+  Future<void> storeJsonData(
+    String relativePath,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final jsonString = json.encode(data);
       await storeData(relativePath, jsonString);
     } catch (e) {
-      throw StorageServiceException('Failed to store JSON data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to store JSON data: ${e.toString()}',
+      );
     }
   }
 
@@ -165,19 +186,26 @@ class StorageService {
     try {
       final jsonString = await retrieveData(relativePath);
       if (jsonString == null) return null;
-      
+
       return json.decode(jsonString) as Map<String, dynamic>;
     } catch (e) {
-      throw StorageServiceException('Failed to retrieve JSON data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to retrieve JSON data: ${e.toString()}',
+      );
     }
   }
 
-  Future<void> storeSecureJsonData(String key, Map<String, dynamic> data) async {
+  Future<void> storeSecureJsonData(
+    String key,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final jsonString = json.encode(data);
       await storeSecureData(key, jsonString);
     } catch (e) {
-      throw StorageServiceException('Failed to store secure JSON data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to store secure JSON data: ${e.toString()}',
+      );
     }
   }
 
@@ -185,10 +213,12 @@ class StorageService {
     try {
       final jsonString = await retrieveSecureData(key);
       if (jsonString == null) return null;
-      
+
       return json.decode(jsonString) as Map<String, dynamic>;
     } catch (e) {
-      throw StorageServiceException('Failed to retrieve secure JSON data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to retrieve secure JSON data: ${e.toString()}',
+      );
     }
   }
 
@@ -208,12 +238,12 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_documentsDirectory.path, relativePath));
-      
+
       if (await file.exists()) {
         await file.delete();
         return true;
       }
-      
+
       return false;
     } catch (e) {
       throw StorageServiceException('Failed to delete file: ${e.toString()}');
@@ -232,7 +262,7 @@ class StorageService {
       }
 
       final files = await directory.list(recursive: false).toList();
-      
+
       return files
           .where((entity) => entity is File)
           .map((entity) => path.basename(entity.path))
@@ -246,7 +276,7 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_documentsDirectory.path, relativePath));
-      
+
       if (!await file.exists()) {
         return 0;
       }
@@ -261,7 +291,7 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_documentsDirectory.path, relativePath));
-      
+
       if (!await file.exists()) {
         return null;
       }
@@ -278,36 +308,49 @@ class StorageService {
   Future<void> createDirectory(String relativePath) async {
     try {
       await _ensureInitialized();
-      final directory = Directory(path.join(_documentsDirectory.path, relativePath));
+      final directory = Directory(
+        path.join(_documentsDirectory.path, relativePath),
+      );
       await directory.create(recursive: true);
     } catch (e) {
-      throw StorageServiceException('Failed to create directory: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to create directory: ${e.toString()}',
+      );
     }
   }
 
   Future<bool> directoryExists(String relativePath) async {
     try {
       await _ensureInitialized();
-      final directory = Directory(path.join(_documentsDirectory.path, relativePath));
+      final directory = Directory(
+        path.join(_documentsDirectory.path, relativePath),
+      );
       return await directory.exists();
     } catch (e) {
       return false;
     }
   }
 
-  Future<bool> deleteDirectory(String relativePath, {bool recursive = false}) async {
+  Future<bool> deleteDirectory(
+    String relativePath, {
+    bool recursive = false,
+  }) async {
     try {
       await _ensureInitialized();
-      final directory = Directory(path.join(_documentsDirectory.path, relativePath));
-      
+      final directory = Directory(
+        path.join(_documentsDirectory.path, relativePath),
+      );
+
       if (await directory.exists()) {
         await directory.delete(recursive: recursive);
         return true;
       }
-      
+
       return false;
     } catch (e) {
-      throw StorageServiceException('Failed to delete directory: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to delete directory: ${e.toString()}',
+      );
     }
   }
 
@@ -321,11 +364,13 @@ class StorageService {
         'timestamp': DateTime.now().millisecondsSinceEpoch,
         'ttl': ttl?.inMilliseconds,
       };
-      
+
       final file = File(path.join(_cacheDirectory.path, '$key.cache'));
       await file.writeAsString(json.encode(cacheData));
     } catch (e) {
-      throw StorageServiceException('Failed to store cache data: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to store cache data: ${e.toString()}',
+      );
     }
   }
 
@@ -333,26 +378,28 @@ class StorageService {
     try {
       await _ensureInitialized();
       final file = File(path.join(_cacheDirectory.path, '$key.cache'));
-      
+
       if (!await file.exists()) {
         return null;
       }
 
       final cacheDataString = await file.readAsString();
       final cacheData = json.decode(cacheDataString) as Map<String, dynamic>;
-      
+
       final timestamp = cacheData['timestamp'] as int;
       final ttl = cacheData['ttl'] as int?;
-      
+
       if (ttl != null) {
-        final expiryTime = DateTime.fromMillisecondsSinceEpoch(timestamp).add(Duration(milliseconds: ttl));
+        final expiryTime = DateTime.fromMillisecondsSinceEpoch(
+          timestamp,
+        ).add(Duration(milliseconds: ttl));
         if (DateTime.now().isAfter(expiryTime)) {
           // Cache expired, delete and return null
           await file.delete();
           return null;
         }
       }
-      
+
       return cacheData['data'] as String;
     } catch (e) {
       return null;
@@ -363,7 +410,7 @@ class StorageService {
     try {
       await _ensureInitialized();
       final cacheFiles = await _cacheDirectory.list().toList();
-      
+
       for (final entity in cacheFiles) {
         if (entity is File && entity.path.endsWith('.cache')) {
           await entity.delete();
@@ -376,14 +423,21 @@ class StorageService {
 
   // Backup and Export Operations
 
-  Future<String> createBackup({List<String>? includePatterns, List<String>? excludePatterns}) async {
+  Future<String> createBackup({
+    List<String>? includePatterns,
+    List<String>? excludePatterns,
+  }) async {
     try {
       await _ensureInitialized();
       final backupName = 'backup_${DateTime.now().millisecondsSinceEpoch}';
-      final backupPath = path.join(_documentsDirectory.path, 'backups', '$backupName.json');
-      
+      final backupPath = path.join(
+        _documentsDirectory.path,
+        'backups',
+        '$backupName.json',
+      );
+
       await createDirectory('backups');
-      
+
       final backupData = <String, dynamic>{
         'created': DateTime.now().toIso8601String(),
         'version': '1.0',
@@ -391,9 +445,13 @@ class StorageService {
       };
 
       final files = await _getAllFiles();
-      
+
       for (final relativePath in files) {
-        if (_shouldIncludeInBackup(relativePath, includePatterns, excludePatterns)) {
+        if (_shouldIncludeInBackup(
+          relativePath,
+          includePatterns,
+          excludePatterns,
+        )) {
           final data = await retrieveData(relativePath);
           if (data != null) {
             backupData['files'][relativePath] = data;
@@ -412,19 +470,21 @@ class StorageService {
     try {
       await _ensureInitialized();
       final backupData = await retrieveJsonData(backupPath);
-      
+
       if (backupData == null) {
         throw const StorageServiceException('Backup file not found');
       }
 
       final files = backupData['files'] as Map<String, dynamic>;
-      
+
       for (final entry in files.entries) {
         await storeData(entry.key, entry.value.toString());
       }
     } catch (e) {
       if (e is StorageServiceException) rethrow;
-      throw StorageServiceException('Failed to restore backup: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to restore backup: ${e.toString()}',
+      );
     }
   }
 
@@ -433,7 +493,7 @@ class StorageService {
   Future<StorageInfo> getStorageInfo() async {
     try {
       await _ensureInitialized();
-      
+
       final totalFiles = await _countFiles(_documentsDirectory);
       final totalSize = await _calculateDirectorySize(_documentsDirectory);
       final secureFiles = await _countFiles(_secureDirectory);
@@ -453,7 +513,9 @@ class StorageService {
         cachePath: _cacheDirectory.path,
       );
     } catch (e) {
-      throw StorageServiceException('Failed to get storage info: ${e.toString()}');
+      throw StorageServiceException(
+        'Failed to get storage info: ${e.toString()}',
+      );
     }
   }
 
@@ -470,11 +532,11 @@ class StorageService {
     final dataBytes = utf8.encode(data);
     final keyBytes = utf8.encode(_encryptionKey);
     final encrypted = Uint8List(dataBytes.length);
-    
+
     for (int i = 0; i < dataBytes.length; i++) {
       encrypted[i] = dataBytes[i] ^ keyBytes[i % keyBytes.length];
     }
-    
+
     return encrypted;
   }
 
@@ -482,11 +544,11 @@ class StorageService {
     // Simple XOR decryption (in production, use proper decryption like AES)
     final keyBytes = utf8.encode(_encryptionKey);
     final decrypted = Uint8List(encryptedData.length);
-    
+
     for (int i = 0; i < encryptedData.length; i++) {
       decrypted[i] = encryptedData[i] ^ keyBytes[i % keyBytes.length];
     }
-    
+
     return utf8.decode(decrypted);
   }
 
@@ -494,14 +556,21 @@ class StorageService {
     final files = <String>[];
     await for (final entity in _documentsDirectory.list(recursive: true)) {
       if (entity is File) {
-        final relativePath = path.relative(entity.path, from: _documentsDirectory.path);
+        final relativePath = path.relative(
+          entity.path,
+          from: _documentsDirectory.path,
+        );
         files.add(relativePath);
       }
     }
     return files;
   }
 
-  bool _shouldIncludeInBackup(String filePath, List<String>? includePatterns, List<String>? excludePatterns) {
+  bool _shouldIncludeInBackup(
+    String filePath,
+    List<String>? includePatterns,
+    List<String>? excludePatterns,
+  ) {
     if (excludePatterns != null) {
       for (final pattern in excludePatterns) {
         if (filePath.contains(pattern)) {
@@ -509,7 +578,7 @@ class StorageService {
         }
       }
     }
-    
+
     if (includePatterns != null) {
       for (final pattern in includePatterns) {
         if (filePath.contains(pattern)) {
@@ -518,13 +587,13 @@ class StorageService {
       }
       return false;
     }
-    
+
     return true;
   }
 
   Future<int> _countFiles(Directory directory) async {
     if (!await directory.exists()) return 0;
-    
+
     int count = 0;
     await for (final entity in directory.list(recursive: true)) {
       if (entity is File) count++;
@@ -534,7 +603,7 @@ class StorageService {
 
   Future<int> _calculateDirectorySize(Directory directory) async {
     if (!await directory.exists()) return 0;
-    
+
     int totalSize = 0;
     await for (final entity in directory.list(recursive: true)) {
       if (entity is File) {
@@ -581,7 +650,8 @@ class StorageInfo {
   static String _formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 }
@@ -590,9 +660,9 @@ class StorageInfo {
 
 class StorageServiceException implements Exception {
   final String message;
-  
+
   const StorageServiceException(this.message);
-  
+
   @override
   String toString() => 'StorageServiceException: $message';
 }

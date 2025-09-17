@@ -3,23 +3,31 @@ import 'package:drift/drift.dart';
 class Allergies extends Table {
   TextColumn get id => text().named('id')();
   TextColumn get profileId => text().named('profile_id')();
-  TextColumn get recordType => text().withDefault(const Constant('allergy')).named('record_type')();
+  TextColumn get recordType =>
+      text().withDefault(const Constant('allergy')).named('record_type')();
   TextColumn get title => text().withLength(min: 1, max: 200).named('title')();
   TextColumn get description => text().nullable().named('description')();
   DateTimeColumn get recordDate => dateTime().named('record_date')();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime).named('created_at')();
-  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime).named('updated_at')();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true)).named('is_active')();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime).named('created_at')();
+  DateTimeColumn get updatedAt =>
+      dateTime().withDefault(currentDateAndTime).named('updated_at')();
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true)).named('is_active')();
 
   // Allergy-specific fields
-  TextColumn get allergen => text().withLength(min: 1, max: 100).named('allergen')();
+  TextColumn get allergen =>
+      text().withLength(min: 1, max: 100).named('allergen')();
   TextColumn get severity => text().named('severity')();
   TextColumn get symptoms => text().named('symptoms')(); // JSON array
   TextColumn get treatment => text().nullable().named('treatment')();
   TextColumn get notes => text().nullable().named('notes')();
-  BoolColumn get isAllergyActive => boolean().withDefault(const Constant(true)).named('is_allergy_active')();
-  DateTimeColumn get firstReaction => dateTime().nullable().named('first_reaction')();
-  DateTimeColumn get lastReaction => dateTime().nullable().named('last_reaction')();
+  BoolColumn get isAllergyActive =>
+      boolean().withDefault(const Constant(true)).named('is_allergy_active')();
+  DateTimeColumn get firstReaction =>
+      dateTime().nullable().named('first_reaction')();
+  DateTimeColumn get lastReaction =>
+      dateTime().nullable().named('last_reaction')();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -104,4 +112,3 @@ class AllergySymptoms {
     anaphylaxis,
   ];
 }
-

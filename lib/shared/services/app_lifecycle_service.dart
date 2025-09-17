@@ -2,67 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum CustomAppLifecycleState {
-  resumed,
-  inactive,
-  paused,
-  detached,
-  hidden,
-}
+enum CustomAppLifecycleState { resumed, inactive, paused, detached, hidden }
 
 class AppLifecycleService with WidgetsBindingObserver {
   AppLifecycleService._();
-  
+
   static final AppLifecycleService _instance = AppLifecycleService._();
   static AppLifecycleService get instance => _instance;
 
   final _lifecycleStateNotifier = ValueNotifier<CustomAppLifecycleState>(
     CustomAppLifecycleState.resumed,
   );
-  
+
   final List<VoidCallback> _pauseCallbacks = [];
   final List<VoidCallback> _resumeCallbacks = [];
   final List<VoidCallback> _detachCallbacks = [];
   final List<VoidCallback> _inactiveCallbacks = [];
   final List<VoidCallback> _hiddenCallbacks = [];
 
-  ValueNotifier<CustomAppLifecycleState> get lifecycleState => _lifecycleStateNotifier;
-  
+  ValueNotifier<CustomAppLifecycleState> get lifecycleState =>
+      _lifecycleStateNotifier;
+
   bool _isInitialized = false;
   DateTime? _lastPausedTime;
   Duration _backgroundDuration = Duration.zero;
 
   void initialize() {
     if (_isInitialized) return;
-    
+
     WidgetsBinding.instance.addObserver(this);
     _isInitialized = true;
-    
+
     debugPrint('AppLifecycleService initialized');
   }
 
   void dispose() {
     if (!_isInitialized) return;
-    
+
     WidgetsBinding.instance.removeObserver(this);
     _isInitialized = false;
-    
+
     _pauseCallbacks.clear();
     _resumeCallbacks.clear();
     _detachCallbacks.clear();
     _inactiveCallbacks.clear();
     _hiddenCallbacks.clear();
-    
+
     debugPrint('AppLifecycleService disposed');
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint('App lifecycle state changed: $state');
-    
+
     final customState = _mapFlutterStateToCustomState(state);
     _lifecycleStateNotifier.value = customState;
-    
+
     switch (state) {
       case AppLifecycleState.resumed:
         _handleResumed();
@@ -80,11 +75,13 @@ class AppLifecycleService with WidgetsBindingObserver {
         _handleHidden();
         break;
     }
-    
+
     super.didChangeAppLifecycleState(state);
   }
 
-  CustomAppLifecycleState _mapFlutterStateToCustomState(AppLifecycleState flutterState) {
+  CustomAppLifecycleState _mapFlutterStateToCustomState(
+    AppLifecycleState flutterState,
+  ) {
     switch (flutterState) {
       case AppLifecycleState.resumed:
         return CustomAppLifecycleState.resumed;
@@ -103,14 +100,14 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (_lastPausedTime != null) {
       _backgroundDuration = DateTime.now().difference(_lastPausedTime!);
       debugPrint('App resumed after ${_backgroundDuration.inSeconds} seconds');
-      
+
       if (_backgroundDuration.inMinutes > 5) {
         _handleLongBackgroundReturn();
       }
-      
+
       _lastPausedTime = null;
     }
-    
+
     for (final callback in _resumeCallbacks) {
       try {
         callback();
@@ -133,9 +130,9 @@ class AppLifecycleService with WidgetsBindingObserver {
   void _handlePaused() {
     _lastPausedTime = DateTime.now();
     debugPrint('App paused at: $_lastPausedTime');
-    
+
     _handleDataPersistence();
-    
+
     for (final callback in _pauseCallbacks) {
       try {
         callback();
@@ -147,9 +144,9 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   void _handleDetached() {
     debugPrint('App detached - performing cleanup');
-    
+
     _handleAppShutdown();
-    
+
     for (final callback in _detachCallbacks) {
       try {
         callback();
@@ -161,7 +158,7 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   void _handleHidden() {
     debugPrint('App hidden');
-    
+
     for (final callback in _hiddenCallbacks) {
       try {
         callback();
@@ -173,17 +170,14 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   void _handleLongBackgroundReturn() {
     debugPrint('App returned from long background duration');
-    
   }
 
   void _handleDataPersistence() {
     debugPrint('Persisting data before app goes to background');
-    
   }
 
   void _handleAppShutdown() {
     debugPrint('App is shutting down - final cleanup');
-    
   }
 
   void addResumeCallback(VoidCallback callback) {
@@ -227,18 +221,23 @@ class AppLifecycleService with WidgetsBindingObserver {
   }
 
   Duration get timeSinceLastPause => _backgroundDuration;
-  
+
   bool get wasInBackgroundLongTime => _backgroundDuration.inMinutes > 5;
-  
-  bool get isAppActive => _lifecycleStateNotifier.value == CustomAppLifecycleState.resumed;
-  
-  bool get isAppInactive => _lifecycleStateNotifier.value == CustomAppLifecycleState.inactive;
-  
-  bool get isAppPaused => _lifecycleStateNotifier.value == CustomAppLifecycleState.paused;
-  
-  bool get isAppDetached => _lifecycleStateNotifier.value == CustomAppLifecycleState.detached;
-  
-  bool get isAppHidden => _lifecycleStateNotifier.value == CustomAppLifecycleState.hidden;
+
+  bool get isAppActive =>
+      _lifecycleStateNotifier.value == CustomAppLifecycleState.resumed;
+
+  bool get isAppInactive =>
+      _lifecycleStateNotifier.value == CustomAppLifecycleState.inactive;
+
+  bool get isAppPaused =>
+      _lifecycleStateNotifier.value == CustomAppLifecycleState.paused;
+
+  bool get isAppDetached =>
+      _lifecycleStateNotifier.value == CustomAppLifecycleState.detached;
+
+  bool get isAppHidden =>
+      _lifecycleStateNotifier.value == CustomAppLifecycleState.hidden;
 
   Future<void> requestAppRestart() async {
     try {
@@ -252,7 +251,9 @@ class AppLifecycleService with WidgetsBindingObserver {
     SystemChrome.setSystemUIOverlayStyle(style);
   }
 
-  Future<void> setPreferredOrientations(List<DeviceOrientation> orientations) async {
+  Future<void> setPreferredOrientations(
+    List<DeviceOrientation> orientations,
+  ) async {
     await SystemChrome.setPreferredOrientations(orientations);
   }
 
@@ -273,18 +274,20 @@ class AppLifecycleService with WidgetsBindingObserver {
 
 final appLifecycleServiceProvider = Provider<AppLifecycleService>((ref) {
   final service = AppLifecycleService.instance;
-  
+
   ref.onDispose(() {
     service.dispose();
   });
-  
+
   return service;
 });
 
-final appLifecycleStateProvider = StreamProvider<CustomAppLifecycleState>((ref) {
+final appLifecycleStateProvider = StreamProvider<CustomAppLifecycleState>((
+  ref,
+) {
   final service = ref.watch(appLifecycleServiceProvider);
   service.initialize();
-  
+
   return Stream<CustomAppLifecycleState>.periodic(
     const Duration(milliseconds: 100),
     (count) => service.lifecycleState.value,
@@ -321,7 +324,7 @@ class _AppLifecycleWidgetState extends ConsumerState<AppLifecycleWidget> {
     super.initState();
     _service = ref.read(appLifecycleServiceProvider);
     _service.initialize();
-    
+
     _setupCallbacks();
   }
 
@@ -329,19 +332,19 @@ class _AppLifecycleWidgetState extends ConsumerState<AppLifecycleWidget> {
     if (widget.onResume != null) {
       _service.addResumeCallback(widget.onResume!);
     }
-    
+
     if (widget.onPause != null) {
       _service.addPauseCallback(widget.onPause!);
     }
-    
+
     if (widget.onDetach != null) {
       _service.addDetachCallback(widget.onDetach!);
     }
-    
+
     if (widget.onInactive != null) {
       _service.addInactiveCallback(widget.onInactive!);
     }
-    
+
     if (widget.onHidden != null) {
       _service.addHiddenCallback(widget.onHidden!);
     }
@@ -352,30 +355,30 @@ class _AppLifecycleWidgetState extends ConsumerState<AppLifecycleWidget> {
     if (widget.onResume != null) {
       _service.removeResumeCallback(widget.onResume!);
     }
-    
+
     if (widget.onPause != null) {
       _service.removePauseCallback(widget.onPause!);
     }
-    
+
     if (widget.onDetach != null) {
       _service.removeDetachCallback(widget.onDetach!);
     }
-    
+
     if (widget.onInactive != null) {
       _service.removeInactiveCallback(widget.onInactive!);
     }
-    
+
     if (widget.onHidden != null) {
       _service.removeHiddenCallback(widget.onHidden!);
     }
-    
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final lifecycleState = ref.watch(appLifecycleStateProvider);
-    
+
     return lifecycleState.when(
       data: (state) {
         debugPrint('Current lifecycle state: $state');

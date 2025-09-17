@@ -23,12 +23,7 @@ enum SyncStatus {
   noConnection,
 }
 
-enum ConflictResolution {
-  localWins,
-  remoteWins,
-  merge,
-  manual,
-}
+enum ConflictResolution { localWins, remoteWins, merge, manual }
 
 class SyncConflict {
   final String entityType;
@@ -48,22 +43,22 @@ class SyncConflict {
   });
 
   Map<String, dynamic> toJson() => {
-        'entityType': entityType,
-        'entityId': entityId,
-        'localData': localData,
-        'remoteData': remoteData,
-        'localTimestamp': localTimestamp.toIso8601String(),
-        'remoteTimestamp': remoteTimestamp.toIso8601String(),
-      };
+    'entityType': entityType,
+    'entityId': entityId,
+    'localData': localData,
+    'remoteData': remoteData,
+    'localTimestamp': localTimestamp.toIso8601String(),
+    'remoteTimestamp': remoteTimestamp.toIso8601String(),
+  };
 
   static SyncConflict fromJson(Map<String, dynamic> json) => SyncConflict(
-        entityType: json['entityType'] as String,
-        entityId: json['entityId'] as String,
-        localData: json['localData'] as Map<String, dynamic>,
-        remoteData: json['remoteData'] as Map<String, dynamic>,
-        localTimestamp: DateTime.parse(json['localTimestamp'] as String),
-        remoteTimestamp: DateTime.parse(json['remoteTimestamp'] as String),
-      );
+    entityType: json['entityType'] as String,
+    entityId: json['entityId'] as String,
+    localData: json['localData'] as Map<String, dynamic>,
+    remoteData: json['remoteData'] as Map<String, dynamic>,
+    localTimestamp: DateTime.parse(json['localTimestamp'] as String),
+    remoteTimestamp: DateTime.parse(json['remoteTimestamp'] as String),
+  );
 }
 
 class SyncResult {
@@ -109,8 +104,8 @@ class SyncService {
   SyncService({
     required GoogleDriveService googleDriveService,
     AppDatabase? database,
-  })  : _googleDriveService = googleDriveService,
-        _database = database ?? AppDatabase.instance {
+  }) : _googleDriveService = googleDriveService,
+       _database = database ?? AppDatabase.instance {
     _initializeDAOs();
   }
 
@@ -124,7 +119,8 @@ class SyncService {
 
   SyncStatus get currentStatus => _currentStatus;
   DateTime? get lastSyncTime => _lastSyncTime;
-  List<SyncConflict> get pendingConflicts => List.unmodifiable(_pendingConflicts);
+  List<SyncConflict> get pendingConflicts =>
+      List.unmodifiable(_pendingConflicts);
 
   Future<bool> get isOnline async {
     final connectivityResult = await Connectivity().checkConnectivity();
@@ -170,13 +166,14 @@ class SyncService {
         localData,
         remoteBackup?['data'] != null
             ? jsonDecode(remoteBackup!['data'] as String)
-                as Map<String, dynamic>
+                  as Map<String, dynamic>
             : {},
         localMetadata,
         remoteMetadata ?? {},
       );
 
-      if (conflicts.isNotEmpty && defaultResolution == ConflictResolution.manual) {
+      if (conflicts.isNotEmpty &&
+          defaultResolution == ConflictResolution.manual) {
         _pendingConflicts = conflicts;
         onConflictsDetected?.call(conflicts);
         return SyncResult(
@@ -192,7 +189,7 @@ class SyncService {
         localData,
         remoteBackup?['data'] != null
             ? jsonDecode(remoteBackup!['data'] as String)
-                as Map<String, dynamic>
+                  as Map<String, dynamic>
             : {},
         defaultResolution,
       );
@@ -286,7 +283,11 @@ class SyncService {
 
       return true;
     } catch (e, stackTrace) {
-      _logger.e('Failed to resolve conflict manually', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to resolve conflict manually',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -312,7 +313,11 @@ class SyncService {
         _updateStatus(SyncStatus.error);
       }
     } catch (e, stackTrace) {
-      _logger.e('Failed to complete manual sync', error: e, stackTrace: stackTrace);
+      _logger.e(
+        'Failed to complete manual sync',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _updateStatus(SyncStatus.error);
     } finally {
       _updateStatus(SyncStatus.idle);
@@ -380,7 +385,13 @@ class SyncService {
     Map<String, dynamic> remoteMetadata,
   ) async {
     final conflicts = <SyncConflict>[];
-    final entityTypes = ['profiles', 'medicalRecords', 'reminders', 'tags', 'attachments'];
+    final entityTypes = [
+      'profiles',
+      'medicalRecords',
+      'reminders',
+      'tags',
+      'attachments',
+    ];
 
     for (final entityType in entityTypes) {
       final localEntities = localData[entityType] as List<dynamic>? ?? [];
@@ -408,23 +419,28 @@ class SyncService {
         if (localEntity != null && remoteEntity != null) {
           // Both exist - check for conflicts
           final localUpdated = DateTime.tryParse(
-            (localEntity['updatedAt'] ?? localEntity['createdAt']) as String? ?? '',
+            (localEntity['updatedAt'] ?? localEntity['createdAt']) as String? ??
+                '',
           );
           final remoteUpdated = DateTime.tryParse(
-            (remoteEntity['updatedAt'] ?? remoteEntity['createdAt']) as String? ?? '',
+            (remoteEntity['updatedAt'] ?? remoteEntity['createdAt'])
+                    as String? ??
+                '',
           );
 
           if (localUpdated != null &&
               remoteUpdated != null &&
               _entitiesAreDifferent(localEntity, remoteEntity)) {
-            conflicts.add(SyncConflict(
-              entityType: entityType,
-              entityId: id,
-              localData: localEntity,
-              remoteData: remoteEntity,
-              localTimestamp: localUpdated,
-              remoteTimestamp: remoteUpdated,
-            ));
+            conflicts.add(
+              SyncConflict(
+                entityType: entityType,
+                entityId: id,
+                localData: localEntity,
+                remoteData: remoteEntity,
+                localTimestamp: localUpdated,
+                remoteTimestamp: remoteUpdated,
+              ),
+            );
           }
         }
       }
@@ -433,10 +449,13 @@ class SyncService {
     return conflicts;
   }
 
-  bool _entitiesAreDifferent(Map<String, dynamic> entity1, Map<String, dynamic> entity2) {
+  bool _entitiesAreDifferent(
+    Map<String, dynamic> entity1,
+    Map<String, dynamic> entity2,
+  ) {
     // Compare significant fields (excluding timestamps)
     final excludeFields = {'createdAt', 'updatedAt', 'lastSyncAt'};
-    
+
     final keys1 = entity1.keys.where((k) => !excludeFields.contains(k)).toSet();
     final keys2 = entity2.keys.where((k) => !excludeFields.contains(k)).toSet();
 
@@ -536,7 +555,9 @@ class SyncService {
     return merged;
   }
 
-  Future<Map<String, int>> _applyResolvedData(Map<String, dynamic> resolvedData) async {
+  Future<Map<String, int>> _applyResolvedData(
+    Map<String, dynamic> resolvedData,
+  ) async {
     final stats = <String, int>{};
 
     // Apply profiles
@@ -555,7 +576,10 @@ class SyncService {
       final medicalRecords = resolvedData['medicalRecords'] as List<dynamic>;
       int recordCount = 0;
       for (final recordData in medicalRecords) {
-        await _applyEntityData('medicalRecords', recordData as Map<String, dynamic>);
+        await _applyEntityData(
+          'medicalRecords',
+          recordData as Map<String, dynamic>,
+        );
         recordCount++;
       }
       stats['medicalRecords'] = recordCount;
@@ -566,7 +590,10 @@ class SyncService {
       final reminders = resolvedData['reminders'] as List<dynamic>;
       int reminderCount = 0;
       for (final reminderData in reminders) {
-        await _applyEntityData('reminders', reminderData as Map<String, dynamic>);
+        await _applyEntityData(
+          'reminders',
+          reminderData as Map<String, dynamic>,
+        );
         reminderCount++;
       }
       stats['reminders'] = reminderCount;
@@ -588,7 +615,10 @@ class SyncService {
       final attachments = resolvedData['attachments'] as List<dynamic>;
       int attachmentCount = 0;
       for (final attachmentData in attachments) {
-        await _applyEntityData('attachments', attachmentData as Map<String, dynamic>);
+        await _applyEntityData(
+          'attachments',
+          attachmentData as Map<String, dynamic>,
+        );
         attachmentCount++;
       }
       stats['attachments'] = attachmentCount;
@@ -597,7 +627,10 @@ class SyncService {
     return stats;
   }
 
-  Future<void> _applyEntityData(String entityType, Map<String, dynamic> data) async {
+  Future<void> _applyEntityData(
+    String entityType,
+    Map<String, dynamic> data,
+  ) async {
     switch (entityType) {
       case 'profiles':
         // Note: This would need to be implemented based on your ProfileDao methods
@@ -643,7 +676,8 @@ class SyncService {
   }
 
   Future<bool> cancelSync() async {
-    if (_currentStatus == SyncStatus.idle || _currentStatus == SyncStatus.completed) {
+    if (_currentStatus == SyncStatus.idle ||
+        _currentStatus == SyncStatus.completed) {
       return false;
     }
 

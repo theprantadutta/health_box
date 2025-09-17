@@ -20,11 +20,13 @@ class EmergencyCardService {
   EmergencyCardService({
     ProfileDao? profileDao,
     MedicalRecordsService? medicalRecordsService,
-  })  : _profileDao = profileDao ?? ProfileDao(AppDatabase.instance),
-        _medicalRecordsService = medicalRecordsService ?? MedicalRecordsService();
+  }) : _profileDao = profileDao ?? ProfileDao(AppDatabase.instance),
+       _medicalRecordsService =
+           medicalRecordsService ?? MedicalRecordsService();
 
   /// Generate emergency card for a family member profile
-  Future<String> generateEmergencyCard(String profileId, {
+  Future<String> generateEmergencyCard(
+    String profileId, {
     bool includeQRCode = true,
     bool includeMedications = true,
     bool includeAllergies = true,
@@ -40,7 +42,7 @@ class EmergencyCardService {
 
       // Get medical data
       final emergencyData = await _gatherEmergencyData(
-        profileId, 
+        profileId,
         includeMedications: includeMedications,
         includeAllergies: includeAllergies,
         includeConditions: includeConditions,
@@ -48,7 +50,7 @@ class EmergencyCardService {
 
       // Create PDF
       final pdf = pw.Document();
-      
+
       // Generate QR code data if requested
       String? qrCodeData;
       if (includeQRCode) {
@@ -73,12 +75,15 @@ class EmergencyCardService {
       final output = await _savePDF(pdf, profileId);
       return output;
     } catch (e) {
-      throw EmergencyCardException('Failed to generate emergency card: ${e.toString()}');
+      throw EmergencyCardException(
+        'Failed to generate emergency card: ${e.toString()}',
+      );
     }
   }
 
   /// Generate QR code as image bytes
-  Future<Uint8List> generateQRCodeImage(String profileId, {
+  Future<Uint8List> generateQRCodeImage(
+    String profileId, {
     double size = 200.0,
   }) async {
     try {
@@ -108,10 +113,12 @@ class EmergencyCardService {
       final picture = qrPainter.toPicture(size);
       final image = await picture.toImage(size.toInt(), size.toInt());
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      
+
       return bytes!.buffer.asUint8List();
     } catch (e) {
-      throw EmergencyCardException('Failed to generate QR code: ${e.toString()}');
+      throw EmergencyCardException(
+        'Failed to generate QR code: ${e.toString()}',
+      );
     }
   }
 
@@ -119,7 +126,7 @@ class EmergencyCardService {
   Future<String> saveEmergencyCardConfig(EmergencyCardConfig config) async {
     try {
       final cardId = config.id ?? 'emergency_card_${const Uuid().v4()}';
-      
+
       final emergencyCard = EmergencyCardsCompanion(
         id: Value(cardId),
         profileId: Value(config.profileId),
@@ -136,27 +143,40 @@ class EmergencyCardService {
 
       if (config.id != null) {
         // Update existing
-        await (AppDatabase.instance.update(AppDatabase.instance.emergencyCards)
-              ..where((card) => card.id.equals(config.id!)))
-            .write(emergencyCard);
+        await (AppDatabase.instance.update(
+          AppDatabase.instance.emergencyCards,
+        )..where((card) => card.id.equals(config.id!))).write(emergencyCard);
       } else {
         // Create new
-        await AppDatabase.instance.into(AppDatabase.instance.emergencyCards).insert(emergencyCard);
+        await AppDatabase.instance
+            .into(AppDatabase.instance.emergencyCards)
+            .insert(emergencyCard);
       }
 
       return cardId;
     } catch (e) {
-      throw EmergencyCardException('Failed to save emergency card config: ${e.toString()}');
+      throw EmergencyCardException(
+        'Failed to save emergency card config: ${e.toString()}',
+      );
     }
   }
 
   /// Get emergency card configuration for a profile
   Future<EmergencyCardConfig?> getEmergencyCardConfig(String profileId) async {
     try {
-      final query = AppDatabase.instance.select(AppDatabase.instance.emergencyCards)
-        ..where((card) => card.profileId.equals(profileId) & card.isActive.equals(true))
-        ..orderBy([(card) => OrderingTerm(expression: card.lastUpdated, mode: OrderingMode.desc)])
-        ..limit(1);
+      final query =
+          AppDatabase.instance.select(AppDatabase.instance.emergencyCards)
+            ..where(
+              (card) =>
+                  card.profileId.equals(profileId) & card.isActive.equals(true),
+            )
+            ..orderBy([
+              (card) => OrderingTerm(
+                expression: card.lastUpdated,
+                mode: OrderingMode.desc,
+              ),
+            ])
+            ..limit(1);
 
       final card = await query.getSingleOrNull();
       if (card == null) return null;
@@ -175,19 +195,23 @@ class EmergencyCardService {
         lastUpdated: card.lastUpdated,
       );
     } catch (e) {
-      throw EmergencyCardException('Failed to get emergency card config: ${e.toString()}');
+      throw EmergencyCardException(
+        'Failed to get emergency card config: ${e.toString()}',
+      );
     }
   }
 
   /// Delete emergency card configuration
   Future<bool> deleteEmergencyCardConfig(String configId) async {
     try {
-      final result = await (AppDatabase.instance.delete(AppDatabase.instance.emergencyCards)
-            ..where((card) => card.id.equals(configId)))
-          .go();
+      final result = await (AppDatabase.instance.delete(
+        AppDatabase.instance.emergencyCards,
+      )..where((card) => card.id.equals(configId))).go();
       return result > 0;
     } catch (e) {
-      throw EmergencyCardException('Failed to delete emergency card config: ${e.toString()}');
+      throw EmergencyCardException(
+        'Failed to delete emergency card config: ${e.toString()}',
+      );
     }
   }
 
@@ -200,15 +224,24 @@ class EmergencyCardService {
     bool includeConditions = true,
   }) async {
     final medications = includeMedications
-        ? await _medicalRecordsService.searchRecords(profileId: profileId, recordType: 'medication')
+        ? await _medicalRecordsService.searchRecords(
+            profileId: profileId,
+            recordType: 'medication',
+          )
         : <MedicalRecord>[];
 
     final allergies = includeAllergies
-        ? await _medicalRecordsService.searchRecords(profileId: profileId, recordType: 'allergy')
+        ? await _medicalRecordsService.searchRecords(
+            profileId: profileId,
+            recordType: 'allergy',
+          )
         : <MedicalRecord>[];
 
     final conditions = includeConditions
-        ? await _medicalRecordsService.searchRecords(profileId: profileId, recordType: 'chronic_condition')
+        ? await _medicalRecordsService.searchRecords(
+            profileId: profileId,
+            recordType: 'chronic_condition',
+          )
         : <MedicalRecord>[];
 
     return EmergencyData(
@@ -288,10 +321,7 @@ class EmergencyCardService {
             ),
             if (qrCodeData != null) ...[
               pw.SizedBox(width: 20),
-              pw.Expanded(
-                flex: 1,
-                child: _buildQRCodeSection(qrCodeData),
-              ),
+              pw.Expanded(flex: 1, child: _buildQRCodeSection(qrCodeData)),
             ],
           ],
         ),
@@ -388,7 +418,10 @@ class EmergencyCardService {
           ),
           pw.SizedBox(height: 8),
           if (profile.emergencyContact != null)
-            pw.Text(profile.emergencyContact!, style: const pw.TextStyle(fontSize: 12)),
+            pw.Text(
+              profile.emergencyContact!,
+              style: const pw.TextStyle(fontSize: 12),
+            ),
           if (profile.insuranceInfo != null) ...[
             pw.SizedBox(height: 4),
             _buildInfoRow('Insurance:', profile.insuranceInfo!),
@@ -424,20 +457,25 @@ class EmergencyCardService {
           if (criticalAllergies.isEmpty)
             pw.Text('None reported', style: const pw.TextStyle(fontSize: 12))
           else
-            ...criticalAllergies.map((allergy) => pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 4),
-              child: pw.Row(
-                children: [
-                  pw.Text('• ', style: pw.TextStyle(fontSize: 12, color: PdfColors.red)),
-                  pw.Expanded(
-                    child: pw.Text(
-                      allergy.title,
-                      style: const pw.TextStyle(fontSize: 12),
+            ...criticalAllergies.map(
+              (allergy) => pw.Padding(
+                padding: const pw.EdgeInsets.only(bottom: 4),
+                child: pw.Row(
+                  children: [
+                    pw.Text(
+                      '• ',
+                      style: pw.TextStyle(fontSize: 12, color: PdfColors.red),
                     ),
-                  ),
-                ],
+                    pw.Expanded(
+                      child: pw.Text(
+                        allergy.title,
+                        style: const pw.TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
         ],
       ),
     );
@@ -468,20 +506,24 @@ class EmergencyCardService {
           if (activeMedications.isEmpty)
             pw.Text('None reported', style: const pw.TextStyle(fontSize: 12))
           else
-            ...activeMedications.take(10).map((medication) => pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 4),
-              child: pw.Row(
-                children: [
-                  pw.Text('• ', style: const pw.TextStyle(fontSize: 12)),
-                  pw.Expanded(
-                    child: pw.Text(
-                      medication.title,
-                      style: const pw.TextStyle(fontSize: 12),
+            ...activeMedications
+                .take(10)
+                .map(
+                  (medication) => pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 4),
+                    child: pw.Row(
+                      children: [
+                        pw.Text('• ', style: const pw.TextStyle(fontSize: 12)),
+                        pw.Expanded(
+                          child: pw.Text(
+                            medication.title,
+                            style: const pw.TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            )),
+                ),
         ],
       ),
     );
@@ -510,20 +552,24 @@ class EmergencyCardService {
           if (conditions.isEmpty)
             pw.Text('None reported', style: const pw.TextStyle(fontSize: 12))
           else
-            ...conditions.take(8).map((condition) => pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 4),
-              child: pw.Row(
-                children: [
-                  pw.Text('• ', style: const pw.TextStyle(fontSize: 12)),
-                  pw.Expanded(
-                    child: pw.Text(
-                      condition.title,
-                      style: const pw.TextStyle(fontSize: 12),
+            ...conditions
+                .take(8)
+                .map(
+                  (condition) => pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 4),
+                    child: pw.Row(
+                      children: [
+                        pw.Text('• ', style: const pw.TextStyle(fontSize: 12)),
+                        pw.Expanded(
+                          child: pw.Text(
+                            condition.title,
+                            style: const pw.TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            )),
+                ),
         ],
       ),
     );
@@ -630,12 +676,13 @@ class EmergencyCardService {
 
   Future<String> _savePDF(pw.Document pdf, String profileId) async {
     final directory = await getApplicationDocumentsDirectory();
-    final fileName = 'emergency_card_${profileId}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+    final fileName =
+        'emergency_card_${profileId}_${DateTime.now().millisecondsSinceEpoch}.pdf';
     final file = File('${directory.path}/$fileName');
-    
+
     final bytes = await pdf.save();
     await file.writeAsBytes(bytes);
-    
+
     return file.path;
   }
 

@@ -30,7 +30,8 @@ class Material3Theme {
     );
   }
 
-  static Future<({ColorScheme light, ColorScheme dark})?> _getDynamicColorsFromSystem() async {
+  static Future<({ColorScheme light, ColorScheme dark})?>
+  _getDynamicColorsFromSystem() async {
     try {
       final corePalette = await DynamicColorPlugin.getCorePalette();
       if (corePalette != null) {
@@ -50,12 +51,12 @@ class Material3Theme {
     String? fontFamily,
   }) {
     final brightness = colorScheme.brightness;
-    
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       fontFamily: fontFamily,
-      
+
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
@@ -68,16 +69,12 @@ class Material3Theme {
           fontWeight: FontWeight.w500,
           color: colorScheme.onSurface,
         ),
-        iconTheme: IconThemeData(
-          color: colorScheme.onSurface,
-        ),
+        iconTheme: IconThemeData(color: colorScheme.onSurface),
       ),
 
       cardTheme: CardThemeData(
         elevation: brightness == Brightness.light ? 1 : 3,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         clipBehavior: Clip.antiAlias,
         surfaceTintColor: colorScheme.surfaceTint,
         color: colorScheme.surface,
@@ -113,7 +110,6 @@ class Material3Theme {
       ),
 
       // Note: filledButtonThemeData is not available in current Flutter version
-
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -171,9 +167,7 @@ class Material3Theme {
         backgroundColor: colorScheme.primaryContainer,
         foregroundColor: colorScheme.onPrimaryContainer,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
 
       navigationBarTheme: NavigationBarThemeData(
@@ -206,10 +200,7 @@ class Material3Theme {
               size: 24,
             );
           }
-          return IconThemeData(
-            color: colorScheme.onSurfaceVariant,
-            size: 24,
-          );
+          return IconThemeData(color: colorScheme.onSurfaceVariant, size: 24);
         }),
       ),
 
@@ -238,7 +229,9 @@ class Material3Theme {
       ),
 
       searchBarTheme: SearchBarThemeData(
-        backgroundColor: WidgetStateProperty.all(colorScheme.surfaceContainerHigh),
+        backgroundColor: WidgetStateProperty.all(
+          colorScheme.surfaceContainerHigh,
+        ),
         surfaceTintColor: WidgetStateProperty.all(colorScheme.surfaceTint),
         overlayColor: WidgetStateProperty.all(colorScheme.surface),
         shadowColor: WidgetStateProperty.all(colorScheme.shadow),
@@ -249,9 +242,7 @@ class Material3Theme {
           return 1;
         }),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         ),
       ),
 
@@ -259,9 +250,7 @@ class Material3Theme {
         backgroundColor: colorScheme.surfaceContainerHigh,
         surfaceTintColor: colorScheme.surfaceTint,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         titleTextStyle: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w400,
@@ -286,14 +275,10 @@ class Material3Theme {
 
       snackBarTheme: SnackBarThemeData(
         backgroundColor: colorScheme.inverseSurface,
-        contentTextStyle: TextStyle(
-          color: colorScheme.onInverseSurface,
-        ),
+        contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
         actionTextColor: colorScheme.inversePrimary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
 
       chipTheme: ChipThemeData(
@@ -306,9 +291,7 @@ class Material3Theme {
         brightness: brightness,
         elevation: 0,
         pressElevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
 
       switchTheme: SwitchThemeData(
@@ -346,9 +329,7 @@ class Material3Theme {
           return null;
         }),
         checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(2),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       ),
 
       radioTheme: RadioThemeData(
@@ -364,15 +345,21 @@ class Material3Theme {
 
   static SystemUiOverlayStyle getSystemUiOverlayStyle(ColorScheme colorScheme) {
     final brightness = colorScheme.brightness;
-    
+
     return SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarBrightness: brightness == Brightness.light ? Brightness.light : Brightness.dark,
-      statusBarIconBrightness: brightness == Brightness.light ? Brightness.dark : Brightness.light,
+      statusBarBrightness: brightness == Brightness.light
+          ? Brightness.light
+          : Brightness.dark,
+      statusBarIconBrightness: brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
       systemNavigationBarColor: colorScheme.surface,
-      systemNavigationBarIconBrightness: brightness == Brightness.light ? Brightness.dark : Brightness.light,
-      systemNavigationBarDividerColor: brightness == Brightness.light 
-          ? colorScheme.outlineVariant 
+      systemNavigationBarIconBrightness: brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+      systemNavigationBarDividerColor: brightness == Brightness.light
+          ? colorScheme.outlineVariant
           : Colors.transparent,
     );
   }

@@ -137,7 +137,9 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.3,
+          ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: theme.colorScheme.outline.withValues(alpha: 0.2),
@@ -166,7 +168,10 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
       future: _getSelectedTags(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const SizedBox(height: 40, child: Center(child: CircularProgressIndicator()));
+          return const SizedBox(
+            height: 40,
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
 
         final selectedTags = snapshot.data!;
@@ -174,7 +179,9 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
         return Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: selectedTags.map((tag) => _buildSelectedTagChip(theme, tag)).toList(),
+          children: selectedTags
+              .map((tag) => _buildSelectedTagChip(theme, tag))
+              .toList(),
         );
       },
     );
@@ -182,10 +189,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
 
   Widget _buildSelectedTagChip(ThemeData theme, Tag tag) {
     return Chip(
-      avatar: CircleAvatar(
-        backgroundColor: _parseColor(tag.color),
-        radius: 8,
-      ),
+      avatar: CircleAvatar(backgroundColor: _parseColor(tag.color), radius: 8),
       label: Text(tag.name),
       deleteIcon: const Icon(Icons.close, size: 18),
       onDeleted: () {
@@ -250,14 +254,13 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
 
   Widget _buildTagChip(ThemeData theme, Tag tag) {
     final isSelected = widget.selectedTagIds.contains(tag.id);
-    final canSelect = widget.allowMultiSelect || widget.selectedTagIds.isEmpty || isSelected;
-    final atMaxLimit = widget.selectedTagIds.length >= widget.maxTags && !isSelected;
+    final canSelect =
+        widget.allowMultiSelect || widget.selectedTagIds.isEmpty || isSelected;
+    final atMaxLimit =
+        widget.selectedTagIds.length >= widget.maxTags && !isSelected;
 
     return FilterChip(
-      avatar: CircleAvatar(
-        backgroundColor: _parseColor(tag.color),
-        radius: 8,
-      ),
+      avatar: CircleAvatar(backgroundColor: _parseColor(tag.color), radius: 8),
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -300,8 +303,8 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
         color: isSelected
             ? theme.colorScheme.onPrimaryContainer
             : (canSelect && !atMaxLimit)
-                ? theme.colorScheme.onSurface
-                : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            ? theme.colorScheme.onSurface
+            : theme.colorScheme.onSurface.withValues(alpha: 0.5),
       ),
     );
   }
@@ -320,7 +323,9 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
         ActionChip(
           avatar: const Icon(Icons.add, size: 18),
           label: Text('Create "${_searchQuery.trim()}"'),
-          onPressed: _searchQuery.trim().isNotEmpty ? () => _showCreateTagDialog(_searchQuery.trim()) : null,
+          onPressed: _searchQuery.trim().isNotEmpty
+              ? () => _showCreateTagDialog(_searchQuery.trim())
+              : null,
           backgroundColor: theme.colorScheme.secondaryContainer,
           labelStyle: TextStyle(color: theme.colorScheme.onSecondaryContainer),
         ),
@@ -340,19 +345,28 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
     var filtered = tags;
 
     // Filter out already selected tags
-    filtered = filtered.where((tag) => !widget.selectedTagIds.contains(tag.id)).toList();
+    filtered = filtered
+        .where((tag) => !widget.selectedTagIds.contains(tag.id))
+        .toList();
 
     // Filter by category if specified
     if (widget.filterCategory != null) {
-      filtered = filtered.where((tag) => tag.category == widget.filterCategory).toList();
+      filtered = filtered
+          .where((tag) => tag.category == widget.filterCategory)
+          .toList();
     }
 
     // Filter by search query
     if (_searchQuery.isNotEmpty) {
       filtered = filtered
-          .where((tag) =>
-              tag.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              (tag.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false))
+          .where(
+            (tag) =>
+                tag.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                (tag.description?.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ??
+                    false),
+          )
           .toList();
     }
 
@@ -422,10 +436,22 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
                       },
                       items: const [
                         DropdownMenuItem(value: null, child: Text('None')),
-                        DropdownMenuItem(value: 'Medical', child: Text('Medical')),
-                        DropdownMenuItem(value: 'Medication', child: Text('Medication')),
-                        DropdownMenuItem(value: 'Appointment', child: Text('Appointment')),
-                        DropdownMenuItem(value: 'Personal', child: Text('Personal')),
+                        DropdownMenuItem(
+                          value: 'Medical',
+                          child: Text('Medical'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Medication',
+                          child: Text('Medication'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Appointment',
+                          child: Text('Appointment'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Personal',
+                          child: Text('Personal'),
+                        ),
                       ],
                     ),
                   ),
@@ -499,19 +525,21 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
       final request = CreateTagRequest(
         name: name.trim(),
         description: description.trim().isNotEmpty ? description.trim() : null,
-        color: '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
+        color:
+            '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}',
         category: category,
       );
 
       final tagId = await _tagService.createTag(request);
-      
+
       if (mounted) {
         Navigator.of(context).pop();
-        
+
         // Add the new tag to selection
-        final updatedSelection = List<String>.from(widget.selectedTagIds)..add(tagId);
+        final updatedSelection = List<String>.from(widget.selectedTagIds)
+          ..add(tagId);
         widget.onSelectionChanged(updatedSelection);
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Tag created and selected')),
         );
@@ -536,7 +564,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
   List<Color> _getTagColors() {
     return [
       const Color(0xFF2196F3), // Blue
-      const Color(0xFF4CAF50), // Green  
+      const Color(0xFF4CAF50), // Green
       const Color(0xFFF44336), // Red
       const Color(0xFFFF9800), // Orange
       const Color(0xFF9C27B0), // Purple

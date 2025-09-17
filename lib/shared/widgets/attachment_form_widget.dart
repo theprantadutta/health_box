@@ -126,10 +126,7 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
             color: theme.colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: 12),
-          Text(
-            'No attachments added',
-            style: theme.textTheme.titleSmall,
-          ),
+          Text('No attachments added', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
             'Add photos, documents, or other files to this record',
@@ -153,7 +150,11 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
     );
   }
 
-  Widget _buildAttachmentItem(ThemeData theme, AttachmentResult attachment, int index) {
+  Widget _buildAttachmentItem(
+    ThemeData theme,
+    AttachmentResult attachment,
+    int index,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),

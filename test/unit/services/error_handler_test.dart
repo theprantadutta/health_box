@@ -23,7 +23,10 @@ void main() {
 
         expect(exception.message, equals('Database connection failed'));
         expect(exception.code, equals('DB001'));
-        expect(exception.toString(), contains('AppException: Database connection failed'));
+        expect(
+          exception.toString(),
+          contains('AppException: Database connection failed'),
+        );
       });
 
       test('should create NetworkException correctly', () {
@@ -41,12 +44,15 @@ void main() {
           message: 'Validation failed',
           fieldErrors: {
             'email': ['Invalid email format'],
-            'password': ['Password too short', 'Password must contain digits']
+            'password': ['Password too short', 'Password must contain digits'],
           },
         );
 
         expect(exception.message, equals('Validation failed'));
-        expect(exception.fieldErrors!['email'], contains('Invalid email format'));
+        expect(
+          exception.fieldErrors!['email'],
+          contains('Invalid email format'),
+        );
         expect(exception.fieldErrors!['password']!.length, equals(2));
       });
     });
@@ -54,7 +60,7 @@ void main() {
     group('error conversion', () {
       test('should pass through AppException unchanged', () async {
         const originalException = DatabaseException(message: 'Test error');
-        
+
         bool callbackCalled = false;
         errorHandler.addErrorCallback((error) {
           expect(error, same(originalException));
@@ -67,57 +73,63 @@ void main() {
 
       test('should convert FormatException to ValidationException', () async {
         final formatException = FormatException('Invalid format');
-        
+
         AppException? capturedError;
         errorHandler.addErrorCallback((error) {
           capturedError = error;
         });
 
         await errorHandler.handleError(formatException);
-        
+
         expect(capturedError, isA<ValidationException>());
         expect(capturedError!.message, contains('Invalid format'));
         expect(capturedError!.originalError, same(formatException));
       });
 
-      test('should convert database-related errors to DatabaseException', () async {
-        final dbError = Exception('SQL error: table not found');
-        
-        AppException? capturedError;
-        errorHandler.addErrorCallback((error) {
-          capturedError = error;
-        });
+      test(
+        'should convert database-related errors to DatabaseException',
+        () async {
+          final dbError = Exception('SQL error: table not found');
 
-        await errorHandler.handleError(dbError);
-        
-        expect(capturedError, isA<DatabaseException>());
-        expect(capturedError!.message, contains('SQL error'));
-      });
+          AppException? capturedError;
+          errorHandler.addErrorCallback((error) {
+            capturedError = error;
+          });
 
-      test('should convert network-related errors to NetworkException', () async {
-        final networkError = Exception('Connection timeout occurred');
-        
-        AppException? capturedError;
-        errorHandler.addErrorCallback((error) {
-          capturedError = error;
-        });
+          await errorHandler.handleError(dbError);
 
-        await errorHandler.handleError(networkError);
-        
-        expect(capturedError, isA<NetworkException>());
-        expect(capturedError!.message, contains('Connection timeout'));
-      });
+          expect(capturedError, isA<DatabaseException>());
+          expect(capturedError!.message, contains('SQL error'));
+        },
+      );
+
+      test(
+        'should convert network-related errors to NetworkException',
+        () async {
+          final networkError = Exception('Connection timeout occurred');
+
+          AppException? capturedError;
+          errorHandler.addErrorCallback((error) {
+            capturedError = error;
+          });
+
+          await errorHandler.handleError(networkError);
+
+          expect(capturedError, isA<NetworkException>());
+          expect(capturedError!.message, contains('Connection timeout'));
+        },
+      );
 
       test('should convert unknown errors to generic AppException', () async {
         final unknownError = Exception('Unknown error type');
-        
+
         AppException? capturedError;
         errorHandler.addErrorCallback((error) {
           capturedError = error;
         });
 
         await errorHandler.handleError(unknownError);
-        
+
         expect(capturedError, isA<AppException>());
         expect(capturedError!.message, contains('Unknown error type'));
       });
@@ -141,7 +153,7 @@ void main() {
         int callbackCalled = 0;
 
         void callback(AppException error) => callbackCalled++;
-        
+
         errorHandler.addErrorCallback(callback);
         await errorHandler.handleError(Exception('Test error'));
         expect(callbackCalled, equals(1));
@@ -153,7 +165,7 @@ void main() {
 
       test('should handle callback exceptions gracefully', () async {
         errorHandler.addErrorCallback((_) => throw Exception('Callback error'));
-        
+
         bool secondCallbackCalled = false;
         errorHandler.addErrorCallback((_) => secondCallbackCalled = true);
 
@@ -166,7 +178,7 @@ void main() {
     group('recovery callbacks', () {
       test('should call recovery callback for matching error type', () async {
         bool recoveryCalled = false;
-        
+
         errorHandler.setRecoveryCallback<DatabaseException>((error) async {
           recoveryCalled = true;
           expect(error, isA<DatabaseException>());
@@ -176,26 +188,31 @@ void main() {
         expect(recoveryCalled, isTrue);
       });
 
-      test('should not call recovery callback for different error type', () async {
-        bool recoveryCalled = false;
-        
-        errorHandler.setRecoveryCallback<DatabaseException>((error) async {
-          recoveryCalled = true;
-        });
+      test(
+        'should not call recovery callback for different error type',
+        () async {
+          bool recoveryCalled = false;
 
-        await errorHandler.handleError(NetworkException(message: 'Network error'));
-        expect(recoveryCalled, isFalse);
-      });
+          errorHandler.setRecoveryCallback<DatabaseException>((error) async {
+            recoveryCalled = true;
+          });
+
+          await errorHandler.handleError(
+            NetworkException(message: 'Network error'),
+          );
+          expect(recoveryCalled, isFalse);
+        },
+      );
 
       test('should remove recovery callbacks', () async {
         bool recoveryCalled = false;
-        
+
         errorHandler.setRecoveryCallback<DatabaseException>((error) async {
           recoveryCalled = true;
         });
-        
+
         errorHandler.removeRecoveryCallback<DatabaseException>();
-        
+
         await errorHandler.handleError(DatabaseException(message: 'DB error'));
         expect(recoveryCalled, isFalse);
       });
@@ -252,7 +269,9 @@ void main() {
 
       test('should rethrow error when no fallback provided', () async {
         expect(
-          () => errorHandler.runGuarded(() async => throw Exception('Operation failed')),
+          () => errorHandler.runGuarded(
+            () async => throw Exception('Operation failed'),
+          ),
           throwsException,
         );
       });
@@ -299,7 +318,7 @@ void main() {
 
       test('should provide convenience methods', () async {
         final testClass = _TestErrorHandlerMixin();
-        
+
         bool errorHandled = false;
         testClass.errorHandler.addErrorCallback((_) => errorHandled = true);
 
@@ -313,9 +332,9 @@ void main() {
         final handler = ErrorHandler();
         handler.addErrorCallback((_) {});
         handler.setRecoveryCallback<AppException>((error) async {});
-        
+
         handler.dispose();
-        
+
         // Should not throw when disposed
         expect(() => handler.dispose(), returnsNormally);
       });

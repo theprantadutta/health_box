@@ -237,8 +237,8 @@
 
 //         // Act
 //         final result = await medicalRecordsService.getRecordsByDateRange(
-//           1, 
-//           '2025-01-01', 
+//           1,
+//           '2025-01-01',
 //           '2025-12-31'
 //         );
 

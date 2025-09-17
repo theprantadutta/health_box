@@ -5,10 +5,10 @@ import 'package:integration_test/integration_test.dart';
 import 'package:health_box/main.dart' as app;
 
 /// Integration test for offline functionality
-/// 
-/// User Story: "As a user, I want the app to work completely offline so I can 
+///
+/// User Story: "As a user, I want the app to work completely offline so I can
 /// access and manage medical records even without internet connectivity."
-/// 
+///
 /// Test Coverage:
 /// - Full app functionality without internet connection
 /// - Local data persistence and retrieval
@@ -18,13 +18,15 @@ import 'package:health_box/main.dart' as app;
 /// - Data integrity during offline operations
 /// - Sync queue management for offline changes
 /// - Error handling for network-dependent features
-/// 
+///
 /// This test MUST fail until offline-first architecture is implemented.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Offline Functionality Integration Tests', () {
-    testWidgets('app launches and functions completely offline', (tester) async {
+    testWidgets('app launches and functions completely offline', (
+      tester,
+    ) async {
       // Simulate offline environment by disabling network connectivity
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
@@ -46,7 +48,7 @@ void main() {
       // Step 2: Verify existing data is accessible offline
       expect(find.text('John Doe'), findsOneWidget);
       expect(find.byKey(const Key('profile_selector')), findsOneWidget);
-      
+
       // Medical records should be visible from local storage
       expect(find.byKey(const Key('recent_records_list')), findsOneWidget);
 
@@ -61,7 +63,7 @@ void main() {
 
       // Network-dependent features should show offline notice
       expect(find.text('Settings'), findsOneWidget);
-      
+
       await tester.tap(find.text('Medical Records'));
       await tester.pumpAndSettle();
 
@@ -76,7 +78,8 @@ void main() {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -95,20 +98,17 @@ void main() {
       expect(find.text('Changes will be saved locally'), findsOneWidget);
 
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Ibuprofen'
+        find.byKey(const Key('medication_name_field')),
+        'Ibuprofen',
+      );
+      await tester.enterText(find.byKey(const Key('dosage_field')), '200mg');
+      await tester.enterText(
+        find.byKey(const Key('frequency_field')),
+        'Every 8 hours as needed',
       );
       await tester.enterText(
-        find.byKey(const Key('dosage_field')), 
-        '200mg'
-      );
-      await tester.enterText(
-        find.byKey(const Key('frequency_field')), 
-        'Every 8 hours as needed'
-      );
-      await tester.enterText(
-        find.byKey(const Key('prescribing_doctor_field')), 
-        'Dr. Johnson'
+        find.byKey(const Key('prescribing_doctor_field')),
+        'Dr. Johnson',
       );
 
       await tester.tap(find.byKey(const Key('save_record_button')));
@@ -130,16 +130,16 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('test_name_field')), 
-        'Complete Blood Count'
+        find.byKey(const Key('test_name_field')),
+        'Complete Blood Count',
       );
       await tester.enterText(
-        find.byKey(const Key('test_results_field')), 
-        'All values within normal range'
+        find.byKey(const Key('test_results_field')),
+        'All values within normal range',
       );
       await tester.enterText(
-        find.byKey(const Key('ordering_physician_field')), 
-        'Dr. Smith'
+        find.byKey(const Key('ordering_physician_field')),
+        'Dr. Smith',
       );
 
       await tester.tap(find.byKey(const Key('save_record_button')));
@@ -148,7 +148,7 @@ void main() {
       // Step 4: Verify multiple offline records
       expect(find.text('Complete Blood Count'), findsOneWidget);
       expect(find.text('Ibuprofen'), findsOneWidget);
-      
+
       // Should show multiple items pending sync
       expect(find.text('2 items pending sync'), findsOneWidget);
     });
@@ -157,7 +157,8 @@ void main() {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -172,13 +173,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Modify dosage
+      await tester.enterText(find.byKey(const Key('dosage_field')), '400mg');
       await tester.enterText(
-        find.byKey(const Key('dosage_field')), 
-        '400mg'
-      );
-      await tester.enterText(
-        find.byKey(const Key('instructions_field')), 
-        'Take with food to avoid stomach upset'
+        find.byKey(const Key('instructions_field')),
+        'Take with food to avoid stomach upset',
       );
 
       await tester.tap(find.byKey(const Key('save_changes_button')));
@@ -198,15 +196,18 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Delete Record?'), findsOneWidget);
-      expect(find.text('This will be deleted when back online'), findsOneWidget);
-      
+      expect(
+        find.text('This will be deleted when back online'),
+        findsOneWidget,
+      );
+
       await tester.tap(find.byKey(const Key('confirm_delete_button')));
       await tester.pumpAndSettle();
 
       // Verify record marked for deletion
       expect(find.text('Marked for deletion'), findsOneWidget);
       expect(find.text('Complete Blood Count'), findsNothing);
-      
+
       // Should show in pending sync queue
       expect(find.text('1 deletion pending sync'), findsOneWidget);
     });
@@ -215,7 +216,8 @@ void main() {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -229,8 +231,8 @@ void main() {
 
       // Step 1: Test search functionality offline
       await tester.enterText(
-        find.byKey(const Key('search_records_field')), 
-        'Ibuprofen'
+        find.byKey(const Key('search_records_field')),
+        'Ibuprofen',
       );
       await tester.pumpAndSettle();
 
@@ -275,7 +277,8 @@ void main() {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -292,15 +295,18 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('New Reminder'), findsOneWidget);
-      expect(find.text('Local notifications only while offline'), findsOneWidget);
+      expect(
+        find.text('Local notifications only while offline'),
+        findsOneWidget,
+      );
 
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Take Morning Medication'
+        find.byKey(const Key('reminder_title_field')),
+        'Take Morning Medication',
       );
       await tester.enterText(
-        find.byKey(const Key('reminder_description_field')), 
-        'Ibuprofen 400mg with breakfast'
+        find.byKey(const Key('reminder_description_field')),
+        'Ibuprofen 400mg with breakfast',
       );
 
       // Set time
@@ -339,7 +345,8 @@ void main() {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -392,7 +399,8 @@ void main() {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -410,7 +418,7 @@ void main() {
 
       expect(find.text('Sync Queue'), findsOneWidget);
       expect(find.text('Offline Mode'), findsOneWidget);
-      
+
       // Should show pending items
       expect(find.text('Pending Changes:'), findsOneWidget);
       expect(find.text('• 1 new prescription'), findsOneWidget);
@@ -423,17 +431,23 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Cannot sync while offline'), findsOneWidget);
-      expect(find.text('Changes will sync when connection restored'), findsOneWidget);
+      expect(
+        find.text('Changes will sync when connection restored'),
+        findsOneWidget,
+      );
 
       // Step 3: Clear sync queue option
       expect(find.byKey(const Key('clear_queue_button')), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('clear_queue_button')));
       await tester.pumpAndSettle();
 
       expect(find.text('Clear Sync Queue?'), findsOneWidget);
-      expect(find.text('This will discard all pending changes'), findsOneWidget);
-      
+      expect(
+        find.text('This will discard all pending changes'),
+        findsOneWidget,
+      );
+
       await tester.tap(find.byKey(const Key('cancel_button')));
       await tester.pumpAndSettle();
     });
@@ -442,7 +456,8 @@ void main() {
       // Start offline
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -453,7 +468,8 @@ void main() {
       // Step 1: Simulate connection restored
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('wifi'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('wifi'),
       );
 
       // Trigger connectivity check
@@ -471,7 +487,7 @@ void main() {
       // Step 3: Verify sync completed
       expect(find.text('Sync completed'), findsOneWidget);
       expect(find.text('All changes synced successfully'), findsOneWidget);
-      
+
       // Sync indicators should be removed
       expect(find.byIcon(Icons.sync_disabled), findsNothing);
       expect(find.text('Sync pending'), findsNothing);
@@ -487,11 +503,14 @@ void main() {
       expect(find.byKey(const Key('sync_settings_button')), findsOneWidget);
     });
 
-    testWidgets('data integrity maintained during offline operations', (tester) async {
+    testWidgets('data integrity maintained during offline operations', (
+      tester,
+    ) async {
       // Set offline mode
       tester.binding.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/connectivity',
-        (message) async => const StandardMethodCodec().encodeSuccessEnvelope('none'),
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope('none'),
       );
 
       app.main();
@@ -504,8 +523,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('medication_name_field')), 
-        'Metformin'
+        find.byKey(const Key('medication_name_field')),
+        'Metformin',
       );
       await tester.tap(find.byKey(const Key('save_record_button')));
       await tester.pumpAndSettle();
@@ -520,10 +539,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('reminder_title_field')), 
-        'Take Metformin'
+        find.byKey(const Key('reminder_title_field')),
+        'Take Metformin',
       );
-      
+
       // Link to medication
       await tester.tap(find.byKey(const Key('link_medication_button')));
       await tester.pumpAndSettle();
@@ -555,7 +574,7 @@ void main() {
       // Should warn about linked reminders
       expect(find.text('This medication has linked reminders'), findsOneWidget);
       expect(find.text('Delete reminders too?'), findsOneWidget);
-      
+
       await tester.tap(find.byKey(const Key('cancel_button')));
       await tester.pumpAndSettle();
 
