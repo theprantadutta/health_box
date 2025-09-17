@@ -158,7 +158,7 @@ class _HealthButtonState extends State<HealthButton>
         : (_isHovered && widget.enableHoverEffect ? widget.hoverScale : 1.0);
 
     // Get effective color based on medical theme
-    final effectiveColor = _getEffectiveColor(isDarkMode);
+    final effectiveColor = _getEffectiveColor(context);
 
     // Get text color based on style and state
     final textColor = _getTextColor();
@@ -367,7 +367,7 @@ class _HealthButtonState extends State<HealthButton>
       animation: _glowController,
       builder: (context, _) {
         final glowIntensity = _glowController.value;
-        final glowColor = _getGlowColor();
+        final glowColor = _getGlowColor(context);
 
         return Container(
           decoration: BoxDecoration(
@@ -433,37 +433,40 @@ class _HealthButtonState extends State<HealthButton>
   }
 
   /// Gets effective color based on medical theme and user settings
-  Color _getEffectiveColor(bool isDarkMode) {
+  Color _getEffectiveColor(BuildContext context) {
     if (widget.color != null) return widget.color!;
+
+    final colorScheme = Theme.of(context).colorScheme;
 
     if (widget.medicalTheme != null) {
       switch (widget.medicalTheme!) {
         case MedicalButtonTheme.primary:
-          return AppTheme.getPrimaryColor(isDarkMode);
+          return colorScheme.primary;
         case MedicalButtonTheme.success:
-          return AppTheme.getSuccessColor();
+          return const Color(0xFF81C784); // Light green
         case MedicalButtonTheme.warning:
-          return AppTheme.getWarningColor();
+          return const Color(0xFFFFB74D); // Light orange
         case MedicalButtonTheme.error:
-          return AppTheme.getErrorColor();
+          return colorScheme.error;
         case MedicalButtonTheme.neutral:
-          return AppTheme.getNeutralColor(isDarkMode);
+          return colorScheme.outline;
       }
     }
 
-    return _getStyleColor(isDarkMode);
+    return _getStyleColor(context);
   }
 
-  Color _getStyleColor(bool isDarkMode) {
+  Color _getStyleColor(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (widget.style) {
       case HealthButtonStyle.primary:
-        return AppTheme.getPrimaryColor(isDarkMode);
+        return colorScheme.primary;
       case HealthButtonStyle.success:
-        return AppTheme.getSuccessColor();
+        return const Color(0xFF81C784); // Light green
       case HealthButtonStyle.warning:
-        return AppTheme.getWarningColor();
+        return const Color(0xFFFFB74D); // Light orange
       case HealthButtonStyle.error:
-        return AppTheme.getErrorColor();
+        return colorScheme.error;
     }
   }
 
@@ -478,31 +481,33 @@ class _HealthButtonState extends State<HealthButton>
     }
   }
 
-  Color _getGlowColor() {
+  Color _getGlowColor(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (widget.medicalTheme != null) {
       switch (widget.medicalTheme!) {
         case MedicalButtonTheme.primary:
-          return AppTheme.primaryColorLight;
+          return colorScheme.primary;
         case MedicalButtonTheme.success:
-          return AppTheme.successColor;
+          return const Color(0xFF81C784); // Light green
         case MedicalButtonTheme.warning:
-          return AppTheme.warningColor;
+          return const Color(0xFFFFB74D); // Light orange
         case MedicalButtonTheme.error:
-          return AppTheme.errorColor;
+          return colorScheme.error;
         case MedicalButtonTheme.neutral:
-          return AppTheme.neutralColorLight;
+          return colorScheme.outline;
       }
     }
 
     switch (widget.style) {
       case HealthButtonStyle.primary:
-        return AppTheme.primaryColorLight;
+        return colorScheme.primary;
       case HealthButtonStyle.success:
-        return AppTheme.successColor;
+        return const Color(0xFF81C784); // Light green
       case HealthButtonStyle.warning:
-        return AppTheme.warningColor;
+        return const Color(0xFFFFB74D); // Light orange
       case HealthButtonStyle.error:
-        return AppTheme.errorColor;
+        return colorScheme.error;
     }
   }
 

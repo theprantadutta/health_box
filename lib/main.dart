@@ -113,13 +113,16 @@ class HealthBoxApp extends ConsumerWidget {
   }
 }
 
-// Clean, consistent theme system
+// Clean, consistent theme system - Using our seed color as primary
 const Color _primaryBlue = Color(0xFF2196F3);
 
 ThemeData _buildLightTheme() {
   final colorScheme = ColorScheme.fromSeed(
     seedColor: _primaryBlue,
     brightness: Brightness.light,
+  ).copyWith(
+    primary: _primaryBlue, // Use our exact seed color as primary
+    primaryContainer: const Color(0xFF1976D2), // Darker variant
   );
 
   return ThemeData(
@@ -162,6 +165,9 @@ ThemeData _buildDarkTheme() {
   final colorScheme = ColorScheme.fromSeed(
     seedColor: _primaryBlue,
     brightness: Brightness.dark,
+  ).copyWith(
+    primary: _primaryBlue, // Use our exact seed color as primary
+    primaryContainer: const Color(0xFF1565C0), // Even darker for dark theme
   );
 
   return ThemeData(

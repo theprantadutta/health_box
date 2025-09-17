@@ -3,7 +3,6 @@ import '../../../data/database/app_database.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/animations/micro_interactions.dart';
-import '../../../shared/theme/app_theme.dart';
 
 class ProfileCard extends StatelessWidget {
   final FamilyMemberProfile profile;
@@ -40,7 +39,7 @@ class ProfileCard extends StatelessWidget {
           hoverElevation: CardElevation.high,
           enablePressEffect: true,
           border: isSelected
-              ? Border.all(color: _getMedicalThemeColor(medicalTheme), width: 3)
+              ? Border.all(color: _getMedicalThemeColor(medicalTheme, context), width: 3)
               : null,
           onTap: onTap,
           child: Semantics(
@@ -55,7 +54,7 @@ class ProfileCard extends StatelessWidget {
                 Row(
                   children: [
                     // Profile Avatar
-                    _buildProfileAvatar(theme),
+                    _buildProfileAvatar(theme, context),
                     const SizedBox(width: 16),
 
                     // Name and Basic Info
@@ -225,11 +224,11 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileAvatar(ThemeData theme) {
+  Widget _buildProfileAvatar(ThemeData theme, BuildContext context) {
     final age = _calculateAge(profile.dateOfBirth);
     final ageCategory = _getAgeCategory(age);
     final medicalTheme = _getMedicalThemeForProfile(ageCategory);
-    final themeColor = _getMedicalThemeColor(medicalTheme);
+    final themeColor = _getMedicalThemeColor(medicalTheme, context);
 
     return MicroInteractions.heartbeat(
       intensity: 0.05,
@@ -367,18 +366,19 @@ class ProfileCard extends StatelessWidget {
   }
 
   /// Get color for medical theme
-  Color _getMedicalThemeColor(MedicalCardTheme theme) {
+  Color _getMedicalThemeColor(MedicalCardTheme theme, BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (theme) {
       case MedicalCardTheme.primary:
-        return AppTheme.primaryColorLight;
+        return colorScheme.primary;
       case MedicalCardTheme.success:
-        return AppTheme.successColor;
+        return const Color(0xFF81C784); // Light green
       case MedicalCardTheme.warning:
-        return AppTheme.warningColor;
+        return const Color(0xFFFFB74D); // Light orange
       case MedicalCardTheme.error:
-        return AppTheme.errorColor;
+        return colorScheme.error;
       case MedicalCardTheme.neutral:
-        return AppTheme.neutralColorLight;
+        return colorScheme.outline;
     }
   }
 }

@@ -130,7 +130,7 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
 
     // Get effective color based on medical theme
     final effectiveColor = widget.color ??
-        (_getMedicalThemeColor(isDarkMode) ?? theme.colorScheme.surface);
+        (_getMedicalThemeColor(context) ?? theme.colorScheme.surface);
 
     // Build the card content
     Widget cardContent = _buildCardContent(context, effectiveBorderRadius);
@@ -300,19 +300,20 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
   }
 
   /// Gets medical theme color if specified
-  Color? _getMedicalThemeColor(bool isDarkMode) {
+  Color? _getMedicalThemeColor(BuildContext context) {
     if (widget.medicalTheme != null) {
+      final colorScheme = Theme.of(context).colorScheme;
       switch (widget.medicalTheme!) {
         case MedicalCardTheme.primary:
-          return AppTheme.getPrimaryColor(isDarkMode);
+          return colorScheme.primary;
         case MedicalCardTheme.success:
-          return AppTheme.getSuccessColor();
+          return const Color(0xFF81C784); // Light green
         case MedicalCardTheme.warning:
-          return AppTheme.getWarningColor();
+          return const Color(0xFFFFB74D); // Light orange
         case MedicalCardTheme.error:
-          return AppTheme.getErrorColor();
+          return colorScheme.error;
         case MedicalCardTheme.neutral:
-          return AppTheme.getNeutralColor(isDarkMode);
+          return colorScheme.outline;
       }
     }
 

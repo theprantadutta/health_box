@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/theme/app_theme.dart';
 
 class MedicalRecordCard extends StatelessWidget {
   final MedicalRecord record;
@@ -22,7 +21,7 @@ class MedicalRecordCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final medicalTheme = _getMedicalThemeForRecordType(record.recordType);
-    final themeColor = _getMedicalThemeColor(medicalTheme);
+    final themeColor = _getMedicalThemeColor(medicalTheme, context);
 
     return Hero(
       tag: 'medical_record_${record.id}',
@@ -70,12 +69,7 @@ class MedicalRecordCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          themeColor.withValues(alpha: 0.2),
-                          themeColor.withValues(alpha: 0.1),
-                        ],
-                      ),
+                      color: themeColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -126,24 +120,12 @@ class MedicalRecordCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            themeColor.withValues(alpha: 0.2),
-            themeColor.withValues(alpha: 0.1),
-          ],
-        ),
+        color: themeColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: themeColor.withValues(alpha: 0.4),
           width: 1.5,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: themeColor.withValues(alpha: 0.2),
-            offset: const Offset(0, 2),
-            blurRadius: 4,
-          ),
-        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -250,18 +232,19 @@ class MedicalRecordCard extends StatelessWidget {
   }
 
   /// Get color for medical theme
-  Color _getMedicalThemeColor(MedicalCardTheme theme) {
+  Color _getMedicalThemeColor(MedicalCardTheme theme, BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (theme) {
       case MedicalCardTheme.primary:
-        return AppTheme.primaryColorLight;
+        return colorScheme.primary;
       case MedicalCardTheme.success:
-        return AppTheme.successColor;
+        return const Color(0xFF81C784); // Light green
       case MedicalCardTheme.warning:
-        return AppTheme.warningColor;
+        return const Color(0xFFFFB74D); // Light orange
       case MedicalCardTheme.error:
-        return AppTheme.errorColor;
+        return colorScheme.error;
       case MedicalCardTheme.neutral:
-        return AppTheme.neutralColorLight;
+        return colorScheme.outline;
     }
   }
 }
