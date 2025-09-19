@@ -978,8 +978,15 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
   }
 
   Future<void> _saveProfile() async {
+    print('=== SAVE PROFILE CALLED ===');
+    print('Form valid: ${_formKey.currentState?.validate()}');
+    print('Date of birth: $_selectedDateOfBirth');
+    print('First name: ${_firstNameController.text}');
+    print('Last name: ${_lastNameController.text}');
+
     // Mark date of birth as touched if validation fails
     if (_selectedDateOfBirth == null) {
+      print('Date of birth is null, marking as touched');
       setState(() {
         _dateOfBirthTouched = true;
       });

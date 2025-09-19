@@ -50,22 +50,21 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Reminders',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.getPrimaryColor(isDarkMode),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ),
+        elevation: 0,
+        backgroundColor: theme.colorScheme.primary,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.white),
@@ -143,7 +142,6 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
 
     return CommonTransitions.fadeSlideIn(
       child: ModernCard(
-        medicalTheme: MedicalCardTheme.warning,
         elevation: CardElevation.medium,
         enableHoverEffect: true,
         hoverElevation: CardElevation.high,
@@ -156,7 +154,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppTheme.warningColor,
+                    color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
@@ -216,7 +214,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
               },
               loading: () => Center(
                 child: MicroInteractions.breathingDots(
-                  color: AppTheme.warningColor,
+                  color: Theme.of(context).colorScheme.primary,
                   dotCount: 3,
                   dotSize: 10.0,
                 ),
@@ -436,12 +434,16 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                 const SizedBox(height: 16),
                 Text(
                   'No reminders found',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Tap the + button to add your first reminder',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -755,7 +757,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
           const SizedBox(height: 16),
           Text(
             'Reminder History',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -792,7 +796,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
           const SizedBox(height: 16),
           Text(
             'Reminder Statistics',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: 8),
           Text(

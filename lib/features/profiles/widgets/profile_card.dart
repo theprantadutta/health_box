@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../data/database/app_database.dart';
-import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/micro_interactions.dart';
 
 class ProfileCard extends StatelessWidget {
   final FamilyMemberProfile profile;
@@ -26,293 +23,208 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final age = _calculateAge(profile.dateOfBirth);
-    final ageCategory = _getAgeCategory(age);
-    final medicalTheme = _getMedicalThemeForProfile(ageCategory);
 
     return Hero(
       tag: 'profile_${profile.id}',
-      child: CommonTransitions.fadeSlideIn(
-        child: ModernCard(
-          medicalTheme: medicalTheme,
-          elevation: isSelected ? CardElevation.medium : CardElevation.low,
-          enableHoverEffect: true,
-          hoverElevation: CardElevation.high,
-          enablePressEffect: true,
-          border: isSelected
-              ? Border.all(color: _getMedicalThemeColor(medicalTheme, context), width: 3)
-              : null,
-          onTap: onTap,
-          child: Semantics(
-            label:
-                'Profile for ${profile.firstName} ${profile.lastName}, age $age',
-            hint: 'Tap to view or edit profile details',
-            button: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header Row - Avatar, Name, and Actions
-                Row(
-                  children: [
-                    // Profile Avatar
-                    _buildProfileAvatar(theme, context),
-                    const SizedBox(width: 16),
-
-                    // Name and Basic Info
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Full Name
-                          Text(
-                            '${profile.firstName} ${profile.lastName}',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-
-                          // Age and Gender
-                          Text(
-                            '$age years old • ${profile.gender}',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-
-                          if (profile.bloodType != null) ...[
-                            const SizedBox(height: 2),
-                            Text(
-                              'Blood Type: ${profile.bloodType}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-
-                    // Actions Menu
-                    if (showActions) _buildActionsMenu(context),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
-                // Age Category Badge and Quick Info
-                Row(
-                  children: [
-                    // Age Category Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getAgeCategoryColor(ageCategory, theme),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        ageCategory,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // Quick Info Icons
-                    if (profile.emergencyContact?.isNotEmpty == true)
-                      Icon(
-                        Icons.emergency,
-                        size: 16,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-
-                    if (profile.insuranceInfo?.isNotEmpty == true) ...[
-                      if (profile.emergencyContact?.isNotEmpty == true)
-                        const SizedBox(width: 8),
-                      Icon(
-                        Icons.medical_services,
-                        size: 16,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ],
-                  ],
-                ),
-
-                // Physical Information (Height & Weight)
-                if (profile.height != null || profile.weight != null) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      if (profile.height != null) ...[
-                        Icon(
-                          Icons.height,
-                          size: 16,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${profile.height}cm',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-
-                      if (profile.height != null && profile.weight != null)
-                        const SizedBox(width: 16),
-
-                      if (profile.weight != null) ...[
-                        Icon(
-                          Icons.monitor_weight,
-                          size: 16,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${profile.weight}kg',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
-
-                // Selection Indicator
-                if (isSelected) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          size: 16,
-                          color: theme.colorScheme.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Selected',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileAvatar(ThemeData theme, BuildContext context) {
-    final age = _calculateAge(profile.dateOfBirth);
-    final ageCategory = _getAgeCategory(age);
-    final medicalTheme = _getMedicalThemeForProfile(ageCategory);
-    final themeColor = _getMedicalThemeColor(medicalTheme, context);
-
-    return MicroInteractions.heartbeat(
-      intensity: 0.05,
-      duration: const Duration(milliseconds: 2000),
       child: Container(
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              themeColor,
-              themeColor.withValues(alpha: 0.7),
-              themeColor.withValues(alpha: 0.9),
-            ],
-          ),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: isSelected
+            ? Border.all(color: theme.colorScheme.primary, width: 2)
+            : Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
           boxShadow: [
             BoxShadow(
-              color: themeColor.withValues(alpha: 0.4),
-              offset: const Offset(0, 4),
-              blurRadius: 12,
-              spreadRadius: 2,
-            ),
-            BoxShadow(
-              color: themeColor.withValues(alpha: 0.2),
+              color: Colors.black.withValues(alpha: 0.08),
               offset: const Offset(0, 2),
-              blurRadius: 6,
-              spreadRadius: 1,
+              blurRadius: 8,
+              spreadRadius: 0,
             ),
           ],
         ),
-        child: CircleAvatar(
-          radius: 26,
-          backgroundColor: Colors.transparent,
-          child: Text(
-            '${profile.firstName.isNotEmpty ? profile.firstName[0] : ''}${profile.lastName.isNotEmpty ? profile.lastName[0] : ''}',
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
-              shadows: [
-                Shadow(
-                  offset: const Offset(0, 1),
-                  blurRadius: 3,
-                  color: Colors.black.withValues(alpha: 0.3),
-                ),
-              ],
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  // Compact Avatar
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${profile.firstName.isNotEmpty ? profile.firstName[0] : ''}${profile.lastName.isNotEmpty ? profile.lastName[0] : ''}',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+
+                  // Profile Info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Name and Age in one line
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${profile.firstName} ${profile.lastName}',
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.colorScheme.onSurface,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '$age',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+
+                        // Gender and Blood Type
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${profile.gender}${profile.bloodType != null ? ' • ${profile.bloodType}' : ''}',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                  fontSize: 12,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+
+                            // Quick indicators
+                            if (profile.emergencyContact?.isNotEmpty == true) ...[
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.emergency,
+                                size: 12,
+                                color: Colors.red.shade600,
+                              ),
+                            ],
+                            if (profile.insuranceInfo?.isNotEmpty == true) ...[
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.medical_services,
+                                size: 12,
+                                color: Colors.green.shade600,
+                              ),
+                            ],
+                          ],
+                        ),
+
+                        // Height and Weight if available
+                        if (profile.height != null || profile.weight != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            [
+                              if (profile.height != null) '${profile.height}cm',
+                              if (profile.weight != null) '${profile.weight}kg',
+                            ].join(' • '),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+
+                  // Action buttons (always visible)
+                  if (showActions) ...[
+                    const SizedBox(width: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Edit button
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: theme.colorScheme.primary,
+                            ),
+                            onPressed: onEdit,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        // Delete button
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: const Icon(
+                              Icons.delete,
+                              size: 16,
+                              color: Colors.red,
+                            ),
+                            onPressed: onDelete,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+
+                  // Selection indicator
+                  if (isSelected) ...[
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.check_circle,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildActionsMenu(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (value) {
-        switch (value) {
-          case 'edit':
-            onEdit?.call();
-            break;
-          case 'delete':
-            onDelete?.call();
-            break;
-        }
-      },
-      itemBuilder: (context) => [
-        const PopupMenuItem(
-          value: 'edit',
-          child: Row(
-            children: [Icon(Icons.edit), SizedBox(width: 12), Text('Edit')],
-          ),
-        ),
-        const PopupMenuItem(
-          value: 'delete',
-          child: Row(
-            children: [
-              Icon(Icons.delete, color: Colors.red),
-              SizedBox(width: 12),
-              Text('Delete', style: TextStyle(color: Colors.red)),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -324,61 +236,5 @@ class ProfileCard extends StatelessWidget {
       age--;
     }
     return age;
-  }
-
-  String _getAgeCategory(int age) {
-    if (age < 13) return 'Child';
-    if (age < 20) return 'Teenager';
-    if (age < 65) return 'Adult';
-    return 'Senior';
-  }
-
-
-  Color _getAgeCategoryColor(String category, ThemeData theme) {
-    switch (category.toLowerCase()) {
-      case 'child':
-        return Colors.green.shade500;
-      case 'teenager':
-        return Colors.orange.shade500;
-      case 'adult':
-        return Colors.blue.shade600;
-      case 'senior':
-        return Colors.purple.shade500;
-      default:
-        return theme.colorScheme.primary;
-    }
-  }
-
-  /// Get medical theme based on profile age category
-  MedicalCardTheme _getMedicalThemeForProfile(String ageCategory) {
-    switch (ageCategory.toLowerCase()) {
-      case 'child':
-        return MedicalCardTheme.success;
-      case 'teenager':
-        return MedicalCardTheme.warning;
-      case 'adult':
-        return MedicalCardTheme.primary;
-      case 'senior':
-        return MedicalCardTheme.neutral;
-      default:
-        return MedicalCardTheme.neutral;
-    }
-  }
-
-  /// Get color for medical theme
-  Color _getMedicalThemeColor(MedicalCardTheme theme, BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    switch (theme) {
-      case MedicalCardTheme.primary:
-        return colorScheme.primary;
-      case MedicalCardTheme.success:
-        return const Color(0xFF81C784); // Light green
-      case MedicalCardTheme.warning:
-        return const Color(0xFFFFB74D); // Light orange
-      case MedicalCardTheme.error:
-        return colorScheme.error;
-      case MedicalCardTheme.neutral:
-        return colorScheme.outline;
-    }
   }
 }

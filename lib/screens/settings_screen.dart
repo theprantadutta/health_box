@@ -31,58 +31,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     final accessibilitySettings = ref.watch(accessibilitySettingsProvider);
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Settings',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.getPrimaryColor(isDarkMode),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ),
+        elevation: 0,
+        backgroundColor: theme.colorScheme.primary,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: StaggerAnimations.staggeredList(
           children: [
             // User Profile Section
-            _buildProfileSection(),
+            _buildProfileSection(theme),
             const SizedBox(height: 16),
 
             // App Preferences
-            _buildAppPreferencesSection(),
+            _buildAppPreferencesSection(theme),
             const SizedBox(height: 16),
 
             // Accessibility Settings
-            _buildAccessibilitySection(accessibilitySettings),
+            _buildAccessibilitySection(accessibilitySettings, theme),
             const SizedBox(height: 16),
 
             // Data Management
-            _buildDataManagementSection(),
+            _buildDataManagementSection(theme),
             const SizedBox(height: 16),
 
             // Privacy & Security
-            _buildPrivacySection(),
+            _buildPrivacySection(theme),
             const SizedBox(height: 16),
 
             // Backup & Sync
-            _buildBackupSyncSection(),
+            _buildBackupSyncSection(theme),
             const SizedBox(height: 16),
 
             // Support & About
-            _buildSupportSection(),
+            _buildSupportSection(theme),
             const SizedBox(height: 16),
 
             // Advanced Settings
-            _buildAdvancedSection(),
+            _buildAdvancedSection(theme),
           ],
           staggerDelay: AppTheme.microDuration,
           direction: StaggerDirection.bottomToTop,
@@ -92,7 +91,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildProfileSection() {
+  Widget _buildProfileSection(ThemeData theme) {
     return ModernCard(
       medicalTheme: MedicalCardTheme.primary,
       elevation: CardElevation.medium,
@@ -119,9 +118,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 12),
               Text(
                 'Profile',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -135,27 +134,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               );
 
               return selectedProfileAsync.when(
-                loading: () => ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: const Icon(Icons.person, color: Colors.white),
-                  ),
-                  title: const Text('Health Box User'),
-                  subtitle: const Text('Loading profile...'),
+                loading: () => _buildProfileCard(
+                  context,
+                  name: 'Health Box User',
+                  subtitle: 'Loading profile...',
+                  initials: 'HB',
                   trailing: const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
                   ),
+                  onTap: null,
                 ),
-                error: (error, stack) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: const Icon(Icons.person, color: Colors.white),
-                  ),
-                  title: const Text('Health Box User'),
-                  subtitle: const Text('Error loading profile'),
-                  trailing: const Icon(Icons.chevron_right),
+                error: (error, stack) => _buildProfileCard(
+                  context,
+                  name: 'Health Box User',
+                  subtitle: 'Error loading profile',
+                  initials: 'HB',
+                  trailing: const Icon(Icons.error_outline, color: Colors.white70),
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -169,14 +168,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ? '${selectedProfile.firstName} ${selectedProfile.lastName}'
                       : 'Health Box User';
 
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      child: const Icon(Icons.person, color: Colors.white),
-                    ),
-                    title: Text(displayName),
-                    subtitle: const Text('Tap to edit profile information'),
-                    trailing: const Icon(Icons.chevron_right),
+                  final initials = selectedProfile != null
+                      ? '${selectedProfile.firstName.isNotEmpty ? selectedProfile.firstName[0] : ''}${selectedProfile.lastName.isNotEmpty ? selectedProfile.lastName[0] : ''}'
+                      : 'HB';
+
+                  final age = selectedProfile != null
+                      ? _calculateAge(selectedProfile.dateOfBirth)
+                      : null;
+
+                  final subtitle = selectedProfile != null
+                      ? 'Age $age • ${selectedProfile.gender}${selectedProfile.bloodType != null ? ' • ${selectedProfile.bloodType}' : ''}'
+                      : 'Tap to create your first profile';
+
+                  return _buildProfileCard(
+                    context,
+                    name: displayName,
+                    subtitle: subtitle,
+                    initials: initials,
+                    profile: selectedProfile,
                     onTap: () {
                       if (selectedProfile != null) {
                         context.push(
@@ -184,9 +193,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           extra: selectedProfile,
                         );
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No profile selected')),
-                        );
+                        context.push(AppRoutes.profiles);
                       }
                     },
                   );
@@ -199,7 +206,130 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildAppPreferencesSection() {
+  Widget _buildProfileCard(
+    BuildContext context, {
+    required String name,
+    required String subtitle,
+    required String initials,
+    FamilyMemberProfile? profile,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                // Profile Avatar with improved styling
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.9),
+                        Colors.white.withValues(alpha: 0.7),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      initials,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Profile Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontSize: 13,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Trailing widget or edit icon
+                trailing ??
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.edit_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  int _calculateAge(DateTime dateOfBirth) {
+    final now = DateTime.now();
+    int age = now.year - dateOfBirth.year;
+    if (now.month < dateOfBirth.month ||
+        (now.month == dateOfBirth.month && now.day < dateOfBirth.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  Widget _buildAppPreferencesSection(ThemeData theme) {
     final themeMode = ref.watch(themeModeProvider);
 
     return ModernCard(
@@ -211,14 +341,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               Icon(
                 Icons.settings,
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
                 'App Preferences',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -279,6 +410,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildAccessibilitySection(
     AccessibilitySettings accessibilitySettings,
+    ThemeData theme,
   ) {
     return ModernCard(
       elevation: CardElevation.medium,
@@ -289,14 +421,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               Icon(
                 Icons.accessibility,
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
                 'Accessibility',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -341,7 +474,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildDataManagementSection() {
+  Widget _buildDataManagementSection(ThemeData theme) {
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -353,9 +486,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'Data Management',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -408,7 +542,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildPrivacySection() {
+  Widget _buildPrivacySection(ThemeData theme) {
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -418,14 +552,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               Icon(
                 Icons.security,
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
                 'Privacy & Security',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -459,7 +594,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildBackupSyncSection() {
+  Widget _buildBackupSyncSection(ThemeData theme) {
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -469,14 +604,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               Icon(
                 Icons.cloud_sync,
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
                 'Backup & Sync',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -519,7 +655,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildSupportSection() {
+  Widget _buildSupportSection(ThemeData theme) {
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -531,9 +667,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 'Support & About',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -567,7 +704,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildAdvancedSection() {
+  Widget _buildAdvancedSection(ThemeData theme) {
     return ModernCard(
       elevation: CardElevation.medium,
       child: Column(
@@ -577,14 +714,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               Icon(
                 Icons.engineering,
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
                 'Advanced',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ],
           ),

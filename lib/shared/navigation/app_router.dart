@@ -85,6 +85,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const OnboardingScreen(),
       ),
 
+      // Main app with bottom navigation (only for main tabs)
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -103,17 +104,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: 'profiles',
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: ProfileListScreen()),
-            routes: [
-              GoRoute(
-                path: 'form',
-                name: 'profile-form',
-                builder: (context, state) {
-                  // Check if a profile was passed via extra parameter for editing
-                  final profile = state.extra as FamilyMemberProfile?;
-                  return ProfileFormScreen(profile: profile);
-                },
-              ),
-            ],
           ),
 
           GoRoute(
@@ -121,46 +111,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: 'medical-records',
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: MedicalRecordListScreen()),
-            routes: [
-              GoRoute(
-                path: 'detail/:recordId',
-                name: 'medical-record-detail',
-                builder: (context, state) => MedicalRecordDetailScreen(
-                  recordId: state.pathParameters['recordId']!,
-                ),
-              ),
-              GoRoute(
-                path: 'prescription/form',
-                name: 'prescription-form',
-                builder: (context, state) {
-                  final profileId = state.uri.queryParameters['profileId'];
-                  return PrescriptionFormScreen(profileId: profileId);
-                },
-              ),
-              GoRoute(
-                path: 'medication/form',
-                name: 'medication-form',
-                builder: (context, state) {
-                  final profileId = state.uri.queryParameters['profileId'];
-                  return MedicationFormScreen(profileId: profileId);
-                },
-              ),
-              GoRoute(
-                path: 'lab-report/form',
-                name: 'lab-report-form',
-                builder: (context, state) {
-                  final profileId = state.uri.queryParameters['profileId'];
-                  return LabReportFormScreen(profileId: profileId);
-                },
-              ),
-            ],
-          ),
-
-          GoRoute(
-            path: AppRoutes.reminders,
-            name: 'reminders',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: RemindersScreen()),
           ),
 
           GoRoute(
@@ -168,56 +118,105 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: 'settings',
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: settings.SettingsScreen()),
-            routes: [
-              GoRoute(
-                path: 'export',
-                name: 'export',
-                builder: (context, state) => const ExportScreen(),
-              ),
-              GoRoute(
-                path: 'import',
-                name: 'import',
-                builder: (context, state) => const ImportScreen(),
-              ),
-              GoRoute(
-                path: 'emergency-card',
-                name: 'emergency-card',
-                builder: (context, state) {
-                  final profileId =
-                      state.uri.queryParameters['profileId'] ?? '';
-                  return EmergencyCardScreen(profileId: profileId);
-                },
-              ),
-              GoRoute(
-                path: 'sync',
-                name: 'sync',
-                builder: (context, state) => const SyncSettingsScreen(),
-              ),
-            ],
-          ),
-
-          // Additional screens not in main navigation
-          GoRoute(
-            path: AppRoutes.vitalsTracking,
-            name: 'vitals-tracking',
-            builder: (context, state) {
-              final profileId = state.uri.queryParameters['profileId'] ?? '';
-              return VitalsTrackingScreen(profileId: profileId);
-            },
-          ),
-
-          GoRoute(
-            path: AppRoutes.ocrScan,
-            name: 'ocr-scan',
-            builder: (context, state) {
-              // For OCRScanScreen, we need to provide default values
-              // These would typically be passed from the parent screen
-              return const OCRScanScreen(
-                ocrType: OCRType.prescription, // Default type
-              );
-            },
           ),
         ],
+      ),
+
+      // Full screen overlays (no bottom navigation)
+      GoRoute(
+        path: '${AppRoutes.profiles}/form',
+        name: 'profile-form',
+        builder: (context, state) {
+          final profile = state.extra as FamilyMemberProfile?;
+          return ProfileFormScreen(profile: profile);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/detail/:recordId',
+        name: 'medical-record-detail',
+        builder: (context, state) => MedicalRecordDetailScreen(
+          recordId: state.pathParameters['recordId']!,
+        ),
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/prescription/form',
+        name: 'prescription-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return PrescriptionFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/medication/form',
+        name: 'medication-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return MedicationFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/lab-report/form',
+        name: 'lab-report-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return LabReportFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: AppRoutes.reminders,
+        name: 'reminders',
+        builder: (context, state) => const RemindersScreen(),
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.settings}/export',
+        name: 'export',
+        builder: (context, state) => const ExportScreen(),
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.settings}/import',
+        name: 'import',
+        builder: (context, state) => const ImportScreen(),
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.settings}/emergency-card',
+        name: 'emergency-card',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'] ?? '';
+          return EmergencyCardScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.settings}/sync',
+        name: 'sync',
+        builder: (context, state) => const SyncSettingsScreen(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.vitalsTracking,
+        name: 'vitals-tracking',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'] ?? '';
+          return VitalsTrackingScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: AppRoutes.ocrScan,
+        name: 'ocr-scan',
+        builder: (context, state) {
+          return const OCRScanScreen(
+            ocrType: OCRType.prescription,
+          );
+        },
       ),
     ],
 

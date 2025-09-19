@@ -21,6 +21,7 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -246,7 +247,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer,
+                              color: theme.colorScheme.onPrimary,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Icon(
@@ -459,12 +460,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        StaggerAnimations.staggeredGrid(
-          children: stats.map((stat) => _buildStatCard(stat)).toList(),
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          staggerDelay: AppTheme.microDuration,
+        Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: _buildStatCard(stats[0])),
+                const SizedBox(width: 16),
+                Expanded(child: _buildStatCard(stats[1])),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: _buildStatCard(stats[2])),
+                const SizedBox(width: 16),
+                Expanded(child: _buildStatCard(stats[3])),
+              ],
+            ),
+          ],
         ),
       ],
     );
@@ -527,25 +540,37 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         title: 'Add Record',
         icon: Icons.medical_information_rounded,
         color: const Color(0xFF8B5CF6), // Purple
-        onTap: () => context.push(AppRoutes.medicalRecords),
+        onTap: () {
+          print('Add Record clicked');
+          context.push(AppRoutes.medicalRecords);
+        },
       ),
       _QuickAction(
         title: 'Set Reminder',
         icon: Icons.alarm_add_rounded,
         color: const Color(0xFF06B6D4), // Cyan
-        onTap: () => context.push(AppRoutes.reminders),
+        onTap: () {
+          print('Set Reminder clicked');
+          context.push(AppRoutes.reminders);
+        },
       ),
       _QuickAction(
         title: 'Scan Document',
         icon: Icons.document_scanner_rounded,
         color: const Color(0xFFF97316), // Orange
-        onTap: () => context.push(AppRoutes.ocrScan),
+        onTap: () {
+          print('Scan Document clicked');
+          context.push(AppRoutes.ocrScan);
+        },
       ),
       _QuickAction(
         title: 'Track Vitals',
         icon: Icons.favorite_rounded,
         color: const Color(0xFFEC4899), // Pink
-        onTap: () => context.push('${AppRoutes.vitalsTracking}?profileId='),
+        onTap: () {
+          print('Track Vitals clicked');
+          _handleQuickVitalsNavigation(context);
+        },
       ),
     ];
 
@@ -651,10 +676,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       icon: const Icon(Icons.add_rounded, size: 20),
       label: const Text(
         'Quick Add',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
+        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
       ),
     );
   }
@@ -941,6 +963,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       ),
     );
+  }
+
+
+  void _handleQuickVitalsNavigation(BuildContext context) {
+    // Simple navigation - go directly to vitals tracking screen
+    // The vitals screen should handle profile selection if needed
+    context.push(AppRoutes.vitalsTracking);
   }
 }
 

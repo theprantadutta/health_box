@@ -34,25 +34,27 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
     final profilesAsync = ref.watch(simpleProfilesProvider);
     final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Family Profiles',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.getPrimaryColor(isDarkMode),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ),
+        elevation: 0,
+        backgroundColor: theme.colorScheme.primary,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
+            icon: Icon(
+              Icons.add_rounded,
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
             onPressed: () => _navigateToAddProfile(context),
             tooltip: 'Add New Profile',
           ),
@@ -68,7 +70,6 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             // Search and Filter Section with premium design
             CommonTransitions.fadeSlideIn(
               child: ModernCard(
-                medicalTheme: MedicalCardTheme.neutral,
                 elevation: CardElevation.low,
                 margin: const EdgeInsets.all(16.0),
                 padding: const EdgeInsets.all(20.0),
@@ -121,11 +122,10 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                         const SizedBox(width: 8),
                         Text(
                           'Filter by gender:',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -135,7 +135,7 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.surfaceContainerHighest,
+                              color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: theme.colorScheme.outline.withValues(
@@ -160,12 +160,11 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                                           value: gender,
                                           child: Text(
                                             gender,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
+                                            style: theme.textTheme.bodyMedium
                                                 ?.copyWith(
-                                                  fontWeight: FontWeight.w500,
-                                                ),
+                                              fontWeight: FontWeight.w500,
+                                              color: theme.colorScheme.onSurface,
+                                            ),
                                           ),
                                         ),
                                       )
@@ -186,7 +185,7 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             ),
             // Profile List Section
             Expanded(
-              child: _buildProfileList(profilesAsync, selectedProfileAsync),
+              child: _buildProfileList(profilesAsync, selectedProfileAsync, theme),
             ),
           ],
         ),
@@ -209,6 +208,7 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   Widget _buildProfileList(
     AsyncValue<List<FamilyMemberProfile>> profilesAsync,
     AsyncValue<FamilyMemberProfile?> selectedProfileAsync,
+    ThemeData theme,
   ) {
     return profilesAsync.when(
       loading: () => Center(
@@ -224,8 +224,8 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
               const SizedBox(height: 24),
               Text(
                 'Loading profiles...',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -240,19 +240,21 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             Icon(
               Icons.error_outline,
               size: 64,
-              color: Theme.of(context).colorScheme.error,
+              color: theme.colorScheme.error,
             ),
             const SizedBox(height: 16),
             Text(
               'Error loading profiles',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 16),
@@ -296,18 +298,17 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                     const SizedBox(height: 24),
                     Text(
                       'No profiles yet',
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       'Add your first family member profile to get started with managing your family\'s health',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
                         height: 1.4,
                       ),
                     ),
@@ -351,19 +352,21 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                 Icon(
                   Icons.search_off,
                   size: 64,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No profiles found',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Try adjusting your search or filters',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],

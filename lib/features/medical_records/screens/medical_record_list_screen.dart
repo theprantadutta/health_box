@@ -57,22 +57,21 @@ class _MedicalRecordListScreenState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Medical Records',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.getPrimaryColor(isDarkMode),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ),
+        elevation: 0,
+        backgroundColor: theme.colorScheme.primary,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.white),
@@ -125,7 +124,6 @@ class _MedicalRecordListScreenState
           // Premium Search and Filter Section
           CommonTransitions.fadeSlideIn(
             child: ModernCard(
-              medicalTheme: MedicalCardTheme.neutral,
               elevation: CardElevation.low,
               margin: const EdgeInsets.all(16.0),
               padding: const EdgeInsets.all(20.0),
@@ -170,14 +168,15 @@ class _MedicalRecordListScreenState
                     children: [
                       Icon(
                         Icons.filter_list_rounded,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: theme.colorScheme.primary,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Filter by type:',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -188,14 +187,12 @@ class _MedicalRecordListScreenState
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outline.withValues(alpha: 0.3),
+                              color: theme.colorScheme.outline.withValues(
+                                alpha: 0.3,
+                              ),
                             ),
                           ),
                           child: DropdownButton<String>(
@@ -208,11 +205,10 @@ class _MedicalRecordListScreenState
                                     value: type,
                                     child: Text(
                                       type,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
+                                      style: theme.textTheme.bodyMedium
                                           ?.copyWith(
                                             fontWeight: FontWeight.w500,
+                                            color: theme.colorScheme.onSurface,
                                           ),
                                     ),
                                   ),
@@ -246,10 +242,7 @@ class _MedicalRecordListScreenState
         icon: const Icon(Icons.add_rounded, size: 20),
         label: const Text(
           'Add Record',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ),
     );
@@ -335,33 +328,31 @@ class _MedicalRecordListScreenState
             ),
           ),
         ),
-        error: (error, stack) => _buildErrorState(error),
-        data: (records) => _buildRecordsGrid(records),
+        error: (error, stack) => _buildErrorState(error, Theme.of(context)),
+        data: (records) => _buildRecordsGrid(records, Theme.of(context)),
       ),
     );
   }
 
-  Widget _buildErrorState(Object error) {
+  Widget _buildErrorState(Object error, ThemeData theme) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
           const SizedBox(height: 16),
           Text(
             'Error loading medical records',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             error.toString(),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 16),
@@ -380,11 +371,11 @@ class _MedicalRecordListScreenState
     );
   }
 
-  Widget _buildRecordsGrid(List<MedicalRecord> allRecords) {
+  Widget _buildRecordsGrid(List<MedicalRecord> allRecords, ThemeData theme) {
     final filteredRecords = _filterRecords(allRecords);
 
     if (filteredRecords.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(theme);
     }
 
     return Padding(
@@ -408,89 +399,82 @@ class _MedicalRecordListScreenState
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(ThemeData theme) {
     final hasFilters =
         _searchQuery.isNotEmpty ||
         _selectedRecordType != 'All' ||
         _selectedProfileId != null ||
         _dateRange != null;
 
-    return Center(
-      child: CommonTransitions.fadeSlideIn(
-        child: ModernCard(
-          medicalTheme: hasFilters
-              ? MedicalCardTheme.neutral
-              : MedicalCardTheme.success,
-          elevation: CardElevation.low,
-          margin: const EdgeInsets.all(32),
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: hasFilters
-                      ? AppTheme.neutralColorLight.withValues(
-                          alpha: 0.1,
-                        )
-                      : AppTheme.successColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  hasFilters
-                      ? Icons.search_off_rounded
-                      : Icons.medical_information_rounded,
-                  size: 48,
-                  color: hasFilters
-                      ? AppTheme.neutralColorLight
-                      : AppTheme.successColor,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                hasFilters ? 'No records found' : 'No medical records yet',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                hasFilters
-                    ? 'Try adjusting your search or filters to find more records'
-                    : 'Add your first medical record to start tracking your health data',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 24),
-              if (!hasFilters)
-                HealthButton(
-                  onPressed: () => _showAddRecordOptions(context),
-                  medicalTheme: MedicalButtonTheme.success,
-                  size: HealthButtonSize.medium,
-                  enableHoverEffect: true,
-                  enablePressEffect: true,
-                  enableHaptics: true,
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.add_rounded, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text(
-                        'Add First Record',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+    return SingleChildScrollView(
+      child: Center(
+        child: CommonTransitions.fadeSlideIn(
+          child: ModernCard(
+            elevation: CardElevation.low,
+            margin: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    hasFilters
+                        ? Icons.search_off_rounded
+                        : Icons.medical_information_rounded,
+                    size: 48,
+                    color: theme.colorScheme.primary,
                   ),
                 ),
-            ],
+                const SizedBox(height: 24),
+                Text(
+                  hasFilters ? 'No records found' : 'No medical records yet',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  hasFilters
+                      ? 'Try adjusting your search or filters to find more records'
+                      : 'Add your first medical record to start tracking your health data',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                if (!hasFilters)
+                  HealthButton(
+                    onPressed: () => _showAddRecordOptions(context),
+                    medicalTheme: MedicalButtonTheme.success,
+                    size: HealthButtonSize.medium,
+                    enableHoverEffect: true,
+                    enablePressEffect: true,
+                    enableHaptics: true,
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add_rounded, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          'Add First Record',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -645,12 +629,26 @@ class _MedicalRecordListScreenState
   }
 
   void _onAddRecordSelected(String recordType) {
+    // Get the currently selected profile from global state
+    final profileState = ref.read(profileNotifierProvider);
+    final selectedProfile = profileState.selectedProfile;
+    final profileId = _selectedProfileId ?? selectedProfile?.id;
+
+    if (profileId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a profile first'),
+        ),
+      );
+      return;
+    }
+
     switch (recordType) {
       case 'prescription':
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
-                PrescriptionFormScreen(profileId: _selectedProfileId),
+                PrescriptionFormScreen(profileId: profileId),
           ),
         );
         break;
@@ -658,7 +656,7 @@ class _MedicalRecordListScreenState
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
-                MedicationFormScreen(profileId: _selectedProfileId),
+                MedicationFormScreen(profileId: profileId),
           ),
         );
         break;
@@ -666,7 +664,7 @@ class _MedicalRecordListScreenState
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
-                LabReportFormScreen(profileId: _selectedProfileId),
+                LabReportFormScreen(profileId: profileId),
           ),
         );
         break;
@@ -677,10 +675,8 @@ class _MedicalRecordListScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MedicalRecordDetailScreen(
-          recordId: record.id,
-          record: record,
-        ),
+        builder: (context) =>
+            MedicalRecordDetailScreen(recordId: record.id, record: record),
       ),
     );
   }
@@ -691,27 +687,41 @@ class _MedicalRecordListScreenState
         // Note: PrescriptionFormScreen would need to be updated to accept a prescription parameter for editing
         _navigateToRecordDetail(record);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Prescription editing will be available in next update')),
+          const SnackBar(
+            content: Text(
+              'Prescription editing will be available in next update',
+            ),
+          ),
         );
         break;
       case 'medication':
         // Note: MedicationFormScreen would need to be updated to accept a medication parameter for editing
         _navigateToRecordDetail(record);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Medication editing will be available in next update')),
+          const SnackBar(
+            content: Text(
+              'Medication editing will be available in next update',
+            ),
+          ),
         );
         break;
       case 'lab_report':
         // Note: LabReportFormScreen would need to be updated to accept a lab report parameter for editing
         _navigateToRecordDetail(record);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Lab report editing will be available in next update')),
+          const SnackBar(
+            content: Text(
+              'Lab report editing will be available in next update',
+            ),
+          ),
         );
         break;
       default:
         _navigateToRecordDetail(record);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${record.recordType} editing not yet supported')),
+          SnackBar(
+            content: Text('${record.recordType} editing not yet supported'),
+          ),
         );
     }
   }
