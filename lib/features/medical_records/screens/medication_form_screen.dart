@@ -109,7 +109,8 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
       final request = CreateMedicationRequest(
         profileId: selectedProfileId,
         title: _nameController.text.trim(),
-        description: '${_dosageController.text.trim()} - ${_frequencyController.text.trim()}',
+        description:
+            '${_dosageController.text.trim()} - ${_frequencyController.text.trim()}',
         recordDate: DateTime.now(),
         medicationName: _nameController.text.trim(),
         dosage: _dosageController.text.trim().isEmpty

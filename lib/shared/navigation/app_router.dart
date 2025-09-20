@@ -213,9 +213,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.ocrScan,
         name: 'ocr-scan',
         builder: (context, state) {
-          return const OCRScanScreen(
-            ocrType: OCRType.prescription,
-          );
+          return const OCRScanScreen(ocrType: OCRType.prescription);
         },
       ),
     ],

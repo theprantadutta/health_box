@@ -31,8 +31,10 @@ class ProfileCard extends StatelessWidget {
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
-            ? Border.all(color: theme.colorScheme.primary, width: 2)
-            : Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
+              ? Border.all(color: theme.colorScheme.primary, width: 2)
+              : Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
@@ -92,9 +94,14 @@ class ProfileCard extends StatelessWidget {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -117,7 +124,9 @@ class ProfileCard extends StatelessWidget {
                               child: Text(
                                 '${profile.gender}${profile.bloodType != null ? ' • ${profile.bloodType}' : ''}',
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.7,
+                                  ),
                                   fontSize: 12,
                                 ),
                                 maxLines: 1,
@@ -126,7 +135,8 @@ class ProfileCard extends StatelessWidget {
                             ),
 
                             // Quick indicators
-                            if (profile.emergencyContact?.isNotEmpty == true) ...[
+                            if (profile.emergencyContact?.isNotEmpty ==
+                                true) ...[
                               const SizedBox(width: 4),
                               Icon(
                                 Icons.emergency,
@@ -146,7 +156,8 @@ class ProfileCard extends StatelessWidget {
                         ),
 
                         // Height and Weight if available
-                        if (profile.height != null || profile.weight != null) ...[
+                        if (profile.height != null ||
+                            profile.weight != null) ...[
                           const SizedBox(height: 4),
                           Text(
                             [
@@ -154,7 +165,9 @@ class ProfileCard extends StatelessWidget {
                               if (profile.weight != null) '${profile.weight}kg',
                             ].join(' • '),
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
                               fontSize: 11,
                             ),
                           ),
@@ -174,7 +187,9 @@ class ProfileCard extends StatelessWidget {
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.1,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: IconButton(

@@ -11,8 +11,12 @@ class AppTheme {
   // ============ SIMPLIFIED LIGHT COLOR PALETTE ============
 
   // Primary Colors - Very Light and Readable
-  static const Color primaryColorLight = Color(0xFF64B5F6); // Light medical blue
-  static const Color primaryColorDark = Color(0xFF90CAF9); // Even lighter blue for dark theme
+  static const Color primaryColorLight = Color(
+    0xFF64B5F6,
+  ); // Light medical blue
+  static const Color primaryColorDark = Color(
+    0xFF90CAF9,
+  ); // Even lighter blue for dark theme
 
   // Success Color - Light and Calming
   static const Color successColor = Color(0xFF81C784); // Light green
@@ -25,7 +29,9 @@ class AppTheme {
 
   // Neutral Colors - Very Light
   static const Color neutralColorLight = Color(0xFFF8F9FA); // Almost white
-  static const Color neutralColorDark = Color(0xFF455A64); // Medium gray for dark theme
+  static const Color neutralColorDark = Color(
+    0xFF455A64,
+  ); // Medium gray for dark theme
 
   // ============ ELEVATION & SHADOW SYSTEM ============
 

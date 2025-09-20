@@ -103,10 +103,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
         icon: const Icon(Icons.add_rounded, size: 20),
         label: const Text(
           'Add Reminder',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ),
     );
@@ -715,9 +712,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                           borderRadius: BorderRadius.circular(8),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.errorColor.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: AppTheme.errorColor.withValues(alpha: 0.3),
                               offset: const Offset(0, 2),
                               blurRadius: 4,
                             ),
@@ -773,7 +768,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
           ElevatedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('History feature coming in next update')),
+                const SnackBar(
+                  content: Text('History feature coming in next update'),
+                ),
               );
             },
             child: const Text('Enable History Tracking'),
@@ -812,7 +809,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
           ElevatedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Statistics feature coming in next update')),
+                const SnackBar(
+                  content: Text('Statistics feature coming in next update'),
+                ),
               );
             },
             child: const Text('View Analytics'),
@@ -981,10 +980,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                 children: [
                   const Text(
                     'Edit Reminder',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),

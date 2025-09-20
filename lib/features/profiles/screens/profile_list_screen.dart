@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/widgets/gradient_button.dart';
@@ -8,8 +9,8 @@ import '../../../shared/theme/app_theme.dart';
 import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/animations/stagger_animations.dart';
 import '../../../shared/animations/micro_interactions.dart';
+import '../../../shared/navigation/app_router.dart';
 import '../widgets/profile_card.dart';
-import 'profile_form_screen.dart';
 
 class ProfileListScreen extends ConsumerStatefulWidget {
   const ProfileListScreen({super.key});
@@ -162,9 +163,11 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                                             gender,
                                             style: theme.textTheme.bodyMedium
                                                 ?.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              color: theme.colorScheme.onSurface,
-                                            ),
+                                                  fontWeight: FontWeight.w500,
+                                                  color: theme
+                                                      .colorScheme
+                                                      .onSurface,
+                                                ),
                                           ),
                                         ),
                                       )
@@ -185,7 +188,11 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             ),
             // Profile List Section
             Expanded(
-              child: _buildProfileList(profilesAsync, selectedProfileAsync, theme),
+              child: _buildProfileList(
+                profilesAsync,
+                selectedProfileAsync,
+                theme,
+              ),
             ),
           ],
         ),
@@ -196,10 +203,7 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
         icon: const Icon(Icons.person_add_rounded, size: 20),
         label: const Text(
           'Add Profile',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ),
     );
@@ -237,11 +241,7 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: theme.colorScheme.error,
-            ),
+            Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
             const SizedBox(height: 16),
             Text(
               'Error loading profiles',
@@ -284,9 +284,7 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppTheme.successColor.withValues(
-                          alpha: 0.1,
-                        ),
+                        color: AppTheme.successColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -449,20 +447,14 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   }
 
   void _navigateToAddProfile(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const ProfileFormScreen()));
+    context.push(AppRoutes.profileForm);
   }
 
   void _navigateToEditProfile(
     BuildContext context,
     FamilyMemberProfile profile,
   ) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ProfileFormScreen(profile: profile),
-      ),
-    );
+    context.push(AppRoutes.profileForm, extra: profile);
   }
 
   void _showDeleteConfirmation(

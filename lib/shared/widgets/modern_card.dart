@@ -129,7 +129,8 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
         : (_isHovered && widget.enableHoverEffect ? widget.hoverScale : 1.0);
 
     // Get effective color based on medical theme
-    final effectiveColor = widget.color ??
+    final effectiveColor =
+        widget.color ??
         (_getMedicalThemeColor(context) ?? theme.colorScheme.surface);
 
     // Build the card content

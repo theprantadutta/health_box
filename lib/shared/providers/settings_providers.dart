@@ -55,9 +55,12 @@ class SettingsNotifier extends StateNotifier<AsyncValue<AppSettings>> {
       final settingsMap = <String, dynamic>{};
 
       // Load individual settings
-      settingsMap['notificationsEnabled'] = prefs.getBool('notifications_enabled') ?? true;
-      settingsMap['autoBackupEnabled'] = prefs.getBool('auto_backup_enabled') ?? false;
-      settingsMap['debugModeEnabled'] = prefs.getBool('debug_mode_enabled') ?? false;
+      settingsMap['notificationsEnabled'] =
+          prefs.getBool('notifications_enabled') ?? true;
+      settingsMap['autoBackupEnabled'] =
+          prefs.getBool('auto_backup_enabled') ?? false;
+      settingsMap['debugModeEnabled'] =
+          prefs.getBool('debug_mode_enabled') ?? false;
 
       final settings = AppSettings.fromMap(settingsMap);
       state = AsyncValue.data(settings);
@@ -116,9 +119,10 @@ class SettingsNotifier extends StateNotifier<AsyncValue<AppSettings>> {
 }
 
 // Settings provider
-final settingsNotifierProvider = StateNotifierProvider<SettingsNotifier, AsyncValue<AppSettings>>((ref) {
-  return SettingsNotifier();
-});
+final settingsNotifierProvider =
+    StateNotifierProvider<SettingsNotifier, AsyncValue<AppSettings>>((ref) {
+      return SettingsNotifier();
+    });
 
 // Convenience providers for individual settings
 final notificationsEnabledProvider = Provider<bool>((ref) {

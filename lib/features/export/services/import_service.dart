@@ -999,11 +999,19 @@ class ImportService {
               bloodType: profile['bloodType'] ?? existingProfile.bloodType,
               height: profile['height']?.toDouble() ?? existingProfile.height,
               weight: profile['weight']?.toDouble() ?? existingProfile.weight,
-              emergencyContact: profile['emergencyContact'] ?? existingProfile.emergencyContact,
-              insuranceInfo: profile['insuranceInfo'] ?? existingProfile.insuranceInfo,
-              profileImagePath: profile['profileImagePath'] ?? existingProfile.profileImagePath,
+              emergencyContact:
+                  profile['emergencyContact'] ??
+                  existingProfile.emergencyContact,
+              insuranceInfo:
+                  profile['insuranceInfo'] ?? existingProfile.insuranceInfo,
+              profileImagePath:
+                  profile['profileImagePath'] ??
+                  existingProfile.profileImagePath,
             );
-            await profileService.updateProfile(existingProfile.id, updateRequest);
+            await profileService.updateProfile(
+              existingProfile.id,
+              updateRequest,
+            );
           } else {
             // Create new profile
             await _createProfileFromMap(profile, profileService);
@@ -1030,7 +1038,10 @@ class ImportService {
     }
   }
 
-  Future<void> _createProfileFromMap(Map<String, dynamic> profile, ProfileService profileService) async {
+  Future<void> _createProfileFromMap(
+    Map<String, dynamic> profile,
+    ProfileService profileService,
+  ) async {
     final createRequest = CreateProfileRequest(
       firstName: profile['firstName'] ?? 'Unknown',
       lastName: profile['lastName'] ?? 'User',

@@ -391,7 +391,9 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
               Text('Type: ${attachment.fileType}'),
               Text('Size: ${attachment.fileSize} bytes'),
               const SizedBox(height: 16),
-              const Text('Sharing functionality would export this file to other apps.'),
+              const Text(
+                'Sharing functionality would export this file to other apps.',
+              ),
             ],
           ),
           actions: [
@@ -419,7 +421,6 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
   }
-
 
   IconData _getFileTypeIcon(String fileType) {
     switch (fileType.toLowerCase()) {

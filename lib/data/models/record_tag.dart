@@ -25,7 +25,8 @@ class SearchHistory extends Table {
   TextColumn get filters => text().nullable().named('filters')(); // JSON string
   DateTimeColumn get createdAt =>
       dateTime().withDefault(currentDateAndTime).named('created_at')();
-  IntColumn get useCount => integer().withDefault(const Constant(1)).named('use_count')();
+  IntColumn get useCount =>
+      integer().withDefault(const Constant(1)).named('use_count')();
 
   @override
   Set<Column> get primaryKey => {id};

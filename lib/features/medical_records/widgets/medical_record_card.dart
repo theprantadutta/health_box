@@ -193,7 +193,6 @@ class MedicalRecordCard extends StatelessWidget {
     );
   }
 
-
   IconData _getRecordTypeIcon(String recordType) {
     switch (recordType.toLowerCase()) {
       case 'prescription':

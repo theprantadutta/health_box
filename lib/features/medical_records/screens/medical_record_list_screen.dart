@@ -636,9 +636,7 @@ class _MedicalRecordListScreenState
 
     if (profileId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a profile first'),
-        ),
+        const SnackBar(content: Text('Please select a profile first')),
       );
       return;
     }
@@ -647,24 +645,21 @@ class _MedicalRecordListScreenState
       case 'prescription':
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                PrescriptionFormScreen(profileId: profileId),
+            builder: (context) => PrescriptionFormScreen(profileId: profileId),
           ),
         );
         break;
       case 'medication':
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                MedicationFormScreen(profileId: profileId),
+            builder: (context) => MedicationFormScreen(profileId: profileId),
           ),
         );
         break;
       case 'lab_report':
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                LabReportFormScreen(profileId: profileId),
+            builder: (context) => LabReportFormScreen(profileId: profileId),
           ),
         );
         break;

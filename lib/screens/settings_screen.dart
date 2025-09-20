@@ -20,7 +20,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  final TextEditingController _deleteConfirmationController = TextEditingController();
+  final TextEditingController _deleteConfirmationController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -154,7 +155,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   name: 'Health Box User',
                   subtitle: 'Error loading profile',
                   initials: 'HB',
-                  trailing: const Icon(Icons.error_outline, color: Colors.white70),
+                  trailing: const Icon(
+                    Icons.error_outline,
+                    color: Colors.white70,
+                  ),
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -339,10 +343,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.settings,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(Icons.settings, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'App Preferences',
@@ -384,7 +385,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             subtitle: const Text('Receive reminders and alerts'),
             value: ref.watch(notificationsEnabledProvider),
             onChanged: (value) {
-              ref.read(settingsNotifierProvider.notifier).toggleNotifications(value);
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .toggleNotifications(value);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -419,10 +422,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.accessibility,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(Icons.accessibility, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Accessibility',
@@ -550,10 +550,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.security,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(Icons.security, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Privacy & Security',
@@ -602,10 +599,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.cloud_sync,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(Icons.cloud_sync, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Backup & Sync',
@@ -640,7 +634,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             subtitle: const Text('Automatically backup daily'),
             value: ref.watch(autoBackupEnabledProvider),
             onChanged: (value) {
-              ref.read(settingsNotifierProvider.notifier).toggleAutoBackup(value);
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .toggleAutoBackup(value);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -712,10 +708,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.engineering,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(Icons.engineering, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Advanced',
@@ -735,7 +728,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: Switch(
               value: ref.watch(debugModeEnabledProvider),
               onChanged: (value) {
-                ref.read(settingsNotifierProvider.notifier).toggleDebugMode(value);
+                ref
+                    .read(settingsNotifierProvider.notifier)
+                    .toggleDebugMode(value);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -823,7 +818,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 if (value != null) {
                   // For system theme, we'll follow the system brightness
                   final brightness = MediaQuery.of(context).platformBrightness;
-                  ref.read(appNotifierProvider.notifier).setDarkMode(brightness == Brightness.dark);
+                  ref
+                      .read(appNotifierProvider.notifier)
+                      .setDarkMode(brightness == Brightness.dark);
                   Navigator.pop(context);
                 }
               },
@@ -982,9 +979,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       await _performDataClearing();
                     }
                   : null,
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text('DELETE ALL DATA'),
             ),
           ],
@@ -1159,7 +1154,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('We value your feedback! Please reach out to us through:'),
+            const Text(
+              'We value your feedback! Please reach out to us through:',
+            ),
             const SizedBox(height: 16),
             ListTile(
               leading: const Icon(Icons.email),
@@ -1168,7 +1165,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onTap: () {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Email functionality requires url_launcher package')),
+                  const SnackBar(
+                    content: Text(
+                      'Email functionality requires url_launcher package',
+                    ),
+                  ),
                 );
               },
             ),

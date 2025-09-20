@@ -22,7 +22,8 @@ class FamilyMemberProfiles extends Table {
   TextColumn get phone => text().nullable().named('phone')();
   TextColumn get email => text().nullable().named('email')();
   TextColumn get address => text().nullable().named('address')();
-  TextColumn get medicalConditions => text().nullable().named('medical_conditions')();
+  TextColumn get medicalConditions =>
+      text().nullable().named('medical_conditions')();
   TextColumn get allergies => text().nullable().named('allergies')();
   DateTimeColumn get createdAt =>
       dateTime().withDefault(currentDateAndTime).named('created_at')();

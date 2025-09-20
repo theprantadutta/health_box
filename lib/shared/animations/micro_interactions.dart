@@ -1,3 +1,4 @@
+// ignore_for_file: dead_code
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
@@ -18,22 +19,24 @@ class MicroInteractions {
     Color? splashColor,
     Color? highlightColor,
   }) {
+    if (onPressed == null) {
+      return child;
+    }
+
     return StatefulBuilder(
       builder: (context, setState) {
         bool isPressed = false;
 
         return GestureDetector(
           onTapDown: (_) {
-            if (onPressed != null) {
-              setState(() => isPressed = true);
-              if (enableHaptics) {
-                HapticFeedback.selectionClick();
-              }
+            setState(() => isPressed = true);
+            if (enableHaptics) {
+              HapticFeedback.selectionClick();
             }
           },
           onTapUp: (_) {
             setState(() => isPressed = false);
-            onPressed?.call();
+            onPressed.call();
           },
           onTapCancel: () {
             setState(() => isPressed = false);
@@ -97,22 +100,24 @@ class MicroInteractions {
         bool isHovered = false;
         bool isPressed = false;
 
-        final isDark = Theme.of(context).brightness == Brightness.dark;
         final currentElevation = isHovered ? hoverElevation : baseElevation;
-        final currentScale = isPressed
-            ? pressScale
-            : (isHovered ? hoverScale : 1.0);
+        double currentScale = 1.0;
+        if (isPressed) {
+          currentScale = pressScale;
+        } else if (isHovered) {
+          currentScale = hoverScale;
+        }
 
         return MouseRegion(
           onEnter: (_) => setState(() => isHovered = true),
           onExit: (_) => setState(() => isHovered = false),
           child: GestureDetector(
-            onTapDown: (_) => setState(() => isPressed = true),
-            onTapUp: (_) {
+            onTapDown: onTap != null ? (_) => setState(() => isPressed = true) : null,
+            onTapUp: onTap != null ? (_) {
               setState(() => isPressed = false);
-              onTap?.call();
-            },
-            onTapCancel: () => setState(() => isPressed = false),
+              onTap.call();
+            } : null,
+            onTapCancel: onTap != null ? () => setState(() => isPressed = false) : null,
             child: AnimatedScale(
               scale: currentScale,
               duration: duration,
@@ -124,7 +129,7 @@ class MicroInteractions {
                   borderRadius: borderRadius,
                   boxShadow: enableShadowAnimation
                       ? AppTheme.getElevationShadow(
-                          isDark,
+                          Theme.of(context).brightness == Brightness.dark,
                           currentElevation > 4
                               ? ElevationLevel.medium
                               : ElevationLevel.low,
@@ -153,52 +158,15 @@ class MicroInteractions {
     Color? focusColor,
     bool enableFloatingLabel = true,
   }) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        bool isFocused = false;
-        final theme = Theme.of(context);
-
-        return Focus(
-          onFocusChange: (focused) => setState(() => isFocused = focused),
-          child: AnimatedContainer(
-            duration: duration,
-            curve: AppTheme.easeOutCubic,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isFocused
-                    ? (focusColor ?? theme.colorScheme.primary)
-                    : theme.colorScheme.outline.withValues(alpha: 0.3),
-                width: isFocused ? 2.0 : 1.0,
-              ),
-              boxShadow: isFocused
-                  ? [
-                      BoxShadow(
-                        color: (focusColor ?? theme.colorScheme.primary)
-                            .withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: enableFloatingLabel ? labelText : null,
-                hintText: hintText,
-                prefixIcon: prefixIcon,
-                suffixIcon: suffixIcon,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+    return _AnimatedTextField(
+      controller: controller,
+      labelText: labelText,
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      duration: duration,
+      focusColor: focusColor,
+      enableFloatingLabel: enableFloatingLabel,
     );
   }
 
@@ -486,6 +454,7 @@ class MicroInteractions {
   /// Bounce tap animation for interactive elements
   static Widget bounceTap({
     required Widget child,
+    VoidCallback? onTap,
     double scaleDown = 0.95,
     Duration duration = const Duration(milliseconds: 100),
     Key? key,
@@ -496,6 +465,7 @@ class MicroInteractions {
         bool isPressed = false;
 
         return GestureDetector(
+          onTap: onTap,
           onTapDown: (_) => setState(() => isPressed = true),
           onTapUp: (_) => setState(() => isPressed = false),
           onTapCancel: () => setState(() => isPressed = false),
@@ -507,6 +477,81 @@ class MicroInteractions {
           ),
         );
       },
+    );
+  }
+}
+
+class _AnimatedTextField extends StatefulWidget {
+  final TextEditingController controller;
+  final String? labelText;
+  final String? hintText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final Duration duration;
+  final Color? focusColor;
+  final bool enableFloatingLabel;
+
+  const _AnimatedTextField({
+    required this.controller,
+    this.labelText,
+    this.hintText,
+    this.prefixIcon,
+    this.suffixIcon,
+    required this.duration,
+    this.focusColor,
+    required this.enableFloatingLabel,
+  });
+
+  @override
+  State<_AnimatedTextField> createState() => _AnimatedTextFieldState();
+}
+
+class _AnimatedTextFieldState extends State<_AnimatedTextField> {
+  bool isFocused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Focus(
+      onFocusChange: (focused) => setState(() => isFocused = focused),
+      child: AnimatedContainer(
+        duration: widget.duration,
+        curve: AppTheme.easeOutCubic,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isFocused
+                ? (widget.focusColor ?? theme.colorScheme.primary)
+                : theme.colorScheme.outline.withValues(alpha: 0.3),
+            width: isFocused ? 2.0 : 1.0,
+          ),
+          boxShadow: isFocused
+              ? [
+                  BoxShadow(
+                    color: (widget.focusColor ?? theme.colorScheme.primary)
+                        .withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: TextField(
+          controller: widget.controller,
+          decoration: InputDecoration(
+            labelText: widget.enableFloatingLabel ? widget.labelText : null,
+            hintText: widget.hintText,
+            prefixIcon: widget.prefixIcon,
+            suffixIcon: widget.suffixIcon,
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
