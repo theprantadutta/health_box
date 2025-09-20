@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../theme/app_theme.dart';
+import '../theme/design_system.dart';
 import 'modern_card.dart';
 
 class HealthButton extends StatefulWidget {
@@ -453,20 +455,30 @@ class _HealthButtonState extends State<HealthButton>
       }
     }
 
-    return _getStyleColor(context);
-  }
+    if (widget.medicalTheme != null) {
+      switch (widget.medicalTheme!) {
+        case MedicalButtonTheme.primary:
+          return HealthBoxDesignSystem.primaryBlue;
+        case MedicalButtonTheme.success:
+          return HealthBoxDesignSystem.successColor;
+        case MedicalButtonTheme.warning:
+          return HealthBoxDesignSystem.warningColor;
+        case MedicalButtonTheme.error:
+          return HealthBoxDesignSystem.errorColor;
+        case MedicalButtonTheme.neutral:
+          return HealthBoxDesignSystem.neutral400;
+      }
+    }
 
-  Color _getStyleColor(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     switch (widget.style) {
       case HealthButtonStyle.primary:
-        return colorScheme.primary;
+        return HealthBoxDesignSystem.primaryBlue;
       case HealthButtonStyle.success:
-        return const Color(0xFF81C784); // Light green
+        return HealthBoxDesignSystem.successColor;
       case HealthButtonStyle.warning:
-        return const Color(0xFFFFB74D); // Light orange
+        return HealthBoxDesignSystem.warningColor;
       case HealthButtonStyle.error:
-        return colorScheme.error;
+        return HealthBoxDesignSystem.errorColor;
     }
   }
 

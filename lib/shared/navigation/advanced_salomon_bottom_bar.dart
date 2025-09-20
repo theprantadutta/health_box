@@ -96,18 +96,18 @@ class AdvancedSalomonBottomBar extends StatelessWidget {
 
                   return Material(
                     color: Color.lerp(
-                      _selectedColor.withOpacity(0.0),
-                      _selectedColor.withOpacity(selectedColorOpacity ?? 0.1),
+                      _selectedColor.withValues(alpha: 0.0),
+                      _selectedColor.withValues(alpha: selectedColorOpacity ?? 0.1),
                       t,
                     ),
                     shape: itemShape,
                     child: InkWell(
                       onTap: () => onTap?.call(items.indexOf(item)),
                       customBorder: itemShape,
-                      focusColor: _selectedColor.withOpacity(0.1),
-                      highlightColor: _selectedColor.withOpacity(0.1),
-                      splashColor: _selectedColor.withOpacity(0.1),
-                      hoverColor: _selectedColor.withOpacity(0.1),
+                      focusColor: _selectedColor.withValues(alpha: 0.1),
+                      highlightColor: _selectedColor.withValues(alpha: 0.1),
+                      splashColor: _selectedColor.withValues(alpha: 0.1),
+                      hoverColor: _selectedColor.withValues(alpha: 0.1),
                       child: Padding(
                         padding:
                             itemPadding -
@@ -155,7 +155,7 @@ class AdvancedSalomonBottomBar extends StatelessWidget {
                                     child: DefaultTextStyle(
                                       style: TextStyle(
                                         color: Color.lerp(
-                                          _selectedColor.withOpacity(0.0),
+                                          _selectedColor.withValues(alpha: 0.0),
                                           _selectedColor,
                                           t,
                                         ),

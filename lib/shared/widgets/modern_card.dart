@@ -1,7 +1,10 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../theme/app_theme.dart';
+import '../theme/design_system.dart';
 
 class ModernCard extends StatefulWidget {
   const ModernCard({
@@ -185,7 +188,8 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
       child: Material(
         color: Colors.transparent,
         child: Padding(
-          padding: widget.padding ?? AppTheme.getResponsivePadding(context),
+          padding:
+              widget.padding ?? EdgeInsets.all(HealthBoxDesignSystem.spacing4),
           child: widget.child,
         ),
       ),
@@ -300,24 +304,28 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
     }
   }
 
-  /// Gets medical theme color if specified
+  /// Gets medical theme color if specified using design system
   Color? _getMedicalThemeColor(BuildContext context) {
     if (widget.medicalTheme != null) {
-      final colorScheme = Theme.of(context).colorScheme;
       switch (widget.medicalTheme!) {
         case MedicalCardTheme.primary:
-          return colorScheme.primary;
+          return HealthBoxDesignSystem.primaryBlue;
         case MedicalCardTheme.success:
-          return const Color(0xFF81C784); // Light green
+          return HealthBoxDesignSystem.successColor;
         case MedicalCardTheme.warning:
-          return const Color(0xFFFFB74D); // Light orange
+          return HealthBoxDesignSystem.warningColor;
         case MedicalCardTheme.error:
-          return colorScheme.error;
+          return HealthBoxDesignSystem.errorColor;
         case MedicalCardTheme.neutral:
-          return colorScheme.outline;
+          return Theme.of(context).colorScheme.outline;
+        case MedicalCardTheme.info:
+          return HealthBoxDesignSystem.accentCyan;
+        case MedicalCardTheme.secondary:
+          return HealthBoxDesignSystem.accentPurple;
+        case MedicalCardTheme.tertiary:
+          return HealthBoxDesignSystem.accentPink;
       }
     }
-
     return null;
   }
 
@@ -348,4 +356,7 @@ enum MedicalCardTheme {
   warning, // Caution orange
   error, // Emergency red
   neutral, // Neutral gray colors
+  info, // Information cyan
+  secondary, // Secondary purple
+  tertiary, // Tertiary pink
 }

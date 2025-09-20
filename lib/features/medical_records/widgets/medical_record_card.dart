@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../../data/database/app_database.dart';
-import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/animations/common_transitions.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 class MedicalRecordCard extends StatelessWidget {
   final MedicalRecord record;
@@ -236,6 +237,10 @@ class MedicalRecordCard extends StatelessWidget {
     switch (theme) {
       case MedicalCardTheme.primary:
         return colorScheme.primary;
+      case MedicalCardTheme.info:
+        return colorScheme.tertiary;
+      case MedicalCardTheme.secondary:
+        return colorScheme.secondary;
       case MedicalCardTheme.success:
         return const Color(0xFF81C784); // Light green
       case MedicalCardTheme.warning:
@@ -244,6 +249,8 @@ class MedicalRecordCard extends StatelessWidget {
         return colorScheme.error;
       case MedicalCardTheme.neutral:
         return colorScheme.outline;
+      case MedicalCardTheme.tertiary:
+        return colorScheme.tertiary;
     }
   }
 }
