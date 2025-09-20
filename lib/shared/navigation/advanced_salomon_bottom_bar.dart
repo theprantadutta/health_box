@@ -97,7 +97,9 @@ class AdvancedSalomonBottomBar extends StatelessWidget {
                   return Material(
                     color: Color.lerp(
                       _selectedColor.withValues(alpha: 0.0),
-                      _selectedColor.withValues(alpha: selectedColorOpacity ?? 0.1),
+                      _selectedColor.withValues(
+                        alpha: selectedColorOpacity ?? 0.1,
+                      ),
                       t,
                     ),
                     shape: itemShape,

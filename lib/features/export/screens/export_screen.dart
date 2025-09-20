@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/profile_dao.dart';
@@ -525,13 +526,13 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('OK'),
           ),
           if (result.filePath != null)
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
                 // In a real app, you'd open the file or share it
               },
               child: const Text('Open'),
@@ -549,7 +550,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         content: Text('Failed to export data:\n\n$error'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('OK'),
           ),
         ],

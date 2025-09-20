@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../data/database/app_database.dart';
+import '../../../shared/animations/common_transitions.dart';
+import '../../../shared/animations/micro_interactions.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
-import '../../../shared/widgets/gradient_button.dart'; // Updated to HealthButton
-import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/theme/app_theme.dart';
-import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/stagger_animations.dart';
-import '../../../shared/animations/micro_interactions.dart';
+import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/widgets/modern_card.dart';
 import '../widgets/medical_record_card.dart';
-import 'prescription_form_screen.dart';
-import 'medication_form_screen.dart';
-import 'lab_report_form_screen.dart';
-import 'medical_record_detail_screen.dart';
 
 class MedicalRecordListScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -108,6 +105,36 @@ class _MedicalRecordListScreenState
                     Icon(Icons.science),
                     SizedBox(width: 8),
                     Text('Add Lab Report'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'vaccination',
+                child: Row(
+                  children: [
+                    Icon(Icons.vaccines),
+                    SizedBox(width: 8),
+                    Text('Add Vaccination'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'allergy',
+                child: Row(
+                  children: [
+                    Icon(Icons.warning),
+                    SizedBox(width: 8),
+                    Text('Add Allergy'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'chronic_condition',
+                child: Row(
+                  children: [
+                    Icon(Icons.health_and_safety),
+                    SizedBox(width: 8),
+                    Text('Add Chronic Condition'),
                   ],
                 ),
               ),
@@ -378,24 +405,18 @@ class _MedicalRecordListScreenState
       return _buildEmptyState(theme);
     }
 
-    return Padding(
+    return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: StaggerAnimations.staggeredList(
-        children: filteredRecords.map((record) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: MedicalRecordCard(
-              record: record,
-              onTap: () => _navigateToRecordDetail(record),
-              onEdit: () => _navigateToEditRecord(record),
-              onDelete: () => _showDeleteConfirmation(record),
-            ),
-          );
-        }).toList(),
-        staggerDelay: AppTheme.microDuration,
-        direction: StaggerDirection.bottomToTop,
-        animationType: StaggerAnimationType.fadeSlide,
-      ),
+      itemCount: filteredRecords.length,
+      itemBuilder: (context, index) {
+        final record = filteredRecords[index];
+        return MedicalRecordCard(
+          record: record,
+          onTap: () => _navigateToRecordDetail(record),
+          onEdit: () => _navigateToEditRecord(record),
+          onDelete: () => _showDeleteConfirmation(record),
+        );
+      },
     );
   }
 
@@ -501,8 +522,9 @@ class _MedicalRecordListScreenState
 
     // Apply record type filter
     if (_selectedRecordType != 'All') {
+      final filterType = _selectedRecordType.toLowerCase().replaceAll(' ', '_');
       filteredRecords = filteredRecords.where((record) {
-        return record.recordType == _selectedRecordType;
+        return record.recordType == filterType;
       }).toList();
     }
 
@@ -562,7 +584,7 @@ class _MedicalRecordListScreenState
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
@@ -588,41 +610,101 @@ class _MedicalRecordListScreenState
   void _showAddRecordOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Add New Medical Record',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.medication),
-              title: const Text('Prescription'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _onAddRecordSelected('prescription');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.medical_services),
-              title: const Text('Medication'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _onAddRecordSelected('medication');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.science),
-              title: const Text('Lab Report'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _onAddRecordSelected('lab_report');
-              },
-            ),
-          ],
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const Text(
+                'Add New Medical Record',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.medication),
+                      title: const Text('Prescription'),
+                      subtitle: const Text('Add prescription details'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('prescription');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.medical_services),
+                      title: const Text('Medication'),
+                      subtitle: const Text('Track medication intake'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('medication');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.science),
+                      title: const Text('Lab Report'),
+                      subtitle: const Text('Upload lab test results'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('lab_report');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.vaccines),
+                      title: const Text('Vaccination'),
+                      subtitle: const Text('Record vaccination details'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('vaccination');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.warning),
+                      title: const Text('Allergy'),
+                      subtitle: const Text('Document allergy information'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('allergy');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.health_and_safety),
+                      title: const Text('Chronic Condition'),
+                      subtitle: const Text('Track chronic health conditions'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('chronic_condition');
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -643,37 +725,50 @@ class _MedicalRecordListScreenState
 
     switch (recordType) {
       case 'prescription':
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PrescriptionFormScreen(profileId: profileId),
-          ),
-        );
+        context.push('/medical-records/prescription/form?profileId=$profileId');
         break;
       case 'medication':
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => MedicationFormScreen(profileId: profileId),
-          ),
-        );
+        context.push('/medical-records/medication/form?profileId=$profileId');
         break;
       case 'lab_report':
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => LabReportFormScreen(profileId: profileId),
+        context.push('/medical-records/lab-report/form?profileId=$profileId');
+        break;
+      case 'vaccination':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Vaccination form will be available soon'),
+            backgroundColor: Colors.orange,
           ),
         );
         break;
+      case 'allergy':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Allergy form will be available soon'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        break;
+      case 'chronic_condition':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Chronic condition form will be available soon'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$recordType form not implemented yet'),
+            backgroundColor: Colors.red,
+          ),
+        );
     }
   }
 
   void _navigateToRecordDetail(MedicalRecord record) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            MedicalRecordDetailScreen(recordId: record.id, record: record),
-      ),
-    );
+    context.push('/medical-records/detail/${record.id}');
   }
 
   void _navigateToEditRecord(MedicalRecord record) {
@@ -731,12 +826,12 @@ class _MedicalRecordListScreenState
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.of(context).pop();
+              context.pop();
               await _deleteRecord(record);
             },
             style: TextButton.styleFrom(

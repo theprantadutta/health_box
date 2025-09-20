@@ -78,6 +78,8 @@ class MedicationService {
 
       final medicationId =
           'medication_${DateTime.now().millisecondsSinceEpoch}';
+
+      // Create medication-specific record
       final medicationCompanion = MedicationsCompanion(
         id: Value(medicationId),
         profileId: Value(request.profileId),
@@ -101,16 +103,31 @@ class MedicationService {
         status: Value(request.status),
       );
 
-      final createdId = await _medicalRecordDao.createMedication(
-        medicationCompanion,
+      // Create general medical record entry
+      final medicalRecordCompanion = MedicalRecordsCompanion(
+        id: Value(medicationId),
+        profileId: Value(request.profileId),
+        recordType: const Value('medication'),
+        title: Value(request.title.trim()),
+        description: Value(request.description?.trim()),
+        recordDate: Value(request.recordDate),
+        createdAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
+        isActive: const Value(true),
       );
+
+      // Save both records in a transaction
+      await _database.transaction(() async {
+        await _medicalRecordDao.createMedication(medicationCompanion);
+        await _medicalRecordDao.createRecord(medicalRecordCompanion);
+      });
 
       // Create reminders if enabled
       if (request.reminderEnabled && request.reminderTimes.isNotEmpty) {
-        await _createMedicationReminders(createdId, request);
+        await _createMedicationReminders(medicationId, request);
       }
 
-      return createdId;
+      return medicationId;
     } catch (e) {
       if (e is MedicationServiceException) rethrow;
       throw MedicationServiceException(
@@ -620,7 +637,7 @@ class CreateMedicationRequest {
   final bool reminderEnabled;
   final int? pillCount;
   final String status;
-  final List<TimeOfDay> reminderTimes;
+  final List<MedicationTime> reminderTimes;
 
   const CreateMedicationRequest({
     required this.profileId,
@@ -655,7 +672,7 @@ class UpdateMedicationRequest {
   final bool? reminderEnabled;
   final int? pillCount;
   final String? status;
-  final List<TimeOfDay>? reminderTimes;
+  final List<MedicationTime>? reminderTimes;
 
   const UpdateMedicationRequest({
     this.title,
@@ -675,11 +692,11 @@ class UpdateMedicationRequest {
   });
 }
 
-class TimeOfDay {
+class MedicationTime {
   final int hour;
   final int minute;
 
-  const TimeOfDay({required this.hour, required this.minute});
+  const MedicationTime({required this.hour, required this.minute});
 }
 
 // Exceptions

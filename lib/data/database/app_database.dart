@@ -48,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   static AppDatabase get instance => _instance;
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -96,6 +96,59 @@ class AppDatabase extends _$AppDatabase {
       } catch (e) {
         debugPrint('Database creation failed: $e');
         rethrow;
+      }
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      debugPrint('Migrating database from version $from to $to');
+      
+      if (from == 1 && to == 2) {
+        // Migration from v1 to v2: Fix medication date constraint
+        // Force complete recreation of medications table
+        try {
+          debugPrint('Starting medication table migration...');
+
+          // Simply drop and recreate the medications table
+          // This will lose existing medication data but fix the constraint
+          await customStatement('DROP TABLE IF EXISTS medications;');
+          await m.createTable(medications);
+
+          debugPrint('Medication table recreated successfully with fixed constraints');
+        } catch (e) {
+          debugPrint('Migration failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 2 && to == 3) {
+        // Migration from v2 to v3: Fix medication Unix timestamp date constraint
+        try {
+          debugPrint('Starting medication table migration to v3...');
+
+          // Drop and recreate the medications table with correct Unix timestamp constraint
+          await customStatement('DROP TABLE IF EXISTS medications;');
+          await m.createTable(medications);
+
+          debugPrint('Medication table recreated successfully with Unix timestamp constraints');
+        } catch (e) {
+          debugPrint('Migration to v3 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 3 && to == 4) {
+        // Migration from v3 to v4: Fix non-deterministic datetime constraint
+        try {
+          debugPrint('Starting medication table migration to v4...');
+
+          // Drop and recreate the medications table with static timestamp constraint
+          await customStatement('DROP TABLE IF EXISTS medications;');
+          await m.createTable(medications);
+
+          debugPrint('Medication table recreated successfully with static timestamp constraints');
+        } catch (e) {
+          debugPrint('Migration to v4 failed: $e');
+          rethrow;
+        }
       }
     },
   );

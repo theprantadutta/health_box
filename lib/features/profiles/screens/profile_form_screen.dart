@@ -9,7 +9,6 @@ import 'dart:io';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/widgets/gradient_button.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../services/profile_service.dart';
@@ -203,7 +202,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
         if (!didPop && _hasUnsavedChanges && !_isMandatoryFirstProfile) {
           final shouldPop = await _showUnsavedChangesDialog();
           if (shouldPop && mounted) {
-            Navigator.of(context).pop();
+            context.pop();
           }
         }
       },
@@ -246,7 +245,13 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
               )
             else
               TextButton(
-                onPressed: _saveProfile,
+                onPressed: () {
+                  print('=== APP BAR SAVE BUTTON PRESSED ===');
+                  print('Loading state: $_isLoading');
+                  print('Form valid: ${_formKey.currentState?.validate()}');
+                  print('Date of birth: $_selectedDateOfBirth');
+                  _saveProfile();
+                },
                 child: const Text(
                   'SAVE',
                   style: TextStyle(
@@ -898,23 +903,46 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
       children: [
         SizedBox(
           width: double.infinity,
-          child: HealthButton(
-            onPressed: _isLoading ? null : _saveProfile,
-            isLoading: _isLoading,
-            size: HealthButtonSize.large,
-            style: HealthButtonStyle.primary,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!_isLoading)
-                  Icon(
-                    _isEditing ? Icons.save : Icons.person_add,
-                    color: Colors.white,
-                  ),
-                if (!_isLoading) const SizedBox(width: 8),
-                Text(_isEditing ? 'Save Changes' : 'Add Profile'),
-              ],
+          child: ElevatedButton(
+            onPressed: _isLoading ? null : () {
+              print('=== ADD PROFILE BUTTON PRESSED ===');
+              print('Loading state: $_isLoading');
+              print('Form valid: ${_formKey.currentState?.validate()}');
+              print('Date of birth: $_selectedDateOfBirth');
+              _saveProfile();
+            },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
             ),
+            child: _isLoading
+                ? const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text('Saving...'),
+                    ],
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _isEditing ? Icons.save : Icons.person_add,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(_isEditing ? 'Save Changes' : 'Add Profile'),
+                    ],
+                  ),
           ),
         ),
         if (!_isMandatoryFirstProfile) ...[
@@ -928,10 +956,10 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                       if (_hasUnsavedChanges) {
                         final shouldPop = await _showUnsavedChangesDialog();
                         if (shouldPop && mounted) {
-                          Navigator.of(context).pop();
+                          context.pop();
                         }
                       } else {
-                        Navigator.of(context).pop();
+                        context.pop();
                       }
                     },
               child: const Text('Cancel'),
@@ -1102,7 +1130,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
             ),
           );
         } else {
-          Navigator.of(context).pop();
+          context.pop();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -1144,11 +1172,11 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => context.pop(false),
                   child: const Text('Stay'),
                 ),
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () => context.pop(true),
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.error,
                   ),
@@ -1174,7 +1202,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Take Photo'),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   _pickImage(ImageSource.camera);
                 },
               ),
@@ -1182,7 +1210,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Choose from Gallery'),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   _pickImage(ImageSource.gallery);
                 },
               ),
@@ -1194,7 +1222,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                     style: TextStyle(color: Colors.red),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    context.pop();
                     _removeImage();
                   },
                 ),
@@ -1202,7 +1230,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
           ],

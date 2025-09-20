@@ -145,13 +145,17 @@ ThemeData _buildLightTheme() {
 
         // Secondary color scheme
         secondary: HealthBoxDesignSystem.accentPurple,
-        secondaryContainer: HealthBoxDesignSystem.accentPurple.withValues(alpha: 0.1),
+        secondaryContainer: HealthBoxDesignSystem.accentPurple.withValues(
+          alpha: 0.1,
+        ),
         onSecondary: Colors.white,
         onSecondaryContainer: HealthBoxDesignSystem.textPrimary,
 
         // Tertiary colors for accents
         tertiary: HealthBoxDesignSystem.accentCyan,
-        tertiaryContainer: HealthBoxDesignSystem.accentCyan.withValues(alpha: 0.1),
+        tertiaryContainer: HealthBoxDesignSystem.accentCyan.withValues(
+          alpha: 0.1,
+        ),
         onTertiary: Colors.white,
         onTertiaryContainer: HealthBoxDesignSystem.textPrimary,
 
@@ -363,13 +367,17 @@ ThemeData _buildDarkTheme() {
 
         // Secondary color scheme for dark mode
         secondary: HealthBoxDesignSystem.accentPurple,
-        secondaryContainer: HealthBoxDesignSystem.accentPurple.withValues(alpha: 0.2),
+        secondaryContainer: HealthBoxDesignSystem.accentPurple.withValues(
+          alpha: 0.2,
+        ),
         onSecondary: Colors.white,
         onSecondaryContainer: HealthBoxDesignSystem.neutral50,
 
         // Tertiary colors for dark mode
         tertiary: HealthBoxDesignSystem.accentCyan,
-        tertiaryContainer: HealthBoxDesignSystem.accentCyan.withValues(alpha: 0.2),
+        tertiaryContainer: HealthBoxDesignSystem.accentCyan.withValues(
+          alpha: 0.2,
+        ),
         onTertiary: Colors.white,
         onTertiaryContainer: HealthBoxDesignSystem.neutral50,
 

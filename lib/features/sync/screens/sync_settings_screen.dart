@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../services/google_drive_service.dart';
 import '../services/sync_service.dart';
@@ -172,14 +173,17 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               // Navigate to conflict resolution screen
-              Navigator.pushNamed(context, '/sync/conflicts');
+              // TODO: Add route for sync conflicts
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Conflict resolution screen coming soon')),
+              );
             },
             child: const Text('Resolve'),
           ),
@@ -199,12 +203,12 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => context.pop(false),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => context.pop(true),
             child: const Text('Delete'),
           ),
         ],
@@ -420,7 +424,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: _googleDriveService.isSignedIn && !_isLoading
-                          ? () => Navigator.pushNamed(context, '/export')
+                          ? () => context.push('/settings/export')
                           : null,
                       icon: const Icon(Icons.upload),
                       label: const Text('Export Data'),
@@ -431,7 +435,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: _googleDriveService.isSignedIn && !_isLoading
-                          ? () => Navigator.pushNamed(context, '/import')
+                          ? () => context.push('/settings/import')
                           : null,
                       icon: const Icon(Icons.download),
                       label: const Text('Import Data'),

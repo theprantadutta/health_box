@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/tag_service.dart';
 import '../../data/database/app_database.dart';
@@ -477,7 +478,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -547,7 +548,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
         }
       }
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
       }
     } catch (e) {
       if (mounted) {
@@ -568,7 +569,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
@@ -587,14 +588,14 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
     try {
       await _tagService.deleteTag(tag.id);
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Tag deleted successfully')),
         );
       }
     } catch (e) {
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
@@ -633,7 +634,7 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.pop(),
                 child: const Text('Close'),
               ),
             ],

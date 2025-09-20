@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/emergency_card_service.dart';
 import '../widgets/emergency_card_preview_widget.dart';
@@ -181,7 +182,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
               Text('Error loading profile: ${error.toString()}'),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.pop(),
                 child: const Text('Go Back'),
               ),
             ],
@@ -645,11 +646,11 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(controller.text.trim()),
+            onPressed: () => context.pop(controller.text.trim()),
             child: const Text('Add'),
           ),
         ],
@@ -765,7 +766,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.pop(),
                 child: const Text('Close'),
               ),
               ElevatedButton(
@@ -832,7 +833,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
   void _shareQRCode(Uint8List qrBytes) {
     // Implementation would depend on platform-specific sharing
     // This would typically use share_plus package
-    Navigator.of(context).pop();
+    context.pop();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('QR code ready to share')));

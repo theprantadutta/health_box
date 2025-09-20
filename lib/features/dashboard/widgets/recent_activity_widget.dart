@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:go_router/go_router.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../data/database/app_database.dart';
-import '../../medical_records/screens/medical_record_detail_screen.dart';
+import '../../../shared/navigation/app_router.dart';
 
 // Provider for recent medical records based on selected profile
 final recentMedicalRecordsProvider = FutureProvider<List<MedicalRecord>>((
@@ -339,12 +340,7 @@ class RecentActivityWidget extends ConsumerWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                MedicalRecordDetailScreen(recordId: record.id, record: record),
-          ),
-        );
+        context.push('${AppRoutes.medicalRecordDetail}/${record.id}');
       },
       borderRadius: BorderRadius.circular(8),
       child: Container(

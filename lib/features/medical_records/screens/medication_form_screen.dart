@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/medication_service.dart';
+import 'package:flutter/foundation.dart';
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -135,7 +137,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Medication saved successfully'),
@@ -144,6 +146,9 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
         );
       }
     } catch (e) {
+      if (kDebugMode) {
+        print('Failed to save medication: $e');
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

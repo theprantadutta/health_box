@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/tag_service.dart';
 import '../../data/database/app_database.dart';
@@ -495,7 +496,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -533,7 +534,7 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
       final tagId = await _tagService.createTag(request);
 
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
 
         // Add the new tag to selection
         final updatedSelection = List<String>.from(widget.selectedTagIds)

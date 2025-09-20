@@ -80,13 +80,13 @@ class HealthBoxDesignSystem {
   // ============ SPACING SYSTEM ============
 
   /// Consistent spacing scale (multiplied by 4px base unit)
-  static const double spacing1 = 4.0;   // 4px
-  static const double spacing2 = 8.0;   // 8px
-  static const double spacing3 = 12.0;  // 12px
-  static const double spacing4 = 16.0;  // 16px
-  static const double spacing5 = 20.0;  // 20px
-  static const double spacing6 = 24.0;  // 24px
-  static const double spacing8 = 32.0;  // 32px
+  static const double spacing1 = 4.0; // 4px
+  static const double spacing2 = 8.0; // 8px
+  static const double spacing3 = 12.0; // 12px
+  static const double spacing4 = 16.0; // 16px
+  static const double spacing5 = 20.0; // 20px
+  static const double spacing6 = 24.0; // 24px
+  static const double spacing8 = 32.0; // 32px
   static const double spacing10 = 40.0; // 40px
   static const double spacing12 = 48.0; // 48px
   static const double spacing16 = 64.0; // 64px
@@ -253,7 +253,8 @@ extension HealthBoxThemeExtension on BuildContext {
 
   /// Access semantic colors
   Color get surfaceColor => Theme.of(this).colorScheme.surface;
-  Color get surfaceVariant => Theme.of(this).colorScheme.surfaceVariant;
+  Color get surfaceVariant =>
+      Theme.of(this).colorScheme.surfaceContainerHighest;
   Color get onSurface => Theme.of(this).colorScheme.onSurface;
   Color get onSurfaceVariant => Theme.of(this).colorScheme.onSurfaceVariant;
 
@@ -307,7 +308,8 @@ class HealthBoxStyle {
     final theme = Theme.of(context);
     return BoxDecoration(
       color: backgroundColor ?? theme.colorScheme.surface,
-      borderRadius: borderRadius ?? BorderRadius.circular(HealthBoxDesignSystem.radiusMd),
+      borderRadius:
+          borderRadius ?? BorderRadius.circular(HealthBoxDesignSystem.radiusMd),
       boxShadow: elevated
           ? HealthBoxDesignSystem.shadowBase
           : HealthBoxDesignSystem.shadowNone,
@@ -336,7 +338,7 @@ class HealthBoxStyle {
         foregroundColor = Colors.white;
         break;
       case ButtonType.secondary:
-        backgroundColor = theme.colorScheme.surfaceVariant;
+        backgroundColor = theme.colorScheme.surfaceContainerHighest;
         foregroundColor = theme.colorScheme.onSurfaceVariant;
         break;
       case ButtonType.outline:
@@ -374,9 +376,18 @@ enum ButtonType { primary, secondary, outline, ghost }
 
 /// Button size enumeration
 enum ButtonSize {
-  small(HealthBoxDesignSystem.buttonHeightSm, EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
-  medium(HealthBoxDesignSystem.buttonHeightBase, EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
-  large(HealthBoxDesignSystem.buttonHeightLg, EdgeInsets.symmetric(horizontal: 24, vertical: 12));
+  small(
+    HealthBoxDesignSystem.buttonHeightSm,
+    EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  ),
+  medium(
+    HealthBoxDesignSystem.buttonHeightBase,
+    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  ),
+  large(
+    HealthBoxDesignSystem.buttonHeightLg,
+    EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  );
 
   const ButtonSize(this.height, this.padding);
   final double height;

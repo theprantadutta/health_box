@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 import '../../data/database/app_database.dart';
 import '../services/attachment_service.dart';
@@ -346,12 +347,12 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
               widget.onAttachmentDelete?.call(attachment);
             },
             style: TextButton.styleFrom(
@@ -398,12 +399,12 @@ class _AttachmentViewWidgetState extends State<AttachmentViewWidget> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Close'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _showMessage('Share functionality requires share_plus package');
               },
               child: const Text('Share'),

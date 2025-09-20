@@ -54,6 +54,8 @@ class LabReportService {
       _validateCreateLabReportRequest(request);
 
       final labReportId = 'lab_report_${DateTime.now().millisecondsSinceEpoch}';
+
+      // Create lab report-specific record
       final labReportCompanion = LabReportsCompanion(
         id: Value(labReportId),
         profileId: Value(request.profileId),
@@ -75,7 +77,27 @@ class LabReportService {
         isCritical: Value(request.isCritical),
       );
 
-      await _database.into(_database.labReports).insert(labReportCompanion);
+      // Create general medical record entry
+      final medicalRecordCompanion = MedicalRecordsCompanion(
+        id: Value(labReportId),
+        profileId: Value(request.profileId),
+        recordType: const Value('lab_report'),
+        title: Value(request.title.trim()),
+        description: Value(request.description?.trim()),
+        recordDate: Value(request.recordDate),
+        createdAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
+        isActive: const Value(true),
+      );
+
+      // Save both records in a transaction
+      await _database.transaction(() async {
+        await _database.into(_database.labReports).insert(labReportCompanion);
+        await _database
+            .into(_database.medicalRecords)
+            .insert(medicalRecordCompanion);
+      });
+
       return labReportId;
     } catch (e) {
       if (e is LabReportServiceException) rethrow;

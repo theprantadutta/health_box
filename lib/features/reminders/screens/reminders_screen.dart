@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/widgets/loading_animation_widget.dart';
 import '../../../shared/widgets/error_state_widget.dart';
@@ -900,14 +901,14 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                 setState(() {
                   _showInactiveReminders = value;
                 });
-                Navigator.pop(context);
+                context.pop();
               },
             ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
@@ -916,49 +917,170 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
   }
 
   void _showAddReminderDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       builder: (context) => Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: DraggableScrollableSheet(
-          initialChildSize: 0.9,
-          maxChildSize: 0.9,
+          initialChildSize: 0.85,
+          maxChildSize: 0.95,
           minChildSize: 0.5,
-          builder: (context, scrollController) => Column(
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
+          expand: false,
+          builder: (context, scrollController) => Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.4)
+                      : Colors.grey.withValues(alpha: 0.3),
+                  offset: const Offset(0, -4),
+                  blurRadius: 20,
+                  spreadRadius: 0,
                 ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: ReminderFormWidget(
-                    onCancel: () => Navigator.pop(context),
-                    onReminderCreated: (reminderId) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Reminder created successfully!'),
+              ],
+            ),
+            child: Column(
+              children: [
+                // Enhanced Header Section
+                Container(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                  child: Column(
+                    children: [
+                      // Drag Handle
+                      Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.outline.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(2),
                         ),
-                      );
-                      ref.invalidate(activeRemindersProvider);
-                    },
+                      ),
+                      const SizedBox(height: 24),
+                      // Header with Icon and Title
+                      Row(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  theme.colorScheme.primary,
+                                  theme.colorScheme.primary.withValues(alpha: 0.8),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                                  offset: const Offset(0, 4),
+                                  blurRadius: 8,
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.add_alert_rounded,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Add New Reminder',
+                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Set up your health reminder',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Close Button
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                                  : theme.colorScheme.surfaceContainerHigh,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IconButton(
+                              onPressed: () => context.pop(),
+                              icon: Icon(
+                                Icons.close_rounded,
+                                color: theme.colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                // Enhanced Form Content
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: ReminderFormWidget(
+                        onCancel: () => context.pop(),
+                        onReminderCreated: (reminderId) {
+                          context.pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Row(
+                                children: [
+                                  Icon(Icons.check_circle, color: Colors.white),
+                                  SizedBox(width: 12),
+                                  Text('Reminder created successfully!'),
+                                ],
+                              ),
+                              backgroundColor: theme.colorScheme.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                          ref.invalidate(activeRemindersProvider);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                // Bottom Padding for better spacing
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
@@ -983,7 +1105,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     icon: const Icon(Icons.close),
                   ),
                 ],
@@ -993,7 +1115,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                 child: ReminderFormWidget(
                   reminder: reminder,
                   onReminderUpdated: () {
-                    Navigator.pop(context);
+                    context.pop();
                     ref.invalidate(allRemindersProvider);
                     ref.invalidate(activeRemindersProvider);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -1003,7 +1125,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                       ),
                     );
                   },
-                  onCancel: () => Navigator.pop(context),
+                  onCancel: () => context.pop(),
                 ),
               ),
             ],
@@ -1075,12 +1197,12 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
         content: Text('Are you sure you want to delete "${reminder.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              context.pop();
               try {
                 final service = ref.read(reminderServiceProvider);
                 await service.deleteReminder(reminder.id);

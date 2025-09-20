@@ -12,9 +12,8 @@ class RecordTags extends Table {
 
   @override
   List<String> get customConstraints => [
-    // Foreign key constraints (when enabled)
-    // 'FOREIGN KEY (record_id) REFERENCES medical_records (id) ON DELETE CASCADE',
-    // 'FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE',
+    'FOREIGN KEY (record_id) REFERENCES medical_records (id) ON DELETE CASCADE',
+    'FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE',
   ];
 }
 
@@ -34,7 +33,7 @@ class SearchHistory extends Table {
   @override
   List<String> get customConstraints => [
     // Query must not be empty
-    'CHECK (LENGTH(TRIM(query)) > 0)',
+    'CHECK (length(trim(query)) > 0)',
 
     // Use count must be positive
     'CHECK (use_count > 0)',

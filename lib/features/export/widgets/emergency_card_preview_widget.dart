@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/emergency_card_service.dart';
 import '../../../data/database/app_database.dart';
@@ -511,7 +512,7 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
           content: const Text('This would open the edit configuration dialog.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Close'),
             ),
           ],
@@ -534,7 +535,7 @@ class EmergencyCardPreviewWidget extends ConsumerWidget {
                 automaticallyImplyLeading: false,
                 actions: [
                   IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.pop(),
                     icon: const Icon(Icons.close),
                   ),
                 ],

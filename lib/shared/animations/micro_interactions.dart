@@ -112,12 +112,18 @@ class MicroInteractions {
           onEnter: (_) => setState(() => isHovered = true),
           onExit: (_) => setState(() => isHovered = false),
           child: GestureDetector(
-            onTapDown: onTap != null ? (_) => setState(() => isPressed = true) : null,
-            onTapUp: onTap != null ? (_) {
-              setState(() => isPressed = false);
-              onTap.call();
-            } : null,
-            onTapCancel: onTap != null ? () => setState(() => isPressed = false) : null,
+            onTapDown: onTap != null
+                ? (_) => setState(() => isPressed = true)
+                : null,
+            onTapUp: onTap != null
+                ? (_) {
+                    setState(() => isPressed = false);
+                    onTap.call();
+                  }
+                : null,
+            onTapCancel: onTap != null
+                ? () => setState(() => isPressed = false)
+                : null,
             child: AnimatedScale(
               scale: currentScale,
               duration: duration,

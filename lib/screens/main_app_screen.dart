@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../l10n/app_localizations.dart';
 
-import '../shared/navigation/app_router.dart';
-import '../shared/utils/responsive_utils.dart';
-import '../shared/utils/accessibility_utils.dart';
+import '../l10n/app_localizations.dart';
 import '../shared/navigation/advanced_salomon_bottom_bar.dart';
+import '../shared/navigation/app_router.dart';
+import '../shared/utils/accessibility_utils.dart';
+import '../shared/utils/responsive_utils.dart';
 
 class SelectedIndexNotifier extends Notifier<int> {
   @override
@@ -125,19 +125,19 @@ class MainAppScreen extends ConsumerWidget {
             icon: const Icon(Icons.people_outlined),
             activeIcon: const Icon(Icons.people),
             title: Text(l10n.profiles),
-            selectedColor: theme.colorScheme.secondary,
+            selectedColor: theme.colorScheme.primary,
           ),
           AdvancedSalomonBottomBarItem(
             icon: const Icon(Icons.medical_information_outlined),
             activeIcon: const Icon(Icons.medical_information),
             title: const Text('Records'),
-            selectedColor: theme.colorScheme.tertiary,
+            selectedColor: theme.colorScheme.primary,
           ),
           AdvancedSalomonBottomBarItem(
             icon: const Icon(Icons.settings_outlined),
             activeIcon: const Icon(Icons.settings),
             title: Text(l10n.settings),
-            selectedColor: theme.colorScheme.onSurfaceVariant,
+            selectedColor: theme.colorScheme.primary,
           ),
         ],
       ),

@@ -48,10 +48,16 @@ class HealthBoxAppBar extends StatelessWidget implements PreferredSizeWidget {
         color: foregroundColor ?? Colors.white,
         size: 24,
       ),
-      actions: actions?.map((action) => Padding(
-        padding: const EdgeInsets.only(right: HealthBoxDesignSystem.spacing2),
-        child: action,
-      )).toList(),
+      actions: actions
+          ?.map(
+            (action) => Padding(
+              padding: const EdgeInsets.only(
+                right: HealthBoxDesignSystem.spacing2,
+              ),
+              child: action,
+            ),
+          )
+          .toList(),
       leading: showBackButton
           ? IconButton(
               icon: const Icon(Icons.arrow_back_rounded),
@@ -110,7 +116,8 @@ class HealthBoxBottomNavBar extends StatelessWidget {
           onTap: onTap,
           backgroundColor: Colors.transparent,
           selectedItemColor: selectedColor ?? theme.colorScheme.primary,
-          unselectedItemColor: unselectedColor ?? theme.colorScheme.onSurfaceVariant,
+          unselectedItemColor:
+              unselectedColor ?? theme.colorScheme.onSurfaceVariant,
           selectedLabelStyle: theme.textTheme.labelSmall?.copyWith(
             fontWeight: HealthBoxDesignSystem.fontWeightMedium,
           ),
@@ -176,7 +183,9 @@ class HealthBoxCard extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surface,
-        borderRadius: borderRadius ?? BorderRadius.circular(HealthBoxDesignSystem.radiusLg),
+        borderRadius:
+            borderRadius ??
+            BorderRadius.circular(HealthBoxDesignSystem.radiusLg),
         boxShadow: elevation,
         border: Border.all(
           color: theme.colorScheme.outlineVariant.withValues(alpha: 0.1),
@@ -185,14 +194,15 @@ class HealthBoxCard extends StatelessWidget {
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: borderRadius ?? BorderRadius.circular(HealthBoxDesignSystem.radiusLg),
+        borderRadius:
+            borderRadius ??
+            BorderRadius.circular(HealthBoxDesignSystem.radiusLg),
         child: InkWell(
-          borderRadius: borderRadius ?? BorderRadius.circular(HealthBoxDesignSystem.radiusLg),
+          borderRadius:
+              borderRadius ??
+              BorderRadius.circular(HealthBoxDesignSystem.radiusLg),
           onTap: onTap,
-          child: Padding(
-            padding: padding,
-            child: child,
-          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );
@@ -237,7 +247,7 @@ class HealthBoxButton extends StatelessWidget {
         foregroundColor = Colors.white;
         break;
       case ButtonVariant.secondary:
-        backgroundColor = theme.colorScheme.surfaceVariant;
+        backgroundColor = theme.colorScheme.surfaceContainerHighest;
         foregroundColor = theme.colorScheme.onSurfaceVariant;
         break;
       case ButtonVariant.outline:
@@ -267,7 +277,9 @@ class HealthBoxButton extends StatelessWidget {
           elevation: 1,
           shadowColor: theme.colorScheme.shadow,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(HealthBoxDesignSystem.radiusBase),
+            borderRadius: BorderRadius.circular(
+              HealthBoxDesignSystem.radiusBase,
+            ),
             side: variant == ButtonVariant.outline
                 ? BorderSide(color: backgroundColor, width: 1)
                 : BorderSide.none,

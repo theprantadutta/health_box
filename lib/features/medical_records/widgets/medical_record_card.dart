@@ -21,127 +21,98 @@ class MedicalRecordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final medicalTheme = _getMedicalThemeForRecordType(record.recordType);
     final themeColor = _getMedicalThemeColor(medicalTheme, context);
 
     return Hero(
       tag: 'medical_record_${record.id}',
       child: CommonTransitions.fadeSlideIn(
-        child: ModernCard(
-          medicalTheme: medicalTheme,
-          elevation: CardElevation.low,
-          enableHoverEffect: true,
-          hoverElevation: CardElevation.medium,
-          enablePressEffect: true,
-          enableHaptics: true,
-          borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _buildTypeChip(theme, themeColor),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      _formatDate(record.recordDate),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildActionsMenu(context, themeColor),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: themeColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      _getRecordTypeIcon(record.recordType),
-                      size: 20,
-                      color: themeColor,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          record.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (record.description?.isNotEmpty == true) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            record.description!,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: theme.colorScheme.outline.withValues(alpha: 0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : Colors.grey.withValues(alpha: 0.15),
+                offset: const Offset(0, 2),
+                blurRadius: 8,
+                spreadRadius: 0,
               ),
             ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header Row with Type Badge and Actions
+                    Row(
+                      children: [
+                        _buildTypeChip(theme, themeColor, isDark),
+                        const Spacer(),
+                        _buildDateChip(theme, isDark),
+                        const SizedBox(width: 12),
+                        _buildActionsMenu(context, theme, isDark),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Content Row with Icon and Text
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildIconContainer(themeColor, isDark),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildContentSection(theme, isDark),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTypeChip(ThemeData theme, Color themeColor) {
+  Widget _buildTypeChip(ThemeData theme, Color themeColor, bool isDark) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: themeColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: themeColor.withValues(alpha: 0.4),
-          width: 1.5,
-        ),
+        color: themeColor.withValues(alpha: isDark ? 0.2 : 0.12),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             _getRecordTypeIcon(record.recordType),
-            size: 14,
+            size: 16,
             color: themeColor,
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           Text(
-            record.recordType,
-            style: theme.textTheme.bodySmall?.copyWith(
+            _getDisplayName(record.recordType),
+            style: theme.textTheme.labelMedium?.copyWith(
               color: themeColor,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
         ],
@@ -149,7 +120,72 @@ class MedicalRecordCard extends StatelessWidget {
     );
   }
 
-  Widget _buildActionsMenu(BuildContext context, Color themeColor) {
+  Widget _buildDateChip(ThemeData theme, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+            : theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        _formatDate(record.recordDate),
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconContainer(Color themeColor, bool isDark) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: themeColor.withValues(alpha: isDark ? 0.2 : 0.12),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Icon(
+        _getRecordTypeIcon(record.recordType),
+        size: 24,
+        color: themeColor,
+      ),
+    );
+  }
+
+  Widget _buildContentSection(ThemeData theme, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          record.title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface,
+            height: 1.2,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (record.description?.isNotEmpty == true) ...[
+          const SizedBox(height: 8),
+          Text(
+            record.description!,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildActionsMenu(BuildContext context, ThemeData theme, bool isDark) {
     return PopupMenuButton<String>(
       onSelected: (value) {
         switch (value) {
@@ -162,31 +198,63 @@ class MedicalRecordCard extends StatelessWidget {
         }
       },
       icon: Container(
-        padding: const EdgeInsets.all(4),
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
-          color: themeColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
+          color: isDark
+              ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+              : theme.colorScheme.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(Icons.more_vert, size: 18, color: themeColor),
+        child: Icon(
+          Icons.more_vert,
+          size: 20,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
       ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 8,
+      color: theme.colorScheme.surface,
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 'edit',
           child: Row(
             children: [
-              Icon(Icons.edit, size: 18, color: themeColor),
+              Icon(
+                Icons.edit_outlined,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: 12),
-              const Text('Edit'),
+              Text(
+                'Edit',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'delete',
           child: Row(
             children: [
-              Icon(Icons.delete, size: 18, color: Colors.red),
-              SizedBox(width: 12),
-              Text('Delete', style: TextStyle(color: Colors.red)),
+              Icon(
+                Icons.delete_outline,
+                size: 20,
+                color: theme.colorScheme.error,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Delete',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
@@ -200,15 +268,47 @@ class MedicalRecordCard extends StatelessWidget {
         return Icons.medication;
       case 'medication':
         return Icons.medical_services;
+      case 'lab_report':
       case 'lab report':
         return Icons.science;
+      case 'vaccination':
+        return Icons.vaccines;
+      case 'allergy':
+        return Icons.warning;
+      case 'chronic_condition':
+        return Icons.health_and_safety;
       default:
         return Icons.description;
     }
   }
 
   String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+    final months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+  }
+
+  String _getDisplayName(String recordType) {
+    switch (recordType.toLowerCase()) {
+      case 'prescription':
+        return 'Prescription';
+      case 'medication':
+        return 'Medication';
+      case 'lab_report':
+        return 'Lab Report';
+      case 'vaccination':
+        return 'Vaccination';
+      case 'allergy':
+        return 'Allergy';
+      case 'chronic_condition':
+        return 'Chronic Condition';
+      default:
+        return recordType.split('_').map((word) => 
+          word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1)
+        ).join(' ');
+    }
   }
 
   /// Get medical theme based on record type
@@ -218,12 +318,14 @@ class MedicalRecordCard extends StatelessWidget {
         return MedicalCardTheme.primary;
       case 'medication':
         return MedicalCardTheme.success;
+      case 'lab_report':
       case 'lab report':
         return MedicalCardTheme.warning;
       case 'vaccination':
         return MedicalCardTheme.success;
       case 'allergy':
         return MedicalCardTheme.warning;
+      case 'chronic_condition':
       case 'chronic condition':
         return MedicalCardTheme.error;
       default:
@@ -231,24 +333,26 @@ class MedicalRecordCard extends StatelessWidget {
     }
   }
 
-  /// Get color for medical theme
+  /// Get color for medical theme with better contrast
   Color _getMedicalThemeColor(MedicalCardTheme theme, BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     switch (theme) {
       case MedicalCardTheme.primary:
         return colorScheme.primary;
       case MedicalCardTheme.info:
-        return colorScheme.tertiary;
+        return isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
       case MedicalCardTheme.secondary:
         return colorScheme.secondary;
       case MedicalCardTheme.success:
-        return const Color(0xFF81C784); // Light green
+        return isDark ? const Color(0xFF34D399) : const Color(0xFF059669);
       case MedicalCardTheme.warning:
-        return const Color(0xFFFFB74D); // Light orange
+        return isDark ? const Color(0xFFFBBF24) : const Color(0xFFD97706);
       case MedicalCardTheme.error:
-        return colorScheme.error;
+        return isDark ? const Color(0xFFF87171) : const Color(0xFFDC2626);
       case MedicalCardTheme.neutral:
-        return colorScheme.outline;
+        return isDark ? colorScheme.onSurfaceVariant : colorScheme.outline;
       case MedicalCardTheme.tertiary:
         return colorScheme.tertiary;
     }

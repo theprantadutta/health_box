@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/reminder_scheduler.dart';
 import '../../../data/database/app_database.dart';
@@ -512,23 +513,23 @@ class ActiveRemindersWidget extends ConsumerWidget {
         content: const Text('How long would you like to snooze this reminder?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(5),
+            onPressed: () => context.pop(5),
             child: const Text('5 min'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(15),
+            onPressed: () => context.pop(15),
             child: const Text('15 min'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(30),
+            onPressed: () => context.pop(30),
             child: const Text('30 min'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(60),
+            onPressed: () => context.pop(60),
             child: const Text('1 hour'),
           ),
         ],
@@ -547,11 +548,11 @@ class ActiveRemindersWidget extends ConsumerWidget {
         content: Text('Are you sure you want to delete "${reminder.title}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => context.pop(false),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => context.pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('Delete'),
           ),

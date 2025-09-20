@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../services/ocr_service.dart';
 
@@ -654,7 +655,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
             child: ElevatedButton.icon(
               onPressed: () {
                 widget.onScanComplete!(_scanResult!);
-                Navigator.pop(context);
+                context.pop();
               },
               icon: const Icon(Icons.check),
               label: const Text('Use This Scan'),

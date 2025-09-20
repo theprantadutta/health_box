@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../services/import_service.dart';
 
@@ -768,8 +769,8 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context); // Go back to previous screen
+              context.pop();
+              context.pop(); // Go back to previous screen
             },
             child: const Text('OK'),
           ),
@@ -798,7 +799,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('OK'),
           ),
         ],

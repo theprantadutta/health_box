@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../data/database/app_database.dart';
-import '../../../shared/providers/simple_profile_providers.dart';
-import '../../../shared/providers/medical_records_providers.dart';
-import '../../../shared/navigation/app_router.dart';
-import '../widgets/upcoming_reminders_widget.dart';
-import '../widgets/recent_activity_widget.dart';
-import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/widgets/gradient_button.dart';
-import '../../../shared/animations/stagger_animations.dart';
 import '../../../shared/animations/common_transitions.dart';
+import '../../../shared/animations/stagger_animations.dart';
+import '../../../shared/navigation/app_router.dart';
+import '../../../shared/providers/medical_records_providers.dart';
+import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/theme/app_theme.dart';
+import '../../../shared/widgets/gradient_button.dart';
+import '../../../shared/widgets/modern_card.dart';
+import '../widgets/recent_activity_widget.dart';
+import '../widgets/upcoming_reminders_widget.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -215,7 +216,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           width: 50,
                           height: 50,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
+                            color: theme.colorScheme.onPrimary,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -230,8 +231,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: Center(
                             child: Text(
                               '${selectedProfile.firstName[0]}${selectedProfile.lastName[0]}',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: theme.colorScheme.primary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -246,7 +247,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.onPrimary,
+                              color: theme.colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Icon(
@@ -704,7 +705,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
@@ -747,7 +748,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 Icons.person_add_rounded,
                 'Add Family Member',
                 () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   context.push(AppRoutes.profiles);
                 },
               ),
@@ -756,7 +757,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 Icons.medical_information_rounded,
                 'Add Medical Record',
                 () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   context.push(AppRoutes.medicalRecords);
                 },
               ),
@@ -765,7 +766,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 Icons.medication_rounded,
                 'Add Medication',
                 () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   context.push(AppRoutes.medicalRecords);
                 },
               ),
@@ -774,7 +775,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 Icons.alarm_add_rounded,
                 'Set Reminder',
                 () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   context.push(AppRoutes.reminders);
                 },
               ),
@@ -840,39 +841,112 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       data: (profiles) {
         if (profiles.isEmpty) return;
 
+        final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
+
         showModalBottomSheet(
           context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          builder: (context) => Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            minChildSize: 0.4,
+            maxChildSize: 0.85,
+            expand: false,
+            builder: (context, scrollController) => Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                boxShadow: [
+                  BoxShadow(
+                    color: isDark
+                        ? Colors.black.withValues(alpha: 0.3)
+                        : Colors.grey.withValues(alpha: 0.2),
+                    offset: const Offset(0, -4),
+                    blurRadius: 16,
+                    spreadRadius: 0,
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Select Profile',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 20),
-                ...profiles.map(
-                  (profile) => _buildProfileOption(context, profile),
-                ),
-                const SizedBox(height: 10),
-              ],
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Enhanced Header Section
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    child: Column(
+                      children: [
+                        // Drag Handle
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.outline.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Header with Icon and Title
+                        Row(
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Icon(
+                                Icons.people_rounded,
+                                color: theme.colorScheme.onPrimaryContainer,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Select Profile',
+                                    style: theme.textTheme.headlineSmall?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Choose a family member',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                  // Enhanced Profile List
+                  Expanded(
+                    child: ListView.separated(
+                      controller: scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      itemCount: profiles.length,
+                      separatorBuilder: (context, index) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) => _buildEnhancedProfileOption(
+                        context,
+                        profiles[index],
+                        isDark,
+                      ),
+                    ),
+                  ),
+                  // Bottom Padding
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
         );
@@ -880,9 +954,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildProfileOption(
+  Widget _buildEnhancedProfileOption(
     BuildContext context,
     FamilyMemberProfile profile,
+    bool isDark,
   ) {
     final theme = Theme.of(context);
     final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
@@ -890,78 +965,219 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       data: (selectedProfile) => selectedProfile?.id == profile.id,
       orElse: () => false,
     );
+    final age = DateTime.now().year - profile.dateOfBirth.year;
+    final genderColor = _getGenderColor(profile.gender, isDark);
+    final initials = '${profile.firstName[0]}${profile.lastName[0]}'.toUpperCase();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: InkWell(
-        onTap: () {
-          ref.read(setSelectedProfileProvider).call(profile.id);
-          Navigator.of(context).pop();
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: isSelected
-                ? Border.all(color: theme.colorScheme.primary, width: 2)
-                : null,
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF6366F1), // Professional indigo
-                  shape: BoxShape.circle,
+    return Container(
+      decoration: BoxDecoration(
+        color: isSelected
+            ? theme.colorScheme.primaryContainer.withValues(alpha: isDark ? 0.3 : 0.15)
+            : (isDark
+                ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                : theme.colorScheme.surfaceContainerHigh),
+        borderRadius: BorderRadius.circular(20),
+        border: isSelected
+            ? Border.all(color: theme.colorScheme.primary, width: 2)
+            : Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                width: 1,
+              ),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12,
+                  spreadRadius: 0,
                 ),
-                child: Center(
-                  child: Text(
-                    '${profile.firstName[0]}${profile.lastName[0]}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+              ]
+            : null,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: () {
+            ref.read(setSelectedProfileProvider).call(profile.id);
+            context.pop();
+            // Show feedback
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Switched to ${profile.firstName}\'s profile'),
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                // Enhanced Avatar with Gradient
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        genderColor,
+                        genderColor.withValues(alpha: 0.8),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: genderColor.withValues(alpha: 0.3),
+                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      initials,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${profile.firstName} ${profile.lastName}',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: isSelected ? theme.colorScheme.primary : null,
+                const SizedBox(width: 20),
+                // Enhanced Profile Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${profile.firstName} ${profile.lastName}',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: isSelected
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurface,
+                          height: 1.2,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Age ${DateTime.now().year - profile.dateOfBirth.year}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? theme.colorScheme.surfaceContainerHighest
+                                  : theme.colorScheme.surfaceContainerHigh,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.cake_outlined,
+                                  size: 14,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '$age years',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: genderColor.withValues(alpha: isDark ? 0.2 : 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  _getGenderIcon(profile.gender),
+                                  size: 14,
+                                  color: genderColor,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  profile.gender,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: genderColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
+                    ],
+                  ),
+                ),
+                // Enhanced Selection Indicator
+                if (isSelected)
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      shape: BoxShape.circle,
                     ),
-                  ],
-                ),
-              ),
-              if (isSelected)
-                Icon(
-                  Icons.check_circle,
-                  color: theme.colorScheme.primary,
-                  size: 24,
-                ),
-            ],
+                    child: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Color _getGenderColor(String gender, bool isDark) {
+    switch (gender.toLowerCase()) {
+      case 'male':
+        return isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
+      case 'female':
+        return isDark ? const Color(0xFFF472B6) : const Color(0xFFEC4899);
+      default:
+        return isDark ? const Color(0xFF34D399) : const Color(0xFF059669);
+    }
+  }
+
+  IconData _getGenderIcon(String gender) {
+    switch (gender.toLowerCase()) {
+      case 'male':
+        return Icons.male;
+      case 'female':
+        return Icons.female;
+      default:
+        return Icons.person;
+    }
   }
 
   void _handleQuickVitalsNavigation(BuildContext context) {

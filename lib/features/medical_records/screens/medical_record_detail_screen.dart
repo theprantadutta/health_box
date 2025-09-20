@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/medical_records_providers.dart';
@@ -94,7 +95,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back),
             label: const Text('Go Back'),
           ),
@@ -128,7 +129,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back),
             label: const Text('Go Back'),
           ),
@@ -600,13 +601,13 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop(); // Return to previous screen
+              context.pop();
+              context.pop(); // Return to previous screen
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(

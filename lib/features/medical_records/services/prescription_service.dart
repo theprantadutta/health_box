@@ -64,6 +64,8 @@ class PrescriptionService {
 
       final prescriptionId =
           'prescription_${DateTime.now().millisecondsSinceEpoch}';
+
+      // Create prescription-specific record
       final prescriptionCompanion = PrescriptionsCompanion(
         id: Value(prescriptionId),
         profileId: Value(request.profileId),
@@ -87,7 +89,26 @@ class PrescriptionService {
         isPrescriptionActive: Value(request.isPrescriptionActive),
       );
 
-      return await _medicalRecordDao.createPrescription(prescriptionCompanion);
+      // Create general medical record entry
+      final medicalRecordCompanion = MedicalRecordsCompanion(
+        id: Value(prescriptionId),
+        profileId: Value(request.profileId),
+        recordType: const Value('prescription'),
+        title: Value(request.title.trim()),
+        description: Value(request.description?.trim()),
+        recordDate: Value(request.recordDate),
+        createdAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
+        isActive: const Value(true),
+      );
+
+      // Save both records in a transaction
+      await _database.transaction(() async {
+        await _medicalRecordDao.createPrescription(prescriptionCompanion);
+        await _medicalRecordDao.createRecord(medicalRecordCompanion);
+      });
+
+      return prescriptionId;
     } catch (e) {
       if (e is PrescriptionServiceException) rethrow;
       throw PrescriptionServiceException(

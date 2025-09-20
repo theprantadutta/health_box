@@ -59,8 +59,8 @@ class Medications extends Table {
     // Date range constraint (start_date <= end_date)
     'CHECK (end_date IS NULL OR start_date <= end_date)',
 
-    // Start date constraint (not too far in the past or future)
-    'CHECK (start_date >= DATE(\'2020-01-01\') AND start_date <= DATE(\'now\', \'+1 year\'))',
+    // Start date constraint (Unix timestamp between 2020-01-01 and 2030-01-01)
+    'CHECK (start_date >= 1577836800 AND start_date <= 1893456000)',
   ];
 }
 

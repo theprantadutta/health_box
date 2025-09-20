@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../profiles/screens/profile_form_screen.dart';
-import '../../medical_records/screens/prescription_form_screen.dart';
-import '../../medical_records/screens/medication_form_screen.dart';
-import '../../medical_records/screens/lab_report_form_screen.dart';
-import '../../medical_records/screens/medical_record_list_screen.dart';
-import '../../profiles/screens/profile_list_screen.dart';
+import 'package:go_router/go_router.dart';
+import '../../../shared/navigation/app_router.dart';
 
 class QuickActionsWidget extends ConsumerWidget {
   const QuickActionsWidget({super.key});
@@ -194,39 +190,27 @@ class QuickActionsWidget extends ConsumerWidget {
   }
 
   void _navigateToAddProfile(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const ProfileFormScreen()));
+    context.push(AppRoutes.profileForm);
   }
 
   void _navigateToAddPrescription(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const PrescriptionFormScreen()),
-    );
+    context.push(AppRoutes.prescriptionForm);
   }
 
   void _navigateToAddMedication(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const MedicationFormScreen()),
-    );
+    context.push(AppRoutes.medicationForm);
   }
 
   void _navigateToAddLabReport(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const LabReportFormScreen()),
-    );
+    context.push(AppRoutes.labReportForm);
   }
 
   void _navigateToSearch(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const MedicalRecordListScreen()),
-    );
+    context.push(AppRoutes.medicalRecords);
   }
 
   void _navigateToManageProfiles(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const ProfileListScreen()));
+    context.push(AppRoutes.profiles);
   }
 
   void _showReminderNotImplemented(BuildContext context) {

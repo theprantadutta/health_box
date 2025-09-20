@@ -471,12 +471,12 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop();
+                context.pop();
                 try {
                   final profileService = ref.read(simpleProfileServiceProvider);
                   await profileService.deleteProfile(profile.id);

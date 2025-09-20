@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/lab_report_service.dart';
@@ -119,7 +120,7 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
       if (mounted) {
-        Navigator.of(context).pop();
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Lab report saved successfully'),

@@ -795,7 +795,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onChanged: (value) {
                 if (value != null) {
                   ref.read(appNotifierProvider.notifier).setDarkMode(false);
-                  Navigator.pop(context);
+                  context.pop();
                 }
               },
             ),
@@ -806,7 +806,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onChanged: (value) {
                 if (value != null) {
                   ref.read(appNotifierProvider.notifier).setDarkMode(true);
-                  Navigator.pop(context);
+                  context.pop();
                 }
               },
             ),
@@ -821,7 +821,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ref
                       .read(appNotifierProvider.notifier)
                       .setDarkMode(brightness == Brightness.dark);
-                  Navigator.pop(context);
+                  context.pop();
                 }
               },
             ),
@@ -829,7 +829,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
         ],
@@ -888,7 +888,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
@@ -896,7 +896,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               await ref
                   .read(onboardingNotifierProvider.notifier)
                   .resetOnboarding();
-              Navigator.pop(context);
+              context.pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
@@ -925,12 +925,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               _confirmClearData();
             },
             child: Text(
@@ -969,13 +969,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: _deleteConfirmationController.text == 'DELETE ALL'
                   ? () async {
-                      Navigator.pop(context);
+                      context.pop();
                       await _performDataClearing();
                     }
                   : null,
@@ -1029,7 +1029,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       // Reset onboarding
       await ref.read(onboardingNotifierProvider.notifier).resetOnboarding();
 
-      Navigator.pop(context); // Close loading dialog
+      context.pop(); // Close loading dialog
 
       // Show success message
       if (mounted) {
@@ -1041,7 +1041,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         );
       }
     } catch (e) {
-      Navigator.pop(context); // Close loading dialog
+      context.pop(); // Close loading dialog
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1069,7 +1069,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
@@ -1092,7 +1092,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
@@ -1118,7 +1118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               leading: const Text('🇺🇸'),
               title: const Text('English'),
               trailing: const Icon(Icons.check),
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () => context.pop(),
             ),
             ListTile(
               leading: const Text('🇪🇸'),
@@ -1138,7 +1138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
@@ -1163,7 +1163,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text('Email Support'),
               subtitle: const Text('support@healthbox.app'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text(
@@ -1177,7 +1177,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
         ],
