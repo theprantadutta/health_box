@@ -5,6 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/database/app_database.dart';
 import 'features/reminders/services/notification_alarm_service.dart';
+import 'features/sync/providers/google_drive_providers.dart';
+import 'features/sync/services/background_sync_service.dart';
+import 'features/sync/services/new_user_onboarding_service.dart';
+import 'features/sync/widgets/background_backup_indicator.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/navigation/app_router.dart';
 import 'shared/providers/app_providers.dart';
@@ -24,6 +28,9 @@ void main() async {
 
   // Initialize notification services (alarms will be initialized when needed)
   await _initializeNotificationServices();
+
+  // Initialize Google Drive authentication
+  await _initializeGoogleDriveAuth();
 
   runApp(
     ProviderScope(
@@ -90,6 +97,22 @@ Future<void> _initializeNotificationServices() async {
   }
 }
 
+Future<void> _initializeGoogleDriveAuth() async {
+  try {
+    debugPrint('Initializing Google Drive authentication...');
+
+    // Note: This will be handled by the app-level provider
+    // The actual authentication will happen in the provider container
+    // We just indicate that we should attempt silent sign-in
+
+    debugPrint('Google Drive authentication initialization completed');
+  } catch (e) {
+    debugPrint('Error initializing Google Drive authentication: $e');
+    debugPrint('Error type: ${e.runtimeType}');
+    // Don't block app startup, authentication can happen later
+  }
+}
+
 class HealthBoxApp extends ConsumerWidget {
   const HealthBoxApp({super.key});
 
@@ -97,6 +120,45 @@ class HealthBoxApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
     final themeMode = ref.watch(themeModeProvider);
+
+    // Initialize Google Drive authentication silently on app start
+    ref.listen(googleDriveAuthProvider, (previous, next) {
+      final wasAuthenticated = previous?.value == true;
+      final isNowAuthenticated = next.value == true;
+
+      // Check if this is a new authentication (not previously authenticated)
+      final isNewAuthentication = !wasAuthenticated && isNowAuthenticated;
+
+      next.whenData((isAuthenticated) {
+        if (isAuthenticated) {
+          debugPrint('Google Drive authentication successful');
+
+          // Handle new user onboarding for first-time sign-ins
+          if (isNewAuthentication) {
+            debugPrint('New user authentication detected, checking for existing backups');
+            Future.microtask(() async {
+              try {
+                await _handleNewUserOnboarding(context, ref);
+              } catch (e) {
+                debugPrint('Failed to handle new user onboarding: $e');
+              }
+            });
+          }
+
+          // Start background backup if auto-sync is enabled
+          Future.microtask(() async {
+            try {
+              final backgroundSyncService = ref.read(backgroundSyncServiceProvider);
+              await backgroundSyncService.performBackgroundBackup(ref);
+            } catch (e) {
+              debugPrint('Failed to start background backup: $e');
+            }
+          });
+        } else {
+          debugPrint('Google Drive authentication not available');
+        }
+      });
+    });
 
     return MaterialApp.router(
       title: 'HealthBox',
@@ -128,10 +190,84 @@ class HealthBoxApp extends ConsumerWidget {
               MediaQuery.of(context).textScaler.scale(1.0).clamp(0.8, 1.3),
             ),
           ),
-          child: child ?? const SizedBox.shrink(),
+          child: Stack(
+            children: [
+              child ?? const SizedBox.shrink(),
+              const BackgroundBackupIndicator(),
+            ],
+          ),
         );
       },
     );
+  }
+
+  Future<void> _handleNewUserOnboarding(BuildContext context, WidgetRef ref) async {
+    try {
+      final onboardingService = ref.read(newUserOnboardingServiceProvider);
+
+      // Check for existing backups
+      final result = await onboardingService.checkExistingBackups(ref);
+
+      if (!result.hasExistingBackups || result.hasError) {
+        debugPrint('No existing backups found or error occurred');
+        return;
+      }
+
+      debugPrint('Found ${result.totalBackups} existing backups');
+
+      // Show onboarding dialog to user
+      final choice = await onboardingService.showOnboardingDialog(context, result);
+
+      if (choice == null) return;
+
+      switch (choice) {
+        case UserChoice.importBackups:
+          debugPrint('User chose to import backups');
+          if (result.latestBackup != null) {
+            await onboardingService.importLatestBackup(ref, result.latestBackup!);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('✅ Your previous data has been imported successfully'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 4),
+                ),
+              );
+            }
+          }
+          break;
+
+        case UserChoice.deleteBackups:
+          debugPrint('User chose to delete all backups');
+          await onboardingService.deleteAllBackups(ref);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('🗑️ All previous backups have been deleted'),
+                backgroundColor: Colors.orange,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+          break;
+
+        case UserChoice.skipOnboarding:
+          debugPrint('User chose to skip onboarding');
+          // Do nothing, keep existing backups
+          break;
+      }
+    } catch (e) {
+      debugPrint('Error during new user onboarding: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ Failed to handle existing backups: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    }
   }
 }
 

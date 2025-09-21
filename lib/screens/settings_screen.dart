@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../shared/widgets/modern_card.dart';
 import '../shared/theme/app_theme.dart';
 import '../shared/animations/stagger_animations.dart';
-import '../shared/providers/accessibility_providers.dart';
-import '../shared/providers/onboarding_providers.dart';
 import '../shared/providers/app_providers.dart';
 import '../shared/providers/simple_profile_providers.dart';
 import '../shared/providers/settings_providers.dart';
@@ -20,19 +18,10 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  final TextEditingController _deleteConfirmationController =
-      TextEditingController();
-
-  @override
-  void dispose() {
-    _deleteConfirmationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accessibilitySettings = ref.watch(accessibilitySettingsProvider);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceContainerLowest,
@@ -61,10 +50,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _buildAppPreferencesSection(theme),
             const SizedBox(height: 16),
 
-            // Accessibility Settings
-            _buildAccessibilitySection(accessibilitySettings, theme),
-            const SizedBox(height: 16),
-
             // Data Management
             _buildDataManagementSection(theme),
             const SizedBox(height: 16),
@@ -79,10 +64,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
             // Support & About
             _buildSupportSection(theme),
-            const SizedBox(height: 16),
-
-            // Advanced Settings
-            _buildAdvancedSection(theme),
           ],
           staggerDelay: AppTheme.microDuration,
           direction: StaggerDirection.bottomToTop,
@@ -411,68 +392,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildAccessibilitySection(
-    AccessibilitySettings accessibilitySettings,
-    ThemeData theme,
-  ) {
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.accessibility, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'Accessibility',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // High Contrast Mode
-          SwitchListTile(
-            secondary: const Icon(Icons.contrast),
-            title: const Text('High Contrast Mode'),
-            subtitle: const Text(
-              'Improve visibility with high contrast colors',
-            ),
-            value: accessibilitySettings.highContrast,
-            onChanged: (value) {
-              ref.read(highContrastModeProvider.notifier).state = value;
-            },
-          ),
-
-          // Large Text Mode
-          SwitchListTile(
-            secondary: const Icon(Icons.format_size),
-            title: const Text('Large Text'),
-            subtitle: const Text('Increase text size for better readability'),
-            value: accessibilitySettings.largeText,
-            onChanged: (value) {
-              ref.read(largeTextModeProvider.notifier).state = value;
-            },
-          ),
-
-          // Reduced Animations
-          SwitchListTile(
-            secondary: const Icon(Icons.animation),
-            title: const Text('Reduce Animations'),
-            subtitle: const Text('Minimize motion for better accessibility'),
-            value: accessibilitySettings.reducedAnimations,
-            onChanged: (value) {
-              ref.read(reducedAnimationsModeProvider.notifier).state = value;
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildDataManagementSection(ThemeData theme) {
     return ModernCard(
@@ -530,10 +449,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 leading: const Icon(Icons.info_outline),
                 title: const Text('Database Size'),
                 subtitle: Text('Current storage: $sizeText'),
-                trailing: TextButton(
-                  onPressed: _optimizeDatabase,
-                  child: const Text('Optimize'),
-                ),
               );
             },
           ),
@@ -563,20 +478,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 16),
 
-          SwitchListTile(
-            secondary: const Icon(Icons.lock),
-            title: const Text('Database Encryption'),
-            subtitle: const Text('Your data is encrypted with SQLCipher'),
-            value: true,
-            onChanged: null, // Always encrypted
+          ListTile(
+            leading: Icon(
+              Icons.verified_user,
+              color: theme.colorScheme.primary,
+            ),
+            title: const Text('Database Security'),
+            subtitle: const Text('Your data is secured with SQLCipher encryption'),
+            trailing: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Secure',
+                style: TextStyle(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
           ),
 
           ListTile(
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy Policy'),
-            subtitle: const Text('View our privacy policy'),
+            subtitle: const Text('View our comprehensive privacy policy'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showPrivacyPolicy(),
+            onTap: () => context.push('/privacy-policy'),
           ),
 
           ListTile(
@@ -584,7 +515,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: const Text('Terms of Service'),
             subtitle: const Text('View terms and conditions'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showTermsOfService(),
+            onTap: () => context.push('/terms-of-service'),
           ),
         ],
       ),
@@ -700,71 +631,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildAdvancedSection(ThemeData theme) {
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.engineering, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'Advanced',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          ListTile(
-            leading: const Icon(Icons.bug_report),
-            title: const Text('Debug Mode'),
-            subtitle: const Text('Enable debug logging'),
-            trailing: Switch(
-              value: ref.watch(debugModeEnabledProvider),
-              onChanged: (value) {
-                ref
-                    .read(settingsNotifierProvider.notifier)
-                    .toggleDebugMode(value);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      value ? 'Debug mode enabled' : 'Debug mode disabled',
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.restore),
-            title: const Text('Reset Onboarding'),
-            subtitle: const Text('Show onboarding screens again'),
-            onTap: _resetOnboarding,
-          ),
-
-          ListTile(
-            leading: Icon(
-              Icons.delete_forever,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            title: Text(
-              'Clear All Data',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-            subtitle: const Text('Permanently delete all data'),
-            onTap: _showClearDataDialog,
-          ),
-        ],
-      ),
-    );
-  }
 
   // Helper Methods
   String _getThemeModeText(ThemeMode themeMode) {
@@ -837,26 +703,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _optimizeDatabase() async {
-    try {
-      await AppDatabase.instance.vacuumDatabase();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Database optimized successfully')),
-        );
-        setState(() {}); // Refresh database size
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to optimize database: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
-    }
-  }
 
   void _createBackup() async {
     try {
@@ -878,227 +724,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  void _resetOnboarding() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reset Onboarding'),
-        content: const Text(
-          'This will show the onboarding screens again on next app launch. Continue?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await ref
-                  .read(onboardingNotifierProvider.notifier)
-                  .resetOnboarding();
-              context.pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Onboarding reset. Restart the app to see changes.',
-                  ),
-                ),
-              );
-            },
-            child: const Text('Reset'),
-          ),
-        ],
-      ),
-    );
-  }
 
-  void _showClearDataDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Clear All Data',
-          style: TextStyle(color: Theme.of(context).colorScheme.error),
-        ),
-        content: const Text(
-          'This will permanently delete ALL your medical data, profiles, and settings. This action cannot be undone.\n\nAre you absolutely sure?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              context.pop();
-              _confirmClearData();
-            },
-            child: Text(
-              'Continue',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  void _confirmClearData() {
-    _deleteConfirmationController.clear();
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Final Confirmation'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Type "DELETE ALL" to confirm permanent data deletion:',
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _deleteConfirmationController,
-                decoration: const InputDecoration(
-                  hintText: 'DELETE ALL',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (_) => setState(() {}),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: _deleteConfirmationController.text == 'DELETE ALL'
-                  ? () async {
-                      context.pop();
-                      await _performDataClearing();
-                    }
-                  : null,
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('DELETE ALL DATA'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Future<void> _performDataClearing() async {
-    try {
-      // Show loading dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const AlertDialog(
-          content: Row(
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 16),
-              Text('Clearing all data...'),
-            ],
-          ),
-        ),
-      );
 
-      // Clear database - we'll need to add this method to the database
-      final database = ref.read(appDatabaseProvider);
 
-      // Clear all tables
-      await database.delete(database.familyMemberProfiles).go();
-      await database.delete(database.medicalRecords).go();
-      await database.delete(database.prescriptions).go();
-      await database.delete(database.medications).go();
-      await database.delete(database.labReports).go();
-      await database.delete(database.vaccinations).go();
-      await database.delete(database.allergies).go();
-      await database.delete(database.chronicConditions).go();
-      await database.delete(database.tags).go();
-      await database.delete(database.attachments).go();
-      await database.delete(database.reminders).go();
-      await database.delete(database.emergencyCards).go();
-
-      // Clear SharedPreferences
-      final prefs = ref.read(sharedPreferencesProvider);
-      await prefs.clear();
-
-      // Reset onboarding
-      await ref.read(onboardingNotifierProvider.notifier).resetOnboarding();
-
-      context.pop(); // Close loading dialog
-
-      // Show success message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('All data has been permanently deleted'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      context.pop(); // Close loading dialog
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to clear data: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  void _showPrivacyPolicy() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Privacy Policy'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Health Box Privacy Policy\n\n'
-            'Your privacy is important to us. Health Box stores all your medical data locally on your device with strong encryption.\n\n'
-            'We do not collect, transmit, or store your personal health information on our servers.\n\n'
-            'Optional Google Drive sync is encrypted and only accessible by you.',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showTermsOfService() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Terms of Service'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Health Box Terms of Service\n\n'
-            'By using Health Box, you agree to use this app responsibly for managing your health information.\n\n'
-            'This app is for informational purposes and should not replace professional medical advice.\n\n'
-            'Always consult healthcare professionals for medical decisions.',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showHelpCenter() {
     ScaffoldMessenger.of(
