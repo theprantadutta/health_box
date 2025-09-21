@@ -70,11 +70,13 @@
 	<key>NSFileProviderUsageDescription</key>
 	<string>HealthBox needs file access to securely backup and restore your medical data.</string>
 	
-	<!-- Background App Refresh for Reminders -->
+	<!-- Background App Refresh for Reminders and Alarms -->
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>background-fetch</string>
 		<string>background-processing</string>
+		<string>audio</string>
+		<string>background-audio</string>
 	</array>
 	
 	<!-- Location Services (for emergency features) -->

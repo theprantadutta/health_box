@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/reminder_dao.dart';
 
@@ -70,9 +71,11 @@ class ReminderService {
       _validateCreateReminderRequest(request);
 
       final reminderId = 'reminder_${DateTime.now().millisecondsSinceEpoch}';
+
       final reminderCompanion = RemindersCompanion(
         id: Value(reminderId),
         medicationId: Value(request.medicationId),
+        type: Value(request.type),
         title: Value(request.title.trim()),
         description: Value(request.description?.trim()),
         scheduledTime: Value(request.scheduledTime),
@@ -510,6 +513,9 @@ class ReminderService {
     if (request.title.trim().isEmpty) {
       throw const ReminderServiceException('Title cannot be empty');
     }
+    if (request.type.trim().isEmpty) {
+      throw const ReminderServiceException('Type cannot be empty');
+    }
     if (!_isValidFrequency(request.frequency)) {
       throw ReminderServiceException('Invalid frequency: ${request.frequency}');
     }
@@ -544,6 +550,7 @@ class ReminderService {
 
 class CreateReminderRequest {
   final String? medicationId;
+  final String type;
   final String title;
   final String? description;
   final DateTime scheduledTime;
@@ -555,6 +562,7 @@ class CreateReminderRequest {
 
   const CreateReminderRequest({
     this.medicationId,
+    required this.type,
     required this.title,
     this.description,
     required this.scheduledTime,

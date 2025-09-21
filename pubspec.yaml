@@ -39,6 +39,7 @@ dependencies:
   # Notifications and Reminders
   flutter_local_notifications: ^19.4.1
   timezone: ^0.10.1
+  # alarm: ^3.1.7  # Temporarily disabled to fix foreground service crashes
 
   # PDF and QR Code Generation
   pdf: ^3.11.1
@@ -97,7 +98,6 @@ flutter:
   # Enable code generation for localization
   generate: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  # Assets for alarm sounds and other resources
+  assets:
+    - assets/sounds/

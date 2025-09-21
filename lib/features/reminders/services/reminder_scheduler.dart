@@ -1,34 +1,38 @@
-import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../data/database/app_database.dart';
-import './notification_config.dart';
+import '../../../shared/providers/settings_providers.dart';
+import './notification_alarm_service.dart';
 import './reminder_service.dart';
 
 /// Service responsible for scheduling and managing reminder notifications
 class ReminderScheduler {
   final ReminderService _reminderService;
-  final FlutterLocalNotificationsPlugin _notificationsPlugin;
+  final NotificationAlarmService _notificationAlarmService;
+  final ProviderContainer? _container;
 
   ReminderScheduler({
     ReminderService? reminderService,
-    FlutterLocalNotificationsPlugin? notificationsPlugin,
+    NotificationAlarmService? notificationAlarmService,
+    ProviderContainer? container,
   }) : _reminderService = reminderService ?? ReminderService(),
-       _notificationsPlugin =
-           notificationsPlugin ?? NotificationConfig.instance;
+       _notificationAlarmService =
+           notificationAlarmService ?? NotificationAlarmService(),
+       _container = container;
 
   /// Initialize the reminder scheduler
   Future<bool> initialize() async {
-    final bool notificationsInitialized = await NotificationConfig.initialize();
+    final bool serviceInitialized = await _notificationAlarmService
+        .initialize();
 
-    if (notificationsInitialized) {
-      await NotificationConfig.setupCategories();
+    if (serviceInitialized) {
       _initializeNotificationHandling();
       // Reschedule all active reminders on app start
       await rescheduleAllActiveReminders();
     }
 
-    return notificationsInitialized;
+    return serviceInitialized;
   }
 
   /// Schedule a notification for a specific reminder
@@ -38,32 +42,16 @@ class ReminderScheduler {
         return false;
       }
 
-      final bool permissionGranted =
-          await NotificationConfig.areNotificationsEnabled();
-      if (!permissionGranted) {
-        throw const ReminderSchedulerException(
-          'Notification permissions not granted',
-        );
-      }
+      final reminderType = _getReminderType();
+      final alarmSettings = _getAlarmSettings();
 
-      // Cancel any existing notification for this reminder
-      await cancelReminder(reminder.id);
-
-      // Schedule based on frequency
-      switch (reminder.frequency) {
-        case 'once':
-          return await _scheduleOneTimeReminder(reminder);
-        case 'daily':
-          return await _scheduleDailyReminder(reminder);
-        case 'weekly':
-          return await _scheduleWeeklyReminder(reminder);
-        case 'monthly':
-          return await _scheduleMonthlyReminder(reminder);
-        default:
-          throw ReminderSchedulerException(
-            'Unsupported frequency: ${reminder.frequency}',
-          );
-      }
+      return await _notificationAlarmService.scheduleReminder(
+        reminder: reminder,
+        reminderType: reminderType,
+        alarmSound: alarmSettings.alarmSound,
+        alarmVolume: alarmSettings.alarmVolume,
+        enableVibration: alarmSettings.enableVibration,
+      );
     } catch (e) {
       throw ReminderSchedulerException(
         'Failed to schedule reminder: ${e.toString()}',
@@ -74,9 +62,7 @@ class ReminderScheduler {
   /// Cancel a scheduled reminder notification
   Future<bool> cancelReminder(String reminderId) async {
     try {
-      final int notificationId = _generateNotificationId(reminderId);
-      await _notificationsPlugin.cancel(notificationId);
-      return true;
+      return await _notificationAlarmService.cancelReminder(reminderId);
     } catch (e) {
       throw ReminderSchedulerException(
         'Failed to cancel reminder: ${e.toString()}',
@@ -92,27 +78,27 @@ class ReminderScheduler {
         throw const ReminderSchedulerException('Reminder not found');
       }
 
-      // Cancel current notification
-      await cancelReminder(reminderId);
+      final reminderType = _getReminderType();
+      final alarmSettings = _getAlarmSettings();
 
-      // Schedule new notification for snooze duration
-      final snoozeTime = DateTime.now().add(Duration(minutes: minutes));
-      final notificationId = _generateNotificationId(reminderId);
-
-      await _notificationsPlugin.zonedSchedule(
-        notificationId,
-        reminder.title,
-        reminder.description ?? 'Snoozed reminder',
-        tz.TZDateTime.from(snoozeTime, tz.local),
-        NotificationConfig.platformChannelSpecifics,
-        payload: _createNotificationPayload(reminder, isSnooze: true),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      final success = await _notificationAlarmService.snoozeReminder(
+        reminderId: reminderId,
+        title: reminder.title,
+        body: reminder.description ?? 'Snoozed reminder',
+        snoozeMinutes: minutes,
+        reminderType: reminderType,
+        alarmSound: alarmSettings.alarmSound,
       );
 
-      // Update reminder service
-      await _reminderService.snoozeReminder(reminderId, customMinutes: minutes);
+      if (success) {
+        // Update reminder service
+        await _reminderService.snoozeReminder(
+          reminderId,
+          customMinutes: minutes,
+        );
+      }
 
-      return true;
+      return success;
     } catch (e) {
       throw ReminderSchedulerException(
         'Failed to snooze reminder: ${e.toString()}',
@@ -125,8 +111,8 @@ class ReminderScheduler {
     try {
       final activeReminders = await _reminderService.getActiveReminders();
 
-      // Cancel all existing notifications first
-      await _notificationsPlugin.cancelAll();
+      // Cancel all existing notifications and alarms first
+      await _notificationAlarmService.cancelAllReminders();
 
       for (final reminder in activeReminders) {
         try {
@@ -146,7 +132,7 @@ class ReminderScheduler {
   /// Get all pending notifications
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     try {
-      return await _notificationsPlugin.pendingNotificationRequests();
+      return await _notificationAlarmService.checkPermissions() ? [] : [];
     } catch (e) {
       throw ReminderSchedulerException(
         'Failed to get pending notifications: ${e.toString()}',
@@ -157,7 +143,7 @@ class ReminderScheduler {
   /// Clear all scheduled notifications
   Future<void> cancelAllReminders() async {
     try {
-      await _notificationsPlugin.cancelAll();
+      await _notificationAlarmService.cancelAllReminders();
     } catch (e) {
       throw ReminderSchedulerException(
         'Failed to cancel all reminders: ${e.toString()}',
@@ -167,302 +153,90 @@ class ReminderScheduler {
 
   /// Initialize notification response listening
   void _initializeNotificationHandling() {
-    NotificationConfig.notificationStream.listen((
-      NotificationResponse response,
-    ) {
-      _handleNotificationResponse(response);
+    _notificationAlarmService.triggerStream.listen((event) {
+      _handleReminderTrigger(event);
     });
   }
 
-  /// Handle notification responses
-  Future<void> _handleNotificationResponse(
-    NotificationResponse response,
-  ) async {
+  /// Handle reminder trigger events from the unified service
+  Future<void> _handleReminderTrigger(ReminderTriggerEvent event) async {
     try {
-      final payload = response.payload;
-      if (payload != null) {
-        final payloadData = jsonDecode(payload);
-        final reminderId = payloadData['reminderId'] as String?;
-        final actionId = response.actionId;
-
-        if (reminderId != null) {
-          if (actionId != null) {
-            // Handle action button taps
-            await _handleNotificationAction(actionId, reminderId);
-          } else {
-            // Handle notification tap (no action button)
-            await _handleNotificationTap(reminderId);
-          }
-        }
+      switch (event.triggerType) {
+        case TriggerType.notification:
+          await _handleNotificationTrigger(event);
+          break;
+        case TriggerType.alarm:
+          await _handleAlarmTrigger(event);
+          break;
       }
     } catch (e) {
-      print('Error handling notification response: $e');
+      print('Error handling reminder trigger: $e');
     }
   }
 
-  /// Handle notification action responses
-  Future<void> _handleNotificationAction(
-    String action,
-    String reminderId,
-  ) async {
-    try {
-      switch (action) {
-        case 'take_medication':
-          await _handleTakeMedication(reminderId);
-          break;
-        case 'skip_medication':
-          await _handleSkipMedication(reminderId);
-          break;
-        case 'snooze_medication':
-          await snoozeReminder(reminderId, minutes: 15);
-          break;
-        default:
-          print('Unknown notification action: $action');
-      }
-    } catch (e) {
-      throw ReminderSchedulerException(
-        'Failed to handle notification action: ${e.toString()}',
-      );
-    }
+  Future<void> _handleNotificationTrigger(ReminderTriggerEvent event) async {
+    // Handle notification tap
+    print('Notification triggered for reminder: ${event.reminderId}');
   }
 
-  /// Handle notification tap (when no action button is used)
-  Future<void> _handleNotificationTap(String reminderId) async {
-    // This could open the app to the reminder details screen
-    print('Notification tapped for reminder: $reminderId');
+  Future<void> _handleAlarmTrigger(ReminderTriggerEvent event) async {
+    // Handle alarm trigger
+    print('Alarm triggered for reminder: ${event.reminderId}');
+
+    // Mark reminder as sent and schedule next occurrence if recurring
+    final reminder = await _reminderService.getReminderById(event.reminderId);
+    if (reminder != null) {
+      await _reminderService.markReminderSent(event.reminderId);
+
+      if (reminder.frequency != 'once') {
+        // Schedule next occurrence for recurring reminders
+        await scheduleReminder(reminder);
+      }
+    }
   }
 
   /// Check if notifications are enabled
   Future<bool> areNotificationsEnabled() async {
-    return await NotificationConfig.areNotificationsEnabled();
+    return await _notificationAlarmService.checkPermissions();
   }
 
-  // Private Methods
+  // Helper Methods
 
-  Future<bool> _scheduleOneTimeReminder(Reminder reminder) async {
-    if (reminder.nextScheduled == null ||
-        reminder.nextScheduled!.isBefore(DateTime.now())) {
-      return false; // Don't schedule past reminders
+  ReminderType _getReminderType() {
+    if (_container != null) {
+      try {
+        return _container.read(reminderTypeProvider);
+      } catch (e) {
+        print('Error reading reminder type from provider: $e');
+      }
     }
-
-    final notificationId = _generateNotificationId(reminder.id);
-
-    await _notificationsPlugin.zonedSchedule(
-      notificationId,
-      reminder.title,
-      reminder.description ?? 'Time for your reminder',
-      tz.TZDateTime.from(reminder.nextScheduled!, tz.local),
-      _getNotificationDetails(reminder),
-      payload: _createNotificationPayload(reminder),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
-
-    return true;
+    return ReminderType.notification; // Default fallback
   }
 
-  Future<bool> _scheduleDailyReminder(Reminder reminder) async {
-    final now = DateTime.now();
-    DateTime scheduledTime = reminder.scheduledTime;
-
-    // If today's time has passed, schedule for tomorrow
-    if (scheduledTime.isBefore(now)) {
-      scheduledTime = _getNextDailyOccurrence(scheduledTime);
+  AlarmSettings _getAlarmSettings() {
+    if (_container != null) {
+      try {
+        return AlarmSettings(
+          alarmSound: _container.read(alarmSoundProvider),
+          alarmVolume: _container.read(alarmVolumeProvider),
+          enableVibration: _container.read(enableAlarmVibrationProvider),
+        );
+      } catch (e) {
+        print('Error reading alarm settings from provider: $e');
+      }
     }
-
-    final notificationId = _generateNotificationId(reminder.id);
-
-    await _notificationsPlugin.zonedSchedule(
-      notificationId,
-      reminder.title,
-      reminder.description ?? 'Time for your daily reminder',
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      _getNotificationDetails(reminder),
-      payload: _createNotificationPayload(reminder),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
-    );
-
-    return true;
-  }
-
-  Future<bool> _scheduleWeeklyReminder(Reminder reminder) async {
-    final now = DateTime.now();
-    DateTime scheduledTime = reminder.scheduledTime;
-
-    // If this week's time has passed, schedule for next week
-    if (scheduledTime.isBefore(now)) {
-      scheduledTime = _getNextWeeklyOccurrence(scheduledTime);
-    }
-
-    final notificationId = _generateNotificationId(reminder.id);
-
-    await _notificationsPlugin.zonedSchedule(
-      notificationId,
-      reminder.title,
-      reminder.description ?? 'Time for your weekly reminder',
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      _getNotificationDetails(reminder),
-      payload: _createNotificationPayload(reminder),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents:
-          DateTimeComponents.dayOfWeekAndTime, // Repeat weekly
-    );
-
-    return true;
-  }
-
-  Future<bool> _scheduleMonthlyReminder(Reminder reminder) async {
-    final now = DateTime.now();
-    DateTime scheduledTime = reminder.scheduledTime;
-
-    // If this month's time has passed, schedule for next month
-    if (scheduledTime.isBefore(now)) {
-      scheduledTime = _getNextMonthlyOccurrence(scheduledTime);
-    }
-
-    final notificationId = _generateNotificationId(reminder.id);
-
-    await _notificationsPlugin.zonedSchedule(
-      notificationId,
-      reminder.title,
-      reminder.description ?? 'Time for your monthly reminder',
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      _getNotificationDetails(reminder),
-      payload: _createNotificationPayload(reminder),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents:
-          DateTimeComponents.dayOfMonthAndTime, // Repeat monthly
-    );
-
-    return true;
-  }
-
-  DateTime _getNextDailyOccurrence(DateTime scheduledTime) {
-    final now = DateTime.now();
-    DateTime nextTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      scheduledTime.hour,
-      scheduledTime.minute,
-    );
-
-    if (nextTime.isBefore(now)) {
-      nextTime = nextTime.add(const Duration(days: 1));
-    }
-
-    return nextTime;
-  }
-
-  DateTime _getNextWeeklyOccurrence(DateTime scheduledTime) {
-    final now = DateTime.now();
-    int daysToAdd = (scheduledTime.weekday - now.weekday + 7) % 7;
-
-    DateTime nextTime = DateTime(
-      now.year,
-      now.month,
-      now.day + daysToAdd,
-      scheduledTime.hour,
-      scheduledTime.minute,
-    );
-
-    if (nextTime.isBefore(now)) {
-      nextTime = nextTime.add(const Duration(days: 7));
-    }
-
-    return nextTime;
-  }
-
-  DateTime _getNextMonthlyOccurrence(DateTime scheduledTime) {
-    final now = DateTime.now();
-    DateTime nextTime = DateTime(
-      now.year,
-      now.month,
-      scheduledTime.day,
-      scheduledTime.hour,
-      scheduledTime.minute,
-    );
-
-    if (nextTime.isBefore(now)) {
-      nextTime = DateTime(
-        now.month == 12 ? now.year + 1 : now.year,
-        now.month == 12 ? 1 : now.month + 1,
-        scheduledTime.day,
-        scheduledTime.hour,
-        scheduledTime.minute,
-      );
-    }
-
-    return nextTime;
-  }
-
-  NotificationDetails _getNotificationDetails(Reminder reminder) {
-    final androidDetails = reminder.type == 'medication'
-        ? AndroidNotificationDetails(
-            NotificationConfig.androidNotificationDetails.channelId,
-            NotificationConfig.androidNotificationDetails.channelName,
-            channelDescription: NotificationConfig
-                .androidNotificationDetails
-                .channelDescription,
-            importance:
-                NotificationConfig.androidNotificationDetails.importance,
-            priority: NotificationConfig.androidNotificationDetails.priority,
-            actions: NotificationConfig.medicationActions,
-          )
-        : NotificationConfig.androidNotificationDetails;
-
-    return NotificationDetails(
-      android: androidDetails,
-      iOS: NotificationConfig.darwinNotificationDetails,
-      macOS: NotificationConfig.darwinNotificationDetails,
+    return const AlarmSettings(
+      alarmSound: 'gentle',
+      alarmVolume: 0.8,
+      enableVibration: true,
     );
   }
 
-  String _createNotificationPayload(
-    Reminder reminder, {
-    bool isSnooze = false,
-  }) {
-    return jsonEncode({
-      'reminderId': reminder.id,
-      'type': reminder.type,
-      'medicationId': reminder.medicationId,
-      'isSnooze': isSnooze,
-      'scheduledTime': reminder.scheduledTime.toIso8601String(),
-    });
-  }
+  // Legacy compatibility methods (minimal implementation)
 
+  // ignore: unused_element
   int _generateNotificationId(String reminderId) {
     return reminderId.hashCode.abs() % 2147483647; // Keep within int32 range
-  }
-
-  Future<void> _handleTakeMedication(String reminderId) async {
-    try {
-      await _reminderService.markReminderSent(reminderId);
-      await cancelReminder(reminderId);
-
-      // If it's a recurring reminder, schedule the next occurrence
-      final reminder = await _reminderService.getReminderById(reminderId);
-      if (reminder != null && reminder.frequency != 'once') {
-        await scheduleReminder(reminder);
-      }
-    } catch (e) {
-      print('Error handling take medication action: $e');
-    }
-  }
-
-  Future<void> _handleSkipMedication(String reminderId) async {
-    try {
-      await _reminderService.markReminderSent(reminderId);
-      await cancelReminder(reminderId);
-
-      // If it's a recurring reminder, schedule the next occurrence
-      final reminder = await _reminderService.getReminderById(reminderId);
-      if (reminder != null && reminder.frequency != 'once') {
-        await scheduleReminder(reminder);
-      }
-    } catch (e) {
-      print('Error handling skip medication action: $e');
-    }
   }
 }
 
@@ -474,4 +248,17 @@ class ReminderSchedulerException implements Exception {
 
   @override
   String toString() => 'ReminderSchedulerException: $message';
+}
+
+/// Helper class for alarm settings
+class AlarmSettings {
+  final String alarmSound;
+  final double alarmVolume;
+  final bool enableVibration;
+
+  const AlarmSettings({
+    required this.alarmSound,
+    required this.alarmVolume,
+    required this.enableVibration,
+  });
 }

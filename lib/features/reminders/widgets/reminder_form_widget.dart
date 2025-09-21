@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/reminder_service.dart';
+
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/reminder_providers.dart';
+import '../services/reminder_service.dart';
 
 /// Form widget for creating and editing reminders
 class ReminderFormWidget extends ConsumerStatefulWidget {
@@ -515,6 +517,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         // Create new reminder
         final request = CreateReminderRequest(
           medicationId: widget.medicationId,
+          type: _selectedType,
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim().isNotEmpty
               ? _descriptionController.text.trim()
@@ -569,6 +572,9 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         );
       }
     } catch (e) {
+      if (kDebugMode) {
+        print('Error saving reminder: $e');
+      }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

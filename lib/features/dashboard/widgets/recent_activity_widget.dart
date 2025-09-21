@@ -1,10 +1,11 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:drift/drift.dart' as drift;
 import 'package:go_router/go_router.dart';
-import '../../../shared/providers/simple_profile_providers.dart';
+
 import '../../../data/database/app_database.dart';
 import '../../../shared/navigation/app_router.dart';
+import '../../../shared/providers/simple_profile_providers.dart';
 
 // Provider for recent medical records based on selected profile
 final recentMedicalRecordsProvider = FutureProvider<List<MedicalRecord>>((
@@ -348,9 +349,9 @@ class RecentActivityWidget extends ConsumerWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isRecent
-              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
+              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.1)
               : theme.colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.5,
+                  alpha: 0.3,
                 ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(

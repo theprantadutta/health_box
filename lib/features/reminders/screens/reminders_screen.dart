@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/widgets/loading_animation_widget.dart';
-import '../../../shared/widgets/error_state_widget.dart';
-import '../../../shared/widgets/gradient_button.dart';
-import '../../../shared/theme/app_theme.dart';
-import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/stagger_animations.dart';
-import '../../../shared/animations/micro_interactions.dart';
-import '../../../shared/providers/reminder_providers.dart';
+
 import '../../../data/database/app_database.dart';
-import '../widgets/reminder_form_widget.dart';
+import '../../../shared/animations/common_transitions.dart';
+import '../../../shared/animations/micro_interactions.dart';
+import '../../../shared/animations/stagger_animations.dart';
+import '../../../shared/providers/reminder_providers.dart';
+import '../../../shared/theme/app_theme.dart';
+import '../../../shared/widgets/error_state_widget.dart';
+import '../../../shared/widgets/loading_animation_widget.dart';
+import '../../../shared/widgets/modern_card.dart';
 import '../services/reminder_service.dart';
+import '../widgets/reminder_form_widget.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -478,76 +478,107 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
     final theme = Theme.of(context);
     final isOverdue = reminder.scheduledTime.isBefore(DateTime.now());
     final reminderColor = _getReminderTypeColor(reminder.type);
-    final medicalTheme = _getMedicalThemeForReminderType(reminder.type);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Hero(
-        tag: 'reminder_${reminder.id}',
-        child: CommonTransitions.fadeSlideIn(
-          child: ModernCard(
-            medicalTheme: medicalTheme,
-            elevation: CardElevation.low,
-            enableHoverEffect: true,
-            hoverElevation: CardElevation.medium,
-            enablePressEffect: true,
-            borderRadius: BorderRadius.circular(16),
-            border: isOverdue
-                ? Border.all(color: AppTheme.errorColor, width: 2)
-                : null,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12.0),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: isOverdue
+              ? BorderSide(color: theme.colorScheme.error, width: 1.5)
+              : BorderSide.none,
+        ),
+        child: InkWell(
+          onTap: () => _editReminder(reminder),
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Header Row
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Type Icon with heartbeat animation
-                    MicroInteractions.heartbeat(
-                      intensity: isOverdue ? 0.1 : 0.03,
-                      duration: Duration(milliseconds: isOverdue ? 1000 : 2000),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              reminderColor,
-                              reminderColor.withValues(alpha: 0.8),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: reminderColor.withValues(alpha: 0.4),
-                              offset: const Offset(0, 2),
-                              blurRadius: 8,
-                            ),
-                          ],
+                    // Type indicator and icon
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: reminderColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: reminderColor.withOpacity(0.2),
+                          width: 1,
                         ),
-                        child: Icon(
-                          _getReminderTypeIcon(reminder.type),
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      ),
+                      child: Icon(
+                        _getReminderTypeIcon(reminder.type),
+                        color: reminderColor,
+                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 12),
 
-                    // Title and Status
+                    // Title and description
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            reminder.title,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: isOverdue ? theme.colorScheme.error : null,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  reminder.title,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: isOverdue
+                                        ? theme.colorScheme.error
+                                        : null,
+                                  ),
+                                ),
+                              ),
+                              // Status chip
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isOverdue
+                                      ? theme.colorScheme.error
+                                      : reminder.isActive
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.outline.withOpacity(
+                                          0.2,
+                                        ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  isOverdue
+                                      ? 'Overdue'
+                                      : reminder.isActive
+                                      ? 'Active'
+                                      : 'Paused',
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: isOverdue || reminder.isActive
+                                        ? theme.colorScheme.onPrimary
+                                        : theme.colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+
                           if (reminder.description?.isNotEmpty == true) ...[
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 4),
                             Text(
                               reminder.description!,
-                              style: theme.textTheme.bodySmall,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -555,178 +586,113 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                         ],
                       ),
                     ),
-
-                    // Enhanced Status Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isOverdue
-                            ? AppTheme.errorColor
-                            : reminder.isActive
-                            ? AppTheme.successColor
-                            : AppTheme.neutralColorLight,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                (isOverdue
-                                        ? AppTheme.errorColor
-                                        : reminder.isActive
-                                        ? AppTheme.successColor
-                                        : AppTheme.neutralColorLight)
-                                    .withValues(alpha: 0.3),
-                            offset: const Offset(0, 2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            isOverdue
-                                ? Icons.warning_rounded
-                                : reminder.isActive
-                                ? Icons.check_circle_rounded
-                                : Icons.pause_circle_rounded,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            isOverdue
-                                ? 'Overdue'
-                                : reminder.isActive
-                                ? 'Active'
-                                : 'Inactive',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
+
                 const SizedBox(height: 12),
 
-                // Schedule Info
-                Row(
-                  children: [
-                    Icon(
-                      Icons.access_time,
-                      size: 16,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      _formatScheduleTime(reminder),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(
-                      Icons.repeat,
-                      size: 16,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      reminder.frequency.replaceAll('_', ' '),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ],
+                // Schedule info with background
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest
+                        .withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.schedule,
+                        size: 16,
+                        color: theme.colorScheme.primary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _formatScheduleTime(reminder),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Icon(
+                        Icons.repeat,
+                        size: 16,
+                        color: theme.colorScheme.primary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        reminder.frequency.replaceAll('_', ' ').toUpperCase(),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
-                // Enhanced Action Buttons
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+
+                // Action buttons row
                 Row(
                   children: [
-                    MicroInteractions.bounceTap(
-                      child: HealthButton(
+                    // Edit button
+                    Expanded(
+                      child: OutlinedButton.icon(
                         onPressed: () => _editReminder(reminder),
-                        medicalTheme: MedicalButtonTheme.neutral,
-                        size: HealthButtonSize.small,
-                        enableHaptics: true,
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.edit_rounded,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              'Edit',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                        icon: const Icon(Icons.edit, size: 16),
+                        label: const Text('Edit'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 8),
-                    MicroInteractions.bounceTap(
-                      child: HealthButton(
+
+                    // Pause/Activate button
+                    Expanded(
+                      child: ElevatedButton.icon(
                         onPressed: reminder.isActive
                             ? () => _pauseReminder(reminder)
                             : () => _activateReminder(reminder),
-                        medicalTheme: reminder.isActive
-                            ? MedicalButtonTheme.warning
-                            : MedicalButtonTheme.success,
-                        size: HealthButtonSize.small,
-                        enableHaptics: true,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              reminder.isActive
-                                  ? Icons.pause_rounded
-                                  : Icons.play_arrow_rounded,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              reminder.isActive ? 'Pause' : 'Activate',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                        icon: Icon(
+                          reminder.isActive ? Icons.pause : Icons.play_arrow,
+                          size: 16,
+                        ),
+                        label: Text(reminder.isActive ? 'Pause' : 'Resume'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: reminder.isActive
+                              ? theme.colorScheme.secondary
+                              : theme.colorScheme.primary,
+                          foregroundColor: reminder.isActive
+                              ? theme.colorScheme.onSecondary
+                              : theme.colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    MicroInteractions.bounceTap(
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppTheme.errorColor,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.errorColor.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 4,
-                            ),
-                          ],
+
+                    const SizedBox(width: 8),
+
+                    // Delete button
+                    IconButton(
+                      onPressed: () => _deleteReminder(reminder),
+                      icon: const Icon(Icons.delete_outline),
+                      color: theme.colorScheme.error,
+                      style: IconButton.styleFrom(
+                        backgroundColor: theme.colorScheme.error.withOpacity(
+                          0.1,
                         ),
-                        child: InkWell(
-                          onTap: () => _deleteReminder(reminder),
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          child: const Icon(
-                            Icons.delete_rounded,
-                            color: Colors.white,
-                            size: 18,
-                          ),
                         ),
                       ),
                     ),
@@ -840,23 +806,6 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
     }
   }
 
-  MedicalCardTheme _getMedicalThemeForReminderType(String type) {
-    switch (type) {
-      case 'medication':
-        return MedicalCardTheme.primary;
-      case 'appointment':
-        return MedicalCardTheme.success;
-      case 'lab_test':
-        return MedicalCardTheme.warning;
-      case 'vaccination':
-        return MedicalCardTheme.success;
-      case 'general':
-        return MedicalCardTheme.primary;
-      default:
-        return MedicalCardTheme.neutral;
-    }
-  }
-
   IconData _getReminderTypeIcon(String type) {
     switch (type) {
       case 'medication':
@@ -937,7 +886,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
           builder: (context, scrollController) => Container(
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: isDark
@@ -961,7 +912,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.outline.withValues(alpha: 0.4),
+                          color: theme.colorScheme.outline.withValues(
+                            alpha: 0.4,
+                          ),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -978,13 +931,17 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                                 end: Alignment.bottomRight,
                                 colors: [
                                   theme.colorScheme.primary,
-                                  theme.colorScheme.primary.withValues(alpha: 0.8),
+                                  theme.colorScheme.primary.withValues(
+                                    alpha: 0.8,
+                                  ),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                                  color: theme.colorScheme.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
                                   offset: const Offset(0, 4),
                                   blurRadius: 8,
                                   spreadRadius: 0,
@@ -1004,10 +961,11 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                               children: [
                                 Text(
                                   'Add New Reminder',
-                                  style: theme.textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: theme.colorScheme.onSurface,
-                                  ),
+                                  style: theme.textTheme.headlineSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        color: theme.colorScheme.onSurface,
+                                      ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -1025,7 +983,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                             height: 40,
                             decoration: BoxDecoration(
                               color: isDark
-                                  ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                                  ? theme.colorScheme.surfaceContainerHighest
+                                        .withValues(alpha: 0.5)
                                   : theme.colorScheme.surfaceContainerHigh,
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -1112,20 +1071,22 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: ReminderFormWidget(
-                  reminder: reminder,
-                  onReminderUpdated: () {
-                    context.pop();
-                    ref.invalidate(allRemindersProvider);
-                    ref.invalidate(activeRemindersProvider);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Reminder updated successfully'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  },
-                  onCancel: () => context.pop(),
+                child: SingleChildScrollView(
+                  child: ReminderFormWidget(
+                    reminder: reminder,
+                    onReminderUpdated: () {
+                      context.pop();
+                      ref.invalidate(allRemindersProvider);
+                      ref.invalidate(activeRemindersProvider);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Reminder updated successfully'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    },
+                    onCancel: () => context.pop(),
+                  ),
                 ),
               ),
             ],

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/database/app_database.dart';
+import 'features/reminders/services/notification_alarm_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/navigation/app_router.dart';
 import 'shared/providers/app_providers.dart';
@@ -20,6 +21,9 @@ void main() async {
 
   // Initialize and test database connection
   await _initializeDatabase();
+
+  // Initialize notification services (alarms will be initialized when needed)
+  await _initializeNotificationServices();
 
   runApp(
     ProviderScope(
@@ -66,6 +70,23 @@ Future<void> _initializeDatabase() async {
     debugPrint('Error type: ${e.runtimeType}');
     debugPrint('Stack trace: ${StackTrace.current}');
     // Don't block app startup, the database will handle fallbacks
+  }
+}
+
+Future<void> _initializeNotificationServices() async {
+  try {
+    debugPrint('Initializing notification services...');
+
+    // Initialize only the notification service at startup
+    // Alarm service will be lazily initialized when needed to prevent crashes
+    final notificationAlarmService = NotificationAlarmService();
+    await notificationAlarmService.initialize();
+
+    debugPrint('Notification services initialized successfully');
+  } catch (e) {
+    debugPrint('Error initializing notification services: $e');
+    debugPrint('Error type: ${e.runtimeType}');
+    // Don't block app startup, but log the error
   }
 }
 
