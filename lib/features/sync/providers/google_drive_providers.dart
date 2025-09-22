@@ -11,6 +11,7 @@ import '../../../data/database/app_database.dart';
 import '../../../services/google_drive_service.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/providers/onboarding_providers.dart';
+import '../../../shared/providers/backup_preference_providers.dart';
 
 part 'google_drive_providers.g.dart';
 
@@ -23,11 +24,34 @@ GoogleDriveService googleDriveService(Ref ref) {
 class GoogleDriveAuth extends _$GoogleDriveAuth {
   @override
   Future<bool> build() async {
-    final service = ref.read(googleDriveServiceProvider);
-    return await service.signInSilently();
+    // Only attempt silent sign-in if backup is enabled and strategy is Google Drive
+    try {
+      final backupPreferenceAsync = ref.read(backupPreferenceNotifierProvider);
+      final backupPreference = backupPreferenceAsync.value;
+
+      if (backupPreference == null || !backupPreference.enabled || backupPreference.strategy != BackupStrategy.googleDrive) {
+        debugPrint('Google Drive backup not enabled, skipping authentication');
+        return false;
+      }
+
+      final service = ref.read(googleDriveServiceProvider);
+      return await service.signInSilently();
+    } catch (e) {
+      debugPrint('Error checking backup preferences: $e');
+      return false;
+    }
   }
 
   Future<bool> signIn() async {
+    // Check if already signed in to avoid double login
+    final currentState = state;
+    if (currentState.hasValue && currentState.value == true) {
+      final service = ref.read(googleDriveServiceProvider);
+      if (service.isSignedIn) {
+        return true; // Already signed in
+      }
+    }
+
     state = const AsyncValue.loading();
     final service = ref.read(googleDriveServiceProvider);
 
@@ -45,6 +69,24 @@ class GoogleDriveAuth extends _$GoogleDriveAuth {
       state = AsyncValue.error(e, StackTrace.current);
       return false;
     }
+  }
+
+  Future<bool> ensureSignedIn() async {
+    // First check if already authenticated
+    final service = ref.read(googleDriveServiceProvider);
+    if (service.isSignedIn) {
+      return true;
+    }
+
+    // Try silent sign-in first
+    final silentSuccess = await service.signInSilently();
+    if (silentSuccess) {
+      state = const AsyncValue.data(true);
+      return true;
+    }
+
+    // If silent fails, require interactive sign-in
+    return await signIn();
   }
 
   Future<void> signOut() async {
@@ -165,26 +207,133 @@ Future<List<BackupFile>> googleDriveBackups(Ref ref) async {
 @riverpod
 class BackupOperations extends _$BackupOperations {
   @override
-  Future<BackupStatus> build() async {
-    return BackupStatus.idle;
+  Future<BackupProgress> build() async {
+    return const BackupProgress(status: BackupStatus.idle);
   }
 
   Future<void> createDatabaseBackup() async {
-    state = const AsyncValue.data(BackupStatus.creating);
+    const maxRetries = 3;
+    String? backupPath;
 
     try {
+      // Step 1: Preparing
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.preparing,
+        progress: 0.0,
+        currentOperation: 'Preparing backup...',
+      ));
+
+      // Check if Google Drive backup is enabled
+      final backupPreferenceAsync = ref.read(backupPreferenceNotifierProvider);
+      final backupPreference = backupPreferenceAsync.value;
+      if (backupPreference == null || !backupPreference.enabled || backupPreference.strategy != BackupStrategy.googleDrive) {
+        throw Exception('Google Drive backup is not enabled. Please enable it in settings first.');
+      }
+
+      // Ensure we're signed in before starting backup
+      final authSuccess = await ref.read(googleDriveAuthProvider.notifier).ensureSignedIn();
+      if (!authSuccess) {
+        throw Exception('Google Drive authentication failed. Please sign in to continue.');
+      }
+
       final database = ref.read(appDatabaseProvider);
       final service = ref.read(googleDriveServiceProvider);
 
-      // Create local database backup
-      final backupPath = await database.backupDatabase();
+      // Step 2: Creating local backup with retry logic
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.creating,
+        progress: 0.1,
+        currentOperation: 'Creating local backup...',
+      ));
+
+      Exception? lastError;
+      for (int attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          backupPath = await database.backupDatabase();
+          break; // Success, exit retry loop
+        } catch (e) {
+          lastError = Exception('Backup attempt $attempt failed: $e');
+          debugPrint('Backup attempt $attempt failed: $e');
+
+          if (attempt < maxRetries) {
+            state = AsyncValue.data(BackupProgress(
+              status: BackupStatus.creating,
+              progress: 0.1,
+              currentOperation: 'Retrying backup creation (attempt ${attempt + 1}/$maxRetries)...',
+            ));
+            await Future.delayed(Duration(milliseconds: 500 * attempt)); // Exponential backoff
+          }
+        }
+      }
+
+      if (backupPath == null) {
+        throw lastError ?? Exception('Failed to create database backup after $maxRetries attempts');
+      }
+
       final fileName = 'healthbox_database_${DateTime.now().millisecondsSinceEpoch}.db';
 
-      // Upload database file to Google Drive
-      await service.uploadDatabaseBackup(backupPath, fileName);
+      // Get file size for display
+      final backupFile = File(backupPath);
+      final fileSize = await backupFile.length();
+      final fileSizeFormatted = _formatBytes(fileSize);
+
+      // Step 3: Uploading to Google Drive with progress tracking
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.uploading,
+        progress: 0.2,
+        currentOperation: 'Uploading to Google Drive...',
+        fileSize: fileSizeFormatted,
+      ));
+
+      // Upload with retry logic
+      String? uploadedFileId;
+      for (int attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          uploadedFileId = await service.uploadDatabaseBackup(
+            backupPath,
+            fileName,
+            onProgress: (progress) {
+              // Update progress during upload (20% to 80%)
+              final adjustedProgress = 0.2 + (progress * 0.6);
+              state = AsyncValue.data(BackupProgress(
+                status: BackupStatus.uploading,
+                progress: adjustedProgress,
+                currentOperation: 'Uploading ${(progress * 100).toStringAsFixed(1)}%...',
+                fileSize: fileSizeFormatted,
+              ));
+            },
+          );
+          break; // Success, exit retry loop
+        } catch (e) {
+          debugPrint('Upload attempt $attempt failed: $e');
+
+          if (attempt < maxRetries) {
+            state = AsyncValue.data(BackupProgress(
+              status: BackupStatus.uploading,
+              progress: 0.2,
+              currentOperation: 'Retrying upload (attempt ${attempt + 1}/$maxRetries)...',
+              fileSize: fileSizeFormatted,
+            ));
+            await Future.delayed(Duration(seconds: attempt)); // Exponential backoff
+          } else {
+            throw Exception('Upload failed after $maxRetries attempts: $e');
+          }
+        }
+      }
+
+      if (uploadedFileId == null) {
+        throw Exception('Failed to upload backup after $maxRetries attempts');
+      }
+
+      // Step 4: Finalizing
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.finalizing,
+        progress: 0.9,
+        currentOperation: 'Finalizing backup...',
+        fileSize: fileSizeFormatted,
+      ));
 
       // Clean up local backup file
-      final backupFile = File(backupPath);
       if (await backupFile.exists()) {
         await backupFile.delete();
       }
@@ -198,24 +347,118 @@ class BackupOperations extends _$BackupOperations {
       // Refresh backup list
       ref.invalidate(googleDriveBackupsProvider);
 
-      state = const AsyncValue.data(BackupStatus.completed);
+      // Step 5: Completed
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.completed,
+        progress: 1.0,
+        currentOperation: 'Backup completed successfully',
+        fileSize: fileSizeFormatted,
+      ));
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      debugPrint('Database backup failed: $e');
+
+      // Clean up backup file if it exists
+      if (backupPath != null) {
+        try {
+          final backupFile = File(backupPath);
+          if (await backupFile.exists()) {
+            await backupFile.delete();
+          }
+        } catch (cleanupError) {
+          debugPrint('Failed to clean up backup file: $cleanupError');
+        }
+      }
+
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.idle,
+        progress: 0.0,
+        errorMessage: _formatErrorMessage(e.toString()),
+      ));
     }
   }
 
-  Future<void> createDataExport() async {
-    state = const AsyncValue.data(BackupStatus.creating);
+  String _formatErrorMessage(String error) {
+    if (error.contains('authentication')) {
+      return 'Authentication failed. Please sign in to Google Drive.';
+    }
+    if (error.contains('Network')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    if (error.contains('permission')) {
+      return 'Permission denied. Please check Google Drive permissions.';
+    }
+    if (error.contains('storage')) {
+      return 'Insufficient storage space on Google Drive.';
+    }
+    if (error.contains('Database file not found')) {
+      return 'Database file not accessible. Please try restarting the app.';
+    }
+    if (error.contains('Backup file')) {
+      return 'Failed to create backup file. Please try again.';
+    }
+    return error.length > 100 ? '${error.substring(0, 100)}...' : error;
+  }
 
+  String _formatBytes(int bytes) {
+    if (bytes < 1024) return '${bytes}B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)}KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)}MB';
+  }
+
+  Future<void> createDataExport() async {
     try {
+      // Step 1: Preparing
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.preparing,
+        progress: 0.0,
+        currentOperation: 'Preparing data export...',
+      ));
+
+      // Check if Google Drive backup is enabled
+      final backupPreferenceAsync = ref.read(backupPreferenceNotifierProvider);
+      final backupPreference = backupPreferenceAsync.value;
+      if (backupPreference == null || !backupPreference.enabled || backupPreference.strategy != BackupStrategy.googleDrive) {
+        throw Exception('Google Drive backup is not enabled. Please enable it in settings first.');
+      }
+
+      // Ensure we're signed in before starting export
+      final authSuccess = await ref.read(googleDriveAuthProvider.notifier).ensureSignedIn();
+      if (!authSuccess) {
+        throw Exception('Google Drive authentication failed');
+      }
+
       final database = ref.read(appDatabaseProvider);
       final service = ref.read(googleDriveServiceProvider);
 
-      // Export all data as JSON
+      // Step 2: Exporting data
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.creating,
+        progress: 0.2,
+        currentOperation: 'Exporting data...',
+      ));
+
       final exportData = await _exportAllData(database);
       final fileName = 'healthbox_export_${DateTime.now().millisecondsSinceEpoch}.json';
+      final jsonString = jsonEncode(exportData);
+      final dataSize = _formatBytes(utf8.encode(jsonString).length);
 
-      await service.uploadDataExport(jsonEncode(exportData), fileName);
+      // Step 3: Uploading
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.uploading,
+        progress: 0.5,
+        currentOperation: 'Uploading export...',
+        fileSize: dataSize,
+      ));
+
+      await service.uploadDataExport(jsonString, fileName);
+
+      // Step 4: Finalizing
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.finalizing,
+        progress: 0.9,
+        currentOperation: 'Finalizing export...',
+        fileSize: dataSize,
+      ));
 
       // Update last sync time
       await ref.read(syncSettingsProvider.notifier).updateLastSyncTime();
@@ -226,14 +469,29 @@ class BackupOperations extends _$BackupOperations {
       // Refresh backup list
       ref.invalidate(googleDriveBackupsProvider);
 
-      state = const AsyncValue.data(BackupStatus.completed);
+      // Step 5: Completed
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.completed,
+        progress: 1.0,
+        currentOperation: 'Export completed successfully',
+        fileSize: dataSize,
+      ));
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      debugPrint('Data export failed: $e');
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.idle,
+        progress: 0.0,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
   Future<void> restoreDatabaseBackup(String fileId) async {
-    state = const AsyncValue.data(BackupStatus.restoring);
+    state = const AsyncValue.data(BackupProgress(
+      status: BackupStatus.restoring,
+      progress: 0.0,
+      currentOperation: 'Restoring database backup...',
+    ));
 
     try {
       final service = ref.read(googleDriveServiceProvider);
@@ -244,9 +502,21 @@ class BackupOperations extends _$BackupOperations {
       final tempRestorePath = p.join(dbFolder.path, 'temp_restore.db');
 
       // Download database backup
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.restoring,
+        progress: 0.3,
+        currentOperation: 'Downloading backup...',
+      ));
+
       await service.downloadDatabaseBackup(fileId, tempRestorePath);
 
       // Close current database connection
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.restoring,
+        progress: 0.6,
+        currentOperation: 'Replacing database...',
+      ));
+
       await database.close();
 
       // Replace current database with backup
@@ -264,29 +534,61 @@ class BackupOperations extends _$BackupOperations {
       // Reinitialize database
       // Note: You may need to restart the app for this to take full effect
 
-      state = const AsyncValue.data(BackupStatus.completed);
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.completed,
+        progress: 1.0,
+        currentOperation: 'Database restore completed',
+      ));
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.idle,
+        progress: 0.0,
+        errorMessage: _formatErrorMessage(e.toString()),
+      ));
     }
   }
 
   Future<void> restoreDataExport(String fileId) async {
-    state = const AsyncValue.data(BackupStatus.restoring);
+    state = const AsyncValue.data(BackupProgress(
+      status: BackupStatus.restoring,
+      progress: 0.0,
+      currentOperation: 'Restoring data export...',
+    ));
 
     try {
       final service = ref.read(googleDriveServiceProvider);
       final database = ref.read(appDatabaseProvider);
 
       // Download and parse export data
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.restoring,
+        progress: 0.3,
+        currentOperation: 'Downloading export data...',
+      ));
+
       final exportData = await service.downloadDataExport(fileId);
       final data = jsonDecode(exportData) as Map<String, dynamic>;
 
       // Restore data to database
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.restoring,
+        progress: 0.7,
+        currentOperation: 'Restoring data to database...',
+      ));
+
       await _restoreAllData(database, data);
 
-      state = const AsyncValue.data(BackupStatus.completed);
+      state = const AsyncValue.data(BackupProgress(
+        status: BackupStatus.completed,
+        progress: 1.0,
+        currentOperation: 'Data restore completed',
+      ));
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      state = AsyncValue.data(BackupProgress(
+        status: BackupStatus.idle,
+        progress: 0.0,
+        errorMessage: _formatErrorMessage(e.toString()),
+      ));
     }
   }
 
@@ -405,13 +707,50 @@ class BackupOperations extends _$BackupOperations {
 
 enum BackupStatus {
   idle,
+  preparing,
   creating,
+  uploading,
+  finalizing,
   restoring,
   completed,
 }
 
+class BackupProgress {
+  final BackupStatus status;
+  final double progress; // 0.0 to 1.0
+  final String? currentOperation;
+  final String? fileSize;
+  final String? errorMessage;
+
+  const BackupProgress({
+    required this.status,
+    this.progress = 0.0,
+    this.currentOperation,
+    this.fileSize,
+    this.errorMessage,
+  });
+
+  BackupProgress copyWith({
+    BackupStatus? status,
+    double? progress,
+    String? currentOperation,
+    String? fileSize,
+    String? errorMessage,
+  }) {
+    return BackupProgress(
+      status: status ?? this.status,
+      progress: progress ?? this.progress,
+      currentOperation: currentOperation ?? this.currentOperation,
+      fileSize: fileSize ?? this.fileSize,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
+
+  bool get isActive => status != BackupStatus.idle && status != BackupStatus.completed;
+  bool get hasError => errorMessage != null;
+}
+
 enum SyncFrequency {
-  manual('Manual'),
   daily('Daily'),
   weekly('Weekly'),
   monthly('Monthly');

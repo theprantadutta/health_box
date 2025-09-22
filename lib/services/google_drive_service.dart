@@ -10,8 +10,10 @@ class GoogleDriveService {
   static const String _backupFolderName = 'HealthBox';
   static const String _databaseFolderName = 'Database Backups';
   static const String _exportFolderName = 'Data Exports';
-  static const String _appDataScope = 'https://www.googleapis.com/auth/drive.appdata';
-  static const String _driveFileScope = 'https://www.googleapis.com/auth/drive.file';
+  static const String _appDataScope =
+      'https://www.googleapis.com/auth/drive.appdata';
+  static const String _driveFileScope =
+      'https://www.googleapis.com/auth/drive.file';
 
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
@@ -35,23 +37,20 @@ class GoogleDriveService {
     try {
       _logger.i('Starting Google Sign-In...');
 
-      // Initialize Google Sign In
+      // Initialize Google Sign In first
       await _googleSignIn.initialize();
 
-      if (_googleSignIn.supportsAuthenticate()) {
-        final account = await _googleSignIn.authenticate();
-        _currentUser = account;
-      } else {
-        // Fallback for older versions or unsupported platforms
-        _logger.w('Authenticate not supported, using fallback');
-        return false;
-      }
+      // Use authenticate() method directly for interactive sign-in
+      final account = await _googleSignIn.authenticate();
 
-      if (_currentUser == null) {
-        _logger.w('Authentication failed or cancelled');
-        return false;
-      }
+      // if (account == null) {
+      //   _logger.w('Authentication failed or cancelled');
+      //   return false;
+      // }
 
+      _currentUser = account;
+
+      // Initialize Drive API with proper authorization
       await _initializeDriveApi();
       await _ensureFolderStructure();
 
@@ -82,14 +81,25 @@ class GoogleDriveService {
       // Initialize Google Sign In
       await _googleSignIn.initialize();
 
-      // Try lightweight authentication
+      // Try lightweight authentication first
       final account = await _googleSignIn.attemptLightweightAuthentication();
       if (account != null) {
         _currentUser = account;
-        await _initializeDriveApi();
-        await _ensureFolderStructure();
-        return true;
+        try {
+          await _initializeDriveApi();
+          await _ensureFolderStructure();
+          _logger.i('Silent sign-in successful');
+          return true;
+        } catch (e) {
+          _logger.w(
+            'Silent sign-in succeeded but Drive API initialization failed: $e',
+          );
+          // Clear the account if Drive API fails
+          _currentUser = null;
+          return false;
+        }
       }
+      _logger.i('No cached authentication found');
       return false;
     } catch (e) {
       _logger.e('Error during silent sign-in: $e');
@@ -100,15 +110,26 @@ class GoogleDriveService {
   Future<void> _initializeDriveApi() async {
     if (_currentUser == null) throw Exception('User not signed in');
 
-    // Get authorization for Google Drive scopes
-    final authorization = await _currentUser!.authorizationClient
-        .authorizeScopes([_appDataScope, _driveFileScope]);
+    try {
+      // Get authorization for Google Drive scopes
+      final authorization = await _currentUser!.authorizationClient
+          .authorizeScopes([_appDataScope, _driveFileScope]);
 
-    final headers = <String, String>{
-      'Authorization': 'Bearer ${authorization.accessToken}'
-    };
-    final authenticateClient = GoogleAuthClient(headers);
-    _driveApi = drive.DriveApi(authenticateClient);
+      // if (authorization.accessToken == null) {
+      //   throw Exception('Failed to get access token');
+      // }
+
+      final headers = <String, String>{
+        'Authorization': 'Bearer ${authorization.accessToken}',
+      };
+      final authenticateClient = GoogleAuthClient(headers);
+      _driveApi = drive.DriveApi(authenticateClient);
+
+      _logger.i('Drive API initialized successfully');
+    } catch (e) {
+      _logger.e('Failed to initialize Drive API: $e');
+      throw Exception('Failed to initialize Google Drive API: $e');
+    }
   }
 
   Future<void> _ensureFolderStructure() async {
@@ -120,11 +141,17 @@ class GoogleDriveService {
       _logger.i('Main HealthBox folder: $_backupFolderId');
 
       // Create Database Backups subfolder
-      _databaseFolderId = await _createOrFindFolder(_databaseFolderName, _backupFolderId);
+      _databaseFolderId = await _createOrFindFolder(
+        _databaseFolderName,
+        _backupFolderId,
+      );
       _logger.i('Database Backups folder: $_databaseFolderId');
 
       // Create Data Exports subfolder
-      _exportFolderId = await _createOrFindFolder(_exportFolderName, _backupFolderId);
+      _exportFolderId = await _createOrFindFolder(
+        _exportFolderName,
+        _backupFolderId,
+      );
       _logger.i('Data Exports folder: $_exportFolderId');
     } catch (e) {
       _logger.e('Error ensuring folder structure: $e');
@@ -132,9 +159,13 @@ class GoogleDriveService {
     }
   }
 
-  Future<String> _createOrFindFolder(String folderName, String? parentId) async {
+  Future<String> _createOrFindFolder(
+    String folderName,
+    String? parentId,
+  ) async {
     // Search for existing folder
-    String query = "name='$folderName' and mimeType='application/vnd.google-apps.folder' and trashed=false";
+    String query =
+        "name='$folderName' and mimeType='application/vnd.google-apps.folder' and trashed=false";
     if (parentId != null) {
       query += " and '$parentId' in parents";
     }
@@ -158,7 +189,11 @@ class GoogleDriveService {
     }
   }
 
-  Future<String> uploadDatabaseBackup(String databasePath, String fileName) async {
+  Future<String> uploadDatabaseBackup(
+    String databasePath,
+    String fileName, {
+    Function(double)? onProgress,
+  }) async {
     if (_driveApi == null || _databaseFolderId == null) {
       throw Exception('Drive API not initialized or database folder not found');
     }
@@ -169,32 +204,78 @@ class GoogleDriveService {
         throw Exception('Database file not found at: $databasePath');
       }
 
+      // Get file size for progress tracking
+      final fileSize = await databaseFile.length();
+      _logger.i(
+        'Uploading database backup: $fileName (${_formatBytes(fileSize)})',
+      );
+
+      onProgress?.call(0.1); // Starting upload
+
       final databaseBytes = await databaseFile.readAsBytes();
+
+      onProgress?.call(0.3); // File read complete
 
       // Create file metadata
       final fileMetadata = drive.File()
         ..name = fileName
         ..parents = [_databaseFolderId!]
-        ..description = 'HealthBox SQLite database backup created on ${DateTime.now().toIso8601String()}';
+        ..description =
+            'HealthBox SQLite database backup created on ${DateTime.now().toIso8601String()}';
 
-      // Upload file
+      onProgress?.call(0.4); // Metadata prepared
+
+      // Create progress-tracking media stream
       final media = drive.Media(
-        Stream.fromIterable([databaseBytes]),
+        _createProgressStream(databaseBytes, onProgress),
         databaseBytes.length,
         contentType: 'application/x-sqlite3',
       );
+
+      onProgress?.call(0.5); // Starting upload
 
       final uploadedFile = await _driveApi!.files.create(
         fileMetadata,
         uploadMedia: media,
       );
 
-      _logger.i('Successfully uploaded database backup: ${uploadedFile.id}');
+      onProgress?.call(1.0); // Upload complete
+
+      _logger.i(
+        'Successfully uploaded database backup: ${uploadedFile.id} (${_formatBytes(fileSize)})',
+      );
       return uploadedFile.id!;
     } catch (e) {
       _logger.e('Error uploading database backup: $e');
       throw Exception('Failed to upload database backup: $e');
     }
+  }
+
+  Stream<List<int>> _createProgressStream(
+    List<int> data,
+    Function(double)? onProgress,
+  ) async* {
+    const chunkSize = 1024 * 1024; // 1MB chunks
+    int bytesUploaded = 0;
+    final totalBytes = data.length;
+
+    for (int i = 0; i < totalBytes; i += chunkSize) {
+      final end = (i + chunkSize < totalBytes) ? i + chunkSize : totalBytes;
+      final chunk = data.sublist(i, end);
+
+      bytesUploaded += chunk.length;
+      final progress =
+          0.5 + (bytesUploaded / totalBytes) * 0.5; // 50-100% for upload
+      onProgress?.call(progress);
+
+      yield chunk;
+    }
+  }
+
+  String _formatBytes(int bytes) {
+    if (bytes < 1024) return '${bytes}B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)}KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)}MB';
   }
 
   Future<String> uploadDataExport(String exportData, String fileName) async {
@@ -209,7 +290,8 @@ class GoogleDriveService {
       final fileMetadata = drive.File()
         ..name = fileName
         ..parents = [_exportFolderId!]
-        ..description = 'HealthBox data export created on ${DateTime.now().toIso8601String()}';
+        ..description =
+            'HealthBox data export created on ${DateTime.now().toIso8601String()}';
 
       // Determine content type based on file extension
       String contentType = 'text/plain';
@@ -245,10 +327,12 @@ class GoogleDriveService {
     }
 
     try {
-      final media = await _driveApi!.files.get(
-        fileId,
-        downloadOptions: drive.DownloadOptions.fullMedia,
-      ) as drive.Media;
+      final media =
+          await _driveApi!.files.get(
+                fileId,
+                downloadOptions: drive.DownloadOptions.fullMedia,
+              )
+              as drive.Media;
 
       final databaseData = <int>[];
       await for (final chunk in media.stream) {
@@ -259,7 +343,9 @@ class GoogleDriveService {
       final file = File(localPath);
       await file.writeAsBytes(databaseData);
 
-      _logger.i('Successfully downloaded database backup: $fileId to $localPath');
+      _logger.i(
+        'Successfully downloaded database backup: $fileId to $localPath',
+      );
       return localPath;
     } catch (e) {
       _logger.e('Error downloading database backup: $e');
@@ -273,10 +359,12 @@ class GoogleDriveService {
     }
 
     try {
-      final media = await _driveApi!.files.get(
-        fileId,
-        downloadOptions: drive.DownloadOptions.fullMedia,
-      ) as drive.Media;
+      final media =
+          await _driveApi!.files.get(
+                fileId,
+                downloadOptions: drive.DownloadOptions.fullMedia,
+              )
+              as drive.Media;
 
       final exportData = <int>[];
       await for (final chunk in media.stream) {
@@ -313,14 +401,16 @@ class GoogleDriveService {
             size = int.tryParse(file.size!) ?? 0;
           }
 
-          backups.add(BackupFile(
-            id: file.id!,
-            name: file.name!,
-            createdTime: file.createdTime ?? DateTime.now(),
-            size: size,
-            description: file.description,
-            type: BackupType.database,
-          ));
+          backups.add(
+            BackupFile(
+              id: file.id!,
+              name: file.name!,
+              createdTime: file.createdTime ?? DateTime.now(),
+              size: size,
+              description: file.description,
+              type: BackupType.database,
+            ),
+          );
         }
       }
 
@@ -353,14 +443,16 @@ class GoogleDriveService {
             size = int.tryParse(file.size!) ?? 0;
           }
 
-          exports.add(BackupFile(
-            id: file.id!,
-            name: file.name!,
-            createdTime: file.createdTime ?? DateTime.now(),
-            size: size,
-            description: file.description,
-            type: BackupType.export,
-          ));
+          exports.add(
+            BackupFile(
+              id: file.id!,
+              name: file.name!,
+              createdTime: file.createdTime ?? DateTime.now(),
+              size: size,
+              description: file.description,
+              type: BackupType.export,
+            ),
+          );
         }
       }
 
@@ -395,7 +487,6 @@ class GoogleDriveService {
       throw Exception('Failed to delete backup: $e');
     }
   }
-
 
   Future<String> getStorageInfo() async {
     if (_driveApi == null) {

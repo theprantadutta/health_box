@@ -14,7 +14,8 @@
       "Bash(flutter clean:*)",
       "WebFetch(domain:github.com)",
       "WebSearch",
-      "Read(//g/MyProjects/plot_twist/**)"
+      "Read(//g/MyProjects/plot_twist/**)",
+      "Read(//f/Personal/MyProjects/plot_twist/**)"
     ],
     "deny": [],
     "ask": []

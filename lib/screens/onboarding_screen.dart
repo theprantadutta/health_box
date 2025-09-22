@@ -7,6 +7,8 @@ import '../shared/navigation/app_router.dart';
 import '../shared/utils/responsive_utils.dart';
 import '../shared/utils/accessibility_utils.dart';
 import '../shared/providers/onboarding_providers.dart';
+import '../shared/providers/backup_preference_providers.dart';
+import '../features/sync/providers/google_drive_providers.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -18,6 +20,8 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  BackupStrategy _selectedBackupStrategy = BackupStrategy.localOnly;
+  bool _isSettingUpBackup = false;
 
   @override
   void dispose() {
@@ -44,7 +48,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
                   if (AccessibilityUtils.isScreenReaderActive(context)) {
                     AccessibilityUtils.announceToScreenReader(
-                      'Page ${page + 1} of 3',
+                      'Page ${page + 1} of 4',
                     );
                   }
                 },
@@ -52,6 +56,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   _buildWelcomePage(context, l10n),
                   _buildFeaturesPage(context, l10n),
                   _buildPrivacyPage(context, l10n),
+                  _buildBackupStrategyPage(context, l10n),
                 ],
               ),
             ),
@@ -334,9 +339,165 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  Widget _buildBackupStrategyPage(BuildContext context, AppLocalizations? l10n) {
+    final theme = Theme.of(context);
+
+    return ResponsiveUtils.buildResponsiveContainer(
+      context: context,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Semantics(
+            label: 'Backup strategy icon',
+            child: Icon(
+              Icons.cloud_sync,
+              size: ResponsiveUtils.getResponsiveFontSize(
+                context,
+                baseFontSize: 120,
+              ),
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 32),
+          Semantics(
+            header: true,
+            child: Text(
+              'Backup Strategy',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontSize: ResponsiveUtils.getResponsiveFontSize(
+                  context,
+                  baseFontSize: 28,
+                ),
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Choose how you want to backup your medical data. You can change this later in settings.',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontSize: ResponsiveUtils.getResponsiveFontSize(
+                context,
+                baseFontSize: 16,
+              ),
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          _buildBackupOption(
+            context,
+            icon: Icons.phone_android,
+            title: 'Local Only',
+            description: 'Keep all data on your device only. No cloud backup.',
+            isSelected: _selectedBackupStrategy == BackupStrategy.localOnly,
+            onTap: () {
+              setState(() {
+                _selectedBackupStrategy = BackupStrategy.localOnly;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildBackupOption(
+            context,
+            icon: Icons.cloud,
+            title: 'Google Drive Backup',
+            description: 'Encrypted backup to your Google Drive for additional security.',
+            isSelected: _selectedBackupStrategy == BackupStrategy.googleDrive,
+            onTap: () {
+              setState(() {
+                _selectedBackupStrategy = BackupStrategy.googleDrive;
+              });
+            },
+          ),
+          if (_isSettingUpBackup) ...[
+            const SizedBox(height: 24),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 8),
+            Text(
+              'Setting up backup...',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackupOption(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String description,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: isSelected ? 4 : 1,
+      color: isSelected
+          ? theme.colorScheme.primaryContainer
+          : theme.colorScheme.surface,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: isSelected
+                    ? theme.colorScheme.onPrimaryContainer
+                    : theme.colorScheme.onSurface,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: isSelected
+                            ? theme.colorScheme.onPrimaryContainer
+                            : theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: isSelected
+                            ? theme.colorScheme.onPrimaryContainer
+                            : theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isSelected)
+                Icon(
+                  Icons.check_circle,
+                  color: theme.colorScheme.primary,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBottomNavigation(BuildContext context, AppLocalizations? l10n) {
     final theme = Theme.of(context);
-    final isLastPage = _currentPage == 2;
+    final isLastPage = _currentPage == 3;
 
     return Container(
       padding: ResponsiveUtils.getResponsivePadding(context),
@@ -345,7 +506,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              3,
+              4,
               (index) => AccessibilityUtils.excludeFromSemantics(
                 Container(
                   width: 8,
@@ -381,19 +542,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 const SizedBox.shrink(),
 
               FilledButton(
-                onPressed: () {
-                  if (isLastPage) {
-                    _completeOnboarding(context);
-                  } else {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                },
-                child: Text(
-                  isLastPage ? (l10n?.getStarted ?? 'Get Started') : 'Next',
-                ),
+                onPressed: _isSettingUpBackup
+                    ? null
+                    : () {
+                        if (isLastPage) {
+                          _completeOnboarding(context);
+                        } else {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                child: _isSettingUpBackup
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(
+                        isLastPage ? (l10n?.getStarted ?? 'Get Started') : 'Next',
+                      ),
               ),
             ],
           ),
@@ -403,9 +572,39 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _completeOnboarding(BuildContext context) async {
+    if (_isSettingUpBackup) return;
+
+    setState(() {
+      _isSettingUpBackup = true;
+    });
+
     try {
-      // TODO: Implement shared preferences provider
-      // await ref.read(sharedPreferencesProvider).setBool('onboarding_complete', true);
+      // Save backup preference
+      await ref.read(backupPreferenceNotifierProvider.notifier).setBackupPreference(
+        enabled: _selectedBackupStrategy != BackupStrategy.localOnly,
+        strategy: _selectedBackupStrategy,
+      );
+
+      // If Google Drive backup is selected, attempt to sign in
+      if (_selectedBackupStrategy == BackupStrategy.googleDrive) {
+        final authSuccess = await ref.read(googleDriveAuthProvider.notifier).signIn();
+        if (!authSuccess) {
+          // If authentication fails, show error and revert to local only
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Google Drive setup failed. Continuing with local-only backup.'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+          // Set to local only backup
+          await ref.read(backupPreferenceNotifierProvider.notifier).setBackupPreference(
+            enabled: false,
+            strategy: BackupStrategy.localOnly,
+          );
+        }
+      }
 
       if (mounted) {
         // Mark onboarding as completed
@@ -424,11 +623,30 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     } catch (e) {
       debugPrint('Error completing onboarding: $e');
       if (mounted) {
-        // Still mark as completed even if there was an error
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Setup error: $e. Continuing with local backup.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+
+        // Revert to local only and complete onboarding
+        await ref.read(backupPreferenceNotifierProvider.notifier).setBackupPreference(
+          enabled: false,
+          strategy: BackupStrategy.localOnly,
+        );
+
         await ref
             .read(onboardingNotifierProvider.notifier)
             .completeOnboarding();
         context.pushReplacement(AppRoutes.dashboard);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSettingUpBackup = false;
+        });
       }
     }
   }

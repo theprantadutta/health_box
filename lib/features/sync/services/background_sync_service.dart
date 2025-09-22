@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/google_drive_providers.dart';
+import 'auto_backup_scheduler.dart';
 
 class BackgroundSyncService {
   static final BackgroundSyncService _instance = BackgroundSyncService._();
@@ -44,6 +45,18 @@ class BackgroundSyncService {
         _emitStatus(BackgroundSyncStatus.skipped);
         return;
       }
+
+      // Check if backup is needed based on frequency
+      final autoBackupScheduler = ref.read(autoBackupSchedulerProvider);
+      final isBackupNeeded = await autoBackupScheduler.isBackupNeeded();
+
+      if (!isBackupNeeded) {
+        debugPrint('Backup not needed based on current frequency schedule, skipping');
+        _emitStatus(BackgroundSyncStatus.skipped);
+        return;
+      }
+
+      debugPrint('Backup needed based on frequency schedule, proceeding...');
 
       // Check if we should only sync on WiFi (simplified for now)
       // In a real implementation, you'd check network connectivity

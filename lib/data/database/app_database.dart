@@ -162,13 +162,14 @@ class AppDatabase extends _$AppDatabase {
         // Use encrypted database with SQLCipher
         const encryptionKey = 'health_box_encryption_key_2024';
 
-        final database = EncryptedExecutor.inDatabaseFolder(
-          path: 'health_box.db',
+        // Use specific path instead of inDatabaseFolder to ensure we know where it's created
+        final database = EncryptedExecutor(
+          path: file.path,
           password: encryptionKey,
         );
 
         debugPrint(
-          'Encrypted SQLCipher database executor created successfully',
+          'Encrypted SQLCipher database executor created successfully at: ${file.path}',
         );
         return database;
       } catch (e) {
@@ -178,7 +179,7 @@ class AppDatabase extends _$AppDatabase {
 
         // Fallback to unencrypted database if encryption fails
         final fallbackDatabase = NativeDatabase(file);
-        debugPrint('Fallback unencrypted database executor created');
+        debugPrint('Fallback unencrypted database executor created at: ${file.path}');
         return fallbackDatabase;
       }
     });
@@ -211,21 +212,67 @@ class AppDatabase extends _$AppDatabase {
 
   // Helper method to backup database (for export functionality)
   Future<String> backupDatabase() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final sourceFile = File(p.join(dbFolder.path, 'health_box.db'));
-    final backupFile = File(
-      p.join(
-        dbFolder.path,
-        'health_box_backup_${DateTime.now().millisecondsSinceEpoch}.db',
-      ),
-    );
+    try {
+      debugPrint('Starting database backup...');
 
-    if (await sourceFile.exists()) {
+      // Now we know the database is in the documents directory
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final sourceFile = File(p.join(dbFolder.path, 'health_box.db'));
+
+      debugPrint('Looking for database at: ${sourceFile.path}');
+
+      if (!await sourceFile.exists()) {
+        // Try to query the database to see what's going on
+        try {
+          debugPrint('Database file not found, trying to query PRAGMA database_list...');
+          final result = await customSelect('PRAGMA database_list').get();
+          for (final row in result) {
+            final file = row.data['file'] as String?;
+            debugPrint('Database list entry: $file');
+          }
+        } catch (e) {
+          debugPrint('Could not query database list: $e');
+        }
+
+        throw Exception('Database file not found at: ${sourceFile.path}. Please ensure the app has created some data first.');
+      }
+
+      // Ensure database is properly synced before backup
+      try {
+        await customStatement('PRAGMA wal_checkpoint(FULL);');
+      } catch (e) {
+        debugPrint('WAL checkpoint failed: $e (continuing with backup)');
+      }
+
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final documentsFolder = await getApplicationDocumentsDirectory();
+      final backupFile = File(
+        p.join(
+          documentsFolder.path,
+          'health_box_backup_$timestamp.db',
+        ),
+      );
+
+      // Perform the backup copy
       await sourceFile.copy(backupFile.path);
-      return backupFile.path;
-    }
 
-    throw Exception('Database file not found');
+      // Verify the backup was created and has content
+      if (!await backupFile.exists()) {
+        throw Exception('Backup file was not created');
+      }
+
+      final backupSize = await backupFile.length();
+      if (backupSize == 0) {
+        await backupFile.delete();
+        throw Exception('Backup file is empty');
+      }
+
+      debugPrint('Database backup created successfully: ${backupFile.path} (${backupSize} bytes)');
+      return backupFile.path;
+    } catch (e) {
+      debugPrint('Database backup failed: $e');
+      rethrow;
+    }
   }
 
   // Helper method to vacuum database (cleanup)

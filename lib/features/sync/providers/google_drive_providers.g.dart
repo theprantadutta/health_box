@@ -81,7 +81,7 @@ final class GoogleDriveAuthProvider
   GoogleDriveAuth create() => GoogleDriveAuth();
 }
 
-String _$googleDriveAuthHash() => r'44c92f58e76b438d4be66c58cc0095236f2b363d';
+String _$googleDriveAuthHash() => r'061204c0afcaaa4768594dd19f133b5a5f7eaa58';
 
 abstract class _$GoogleDriveAuth extends $AsyncNotifier<bool> {
   FutureOr<bool> build();
@@ -126,7 +126,7 @@ final class SyncSettingsProvider
   SyncSettings create() => SyncSettings();
 }
 
-String _$syncSettingsHash() => r'3da519a81e286ed9249acadb75d37134c1164600';
+String _$syncSettingsHash() => r'366de11a646e9f4c7fd9ac439797ea0901a94d4e';
 
 abstract class _$SyncSettings extends $AsyncNotifier<SyncConfiguration> {
   FutureOr<SyncConfiguration> build();
@@ -186,13 +186,13 @@ final class GoogleDriveBackupsProvider
 }
 
 String _$googleDriveBackupsHash() =>
-    r'fe2629d55559090676f1badee8fc8e5f74141736';
+    r'4b8a86720b7960fe0f51a7e4cfd5bfd59854a304';
 
 @ProviderFor(BackupOperations)
 const backupOperationsProvider = BackupOperationsProvider._();
 
 final class BackupOperationsProvider
-    extends $AsyncNotifierProvider<BackupOperations, BackupStatus> {
+    extends $AsyncNotifierProvider<BackupOperations, BackupProgress> {
   const BackupOperationsProvider._()
     : super(
         from: null,
@@ -212,20 +212,20 @@ final class BackupOperationsProvider
   BackupOperations create() => BackupOperations();
 }
 
-String _$backupOperationsHash() => r'a901664690cbf77a3a2867e4b3c3b2f11ffc546d';
+String _$backupOperationsHash() => r'df74319181343a11c1ccf13bf36cad817d12d22c';
 
-abstract class _$BackupOperations extends $AsyncNotifier<BackupStatus> {
-  FutureOr<BackupStatus> build();
+abstract class _$BackupOperations extends $AsyncNotifier<BackupProgress> {
+  FutureOr<BackupProgress> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<BackupStatus>, BackupStatus>;
+    final ref = this.ref as $Ref<AsyncValue<BackupProgress>, BackupProgress>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<BackupStatus>, BackupStatus>,
-              AsyncValue<BackupStatus>,
+              AnyNotifier<AsyncValue<BackupProgress>, BackupProgress>,
+              AsyncValue<BackupProgress>,
               Object?,
               Object?
             >;

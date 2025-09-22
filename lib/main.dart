@@ -13,6 +13,7 @@ import 'l10n/app_localizations.dart';
 import 'shared/navigation/app_router.dart';
 import 'shared/providers/app_providers.dart';
 import 'shared/providers/onboarding_providers.dart';
+import 'shared/providers/backup_preference_providers.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/design_system.dart';
 
@@ -29,8 +30,8 @@ void main() async {
   // Initialize notification services (alarms will be initialized when needed)
   await _initializeNotificationServices();
 
-  // Initialize Google Drive authentication
-  await _initializeGoogleDriveAuth();
+  // Google Drive authentication is now conditional - it will be initialized
+  // only if the user has enabled Google Drive backup in their preferences
 
   runApp(
     ProviderScope(
@@ -97,21 +98,8 @@ Future<void> _initializeNotificationServices() async {
   }
 }
 
-Future<void> _initializeGoogleDriveAuth() async {
-  try {
-    debugPrint('Initializing Google Drive authentication...');
-
-    // Note: This will be handled by the app-level provider
-    // The actual authentication will happen in the provider container
-    // We just indicate that we should attempt silent sign-in
-
-    debugPrint('Google Drive authentication initialization completed');
-  } catch (e) {
-    debugPrint('Error initializing Google Drive authentication: $e');
-    debugPrint('Error type: ${e.runtimeType}');
-    // Don't block app startup, authentication can happen later
-  }
-}
+// Google Drive authentication is now conditional and handled by providers
+// No startup initialization needed
 
 class HealthBoxApp extends ConsumerWidget {
   const HealthBoxApp({super.key});
@@ -121,41 +109,58 @@ class HealthBoxApp extends ConsumerWidget {
     final router = ref.watch(goRouterProvider);
     final themeMode = ref.watch(themeModeProvider);
 
-    // Initialize Google Drive authentication silently on app start
-    ref.listen(googleDriveAuthProvider, (previous, next) {
-      final wasAuthenticated = previous?.value == true;
-      final isNowAuthenticated = next.value == true;
+    // Automatic login and backup management
+    ref.listen(backupPreferenceNotifierProvider, (previous, next) {
+      next.whenData((backupPreference) async {
+        if (backupPreference.enabled && backupPreference.strategy == BackupStrategy.googleDrive) {
+          debugPrint('Google Drive backup enabled, checking auto sync settings...');
 
-      // Check if this is a new authentication (not previously authenticated)
-      final isNewAuthentication = !wasAuthenticated && isNowAuthenticated;
+          try {
+            // Get sync settings to check if auto sync is enabled
+            final syncSettings = await ref.read(syncSettingsProvider.future);
 
-      next.whenData((isAuthenticated) {
-        if (isAuthenticated) {
-          debugPrint('Google Drive authentication successful');
+            if (syncSettings.autoSyncEnabled) {
+              debugPrint('Auto sync enabled, performing automatic login...');
 
-          // Handle new user onboarding for first-time sign-ins
-          if (isNewAuthentication) {
-            debugPrint('New user authentication detected, checking for existing backups');
-            Future.microtask(() async {
-              try {
-                await _handleNewUserOnboarding(context, ref);
-              } catch (e) {
-                debugPrint('Failed to handle new user onboarding: $e');
+              // Automatically sign in to Google Drive
+              final authSuccess = await ref.read(googleDriveAuthProvider.notifier).ensureSignedIn();
+
+              if (authSuccess) {
+                debugPrint('Automatic Google Drive authentication successful');
+
+                // Check if first-time sign-in for onboarding
+                final wasAlreadyConnected = syncSettings.isGoogleDriveConnected;
+                if (!wasAlreadyConnected) {
+                  debugPrint('First-time authentication detected, checking for existing backups');
+                  Future.microtask(() async {
+                    try {
+                      await _handleNewUserOnboarding(context, ref);
+                    } catch (e) {
+                      debugPrint('Failed to handle new user onboarding: $e');
+                    }
+                  });
+                }
+
+                // Perform frequency-based backup if needed
+                Future.microtask(() async {
+                  try {
+                    final backgroundSyncService = ref.read(backgroundSyncServiceProvider);
+                    await backgroundSyncService.performBackgroundBackup(ref);
+                  } catch (e) {
+                    debugPrint('Failed to start background backup: $e');
+                  }
+                });
+              } else {
+                debugPrint('Automatic Google Drive authentication failed');
               }
-            });
-          }
-
-          // Start background backup if auto-sync is enabled
-          Future.microtask(() async {
-            try {
-              final backgroundSyncService = ref.read(backgroundSyncServiceProvider);
-              await backgroundSyncService.performBackgroundBackup(ref);
-            } catch (e) {
-              debugPrint('Failed to start background backup: $e');
+            } else {
+              debugPrint('Auto sync not enabled, skipping automatic login');
             }
-          });
+          } catch (e) {
+            debugPrint('Error during automatic login process: $e');
+          }
         } else {
-          debugPrint('Google Drive authentication not available');
+          debugPrint('Google Drive backup not enabled, skipping automatic login');
         }
       });
     });
