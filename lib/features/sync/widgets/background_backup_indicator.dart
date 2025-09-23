@@ -126,7 +126,7 @@ class _BackgroundBackupIndicatorState
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: theme.colorScheme.outline.withOpacity(0.2),
+                color: theme.colorScheme.outline.withValues(alpha: 0.2),
               ),
             ),
             child: syncStatus.when(

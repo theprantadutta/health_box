@@ -449,8 +449,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  theme.colorScheme.primary.withOpacity(0.1),
-                  theme.colorScheme.primaryContainer.withOpacity(0.05),
+                  theme.colorScheme.primary.withValues(alpha: 0.1),
+                  theme.colorScheme.primaryContainer.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -466,7 +466,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.primary.withOpacity(0.3),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -493,7 +493,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                       Text(
                         'Create and manage your data backups',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -591,13 +591,13 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
           padding: EdgeInsets.all(isPrimary ? 20 : 16),
           decoration: BoxDecoration(
             color: isPrimary
-                ? color.withOpacity(0.1)
+                ? color.withValues(alpha: 0.1)
                 : theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isPrimary
-                  ? color.withOpacity(0.3)
-                  : theme.colorScheme.outline.withOpacity(0.2),
+                  ? color.withValues(alpha: 0.3)
+                  : theme.colorScheme.outline.withValues(alpha: 0.2),
               width: isPrimary ? 2 : 1,
             ),
           ),
@@ -610,7 +610,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                   Container(
                     padding: EdgeInsets.all(isPrimary ? 10 : 8),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(isPrimary ? 0.2 : 0.1),
+                      color: color.withValues(alpha: isPrimary ? 0.2 : 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: isLoading
@@ -636,17 +636,13 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                               fontWeight: FontWeight.w600,
                               color: onTap != null
                                   ? theme.colorScheme.onSurface
-                                  : theme.colorScheme.onSurface.withOpacity(
-                                      0.5,
-                                    ),
+                                  : theme.colorScheme.onSurface.withValues(alpha: 0.5,),
                             ),
                           ),
                           Text(
                             subtitle,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withOpacity(
-                                0.6,
-                              ),
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6,),
                             ),
                           ),
                         ],
@@ -663,14 +659,14 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     fontWeight: FontWeight.w600,
                     color: onTap != null
                         ? theme.colorScheme.onSurface
-                        : theme.colorScheme.onSurface.withOpacity(0.5),
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -771,8 +767,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  theme.colorScheme.secondary.withOpacity(0.1),
-                  theme.colorScheme.secondaryContainer.withOpacity(0.05),
+                  theme.colorScheme.secondary.withValues(alpha: 0.1),
+                  theme.colorScheme.secondaryContainer.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -788,7 +784,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.secondary.withOpacity(0.3),
+                        color: theme.colorScheme.secondary.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -815,7 +811,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                       Text(
                         'View and manage your stored backups',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -936,8 +932,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  theme.colorScheme.primaryContainer.withOpacity(0.3),
-                  theme.colorScheme.secondaryContainer.withOpacity(0.1),
+                  theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  theme.colorScheme.secondaryContainer.withValues(alpha: 0.1),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -971,7 +967,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                     color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: theme.colorScheme.outline.withOpacity(0.2),
+                      color: theme.colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -980,7 +976,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.secondary.withOpacity(0.1),
+                          color: theme.colorScheme.secondary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(
@@ -1005,9 +1001,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                             Text(
                               'View, restore, and delete your cloud backups',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.7,
-                                ),
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.7,),
                               ),
                             ),
                           ],
@@ -1015,7 +1009,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                       ),
                       Icon(
                         Icons.arrow_forward_ios,
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         size: 16,
                       ),
                     ],
@@ -1119,16 +1113,16 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -1145,7 +1139,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -1158,7 +1152,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -1168,7 +1162,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
           Text(
             'Loading backup information...',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -1180,10 +1174,10 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.errorContainer.withOpacity(0.1),
+        color: theme.colorScheme.errorContainer.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: theme.colorScheme.error.withOpacity(0.3),
+          color: theme.colorScheme.error.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -1206,7 +1200,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                 Text(
                   'Check your internet connection and try again',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -1221,10 +1215,10 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -1232,7 +1226,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         children: [
           Icon(
             Icons.cloud_off,
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             size: 48,
           ),
           const SizedBox(height: 16),
@@ -1247,7 +1241,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
           Text(
             'Connect your Google Drive account to view and manage your cloud backups',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),

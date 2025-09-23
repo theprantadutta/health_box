@@ -430,4 +430,166 @@ class MedicalRecordDao {
 
     return query.watch();
   }
+
+  // Vaccination Operations
+  Future<List<Vaccination>> getAllVaccinations({String? profileId}) async {
+    var query = _database.select(_database.vaccinations)
+      ..where((v) => v.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((v) => v.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (v) => OrderingTerm(expression: v.administrationDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<List<Vaccination>> getActiveVaccinations({String? profileId}) async {
+    var query = _database.select(_database.vaccinations)
+      ..where((v) => v.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((v) => v.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (v) => OrderingTerm(expression: v.administrationDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<String> createVaccination(VaccinationsCompanion vaccination) async {
+    await _database.into(_database.vaccinations).insert(vaccination);
+    return vaccination.id.value;
+  }
+
+  Stream<List<Vaccination>> watchActiveVaccinations({String? profileId}) {
+    var query = _database.select(_database.vaccinations)
+      ..where((v) => v.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((v) => v.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (v) => OrderingTerm(expression: v.administrationDate, mode: OrderingMode.desc),
+      ]);
+
+    return query.watch();
+  }
+
+  // Allergy Operations
+  Future<List<Allergy>> getAllAllergies({String? profileId}) async {
+    var query = _database.select(_database.allergies)
+      ..where((a) => a.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((a) => a.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (a) => OrderingTerm(expression: a.recordDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<List<Allergy>> getActiveAllergies({String? profileId}) async {
+    var query = _database.select(_database.allergies)
+      ..where((a) => a.isActive.equals(true) & a.isAllergyActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((a) => a.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (a) => OrderingTerm(expression: a.recordDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<String> createAllergy(AllergiesCompanion allergy) async {
+    await _database.into(_database.allergies).insert(allergy);
+    return allergy.id.value;
+  }
+
+  Stream<List<Allergy>> watchActiveAllergies({String? profileId}) {
+    var query = _database.select(_database.allergies)
+      ..where((a) => a.isActive.equals(true) & a.isAllergyActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((a) => a.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (a) => OrderingTerm(expression: a.recordDate, mode: OrderingMode.desc),
+      ]);
+
+    return query.watch();
+  }
+
+  // Chronic Condition Operations
+  Future<List<ChronicCondition>> getAllChronicConditions({String? profileId}) async {
+    var query = _database.select(_database.chronicConditions)
+      ..where((c) => c.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((c) => c.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (c) => OrderingTerm(expression: c.diagnosisDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<List<ChronicCondition>> getActiveChronicConditions({String? profileId}) async {
+    var query = _database.select(_database.chronicConditions)
+      ..where((c) => c.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((c) => c.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (c) => OrderingTerm(expression: c.diagnosisDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<String> createChronicCondition(ChronicConditionsCompanion condition) async {
+    await _database.into(_database.chronicConditions).insert(condition);
+    return condition.id.value;
+  }
+
+  Stream<List<ChronicCondition>> watchActiveChronicConditions({String? profileId}) {
+    var query = _database.select(_database.chronicConditions)
+      ..where((c) => c.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((c) => c.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (c) => OrderingTerm(expression: c.diagnosisDate, mode: OrderingMode.desc),
+      ]);
+
+    return query.watch();
+  }
 }

@@ -6,6 +6,9 @@ import 'dart:io';
 void main(List<String> args) async {
   print('\x1b[36m🔍 Scanning for withOpacity usage in lib folder...\x1b[0m');
 
+  // Check for auto-yes flag
+  final autoYes = args.contains('--auto-yes') || args.contains('-y');
+
   // Allow specifying project directory as argument
   final projectPath = Directory.current.path;
   final libDir = Directory('$projectPath/lib');
@@ -54,15 +57,19 @@ void main(List<String> args) async {
     print('');
   });
 
-  // Ask for confirmation
-  stdout.write(
-    '\x1b[35m❓ Do you want to proceed with these replacements? (y/N): \x1b[0m',
-  );
-  final input = stdin.readLineSync()?.toLowerCase().trim() ?? '';
+  // Ask for confirmation (unless auto-yes flag is used)
+  if (!autoYes) {
+    stdout.write(
+      '\x1b[35m❓ Do you want to proceed with these replacements? (y/N): \x1b[0m',
+    );
+    final input = stdin.readLineSync()?.toLowerCase().trim() ?? '';
 
-  if (input != 'y' && input != 'yes') {
-    print('\x1b[33m⏹️  Migration cancelled.\x1b[0m');
-    return;
+    if (input != 'y' && input != 'yes') {
+      print('\x1b[33m⏹️  Migration cancelled.\x1b[0m');
+      return;
+    }
+  } else {
+    print('\x1b[33m🤖 Auto-yes flag detected, proceeding with migrations...\x1b[0m');
   }
 
   // Second pass: make the actual replacements

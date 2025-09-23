@@ -15,7 +15,8 @@
       "WebFetch(domain:github.com)",
       "WebSearch",
       "Read(//g/MyProjects/plot_twist/**)",
-      "Read(//f/Personal/MyProjects/plot_twist/**)"
+      "Read(//f/Personal/MyProjects/plot_twist/**)",
+      "Bash(dart tools/migrate_radio.dart:*)"
     ],
     "deny": [],
     "ask": []

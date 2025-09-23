@@ -525,10 +525,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('OK'),
-          ),
+          TextButton(onPressed: () => context.pop(), child: const Text('OK')),
           if (result.filePath != null)
             ElevatedButton(
               onPressed: () {
@@ -549,10 +546,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         title: const Text('Export Failed'),
         content: Text('Failed to export data:\n\n$error'),
         actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('OK'),
-          ),
+          TextButton(onPressed: () => context.pop(), child: const Text('OK')),
         ],
       ),
     );
