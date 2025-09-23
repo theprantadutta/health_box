@@ -592,4 +592,100 @@ class MedicalRecordDao {
 
     return query.watch();
   }
+
+  // Surgical Record Operations
+  Future<List<SurgicalRecord>> getAllSurgicalRecords({String? profileId}) async {
+    var query = _database.select(_database.surgicalRecords)
+      ..where((s) => s.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((s) => s.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (s) => OrderingTerm(expression: s.surgeryDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<List<SurgicalRecord>> getActiveSurgicalRecords({String? profileId}) async {
+    var query = _database.select(_database.surgicalRecords)
+      ..where((s) => s.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((s) => s.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (s) => OrderingTerm(expression: s.surgeryDate, mode: OrderingMode.desc),
+      ]);
+
+    return await query.get();
+  }
+
+  Future<String> createSurgicalRecord(SurgicalRecordsCompanion surgicalRecord) async {
+    await _database.into(_database.surgicalRecords).insert(surgicalRecord);
+    return surgicalRecord.id.value;
+  }
+
+  Stream<List<SurgicalRecord>> watchActiveSurgicalRecords({String? profileId}) {
+    var query = _database.select(_database.surgicalRecords)
+      ..where((s) => s.isActive.equals(true));
+
+    if (profileId != null) {
+      query = query..where((s) => s.profileId.equals(profileId));
+    }
+
+    query = query
+      ..orderBy([
+        (s) => OrderingTerm(expression: s.surgeryDate, mode: OrderingMode.desc),
+      ]);
+
+    return query.watch();
+  }
+
+  // Radiology Record Operations
+  Future<String> createRadiologyRecord(RadiologyRecordsCompanion radiologyRecord) async {
+    await _database.into(_database.radiologyRecords).insert(radiologyRecord);
+    return radiologyRecord.id.value;
+  }
+
+  // Pathology Record Operations
+  Future<String> createPathologyRecord(PathologyRecordsCompanion pathologyRecord) async {
+    await _database.into(_database.pathologyRecords).insert(pathologyRecord);
+    return pathologyRecord.id.value;
+  }
+
+  // Discharge Summary Operations
+  Future<String> createDischargeSummary(DischargeSummariesCompanion dischargeSummary) async {
+    await _database.into(_database.dischargeSummaries).insert(dischargeSummary);
+    return dischargeSummary.id.value;
+  }
+
+  // Hospital Admission Operations
+  Future<String> createHospitalAdmission(HospitalAdmissionsCompanion hospitalAdmission) async {
+    await _database.into(_database.hospitalAdmissions).insert(hospitalAdmission);
+    return hospitalAdmission.id.value;
+  }
+
+  // Dental Record Operations
+  Future<String> createDentalRecord(DentalRecordsCompanion dentalRecord) async {
+    await _database.into(_database.dentalRecords).insert(dentalRecord);
+    return dentalRecord.id.value;
+  }
+
+  // Mental Health Record Operations
+  Future<String> createMentalHealthRecord(MentalHealthRecordsCompanion mentalHealthRecord) async {
+    await _database.into(_database.mentalHealthRecords).insert(mentalHealthRecord);
+    return mentalHealthRecord.id.value;
+  }
+
+  // General Record Operations
+  Future<String> createGeneralRecord(GeneralRecordsCompanion generalRecord) async {
+    await _database.into(_database.generalRecords).insert(generalRecord);
+    return generalRecord.id.value;
+  }
 }
