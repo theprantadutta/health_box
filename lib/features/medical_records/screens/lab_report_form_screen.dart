@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/lab_report_service.dart';
+import '../widgets/attachment_picker_widget.dart';
+import 'dart:io';
 
 class LabReportFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -23,6 +25,7 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
   final _orderingPhysicianController = TextEditingController();
   bool _isLoading = false;
   DateTime? _testDate;
+  List<File> _selectedFiles = [];
 
   @override
   void initState() {
@@ -70,6 +73,17 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,
+            ),
+            const SizedBox(height: 24),
+            AttachmentPickerWidget(
+              onFilesSelected: (files) {
+                setState(() {
+                  _selectedFiles = files;
+                });
+              },
+              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+              maxFiles: 10,
+              maxFileSizeBytes: 50 * 1024 * 1024,
             ),
           ],
         ),

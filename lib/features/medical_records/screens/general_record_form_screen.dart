@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/general_record_service.dart';
+import '../widgets/attachment_picker_widget.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class GeneralRecordFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -44,6 +46,7 @@ class _GeneralRecordFormScreenState
   bool _requiresAction = false;
   bool _isLoading = false;
   bool _isEditing = false;
+  List<File> _selectedFiles = [];
 
   // Predefined categories
   final List<String> _categories = [
@@ -99,6 +102,8 @@ class _GeneralRecordFormScreenState
             _buildNotesAndTagsSection(),
             const SizedBox(height: 24),
             _buildSettingsSection(),
+            const SizedBox(height: 24),
+            _buildAttachmentsSection(),
           ],
         ),
       ),
@@ -545,6 +550,19 @@ class _GeneralRecordFormScreenState
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Widget _buildAttachmentsSection() {
+    return AttachmentPickerWidget(
+      onFilesSelected: (files) {
+        setState(() {
+          _selectedFiles = files;
+        });
+      },
+      allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'txt'],
+      maxFiles: 15,
+      maxFileSizeBytes: 50 * 1024 * 1024,
+    );
   }
 
   String _formatDate(DateTime date) {

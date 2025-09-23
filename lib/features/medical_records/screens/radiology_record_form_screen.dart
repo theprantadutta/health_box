@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/radiology_record_service.dart';
 import '../../../data/models/radiology_record.dart';
+import '../widgets/attachment_picker_widget.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class RadiologyRecordFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -44,6 +46,7 @@ class _RadiologyRecordFormScreenState
   bool _isNormal = false;
   bool _isLoading = false;
   bool _isEditing = false;
+  List<File> _selectedFiles = [];
 
   @override
   void initState() {
@@ -85,6 +88,8 @@ class _RadiologyRecordFormScreenState
             _buildFindingsSection(),
             const SizedBox(height: 24),
             _buildTechnicalDetailsSection(),
+            const SizedBox(height: 24),
+            _buildAttachmentsSection(),
           ],
         ),
       ),
@@ -508,6 +513,19 @@ class _RadiologyRecordFormScreenState
       default:
         return urgency;
     }
+  }
+
+  Widget _buildAttachmentsSection() {
+    return AttachmentPickerWidget(
+      onFilesSelected: (files) {
+        setState(() {
+          _selectedFiles = files;
+        });
+      },
+      allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'dicom'],
+      maxFiles: 10,
+      maxFileSizeBytes: 50 * 1024 * 1024,
+    );
   }
 
   String _formatDate(DateTime date) {
