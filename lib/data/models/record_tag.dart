@@ -17,25 +17,3 @@ class RecordTags extends Table {
   ];
 }
 
-// Search history table for storing recent searches
-class SearchHistory extends Table {
-  TextColumn get id => text().named('id')();
-  TextColumn get query => text().named('query')();
-  TextColumn get filters => text().nullable().named('filters')(); // JSON string
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime).named('created_at')();
-  IntColumn get useCount =>
-      integer().withDefault(const Constant(1)).named('use_count')();
-
-  @override
-  Set<Column> get primaryKey => {id};
-
-  @override
-  List<String> get customConstraints => [
-    // Query must not be empty
-    'CHECK (length(trim(query)) > 0)',
-
-    // Use count must be positive
-    'CHECK (use_count > 0)',
-  ];
-}

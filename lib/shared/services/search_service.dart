@@ -272,7 +272,7 @@ class SearchService {
       // Check if query already exists
       final existingEntries = await ((_database.select(
         _database.searchHistory,
-      )..where((row) => row.query.equals(trimmedQuery))).get());
+      )..where((row) => row.searchTerm.equals(trimmedQuery))).get());
 
       if (existingEntries.isNotEmpty) {
         // Update use count for existing query
@@ -281,8 +281,8 @@ class SearchService {
             .update(_database.searchHistory)
             .replace(
               existingEntry.copyWith(
-                useCount: existingEntry.useCount + 1,
-                createdAt: DateTime.now(),
+                searchCount: existingEntry.searchCount + 1,
+                lastSearched: DateTime.now(),
               ),
             );
       } else {
@@ -292,7 +292,9 @@ class SearchService {
             .insert(
               SearchHistoryCompanion.insert(
                 id: DateTime.now().millisecondsSinceEpoch.toString(),
-                query: trimmedQuery,
+                searchTerm: trimmedQuery,
+                searchType: 'general',
+                lastSearched: Value(DateTime.now()),
                 createdAt: Value(DateTime.now()),
               ),
             );
@@ -310,18 +312,18 @@ class SearchService {
           await (_database.select(_database.searchHistory)
                 ..orderBy([
                   (row) => OrderingTerm(
-                    expression: row.useCount,
+                    expression: row.searchCount,
                     mode: OrderingMode.desc,
                   ),
                   (row) => OrderingTerm(
-                    expression: row.createdAt,
+                    expression: row.lastSearched,
                     mode: OrderingMode.desc,
                   ),
                 ])
                 ..limit(limit))
               .get();
 
-      return popularSearches.map((entry) => entry.query).toList();
+      return popularSearches.map((entry) => entry.searchTerm).toList();
     } catch (e) {
       debugPrint('Failed to get popular searches: $e');
       return [];
@@ -386,14 +388,14 @@ class SearchService {
           await (_database.select(_database.searchHistory)
                 ..orderBy([
                   (row) => OrderingTerm(
-                    expression: row.createdAt,
+                    expression: row.lastSearched,
                     mode: OrderingMode.desc,
                   ),
                 ])
                 ..limit(5))
               .get();
 
-      return recentSearches.map((entry) => entry.query).toList();
+      return recentSearches.map((entry) => entry.searchTerm).toList();
     } catch (e) {
       debugPrint('Failed to get recent searches: $e');
       return [];

@@ -1877,6 +1877,17 @@ class $PrescriptionsTable extends Prescriptions
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _prescriptionTypeMeta = const VerificationMeta(
+    'prescriptionType',
+  );
+  @override
+  late final GeneratedColumn<String> prescriptionType = GeneratedColumn<String>(
+    'prescription_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _medicationNameMeta = const VerificationMeta(
     'medicationName',
   );
@@ -1884,22 +1895,18 @@ class $PrescriptionsTable extends Prescriptions
   late final GeneratedColumn<String> medicationName = GeneratedColumn<String>(
     'medication_name',
     aliasedName,
-    false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 100,
-    ),
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _dosageMeta = const VerificationMeta('dosage');
   @override
   late final GeneratedColumn<String> dosage = GeneratedColumn<String>(
     'dosage',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _frequencyMeta = const VerificationMeta(
     'frequency',
@@ -1908,9 +1915,9 @@ class $PrescriptionsTable extends Prescriptions
   late final GeneratedColumn<String> frequency = GeneratedColumn<String>(
     'frequency',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _instructionsMeta = const VerificationMeta(
     'instructions',
@@ -1993,6 +2000,144 @@ class $PrescriptionsTable extends Prescriptions
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _appointmentDateMeta = const VerificationMeta(
+    'appointmentDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> appointmentDate =
+      GeneratedColumn<DateTime>(
+        'appointment_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _appointmentTimeMeta = const VerificationMeta(
+    'appointmentTime',
+  );
+  @override
+  late final GeneratedColumn<String> appointmentTime = GeneratedColumn<String>(
+    'appointment_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _doctorNameMeta = const VerificationMeta(
+    'doctorName',
+  );
+  @override
+  late final GeneratedColumn<String> doctorName = GeneratedColumn<String>(
+    'doctor_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _specialtyMeta = const VerificationMeta(
+    'specialty',
+  );
+  @override
+  late final GeneratedColumn<String> specialty = GeneratedColumn<String>(
+    'specialty',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clinicNameMeta = const VerificationMeta(
+    'clinicName',
+  );
+  @override
+  late final GeneratedColumn<String> clinicName = GeneratedColumn<String>(
+    'clinic_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clinicAddressMeta = const VerificationMeta(
+    'clinicAddress',
+  );
+  @override
+  late final GeneratedColumn<String> clinicAddress = GeneratedColumn<String>(
+    'clinic_address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _appointmentTypeMeta = const VerificationMeta(
+    'appointmentType',
+  );
+  @override
+  late final GeneratedColumn<String> appointmentType = GeneratedColumn<String>(
+    'appointment_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reasonForVisitMeta = const VerificationMeta(
+    'reasonForVisit',
+  );
+  @override
+  late final GeneratedColumn<String> reasonForVisit = GeneratedColumn<String>(
+    'reason_for_visit',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _appointmentStatusMeta = const VerificationMeta(
+    'appointmentStatus',
+  );
+  @override
+  late final GeneratedColumn<String> appointmentStatus =
+      GeneratedColumn<String>(
+        'appointment_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _appointmentNotesMeta = const VerificationMeta(
+    'appointmentNotes',
+  );
+  @override
+  late final GeneratedColumn<String> appointmentNotes = GeneratedColumn<String>(
+    'appointment_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reminderSetMeta = const VerificationMeta(
+    'reminderSet',
+  );
+  @override
+  late final GeneratedColumn<bool> reminderSet = GeneratedColumn<bool>(
+    'reminder_set',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("reminder_set" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _reminderMinutesMeta = const VerificationMeta(
+    'reminderMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> reminderMinutes = GeneratedColumn<int>(
+    'reminder_minutes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2004,6 +2149,7 @@ class $PrescriptionsTable extends Prescriptions
     createdAt,
     updatedAt,
     isActive,
+    prescriptionType,
     medicationName,
     dosage,
     frequency,
@@ -2014,6 +2160,18 @@ class $PrescriptionsTable extends Prescriptions
     endDate,
     refillsRemaining,
     isPrescriptionActive,
+    appointmentDate,
+    appointmentTime,
+    doctorName,
+    specialty,
+    clinicName,
+    clinicAddress,
+    appointmentType,
+    reasonForVisit,
+    appointmentStatus,
+    appointmentNotes,
+    reminderSet,
+    reminderMinutes,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2089,6 +2247,17 @@ class $PrescriptionsTable extends Prescriptions
         isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
       );
     }
+    if (data.containsKey('prescription_type')) {
+      context.handle(
+        _prescriptionTypeMeta,
+        prescriptionType.isAcceptableOrUnknown(
+          data['prescription_type']!,
+          _prescriptionTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_prescriptionTypeMeta);
+    }
     if (data.containsKey('medication_name')) {
       context.handle(
         _medicationNameMeta,
@@ -2097,24 +2266,18 @@ class $PrescriptionsTable extends Prescriptions
           _medicationNameMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_medicationNameMeta);
     }
     if (data.containsKey('dosage')) {
       context.handle(
         _dosageMeta,
         dosage.isAcceptableOrUnknown(data['dosage']!, _dosageMeta),
       );
-    } else if (isInserting) {
-      context.missing(_dosageMeta);
     }
     if (data.containsKey('frequency')) {
       context.handle(
         _frequencyMeta,
         frequency.isAcceptableOrUnknown(data['frequency']!, _frequencyMeta),
       );
-    } else if (isInserting) {
-      context.missing(_frequencyMeta);
     }
     if (data.containsKey('instructions')) {
       context.handle(
@@ -2170,6 +2333,105 @@ class $PrescriptionsTable extends Prescriptions
         ),
       );
     }
+    if (data.containsKey('appointment_date')) {
+      context.handle(
+        _appointmentDateMeta,
+        appointmentDate.isAcceptableOrUnknown(
+          data['appointment_date']!,
+          _appointmentDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_time')) {
+      context.handle(
+        _appointmentTimeMeta,
+        appointmentTime.isAcceptableOrUnknown(
+          data['appointment_time']!,
+          _appointmentTimeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('doctor_name')) {
+      context.handle(
+        _doctorNameMeta,
+        doctorName.isAcceptableOrUnknown(data['doctor_name']!, _doctorNameMeta),
+      );
+    }
+    if (data.containsKey('specialty')) {
+      context.handle(
+        _specialtyMeta,
+        specialty.isAcceptableOrUnknown(data['specialty']!, _specialtyMeta),
+      );
+    }
+    if (data.containsKey('clinic_name')) {
+      context.handle(
+        _clinicNameMeta,
+        clinicName.isAcceptableOrUnknown(data['clinic_name']!, _clinicNameMeta),
+      );
+    }
+    if (data.containsKey('clinic_address')) {
+      context.handle(
+        _clinicAddressMeta,
+        clinicAddress.isAcceptableOrUnknown(
+          data['clinic_address']!,
+          _clinicAddressMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_type')) {
+      context.handle(
+        _appointmentTypeMeta,
+        appointmentType.isAcceptableOrUnknown(
+          data['appointment_type']!,
+          _appointmentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reason_for_visit')) {
+      context.handle(
+        _reasonForVisitMeta,
+        reasonForVisit.isAcceptableOrUnknown(
+          data['reason_for_visit']!,
+          _reasonForVisitMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_status')) {
+      context.handle(
+        _appointmentStatusMeta,
+        appointmentStatus.isAcceptableOrUnknown(
+          data['appointment_status']!,
+          _appointmentStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_notes')) {
+      context.handle(
+        _appointmentNotesMeta,
+        appointmentNotes.isAcceptableOrUnknown(
+          data['appointment_notes']!,
+          _appointmentNotesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reminder_set')) {
+      context.handle(
+        _reminderSetMeta,
+        reminderSet.isAcceptableOrUnknown(
+          data['reminder_set']!,
+          _reminderSetMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reminder_minutes')) {
+      context.handle(
+        _reminderMinutesMeta,
+        reminderMinutes.isAcceptableOrUnknown(
+          data['reminder_minutes']!,
+          _reminderMinutesMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2215,18 +2477,22 @@ class $PrescriptionsTable extends Prescriptions
         DriftSqlType.bool,
         data['${effectivePrefix}is_active'],
       )!,
+      prescriptionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prescription_type'],
+      )!,
       medicationName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}medication_name'],
-      )!,
+      ),
       dosage: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}dosage'],
-      )!,
+      ),
       frequency: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}frequency'],
-      )!,
+      ),
       instructions: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}instructions'],
@@ -2255,6 +2521,54 @@ class $PrescriptionsTable extends Prescriptions
         DriftSqlType.bool,
         data['${effectivePrefix}is_prescription_active'],
       )!,
+      appointmentDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}appointment_date'],
+      ),
+      appointmentTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}appointment_time'],
+      ),
+      doctorName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}doctor_name'],
+      ),
+      specialty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specialty'],
+      ),
+      clinicName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clinic_name'],
+      ),
+      clinicAddress: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clinic_address'],
+      ),
+      appointmentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}appointment_type'],
+      ),
+      reasonForVisit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason_for_visit'],
+      ),
+      appointmentStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}appointment_status'],
+      ),
+      appointmentNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}appointment_notes'],
+      ),
+      reminderSet: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}reminder_set'],
+      )!,
+      reminderMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reminder_minutes'],
+      ),
     );
   }
 
@@ -2274,9 +2588,10 @@ class Prescription extends DataClass implements Insertable<Prescription> {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isActive;
-  final String medicationName;
-  final String dosage;
-  final String frequency;
+  final String prescriptionType;
+  final String? medicationName;
+  final String? dosage;
+  final String? frequency;
   final String? instructions;
   final String? prescribingDoctor;
   final String? pharmacy;
@@ -2284,6 +2599,18 @@ class Prescription extends DataClass implements Insertable<Prescription> {
   final DateTime? endDate;
   final int? refillsRemaining;
   final bool isPrescriptionActive;
+  final DateTime? appointmentDate;
+  final String? appointmentTime;
+  final String? doctorName;
+  final String? specialty;
+  final String? clinicName;
+  final String? clinicAddress;
+  final String? appointmentType;
+  final String? reasonForVisit;
+  final String? appointmentStatus;
+  final String? appointmentNotes;
+  final bool reminderSet;
+  final int? reminderMinutes;
   const Prescription({
     required this.id,
     required this.profileId,
@@ -2294,9 +2621,10 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     required this.createdAt,
     required this.updatedAt,
     required this.isActive,
-    required this.medicationName,
-    required this.dosage,
-    required this.frequency,
+    required this.prescriptionType,
+    this.medicationName,
+    this.dosage,
+    this.frequency,
     this.instructions,
     this.prescribingDoctor,
     this.pharmacy,
@@ -2304,6 +2632,18 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     this.endDate,
     this.refillsRemaining,
     required this.isPrescriptionActive,
+    this.appointmentDate,
+    this.appointmentTime,
+    this.doctorName,
+    this.specialty,
+    this.clinicName,
+    this.clinicAddress,
+    this.appointmentType,
+    this.reasonForVisit,
+    this.appointmentStatus,
+    this.appointmentNotes,
+    required this.reminderSet,
+    this.reminderMinutes,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2319,9 +2659,16 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     map['is_active'] = Variable<bool>(isActive);
-    map['medication_name'] = Variable<String>(medicationName);
-    map['dosage'] = Variable<String>(dosage);
-    map['frequency'] = Variable<String>(frequency);
+    map['prescription_type'] = Variable<String>(prescriptionType);
+    if (!nullToAbsent || medicationName != null) {
+      map['medication_name'] = Variable<String>(medicationName);
+    }
+    if (!nullToAbsent || dosage != null) {
+      map['dosage'] = Variable<String>(dosage);
+    }
+    if (!nullToAbsent || frequency != null) {
+      map['frequency'] = Variable<String>(frequency);
+    }
     if (!nullToAbsent || instructions != null) {
       map['instructions'] = Variable<String>(instructions);
     }
@@ -2341,6 +2688,40 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       map['refills_remaining'] = Variable<int>(refillsRemaining);
     }
     map['is_prescription_active'] = Variable<bool>(isPrescriptionActive);
+    if (!nullToAbsent || appointmentDate != null) {
+      map['appointment_date'] = Variable<DateTime>(appointmentDate);
+    }
+    if (!nullToAbsent || appointmentTime != null) {
+      map['appointment_time'] = Variable<String>(appointmentTime);
+    }
+    if (!nullToAbsent || doctorName != null) {
+      map['doctor_name'] = Variable<String>(doctorName);
+    }
+    if (!nullToAbsent || specialty != null) {
+      map['specialty'] = Variable<String>(specialty);
+    }
+    if (!nullToAbsent || clinicName != null) {
+      map['clinic_name'] = Variable<String>(clinicName);
+    }
+    if (!nullToAbsent || clinicAddress != null) {
+      map['clinic_address'] = Variable<String>(clinicAddress);
+    }
+    if (!nullToAbsent || appointmentType != null) {
+      map['appointment_type'] = Variable<String>(appointmentType);
+    }
+    if (!nullToAbsent || reasonForVisit != null) {
+      map['reason_for_visit'] = Variable<String>(reasonForVisit);
+    }
+    if (!nullToAbsent || appointmentStatus != null) {
+      map['appointment_status'] = Variable<String>(appointmentStatus);
+    }
+    if (!nullToAbsent || appointmentNotes != null) {
+      map['appointment_notes'] = Variable<String>(appointmentNotes);
+    }
+    map['reminder_set'] = Variable<bool>(reminderSet);
+    if (!nullToAbsent || reminderMinutes != null) {
+      map['reminder_minutes'] = Variable<int>(reminderMinutes);
+    }
     return map;
   }
 
@@ -2357,9 +2738,16 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       isActive: Value(isActive),
-      medicationName: Value(medicationName),
-      dosage: Value(dosage),
-      frequency: Value(frequency),
+      prescriptionType: Value(prescriptionType),
+      medicationName: medicationName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(medicationName),
+      dosage: dosage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dosage),
+      frequency: frequency == null && nullToAbsent
+          ? const Value.absent()
+          : Value(frequency),
       instructions: instructions == null && nullToAbsent
           ? const Value.absent()
           : Value(instructions),
@@ -2379,6 +2767,40 @@ class Prescription extends DataClass implements Insertable<Prescription> {
           ? const Value.absent()
           : Value(refillsRemaining),
       isPrescriptionActive: Value(isPrescriptionActive),
+      appointmentDate: appointmentDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appointmentDate),
+      appointmentTime: appointmentTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appointmentTime),
+      doctorName: doctorName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(doctorName),
+      specialty: specialty == null && nullToAbsent
+          ? const Value.absent()
+          : Value(specialty),
+      clinicName: clinicName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(clinicName),
+      clinicAddress: clinicAddress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(clinicAddress),
+      appointmentType: appointmentType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appointmentType),
+      reasonForVisit: reasonForVisit == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reasonForVisit),
+      appointmentStatus: appointmentStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appointmentStatus),
+      appointmentNotes: appointmentNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appointmentNotes),
+      reminderSet: Value(reminderSet),
+      reminderMinutes: reminderMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reminderMinutes),
     );
   }
 
@@ -2397,9 +2819,10 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       isActive: serializer.fromJson<bool>(json['isActive']),
-      medicationName: serializer.fromJson<String>(json['medicationName']),
-      dosage: serializer.fromJson<String>(json['dosage']),
-      frequency: serializer.fromJson<String>(json['frequency']),
+      prescriptionType: serializer.fromJson<String>(json['prescriptionType']),
+      medicationName: serializer.fromJson<String?>(json['medicationName']),
+      dosage: serializer.fromJson<String?>(json['dosage']),
+      frequency: serializer.fromJson<String?>(json['frequency']),
       instructions: serializer.fromJson<String?>(json['instructions']),
       prescribingDoctor: serializer.fromJson<String?>(
         json['prescribingDoctor'],
@@ -2411,6 +2834,20 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       isPrescriptionActive: serializer.fromJson<bool>(
         json['isPrescriptionActive'],
       ),
+      appointmentDate: serializer.fromJson<DateTime?>(json['appointmentDate']),
+      appointmentTime: serializer.fromJson<String?>(json['appointmentTime']),
+      doctorName: serializer.fromJson<String?>(json['doctorName']),
+      specialty: serializer.fromJson<String?>(json['specialty']),
+      clinicName: serializer.fromJson<String?>(json['clinicName']),
+      clinicAddress: serializer.fromJson<String?>(json['clinicAddress']),
+      appointmentType: serializer.fromJson<String?>(json['appointmentType']),
+      reasonForVisit: serializer.fromJson<String?>(json['reasonForVisit']),
+      appointmentStatus: serializer.fromJson<String?>(
+        json['appointmentStatus'],
+      ),
+      appointmentNotes: serializer.fromJson<String?>(json['appointmentNotes']),
+      reminderSet: serializer.fromJson<bool>(json['reminderSet']),
+      reminderMinutes: serializer.fromJson<int?>(json['reminderMinutes']),
     );
   }
   @override
@@ -2426,9 +2863,10 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'isActive': serializer.toJson<bool>(isActive),
-      'medicationName': serializer.toJson<String>(medicationName),
-      'dosage': serializer.toJson<String>(dosage),
-      'frequency': serializer.toJson<String>(frequency),
+      'prescriptionType': serializer.toJson<String>(prescriptionType),
+      'medicationName': serializer.toJson<String?>(medicationName),
+      'dosage': serializer.toJson<String?>(dosage),
+      'frequency': serializer.toJson<String?>(frequency),
       'instructions': serializer.toJson<String?>(instructions),
       'prescribingDoctor': serializer.toJson<String?>(prescribingDoctor),
       'pharmacy': serializer.toJson<String?>(pharmacy),
@@ -2436,6 +2874,18 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       'endDate': serializer.toJson<DateTime?>(endDate),
       'refillsRemaining': serializer.toJson<int?>(refillsRemaining),
       'isPrescriptionActive': serializer.toJson<bool>(isPrescriptionActive),
+      'appointmentDate': serializer.toJson<DateTime?>(appointmentDate),
+      'appointmentTime': serializer.toJson<String?>(appointmentTime),
+      'doctorName': serializer.toJson<String?>(doctorName),
+      'specialty': serializer.toJson<String?>(specialty),
+      'clinicName': serializer.toJson<String?>(clinicName),
+      'clinicAddress': serializer.toJson<String?>(clinicAddress),
+      'appointmentType': serializer.toJson<String?>(appointmentType),
+      'reasonForVisit': serializer.toJson<String?>(reasonForVisit),
+      'appointmentStatus': serializer.toJson<String?>(appointmentStatus),
+      'appointmentNotes': serializer.toJson<String?>(appointmentNotes),
+      'reminderSet': serializer.toJson<bool>(reminderSet),
+      'reminderMinutes': serializer.toJson<int?>(reminderMinutes),
     };
   }
 
@@ -2449,9 +2899,10 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-    String? medicationName,
-    String? dosage,
-    String? frequency,
+    String? prescriptionType,
+    Value<String?> medicationName = const Value.absent(),
+    Value<String?> dosage = const Value.absent(),
+    Value<String?> frequency = const Value.absent(),
     Value<String?> instructions = const Value.absent(),
     Value<String?> prescribingDoctor = const Value.absent(),
     Value<String?> pharmacy = const Value.absent(),
@@ -2459,6 +2910,18 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     Value<DateTime?> endDate = const Value.absent(),
     Value<int?> refillsRemaining = const Value.absent(),
     bool? isPrescriptionActive,
+    Value<DateTime?> appointmentDate = const Value.absent(),
+    Value<String?> appointmentTime = const Value.absent(),
+    Value<String?> doctorName = const Value.absent(),
+    Value<String?> specialty = const Value.absent(),
+    Value<String?> clinicName = const Value.absent(),
+    Value<String?> clinicAddress = const Value.absent(),
+    Value<String?> appointmentType = const Value.absent(),
+    Value<String?> reasonForVisit = const Value.absent(),
+    Value<String?> appointmentStatus = const Value.absent(),
+    Value<String?> appointmentNotes = const Value.absent(),
+    bool? reminderSet,
+    Value<int?> reminderMinutes = const Value.absent(),
   }) => Prescription(
     id: id ?? this.id,
     profileId: profileId ?? this.profileId,
@@ -2469,9 +2932,12 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     isActive: isActive ?? this.isActive,
-    medicationName: medicationName ?? this.medicationName,
-    dosage: dosage ?? this.dosage,
-    frequency: frequency ?? this.frequency,
+    prescriptionType: prescriptionType ?? this.prescriptionType,
+    medicationName: medicationName.present
+        ? medicationName.value
+        : this.medicationName,
+    dosage: dosage.present ? dosage.value : this.dosage,
+    frequency: frequency.present ? frequency.value : this.frequency,
     instructions: instructions.present ? instructions.value : this.instructions,
     prescribingDoctor: prescribingDoctor.present
         ? prescribingDoctor.value
@@ -2483,6 +2949,34 @@ class Prescription extends DataClass implements Insertable<Prescription> {
         ? refillsRemaining.value
         : this.refillsRemaining,
     isPrescriptionActive: isPrescriptionActive ?? this.isPrescriptionActive,
+    appointmentDate: appointmentDate.present
+        ? appointmentDate.value
+        : this.appointmentDate,
+    appointmentTime: appointmentTime.present
+        ? appointmentTime.value
+        : this.appointmentTime,
+    doctorName: doctorName.present ? doctorName.value : this.doctorName,
+    specialty: specialty.present ? specialty.value : this.specialty,
+    clinicName: clinicName.present ? clinicName.value : this.clinicName,
+    clinicAddress: clinicAddress.present
+        ? clinicAddress.value
+        : this.clinicAddress,
+    appointmentType: appointmentType.present
+        ? appointmentType.value
+        : this.appointmentType,
+    reasonForVisit: reasonForVisit.present
+        ? reasonForVisit.value
+        : this.reasonForVisit,
+    appointmentStatus: appointmentStatus.present
+        ? appointmentStatus.value
+        : this.appointmentStatus,
+    appointmentNotes: appointmentNotes.present
+        ? appointmentNotes.value
+        : this.appointmentNotes,
+    reminderSet: reminderSet ?? this.reminderSet,
+    reminderMinutes: reminderMinutes.present
+        ? reminderMinutes.value
+        : this.reminderMinutes,
   );
   Prescription copyWithCompanion(PrescriptionsCompanion data) {
     return Prescription(
@@ -2501,6 +2995,9 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      prescriptionType: data.prescriptionType.present
+          ? data.prescriptionType.value
+          : this.prescriptionType,
       medicationName: data.medicationName.present
           ? data.medicationName.value
           : this.medicationName,
@@ -2521,6 +3018,40 @@ class Prescription extends DataClass implements Insertable<Prescription> {
       isPrescriptionActive: data.isPrescriptionActive.present
           ? data.isPrescriptionActive.value
           : this.isPrescriptionActive,
+      appointmentDate: data.appointmentDate.present
+          ? data.appointmentDate.value
+          : this.appointmentDate,
+      appointmentTime: data.appointmentTime.present
+          ? data.appointmentTime.value
+          : this.appointmentTime,
+      doctorName: data.doctorName.present
+          ? data.doctorName.value
+          : this.doctorName,
+      specialty: data.specialty.present ? data.specialty.value : this.specialty,
+      clinicName: data.clinicName.present
+          ? data.clinicName.value
+          : this.clinicName,
+      clinicAddress: data.clinicAddress.present
+          ? data.clinicAddress.value
+          : this.clinicAddress,
+      appointmentType: data.appointmentType.present
+          ? data.appointmentType.value
+          : this.appointmentType,
+      reasonForVisit: data.reasonForVisit.present
+          ? data.reasonForVisit.value
+          : this.reasonForVisit,
+      appointmentStatus: data.appointmentStatus.present
+          ? data.appointmentStatus.value
+          : this.appointmentStatus,
+      appointmentNotes: data.appointmentNotes.present
+          ? data.appointmentNotes.value
+          : this.appointmentNotes,
+      reminderSet: data.reminderSet.present
+          ? data.reminderSet.value
+          : this.reminderSet,
+      reminderMinutes: data.reminderMinutes.present
+          ? data.reminderMinutes.value
+          : this.reminderMinutes,
     );
   }
 
@@ -2536,6 +3067,7 @@ class Prescription extends DataClass implements Insertable<Prescription> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isActive: $isActive, ')
+          ..write('prescriptionType: $prescriptionType, ')
           ..write('medicationName: $medicationName, ')
           ..write('dosage: $dosage, ')
           ..write('frequency: $frequency, ')
@@ -2545,13 +3077,25 @@ class Prescription extends DataClass implements Insertable<Prescription> {
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('refillsRemaining: $refillsRemaining, ')
-          ..write('isPrescriptionActive: $isPrescriptionActive')
+          ..write('isPrescriptionActive: $isPrescriptionActive, ')
+          ..write('appointmentDate: $appointmentDate, ')
+          ..write('appointmentTime: $appointmentTime, ')
+          ..write('doctorName: $doctorName, ')
+          ..write('specialty: $specialty, ')
+          ..write('clinicName: $clinicName, ')
+          ..write('clinicAddress: $clinicAddress, ')
+          ..write('appointmentType: $appointmentType, ')
+          ..write('reasonForVisit: $reasonForVisit, ')
+          ..write('appointmentStatus: $appointmentStatus, ')
+          ..write('appointmentNotes: $appointmentNotes, ')
+          ..write('reminderSet: $reminderSet, ')
+          ..write('reminderMinutes: $reminderMinutes')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     profileId,
     recordType,
@@ -2561,6 +3105,7 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     createdAt,
     updatedAt,
     isActive,
+    prescriptionType,
     medicationName,
     dosage,
     frequency,
@@ -2571,7 +3116,19 @@ class Prescription extends DataClass implements Insertable<Prescription> {
     endDate,
     refillsRemaining,
     isPrescriptionActive,
-  );
+    appointmentDate,
+    appointmentTime,
+    doctorName,
+    specialty,
+    clinicName,
+    clinicAddress,
+    appointmentType,
+    reasonForVisit,
+    appointmentStatus,
+    appointmentNotes,
+    reminderSet,
+    reminderMinutes,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2585,6 +3142,7 @@ class Prescription extends DataClass implements Insertable<Prescription> {
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.isActive == this.isActive &&
+          other.prescriptionType == this.prescriptionType &&
           other.medicationName == this.medicationName &&
           other.dosage == this.dosage &&
           other.frequency == this.frequency &&
@@ -2594,7 +3152,19 @@ class Prescription extends DataClass implements Insertable<Prescription> {
           other.startDate == this.startDate &&
           other.endDate == this.endDate &&
           other.refillsRemaining == this.refillsRemaining &&
-          other.isPrescriptionActive == this.isPrescriptionActive);
+          other.isPrescriptionActive == this.isPrescriptionActive &&
+          other.appointmentDate == this.appointmentDate &&
+          other.appointmentTime == this.appointmentTime &&
+          other.doctorName == this.doctorName &&
+          other.specialty == this.specialty &&
+          other.clinicName == this.clinicName &&
+          other.clinicAddress == this.clinicAddress &&
+          other.appointmentType == this.appointmentType &&
+          other.reasonForVisit == this.reasonForVisit &&
+          other.appointmentStatus == this.appointmentStatus &&
+          other.appointmentNotes == this.appointmentNotes &&
+          other.reminderSet == this.reminderSet &&
+          other.reminderMinutes == this.reminderMinutes);
 }
 
 class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
@@ -2607,9 +3177,10 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<bool> isActive;
-  final Value<String> medicationName;
-  final Value<String> dosage;
-  final Value<String> frequency;
+  final Value<String> prescriptionType;
+  final Value<String?> medicationName;
+  final Value<String?> dosage;
+  final Value<String?> frequency;
   final Value<String?> instructions;
   final Value<String?> prescribingDoctor;
   final Value<String?> pharmacy;
@@ -2617,6 +3188,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
   final Value<DateTime?> endDate;
   final Value<int?> refillsRemaining;
   final Value<bool> isPrescriptionActive;
+  final Value<DateTime?> appointmentDate;
+  final Value<String?> appointmentTime;
+  final Value<String?> doctorName;
+  final Value<String?> specialty;
+  final Value<String?> clinicName;
+  final Value<String?> clinicAddress;
+  final Value<String?> appointmentType;
+  final Value<String?> reasonForVisit;
+  final Value<String?> appointmentStatus;
+  final Value<String?> appointmentNotes;
+  final Value<bool> reminderSet;
+  final Value<int?> reminderMinutes;
   final Value<int> rowid;
   const PrescriptionsCompanion({
     this.id = const Value.absent(),
@@ -2628,6 +3211,7 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.prescriptionType = const Value.absent(),
     this.medicationName = const Value.absent(),
     this.dosage = const Value.absent(),
     this.frequency = const Value.absent(),
@@ -2638,6 +3222,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     this.endDate = const Value.absent(),
     this.refillsRemaining = const Value.absent(),
     this.isPrescriptionActive = const Value.absent(),
+    this.appointmentDate = const Value.absent(),
+    this.appointmentTime = const Value.absent(),
+    this.doctorName = const Value.absent(),
+    this.specialty = const Value.absent(),
+    this.clinicName = const Value.absent(),
+    this.clinicAddress = const Value.absent(),
+    this.appointmentType = const Value.absent(),
+    this.reasonForVisit = const Value.absent(),
+    this.appointmentStatus = const Value.absent(),
+    this.appointmentNotes = const Value.absent(),
+    this.reminderSet = const Value.absent(),
+    this.reminderMinutes = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PrescriptionsCompanion.insert({
@@ -2650,9 +3246,10 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isActive = const Value.absent(),
-    required String medicationName,
-    required String dosage,
-    required String frequency,
+    required String prescriptionType,
+    this.medicationName = const Value.absent(),
+    this.dosage = const Value.absent(),
+    this.frequency = const Value.absent(),
     this.instructions = const Value.absent(),
     this.prescribingDoctor = const Value.absent(),
     this.pharmacy = const Value.absent(),
@@ -2660,14 +3257,24 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     this.endDate = const Value.absent(),
     this.refillsRemaining = const Value.absent(),
     this.isPrescriptionActive = const Value.absent(),
+    this.appointmentDate = const Value.absent(),
+    this.appointmentTime = const Value.absent(),
+    this.doctorName = const Value.absent(),
+    this.specialty = const Value.absent(),
+    this.clinicName = const Value.absent(),
+    this.clinicAddress = const Value.absent(),
+    this.appointmentType = const Value.absent(),
+    this.reasonForVisit = const Value.absent(),
+    this.appointmentStatus = const Value.absent(),
+    this.appointmentNotes = const Value.absent(),
+    this.reminderSet = const Value.absent(),
+    this.reminderMinutes = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        profileId = Value(profileId),
        title = Value(title),
        recordDate = Value(recordDate),
-       medicationName = Value(medicationName),
-       dosage = Value(dosage),
-       frequency = Value(frequency);
+       prescriptionType = Value(prescriptionType);
   static Insertable<Prescription> custom({
     Expression<String>? id,
     Expression<String>? profileId,
@@ -2678,6 +3285,7 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<bool>? isActive,
+    Expression<String>? prescriptionType,
     Expression<String>? medicationName,
     Expression<String>? dosage,
     Expression<String>? frequency,
@@ -2688,6 +3296,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     Expression<DateTime>? endDate,
     Expression<int>? refillsRemaining,
     Expression<bool>? isPrescriptionActive,
+    Expression<DateTime>? appointmentDate,
+    Expression<String>? appointmentTime,
+    Expression<String>? doctorName,
+    Expression<String>? specialty,
+    Expression<String>? clinicName,
+    Expression<String>? clinicAddress,
+    Expression<String>? appointmentType,
+    Expression<String>? reasonForVisit,
+    Expression<String>? appointmentStatus,
+    Expression<String>? appointmentNotes,
+    Expression<bool>? reminderSet,
+    Expression<int>? reminderMinutes,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2700,6 +3320,7 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isActive != null) 'is_active': isActive,
+      if (prescriptionType != null) 'prescription_type': prescriptionType,
       if (medicationName != null) 'medication_name': medicationName,
       if (dosage != null) 'dosage': dosage,
       if (frequency != null) 'frequency': frequency,
@@ -2711,6 +3332,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
       if (refillsRemaining != null) 'refills_remaining': refillsRemaining,
       if (isPrescriptionActive != null)
         'is_prescription_active': isPrescriptionActive,
+      if (appointmentDate != null) 'appointment_date': appointmentDate,
+      if (appointmentTime != null) 'appointment_time': appointmentTime,
+      if (doctorName != null) 'doctor_name': doctorName,
+      if (specialty != null) 'specialty': specialty,
+      if (clinicName != null) 'clinic_name': clinicName,
+      if (clinicAddress != null) 'clinic_address': clinicAddress,
+      if (appointmentType != null) 'appointment_type': appointmentType,
+      if (reasonForVisit != null) 'reason_for_visit': reasonForVisit,
+      if (appointmentStatus != null) 'appointment_status': appointmentStatus,
+      if (appointmentNotes != null) 'appointment_notes': appointmentNotes,
+      if (reminderSet != null) 'reminder_set': reminderSet,
+      if (reminderMinutes != null) 'reminder_minutes': reminderMinutes,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2725,9 +3358,10 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<bool>? isActive,
-    Value<String>? medicationName,
-    Value<String>? dosage,
-    Value<String>? frequency,
+    Value<String>? prescriptionType,
+    Value<String?>? medicationName,
+    Value<String?>? dosage,
+    Value<String?>? frequency,
     Value<String?>? instructions,
     Value<String?>? prescribingDoctor,
     Value<String?>? pharmacy,
@@ -2735,6 +3369,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     Value<DateTime?>? endDate,
     Value<int?>? refillsRemaining,
     Value<bool>? isPrescriptionActive,
+    Value<DateTime?>? appointmentDate,
+    Value<String?>? appointmentTime,
+    Value<String?>? doctorName,
+    Value<String?>? specialty,
+    Value<String?>? clinicName,
+    Value<String?>? clinicAddress,
+    Value<String?>? appointmentType,
+    Value<String?>? reasonForVisit,
+    Value<String?>? appointmentStatus,
+    Value<String?>? appointmentNotes,
+    Value<bool>? reminderSet,
+    Value<int?>? reminderMinutes,
     Value<int>? rowid,
   }) {
     return PrescriptionsCompanion(
@@ -2747,6 +3393,7 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
+      prescriptionType: prescriptionType ?? this.prescriptionType,
       medicationName: medicationName ?? this.medicationName,
       dosage: dosage ?? this.dosage,
       frequency: frequency ?? this.frequency,
@@ -2757,6 +3404,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
       endDate: endDate ?? this.endDate,
       refillsRemaining: refillsRemaining ?? this.refillsRemaining,
       isPrescriptionActive: isPrescriptionActive ?? this.isPrescriptionActive,
+      appointmentDate: appointmentDate ?? this.appointmentDate,
+      appointmentTime: appointmentTime ?? this.appointmentTime,
+      doctorName: doctorName ?? this.doctorName,
+      specialty: specialty ?? this.specialty,
+      clinicName: clinicName ?? this.clinicName,
+      clinicAddress: clinicAddress ?? this.clinicAddress,
+      appointmentType: appointmentType ?? this.appointmentType,
+      reasonForVisit: reasonForVisit ?? this.reasonForVisit,
+      appointmentStatus: appointmentStatus ?? this.appointmentStatus,
+      appointmentNotes: appointmentNotes ?? this.appointmentNotes,
+      reminderSet: reminderSet ?? this.reminderSet,
+      reminderMinutes: reminderMinutes ?? this.reminderMinutes,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2791,6 +3450,9 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (prescriptionType.present) {
+      map['prescription_type'] = Variable<String>(prescriptionType.value);
+    }
     if (medicationName.present) {
       map['medication_name'] = Variable<String>(medicationName.value);
     }
@@ -2823,6 +3485,42 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
         isPrescriptionActive.value,
       );
     }
+    if (appointmentDate.present) {
+      map['appointment_date'] = Variable<DateTime>(appointmentDate.value);
+    }
+    if (appointmentTime.present) {
+      map['appointment_time'] = Variable<String>(appointmentTime.value);
+    }
+    if (doctorName.present) {
+      map['doctor_name'] = Variable<String>(doctorName.value);
+    }
+    if (specialty.present) {
+      map['specialty'] = Variable<String>(specialty.value);
+    }
+    if (clinicName.present) {
+      map['clinic_name'] = Variable<String>(clinicName.value);
+    }
+    if (clinicAddress.present) {
+      map['clinic_address'] = Variable<String>(clinicAddress.value);
+    }
+    if (appointmentType.present) {
+      map['appointment_type'] = Variable<String>(appointmentType.value);
+    }
+    if (reasonForVisit.present) {
+      map['reason_for_visit'] = Variable<String>(reasonForVisit.value);
+    }
+    if (appointmentStatus.present) {
+      map['appointment_status'] = Variable<String>(appointmentStatus.value);
+    }
+    if (appointmentNotes.present) {
+      map['appointment_notes'] = Variable<String>(appointmentNotes.value);
+    }
+    if (reminderSet.present) {
+      map['reminder_set'] = Variable<bool>(reminderSet.value);
+    }
+    if (reminderMinutes.present) {
+      map['reminder_minutes'] = Variable<int>(reminderMinutes.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2841,6 +3539,7 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isActive: $isActive, ')
+          ..write('prescriptionType: $prescriptionType, ')
           ..write('medicationName: $medicationName, ')
           ..write('dosage: $dosage, ')
           ..write('frequency: $frequency, ')
@@ -2851,6 +3550,18 @@ class PrescriptionsCompanion extends UpdateCompanion<Prescription> {
           ..write('endDate: $endDate, ')
           ..write('refillsRemaining: $refillsRemaining, ')
           ..write('isPrescriptionActive: $isPrescriptionActive, ')
+          ..write('appointmentDate: $appointmentDate, ')
+          ..write('appointmentTime: $appointmentTime, ')
+          ..write('doctorName: $doctorName, ')
+          ..write('specialty: $specialty, ')
+          ..write('clinicName: $clinicName, ')
+          ..write('clinicAddress: $clinicAddress, ')
+          ..write('appointmentType: $appointmentType, ')
+          ..write('reasonForVisit: $reasonForVisit, ')
+          ..write('appointmentStatus: $appointmentStatus, ')
+          ..write('appointmentNotes: $appointmentNotes, ')
+          ..write('reminderSet: $reminderSet, ')
+          ..write('reminderMinutes: $reminderMinutes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7937,6 +8648,12170 @@ class ChronicConditionsCompanion extends UpdateCompanion<ChronicCondition> {
   }
 }
 
+class $SurgicalRecordsTable extends SurgicalRecords
+    with TableInfo<$SurgicalRecordsTable, SurgicalRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SurgicalRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('surgical_record'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _procedureNameMeta = const VerificationMeta(
+    'procedureName',
+  );
+  @override
+  late final GeneratedColumn<String> procedureName = GeneratedColumn<String>(
+    'procedure_name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 150,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _surgeonNameMeta = const VerificationMeta(
+    'surgeonName',
+  );
+  @override
+  late final GeneratedColumn<String> surgeonName = GeneratedColumn<String>(
+    'surgeon_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hospitalMeta = const VerificationMeta(
+    'hospital',
+  );
+  @override
+  late final GeneratedColumn<String> hospital = GeneratedColumn<String>(
+    'hospital',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _operatingRoomMeta = const VerificationMeta(
+    'operatingRoom',
+  );
+  @override
+  late final GeneratedColumn<String> operatingRoom = GeneratedColumn<String>(
+    'operating_room',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _surgeryDateMeta = const VerificationMeta(
+    'surgeryDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> surgeryDate = GeneratedColumn<DateTime>(
+    'surgery_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _surgeryStartTimeMeta = const VerificationMeta(
+    'surgeryStartTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> surgeryStartTime =
+      GeneratedColumn<DateTime>(
+        'surgery_start_time',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _surgeryEndTimeMeta = const VerificationMeta(
+    'surgeryEndTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> surgeryEndTime =
+      GeneratedColumn<DateTime>(
+        'surgery_end_time',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _anesthesiaTypeMeta = const VerificationMeta(
+    'anesthesiaType',
+  );
+  @override
+  late final GeneratedColumn<String> anesthesiaType = GeneratedColumn<String>(
+    'anesthesia_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _anesthesiologistMeta = const VerificationMeta(
+    'anesthesiologist',
+  );
+  @override
+  late final GeneratedColumn<String> anesthesiologist = GeneratedColumn<String>(
+    'anesthesiologist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _indicationMeta = const VerificationMeta(
+    'indication',
+  );
+  @override
+  late final GeneratedColumn<String> indication = GeneratedColumn<String>(
+    'indication',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _findingsMeta = const VerificationMeta(
+    'findings',
+  );
+  @override
+  late final GeneratedColumn<String> findings = GeneratedColumn<String>(
+    'findings',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _complicationsMeta = const VerificationMeta(
+    'complications',
+  );
+  @override
+  late final GeneratedColumn<String> complications = GeneratedColumn<String>(
+    'complications',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recoveryNotesMeta = const VerificationMeta(
+    'recoveryNotes',
+  );
+  @override
+  late final GeneratedColumn<String> recoveryNotes = GeneratedColumn<String>(
+    'recovery_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _followUpPlanMeta = const VerificationMeta(
+    'followUpPlan',
+  );
+  @override
+  late final GeneratedColumn<String> followUpPlan = GeneratedColumn<String>(
+    'follow_up_plan',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dischargeDateMeta = const VerificationMeta(
+    'dischargeDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dischargeDate =
+      GeneratedColumn<DateTime>(
+        'discharge_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isEmergencyMeta = const VerificationMeta(
+    'isEmergency',
+  );
+  @override
+  late final GeneratedColumn<bool> isEmergency = GeneratedColumn<bool>(
+    'is_emergency',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_emergency" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    procedureName,
+    surgeonName,
+    hospital,
+    operatingRoom,
+    surgeryDate,
+    surgeryStartTime,
+    surgeryEndTime,
+    anesthesiaType,
+    anesthesiologist,
+    indication,
+    findings,
+    complications,
+    recoveryNotes,
+    followUpPlan,
+    dischargeDate,
+    isEmergency,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'surgical_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SurgicalRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('procedure_name')) {
+      context.handle(
+        _procedureNameMeta,
+        procedureName.isAcceptableOrUnknown(
+          data['procedure_name']!,
+          _procedureNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_procedureNameMeta);
+    }
+    if (data.containsKey('surgeon_name')) {
+      context.handle(
+        _surgeonNameMeta,
+        surgeonName.isAcceptableOrUnknown(
+          data['surgeon_name']!,
+          _surgeonNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('hospital')) {
+      context.handle(
+        _hospitalMeta,
+        hospital.isAcceptableOrUnknown(data['hospital']!, _hospitalMeta),
+      );
+    }
+    if (data.containsKey('operating_room')) {
+      context.handle(
+        _operatingRoomMeta,
+        operatingRoom.isAcceptableOrUnknown(
+          data['operating_room']!,
+          _operatingRoomMeta,
+        ),
+      );
+    }
+    if (data.containsKey('surgery_date')) {
+      context.handle(
+        _surgeryDateMeta,
+        surgeryDate.isAcceptableOrUnknown(
+          data['surgery_date']!,
+          _surgeryDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_surgeryDateMeta);
+    }
+    if (data.containsKey('surgery_start_time')) {
+      context.handle(
+        _surgeryStartTimeMeta,
+        surgeryStartTime.isAcceptableOrUnknown(
+          data['surgery_start_time']!,
+          _surgeryStartTimeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('surgery_end_time')) {
+      context.handle(
+        _surgeryEndTimeMeta,
+        surgeryEndTime.isAcceptableOrUnknown(
+          data['surgery_end_time']!,
+          _surgeryEndTimeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('anesthesia_type')) {
+      context.handle(
+        _anesthesiaTypeMeta,
+        anesthesiaType.isAcceptableOrUnknown(
+          data['anesthesia_type']!,
+          _anesthesiaTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('anesthesiologist')) {
+      context.handle(
+        _anesthesiologistMeta,
+        anesthesiologist.isAcceptableOrUnknown(
+          data['anesthesiologist']!,
+          _anesthesiologistMeta,
+        ),
+      );
+    }
+    if (data.containsKey('indication')) {
+      context.handle(
+        _indicationMeta,
+        indication.isAcceptableOrUnknown(data['indication']!, _indicationMeta),
+      );
+    }
+    if (data.containsKey('findings')) {
+      context.handle(
+        _findingsMeta,
+        findings.isAcceptableOrUnknown(data['findings']!, _findingsMeta),
+      );
+    }
+    if (data.containsKey('complications')) {
+      context.handle(
+        _complicationsMeta,
+        complications.isAcceptableOrUnknown(
+          data['complications']!,
+          _complicationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('recovery_notes')) {
+      context.handle(
+        _recoveryNotesMeta,
+        recoveryNotes.isAcceptableOrUnknown(
+          data['recovery_notes']!,
+          _recoveryNotesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('follow_up_plan')) {
+      context.handle(
+        _followUpPlanMeta,
+        followUpPlan.isAcceptableOrUnknown(
+          data['follow_up_plan']!,
+          _followUpPlanMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discharge_date')) {
+      context.handle(
+        _dischargeDateMeta,
+        dischargeDate.isAcceptableOrUnknown(
+          data['discharge_date']!,
+          _dischargeDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_emergency')) {
+      context.handle(
+        _isEmergencyMeta,
+        isEmergency.isAcceptableOrUnknown(
+          data['is_emergency']!,
+          _isEmergencyMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SurgicalRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SurgicalRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      procedureName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}procedure_name'],
+      )!,
+      surgeonName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}surgeon_name'],
+      ),
+      hospital: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hospital'],
+      ),
+      operatingRoom: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}operating_room'],
+      ),
+      surgeryDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}surgery_date'],
+      )!,
+      surgeryStartTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}surgery_start_time'],
+      ),
+      surgeryEndTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}surgery_end_time'],
+      ),
+      anesthesiaType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}anesthesia_type'],
+      ),
+      anesthesiologist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}anesthesiologist'],
+      ),
+      indication: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}indication'],
+      ),
+      findings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}findings'],
+      ),
+      complications: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}complications'],
+      ),
+      recoveryNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recovery_notes'],
+      ),
+      followUpPlan: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}follow_up_plan'],
+      ),
+      dischargeDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}discharge_date'],
+      ),
+      isEmergency: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_emergency'],
+      )!,
+    );
+  }
+
+  @override
+  $SurgicalRecordsTable createAlias(String alias) {
+    return $SurgicalRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class SurgicalRecord extends DataClass implements Insertable<SurgicalRecord> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String procedureName;
+  final String? surgeonName;
+  final String? hospital;
+  final String? operatingRoom;
+  final DateTime surgeryDate;
+  final DateTime? surgeryStartTime;
+  final DateTime? surgeryEndTime;
+  final String? anesthesiaType;
+  final String? anesthesiologist;
+  final String? indication;
+  final String? findings;
+  final String? complications;
+  final String? recoveryNotes;
+  final String? followUpPlan;
+  final DateTime? dischargeDate;
+  final bool isEmergency;
+  const SurgicalRecord({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.procedureName,
+    this.surgeonName,
+    this.hospital,
+    this.operatingRoom,
+    required this.surgeryDate,
+    this.surgeryStartTime,
+    this.surgeryEndTime,
+    this.anesthesiaType,
+    this.anesthesiologist,
+    this.indication,
+    this.findings,
+    this.complications,
+    this.recoveryNotes,
+    this.followUpPlan,
+    this.dischargeDate,
+    required this.isEmergency,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['procedure_name'] = Variable<String>(procedureName);
+    if (!nullToAbsent || surgeonName != null) {
+      map['surgeon_name'] = Variable<String>(surgeonName);
+    }
+    if (!nullToAbsent || hospital != null) {
+      map['hospital'] = Variable<String>(hospital);
+    }
+    if (!nullToAbsent || operatingRoom != null) {
+      map['operating_room'] = Variable<String>(operatingRoom);
+    }
+    map['surgery_date'] = Variable<DateTime>(surgeryDate);
+    if (!nullToAbsent || surgeryStartTime != null) {
+      map['surgery_start_time'] = Variable<DateTime>(surgeryStartTime);
+    }
+    if (!nullToAbsent || surgeryEndTime != null) {
+      map['surgery_end_time'] = Variable<DateTime>(surgeryEndTime);
+    }
+    if (!nullToAbsent || anesthesiaType != null) {
+      map['anesthesia_type'] = Variable<String>(anesthesiaType);
+    }
+    if (!nullToAbsent || anesthesiologist != null) {
+      map['anesthesiologist'] = Variable<String>(anesthesiologist);
+    }
+    if (!nullToAbsent || indication != null) {
+      map['indication'] = Variable<String>(indication);
+    }
+    if (!nullToAbsent || findings != null) {
+      map['findings'] = Variable<String>(findings);
+    }
+    if (!nullToAbsent || complications != null) {
+      map['complications'] = Variable<String>(complications);
+    }
+    if (!nullToAbsent || recoveryNotes != null) {
+      map['recovery_notes'] = Variable<String>(recoveryNotes);
+    }
+    if (!nullToAbsent || followUpPlan != null) {
+      map['follow_up_plan'] = Variable<String>(followUpPlan);
+    }
+    if (!nullToAbsent || dischargeDate != null) {
+      map['discharge_date'] = Variable<DateTime>(dischargeDate);
+    }
+    map['is_emergency'] = Variable<bool>(isEmergency);
+    return map;
+  }
+
+  SurgicalRecordsCompanion toCompanion(bool nullToAbsent) {
+    return SurgicalRecordsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      procedureName: Value(procedureName),
+      surgeonName: surgeonName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(surgeonName),
+      hospital: hospital == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hospital),
+      operatingRoom: operatingRoom == null && nullToAbsent
+          ? const Value.absent()
+          : Value(operatingRoom),
+      surgeryDate: Value(surgeryDate),
+      surgeryStartTime: surgeryStartTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(surgeryStartTime),
+      surgeryEndTime: surgeryEndTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(surgeryEndTime),
+      anesthesiaType: anesthesiaType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(anesthesiaType),
+      anesthesiologist: anesthesiologist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(anesthesiologist),
+      indication: indication == null && nullToAbsent
+          ? const Value.absent()
+          : Value(indication),
+      findings: findings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(findings),
+      complications: complications == null && nullToAbsent
+          ? const Value.absent()
+          : Value(complications),
+      recoveryNotes: recoveryNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recoveryNotes),
+      followUpPlan: followUpPlan == null && nullToAbsent
+          ? const Value.absent()
+          : Value(followUpPlan),
+      dischargeDate: dischargeDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dischargeDate),
+      isEmergency: Value(isEmergency),
+    );
+  }
+
+  factory SurgicalRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SurgicalRecord(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      procedureName: serializer.fromJson<String>(json['procedureName']),
+      surgeonName: serializer.fromJson<String?>(json['surgeonName']),
+      hospital: serializer.fromJson<String?>(json['hospital']),
+      operatingRoom: serializer.fromJson<String?>(json['operatingRoom']),
+      surgeryDate: serializer.fromJson<DateTime>(json['surgeryDate']),
+      surgeryStartTime: serializer.fromJson<DateTime?>(
+        json['surgeryStartTime'],
+      ),
+      surgeryEndTime: serializer.fromJson<DateTime?>(json['surgeryEndTime']),
+      anesthesiaType: serializer.fromJson<String?>(json['anesthesiaType']),
+      anesthesiologist: serializer.fromJson<String?>(json['anesthesiologist']),
+      indication: serializer.fromJson<String?>(json['indication']),
+      findings: serializer.fromJson<String?>(json['findings']),
+      complications: serializer.fromJson<String?>(json['complications']),
+      recoveryNotes: serializer.fromJson<String?>(json['recoveryNotes']),
+      followUpPlan: serializer.fromJson<String?>(json['followUpPlan']),
+      dischargeDate: serializer.fromJson<DateTime?>(json['dischargeDate']),
+      isEmergency: serializer.fromJson<bool>(json['isEmergency']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'procedureName': serializer.toJson<String>(procedureName),
+      'surgeonName': serializer.toJson<String?>(surgeonName),
+      'hospital': serializer.toJson<String?>(hospital),
+      'operatingRoom': serializer.toJson<String?>(operatingRoom),
+      'surgeryDate': serializer.toJson<DateTime>(surgeryDate),
+      'surgeryStartTime': serializer.toJson<DateTime?>(surgeryStartTime),
+      'surgeryEndTime': serializer.toJson<DateTime?>(surgeryEndTime),
+      'anesthesiaType': serializer.toJson<String?>(anesthesiaType),
+      'anesthesiologist': serializer.toJson<String?>(anesthesiologist),
+      'indication': serializer.toJson<String?>(indication),
+      'findings': serializer.toJson<String?>(findings),
+      'complications': serializer.toJson<String?>(complications),
+      'recoveryNotes': serializer.toJson<String?>(recoveryNotes),
+      'followUpPlan': serializer.toJson<String?>(followUpPlan),
+      'dischargeDate': serializer.toJson<DateTime?>(dischargeDate),
+      'isEmergency': serializer.toJson<bool>(isEmergency),
+    };
+  }
+
+  SurgicalRecord copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? procedureName,
+    Value<String?> surgeonName = const Value.absent(),
+    Value<String?> hospital = const Value.absent(),
+    Value<String?> operatingRoom = const Value.absent(),
+    DateTime? surgeryDate,
+    Value<DateTime?> surgeryStartTime = const Value.absent(),
+    Value<DateTime?> surgeryEndTime = const Value.absent(),
+    Value<String?> anesthesiaType = const Value.absent(),
+    Value<String?> anesthesiologist = const Value.absent(),
+    Value<String?> indication = const Value.absent(),
+    Value<String?> findings = const Value.absent(),
+    Value<String?> complications = const Value.absent(),
+    Value<String?> recoveryNotes = const Value.absent(),
+    Value<String?> followUpPlan = const Value.absent(),
+    Value<DateTime?> dischargeDate = const Value.absent(),
+    bool? isEmergency,
+  }) => SurgicalRecord(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    procedureName: procedureName ?? this.procedureName,
+    surgeonName: surgeonName.present ? surgeonName.value : this.surgeonName,
+    hospital: hospital.present ? hospital.value : this.hospital,
+    operatingRoom: operatingRoom.present
+        ? operatingRoom.value
+        : this.operatingRoom,
+    surgeryDate: surgeryDate ?? this.surgeryDate,
+    surgeryStartTime: surgeryStartTime.present
+        ? surgeryStartTime.value
+        : this.surgeryStartTime,
+    surgeryEndTime: surgeryEndTime.present
+        ? surgeryEndTime.value
+        : this.surgeryEndTime,
+    anesthesiaType: anesthesiaType.present
+        ? anesthesiaType.value
+        : this.anesthesiaType,
+    anesthesiologist: anesthesiologist.present
+        ? anesthesiologist.value
+        : this.anesthesiologist,
+    indication: indication.present ? indication.value : this.indication,
+    findings: findings.present ? findings.value : this.findings,
+    complications: complications.present
+        ? complications.value
+        : this.complications,
+    recoveryNotes: recoveryNotes.present
+        ? recoveryNotes.value
+        : this.recoveryNotes,
+    followUpPlan: followUpPlan.present ? followUpPlan.value : this.followUpPlan,
+    dischargeDate: dischargeDate.present
+        ? dischargeDate.value
+        : this.dischargeDate,
+    isEmergency: isEmergency ?? this.isEmergency,
+  );
+  SurgicalRecord copyWithCompanion(SurgicalRecordsCompanion data) {
+    return SurgicalRecord(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      procedureName: data.procedureName.present
+          ? data.procedureName.value
+          : this.procedureName,
+      surgeonName: data.surgeonName.present
+          ? data.surgeonName.value
+          : this.surgeonName,
+      hospital: data.hospital.present ? data.hospital.value : this.hospital,
+      operatingRoom: data.operatingRoom.present
+          ? data.operatingRoom.value
+          : this.operatingRoom,
+      surgeryDate: data.surgeryDate.present
+          ? data.surgeryDate.value
+          : this.surgeryDate,
+      surgeryStartTime: data.surgeryStartTime.present
+          ? data.surgeryStartTime.value
+          : this.surgeryStartTime,
+      surgeryEndTime: data.surgeryEndTime.present
+          ? data.surgeryEndTime.value
+          : this.surgeryEndTime,
+      anesthesiaType: data.anesthesiaType.present
+          ? data.anesthesiaType.value
+          : this.anesthesiaType,
+      anesthesiologist: data.anesthesiologist.present
+          ? data.anesthesiologist.value
+          : this.anesthesiologist,
+      indication: data.indication.present
+          ? data.indication.value
+          : this.indication,
+      findings: data.findings.present ? data.findings.value : this.findings,
+      complications: data.complications.present
+          ? data.complications.value
+          : this.complications,
+      recoveryNotes: data.recoveryNotes.present
+          ? data.recoveryNotes.value
+          : this.recoveryNotes,
+      followUpPlan: data.followUpPlan.present
+          ? data.followUpPlan.value
+          : this.followUpPlan,
+      dischargeDate: data.dischargeDate.present
+          ? data.dischargeDate.value
+          : this.dischargeDate,
+      isEmergency: data.isEmergency.present
+          ? data.isEmergency.value
+          : this.isEmergency,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SurgicalRecord(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('procedureName: $procedureName, ')
+          ..write('surgeonName: $surgeonName, ')
+          ..write('hospital: $hospital, ')
+          ..write('operatingRoom: $operatingRoom, ')
+          ..write('surgeryDate: $surgeryDate, ')
+          ..write('surgeryStartTime: $surgeryStartTime, ')
+          ..write('surgeryEndTime: $surgeryEndTime, ')
+          ..write('anesthesiaType: $anesthesiaType, ')
+          ..write('anesthesiologist: $anesthesiologist, ')
+          ..write('indication: $indication, ')
+          ..write('findings: $findings, ')
+          ..write('complications: $complications, ')
+          ..write('recoveryNotes: $recoveryNotes, ')
+          ..write('followUpPlan: $followUpPlan, ')
+          ..write('dischargeDate: $dischargeDate, ')
+          ..write('isEmergency: $isEmergency')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    procedureName,
+    surgeonName,
+    hospital,
+    operatingRoom,
+    surgeryDate,
+    surgeryStartTime,
+    surgeryEndTime,
+    anesthesiaType,
+    anesthesiologist,
+    indication,
+    findings,
+    complications,
+    recoveryNotes,
+    followUpPlan,
+    dischargeDate,
+    isEmergency,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SurgicalRecord &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.procedureName == this.procedureName &&
+          other.surgeonName == this.surgeonName &&
+          other.hospital == this.hospital &&
+          other.operatingRoom == this.operatingRoom &&
+          other.surgeryDate == this.surgeryDate &&
+          other.surgeryStartTime == this.surgeryStartTime &&
+          other.surgeryEndTime == this.surgeryEndTime &&
+          other.anesthesiaType == this.anesthesiaType &&
+          other.anesthesiologist == this.anesthesiologist &&
+          other.indication == this.indication &&
+          other.findings == this.findings &&
+          other.complications == this.complications &&
+          other.recoveryNotes == this.recoveryNotes &&
+          other.followUpPlan == this.followUpPlan &&
+          other.dischargeDate == this.dischargeDate &&
+          other.isEmergency == this.isEmergency);
+}
+
+class SurgicalRecordsCompanion extends UpdateCompanion<SurgicalRecord> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> procedureName;
+  final Value<String?> surgeonName;
+  final Value<String?> hospital;
+  final Value<String?> operatingRoom;
+  final Value<DateTime> surgeryDate;
+  final Value<DateTime?> surgeryStartTime;
+  final Value<DateTime?> surgeryEndTime;
+  final Value<String?> anesthesiaType;
+  final Value<String?> anesthesiologist;
+  final Value<String?> indication;
+  final Value<String?> findings;
+  final Value<String?> complications;
+  final Value<String?> recoveryNotes;
+  final Value<String?> followUpPlan;
+  final Value<DateTime?> dischargeDate;
+  final Value<bool> isEmergency;
+  final Value<int> rowid;
+  const SurgicalRecordsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.procedureName = const Value.absent(),
+    this.surgeonName = const Value.absent(),
+    this.hospital = const Value.absent(),
+    this.operatingRoom = const Value.absent(),
+    this.surgeryDate = const Value.absent(),
+    this.surgeryStartTime = const Value.absent(),
+    this.surgeryEndTime = const Value.absent(),
+    this.anesthesiaType = const Value.absent(),
+    this.anesthesiologist = const Value.absent(),
+    this.indication = const Value.absent(),
+    this.findings = const Value.absent(),
+    this.complications = const Value.absent(),
+    this.recoveryNotes = const Value.absent(),
+    this.followUpPlan = const Value.absent(),
+    this.dischargeDate = const Value.absent(),
+    this.isEmergency = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SurgicalRecordsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String procedureName,
+    this.surgeonName = const Value.absent(),
+    this.hospital = const Value.absent(),
+    this.operatingRoom = const Value.absent(),
+    required DateTime surgeryDate,
+    this.surgeryStartTime = const Value.absent(),
+    this.surgeryEndTime = const Value.absent(),
+    this.anesthesiaType = const Value.absent(),
+    this.anesthesiologist = const Value.absent(),
+    this.indication = const Value.absent(),
+    this.findings = const Value.absent(),
+    this.complications = const Value.absent(),
+    this.recoveryNotes = const Value.absent(),
+    this.followUpPlan = const Value.absent(),
+    this.dischargeDate = const Value.absent(),
+    this.isEmergency = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       procedureName = Value(procedureName),
+       surgeryDate = Value(surgeryDate);
+  static Insertable<SurgicalRecord> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? procedureName,
+    Expression<String>? surgeonName,
+    Expression<String>? hospital,
+    Expression<String>? operatingRoom,
+    Expression<DateTime>? surgeryDate,
+    Expression<DateTime>? surgeryStartTime,
+    Expression<DateTime>? surgeryEndTime,
+    Expression<String>? anesthesiaType,
+    Expression<String>? anesthesiologist,
+    Expression<String>? indication,
+    Expression<String>? findings,
+    Expression<String>? complications,
+    Expression<String>? recoveryNotes,
+    Expression<String>? followUpPlan,
+    Expression<DateTime>? dischargeDate,
+    Expression<bool>? isEmergency,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (procedureName != null) 'procedure_name': procedureName,
+      if (surgeonName != null) 'surgeon_name': surgeonName,
+      if (hospital != null) 'hospital': hospital,
+      if (operatingRoom != null) 'operating_room': operatingRoom,
+      if (surgeryDate != null) 'surgery_date': surgeryDate,
+      if (surgeryStartTime != null) 'surgery_start_time': surgeryStartTime,
+      if (surgeryEndTime != null) 'surgery_end_time': surgeryEndTime,
+      if (anesthesiaType != null) 'anesthesia_type': anesthesiaType,
+      if (anesthesiologist != null) 'anesthesiologist': anesthesiologist,
+      if (indication != null) 'indication': indication,
+      if (findings != null) 'findings': findings,
+      if (complications != null) 'complications': complications,
+      if (recoveryNotes != null) 'recovery_notes': recoveryNotes,
+      if (followUpPlan != null) 'follow_up_plan': followUpPlan,
+      if (dischargeDate != null) 'discharge_date': dischargeDate,
+      if (isEmergency != null) 'is_emergency': isEmergency,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SurgicalRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? procedureName,
+    Value<String?>? surgeonName,
+    Value<String?>? hospital,
+    Value<String?>? operatingRoom,
+    Value<DateTime>? surgeryDate,
+    Value<DateTime?>? surgeryStartTime,
+    Value<DateTime?>? surgeryEndTime,
+    Value<String?>? anesthesiaType,
+    Value<String?>? anesthesiologist,
+    Value<String?>? indication,
+    Value<String?>? findings,
+    Value<String?>? complications,
+    Value<String?>? recoveryNotes,
+    Value<String?>? followUpPlan,
+    Value<DateTime?>? dischargeDate,
+    Value<bool>? isEmergency,
+    Value<int>? rowid,
+  }) {
+    return SurgicalRecordsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      procedureName: procedureName ?? this.procedureName,
+      surgeonName: surgeonName ?? this.surgeonName,
+      hospital: hospital ?? this.hospital,
+      operatingRoom: operatingRoom ?? this.operatingRoom,
+      surgeryDate: surgeryDate ?? this.surgeryDate,
+      surgeryStartTime: surgeryStartTime ?? this.surgeryStartTime,
+      surgeryEndTime: surgeryEndTime ?? this.surgeryEndTime,
+      anesthesiaType: anesthesiaType ?? this.anesthesiaType,
+      anesthesiologist: anesthesiologist ?? this.anesthesiologist,
+      indication: indication ?? this.indication,
+      findings: findings ?? this.findings,
+      complications: complications ?? this.complications,
+      recoveryNotes: recoveryNotes ?? this.recoveryNotes,
+      followUpPlan: followUpPlan ?? this.followUpPlan,
+      dischargeDate: dischargeDate ?? this.dischargeDate,
+      isEmergency: isEmergency ?? this.isEmergency,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (procedureName.present) {
+      map['procedure_name'] = Variable<String>(procedureName.value);
+    }
+    if (surgeonName.present) {
+      map['surgeon_name'] = Variable<String>(surgeonName.value);
+    }
+    if (hospital.present) {
+      map['hospital'] = Variable<String>(hospital.value);
+    }
+    if (operatingRoom.present) {
+      map['operating_room'] = Variable<String>(operatingRoom.value);
+    }
+    if (surgeryDate.present) {
+      map['surgery_date'] = Variable<DateTime>(surgeryDate.value);
+    }
+    if (surgeryStartTime.present) {
+      map['surgery_start_time'] = Variable<DateTime>(surgeryStartTime.value);
+    }
+    if (surgeryEndTime.present) {
+      map['surgery_end_time'] = Variable<DateTime>(surgeryEndTime.value);
+    }
+    if (anesthesiaType.present) {
+      map['anesthesia_type'] = Variable<String>(anesthesiaType.value);
+    }
+    if (anesthesiologist.present) {
+      map['anesthesiologist'] = Variable<String>(anesthesiologist.value);
+    }
+    if (indication.present) {
+      map['indication'] = Variable<String>(indication.value);
+    }
+    if (findings.present) {
+      map['findings'] = Variable<String>(findings.value);
+    }
+    if (complications.present) {
+      map['complications'] = Variable<String>(complications.value);
+    }
+    if (recoveryNotes.present) {
+      map['recovery_notes'] = Variable<String>(recoveryNotes.value);
+    }
+    if (followUpPlan.present) {
+      map['follow_up_plan'] = Variable<String>(followUpPlan.value);
+    }
+    if (dischargeDate.present) {
+      map['discharge_date'] = Variable<DateTime>(dischargeDate.value);
+    }
+    if (isEmergency.present) {
+      map['is_emergency'] = Variable<bool>(isEmergency.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SurgicalRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('procedureName: $procedureName, ')
+          ..write('surgeonName: $surgeonName, ')
+          ..write('hospital: $hospital, ')
+          ..write('operatingRoom: $operatingRoom, ')
+          ..write('surgeryDate: $surgeryDate, ')
+          ..write('surgeryStartTime: $surgeryStartTime, ')
+          ..write('surgeryEndTime: $surgeryEndTime, ')
+          ..write('anesthesiaType: $anesthesiaType, ')
+          ..write('anesthesiologist: $anesthesiologist, ')
+          ..write('indication: $indication, ')
+          ..write('findings: $findings, ')
+          ..write('complications: $complications, ')
+          ..write('recoveryNotes: $recoveryNotes, ')
+          ..write('followUpPlan: $followUpPlan, ')
+          ..write('dischargeDate: $dischargeDate, ')
+          ..write('isEmergency: $isEmergency, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RadiologyRecordsTable extends RadiologyRecords
+    with TableInfo<$RadiologyRecordsTable, RadiologyRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RadiologyRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('radiology_record'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _studyTypeMeta = const VerificationMeta(
+    'studyType',
+  );
+  @override
+  late final GeneratedColumn<String> studyType = GeneratedColumn<String>(
+    'study_type',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyPartMeta = const VerificationMeta(
+    'bodyPart',
+  );
+  @override
+  late final GeneratedColumn<String> bodyPart = GeneratedColumn<String>(
+    'body_part',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _radiologistMeta = const VerificationMeta(
+    'radiologist',
+  );
+  @override
+  late final GeneratedColumn<String> radiologist = GeneratedColumn<String>(
+    'radiologist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _facilityMeta = const VerificationMeta(
+    'facility',
+  );
+  @override
+  late final GeneratedColumn<String> facility = GeneratedColumn<String>(
+    'facility',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _studyDateMeta = const VerificationMeta(
+    'studyDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> studyDate = GeneratedColumn<DateTime>(
+    'study_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _techniqueMeta = const VerificationMeta(
+    'technique',
+  );
+  @override
+  late final GeneratedColumn<String> technique = GeneratedColumn<String>(
+    'technique',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contrastMeta = const VerificationMeta(
+    'contrast',
+  );
+  @override
+  late final GeneratedColumn<String> contrast = GeneratedColumn<String>(
+    'contrast',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _findingsMeta = const VerificationMeta(
+    'findings',
+  );
+  @override
+  late final GeneratedColumn<String> findings = GeneratedColumn<String>(
+    'findings',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _impressionMeta = const VerificationMeta(
+    'impression',
+  );
+  @override
+  late final GeneratedColumn<String> impression = GeneratedColumn<String>(
+    'impression',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recommendationMeta = const VerificationMeta(
+    'recommendation',
+  );
+  @override
+  late final GeneratedColumn<String> recommendation = GeneratedColumn<String>(
+    'recommendation',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _urgencyMeta = const VerificationMeta(
+    'urgency',
+  );
+  @override
+  late final GeneratedColumn<String> urgency = GeneratedColumn<String>(
+    'urgency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isNormalMeta = const VerificationMeta(
+    'isNormal',
+  );
+  @override
+  late final GeneratedColumn<bool> isNormal = GeneratedColumn<bool>(
+    'is_normal',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_normal" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _referringPhysicianMeta =
+      const VerificationMeta('referringPhysician');
+  @override
+  late final GeneratedColumn<String> referringPhysician =
+      GeneratedColumn<String>(
+        'referring_physician',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _protocolUsedMeta = const VerificationMeta(
+    'protocolUsed',
+  );
+  @override
+  late final GeneratedColumn<String> protocolUsed = GeneratedColumn<String>(
+    'protocol_used',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    studyType,
+    bodyPart,
+    radiologist,
+    facility,
+    studyDate,
+    technique,
+    contrast,
+    findings,
+    impression,
+    recommendation,
+    urgency,
+    isNormal,
+    referringPhysician,
+    protocolUsed,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'radiology_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RadiologyRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('study_type')) {
+      context.handle(
+        _studyTypeMeta,
+        studyType.isAcceptableOrUnknown(data['study_type']!, _studyTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_studyTypeMeta);
+    }
+    if (data.containsKey('body_part')) {
+      context.handle(
+        _bodyPartMeta,
+        bodyPart.isAcceptableOrUnknown(data['body_part']!, _bodyPartMeta),
+      );
+    }
+    if (data.containsKey('radiologist')) {
+      context.handle(
+        _radiologistMeta,
+        radiologist.isAcceptableOrUnknown(
+          data['radiologist']!,
+          _radiologistMeta,
+        ),
+      );
+    }
+    if (data.containsKey('facility')) {
+      context.handle(
+        _facilityMeta,
+        facility.isAcceptableOrUnknown(data['facility']!, _facilityMeta),
+      );
+    }
+    if (data.containsKey('study_date')) {
+      context.handle(
+        _studyDateMeta,
+        studyDate.isAcceptableOrUnknown(data['study_date']!, _studyDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_studyDateMeta);
+    }
+    if (data.containsKey('technique')) {
+      context.handle(
+        _techniqueMeta,
+        technique.isAcceptableOrUnknown(data['technique']!, _techniqueMeta),
+      );
+    }
+    if (data.containsKey('contrast')) {
+      context.handle(
+        _contrastMeta,
+        contrast.isAcceptableOrUnknown(data['contrast']!, _contrastMeta),
+      );
+    }
+    if (data.containsKey('findings')) {
+      context.handle(
+        _findingsMeta,
+        findings.isAcceptableOrUnknown(data['findings']!, _findingsMeta),
+      );
+    }
+    if (data.containsKey('impression')) {
+      context.handle(
+        _impressionMeta,
+        impression.isAcceptableOrUnknown(data['impression']!, _impressionMeta),
+      );
+    }
+    if (data.containsKey('recommendation')) {
+      context.handle(
+        _recommendationMeta,
+        recommendation.isAcceptableOrUnknown(
+          data['recommendation']!,
+          _recommendationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('urgency')) {
+      context.handle(
+        _urgencyMeta,
+        urgency.isAcceptableOrUnknown(data['urgency']!, _urgencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_urgencyMeta);
+    }
+    if (data.containsKey('is_normal')) {
+      context.handle(
+        _isNormalMeta,
+        isNormal.isAcceptableOrUnknown(data['is_normal']!, _isNormalMeta),
+      );
+    }
+    if (data.containsKey('referring_physician')) {
+      context.handle(
+        _referringPhysicianMeta,
+        referringPhysician.isAcceptableOrUnknown(
+          data['referring_physician']!,
+          _referringPhysicianMeta,
+        ),
+      );
+    }
+    if (data.containsKey('protocol_used')) {
+      context.handle(
+        _protocolUsedMeta,
+        protocolUsed.isAcceptableOrUnknown(
+          data['protocol_used']!,
+          _protocolUsedMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RadiologyRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RadiologyRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      studyType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}study_type'],
+      )!,
+      bodyPart: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body_part'],
+      ),
+      radiologist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radiologist'],
+      ),
+      facility: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}facility'],
+      ),
+      studyDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}study_date'],
+      )!,
+      technique: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}technique'],
+      ),
+      contrast: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}contrast'],
+      ),
+      findings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}findings'],
+      ),
+      impression: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}impression'],
+      ),
+      recommendation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recommendation'],
+      ),
+      urgency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}urgency'],
+      )!,
+      isNormal: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_normal'],
+      )!,
+      referringPhysician: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referring_physician'],
+      ),
+      protocolUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}protocol_used'],
+      ),
+    );
+  }
+
+  @override
+  $RadiologyRecordsTable createAlias(String alias) {
+    return $RadiologyRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class RadiologyRecord extends DataClass implements Insertable<RadiologyRecord> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String studyType;
+  final String? bodyPart;
+  final String? radiologist;
+  final String? facility;
+  final DateTime studyDate;
+  final String? technique;
+  final String? contrast;
+  final String? findings;
+  final String? impression;
+  final String? recommendation;
+  final String urgency;
+  final bool isNormal;
+  final String? referringPhysician;
+  final String? protocolUsed;
+  const RadiologyRecord({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.studyType,
+    this.bodyPart,
+    this.radiologist,
+    this.facility,
+    required this.studyDate,
+    this.technique,
+    this.contrast,
+    this.findings,
+    this.impression,
+    this.recommendation,
+    required this.urgency,
+    required this.isNormal,
+    this.referringPhysician,
+    this.protocolUsed,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['study_type'] = Variable<String>(studyType);
+    if (!nullToAbsent || bodyPart != null) {
+      map['body_part'] = Variable<String>(bodyPart);
+    }
+    if (!nullToAbsent || radiologist != null) {
+      map['radiologist'] = Variable<String>(radiologist);
+    }
+    if (!nullToAbsent || facility != null) {
+      map['facility'] = Variable<String>(facility);
+    }
+    map['study_date'] = Variable<DateTime>(studyDate);
+    if (!nullToAbsent || technique != null) {
+      map['technique'] = Variable<String>(technique);
+    }
+    if (!nullToAbsent || contrast != null) {
+      map['contrast'] = Variable<String>(contrast);
+    }
+    if (!nullToAbsent || findings != null) {
+      map['findings'] = Variable<String>(findings);
+    }
+    if (!nullToAbsent || impression != null) {
+      map['impression'] = Variable<String>(impression);
+    }
+    if (!nullToAbsent || recommendation != null) {
+      map['recommendation'] = Variable<String>(recommendation);
+    }
+    map['urgency'] = Variable<String>(urgency);
+    map['is_normal'] = Variable<bool>(isNormal);
+    if (!nullToAbsent || referringPhysician != null) {
+      map['referring_physician'] = Variable<String>(referringPhysician);
+    }
+    if (!nullToAbsent || protocolUsed != null) {
+      map['protocol_used'] = Variable<String>(protocolUsed);
+    }
+    return map;
+  }
+
+  RadiologyRecordsCompanion toCompanion(bool nullToAbsent) {
+    return RadiologyRecordsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      studyType: Value(studyType),
+      bodyPart: bodyPart == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyPart),
+      radiologist: radiologist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(radiologist),
+      facility: facility == null && nullToAbsent
+          ? const Value.absent()
+          : Value(facility),
+      studyDate: Value(studyDate),
+      technique: technique == null && nullToAbsent
+          ? const Value.absent()
+          : Value(technique),
+      contrast: contrast == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contrast),
+      findings: findings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(findings),
+      impression: impression == null && nullToAbsent
+          ? const Value.absent()
+          : Value(impression),
+      recommendation: recommendation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recommendation),
+      urgency: Value(urgency),
+      isNormal: Value(isNormal),
+      referringPhysician: referringPhysician == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referringPhysician),
+      protocolUsed: protocolUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(protocolUsed),
+    );
+  }
+
+  factory RadiologyRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RadiologyRecord(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      studyType: serializer.fromJson<String>(json['studyType']),
+      bodyPart: serializer.fromJson<String?>(json['bodyPart']),
+      radiologist: serializer.fromJson<String?>(json['radiologist']),
+      facility: serializer.fromJson<String?>(json['facility']),
+      studyDate: serializer.fromJson<DateTime>(json['studyDate']),
+      technique: serializer.fromJson<String?>(json['technique']),
+      contrast: serializer.fromJson<String?>(json['contrast']),
+      findings: serializer.fromJson<String?>(json['findings']),
+      impression: serializer.fromJson<String?>(json['impression']),
+      recommendation: serializer.fromJson<String?>(json['recommendation']),
+      urgency: serializer.fromJson<String>(json['urgency']),
+      isNormal: serializer.fromJson<bool>(json['isNormal']),
+      referringPhysician: serializer.fromJson<String?>(
+        json['referringPhysician'],
+      ),
+      protocolUsed: serializer.fromJson<String?>(json['protocolUsed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'studyType': serializer.toJson<String>(studyType),
+      'bodyPart': serializer.toJson<String?>(bodyPart),
+      'radiologist': serializer.toJson<String?>(radiologist),
+      'facility': serializer.toJson<String?>(facility),
+      'studyDate': serializer.toJson<DateTime>(studyDate),
+      'technique': serializer.toJson<String?>(technique),
+      'contrast': serializer.toJson<String?>(contrast),
+      'findings': serializer.toJson<String?>(findings),
+      'impression': serializer.toJson<String?>(impression),
+      'recommendation': serializer.toJson<String?>(recommendation),
+      'urgency': serializer.toJson<String>(urgency),
+      'isNormal': serializer.toJson<bool>(isNormal),
+      'referringPhysician': serializer.toJson<String?>(referringPhysician),
+      'protocolUsed': serializer.toJson<String?>(protocolUsed),
+    };
+  }
+
+  RadiologyRecord copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? studyType,
+    Value<String?> bodyPart = const Value.absent(),
+    Value<String?> radiologist = const Value.absent(),
+    Value<String?> facility = const Value.absent(),
+    DateTime? studyDate,
+    Value<String?> technique = const Value.absent(),
+    Value<String?> contrast = const Value.absent(),
+    Value<String?> findings = const Value.absent(),
+    Value<String?> impression = const Value.absent(),
+    Value<String?> recommendation = const Value.absent(),
+    String? urgency,
+    bool? isNormal,
+    Value<String?> referringPhysician = const Value.absent(),
+    Value<String?> protocolUsed = const Value.absent(),
+  }) => RadiologyRecord(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    studyType: studyType ?? this.studyType,
+    bodyPart: bodyPart.present ? bodyPart.value : this.bodyPart,
+    radiologist: radiologist.present ? radiologist.value : this.radiologist,
+    facility: facility.present ? facility.value : this.facility,
+    studyDate: studyDate ?? this.studyDate,
+    technique: technique.present ? technique.value : this.technique,
+    contrast: contrast.present ? contrast.value : this.contrast,
+    findings: findings.present ? findings.value : this.findings,
+    impression: impression.present ? impression.value : this.impression,
+    recommendation: recommendation.present
+        ? recommendation.value
+        : this.recommendation,
+    urgency: urgency ?? this.urgency,
+    isNormal: isNormal ?? this.isNormal,
+    referringPhysician: referringPhysician.present
+        ? referringPhysician.value
+        : this.referringPhysician,
+    protocolUsed: protocolUsed.present ? protocolUsed.value : this.protocolUsed,
+  );
+  RadiologyRecord copyWithCompanion(RadiologyRecordsCompanion data) {
+    return RadiologyRecord(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      studyType: data.studyType.present ? data.studyType.value : this.studyType,
+      bodyPart: data.bodyPart.present ? data.bodyPart.value : this.bodyPart,
+      radiologist: data.radiologist.present
+          ? data.radiologist.value
+          : this.radiologist,
+      facility: data.facility.present ? data.facility.value : this.facility,
+      studyDate: data.studyDate.present ? data.studyDate.value : this.studyDate,
+      technique: data.technique.present ? data.technique.value : this.technique,
+      contrast: data.contrast.present ? data.contrast.value : this.contrast,
+      findings: data.findings.present ? data.findings.value : this.findings,
+      impression: data.impression.present
+          ? data.impression.value
+          : this.impression,
+      recommendation: data.recommendation.present
+          ? data.recommendation.value
+          : this.recommendation,
+      urgency: data.urgency.present ? data.urgency.value : this.urgency,
+      isNormal: data.isNormal.present ? data.isNormal.value : this.isNormal,
+      referringPhysician: data.referringPhysician.present
+          ? data.referringPhysician.value
+          : this.referringPhysician,
+      protocolUsed: data.protocolUsed.present
+          ? data.protocolUsed.value
+          : this.protocolUsed,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RadiologyRecord(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('studyType: $studyType, ')
+          ..write('bodyPart: $bodyPart, ')
+          ..write('radiologist: $radiologist, ')
+          ..write('facility: $facility, ')
+          ..write('studyDate: $studyDate, ')
+          ..write('technique: $technique, ')
+          ..write('contrast: $contrast, ')
+          ..write('findings: $findings, ')
+          ..write('impression: $impression, ')
+          ..write('recommendation: $recommendation, ')
+          ..write('urgency: $urgency, ')
+          ..write('isNormal: $isNormal, ')
+          ..write('referringPhysician: $referringPhysician, ')
+          ..write('protocolUsed: $protocolUsed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    studyType,
+    bodyPart,
+    radiologist,
+    facility,
+    studyDate,
+    technique,
+    contrast,
+    findings,
+    impression,
+    recommendation,
+    urgency,
+    isNormal,
+    referringPhysician,
+    protocolUsed,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RadiologyRecord &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.studyType == this.studyType &&
+          other.bodyPart == this.bodyPart &&
+          other.radiologist == this.radiologist &&
+          other.facility == this.facility &&
+          other.studyDate == this.studyDate &&
+          other.technique == this.technique &&
+          other.contrast == this.contrast &&
+          other.findings == this.findings &&
+          other.impression == this.impression &&
+          other.recommendation == this.recommendation &&
+          other.urgency == this.urgency &&
+          other.isNormal == this.isNormal &&
+          other.referringPhysician == this.referringPhysician &&
+          other.protocolUsed == this.protocolUsed);
+}
+
+class RadiologyRecordsCompanion extends UpdateCompanion<RadiologyRecord> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> studyType;
+  final Value<String?> bodyPart;
+  final Value<String?> radiologist;
+  final Value<String?> facility;
+  final Value<DateTime> studyDate;
+  final Value<String?> technique;
+  final Value<String?> contrast;
+  final Value<String?> findings;
+  final Value<String?> impression;
+  final Value<String?> recommendation;
+  final Value<String> urgency;
+  final Value<bool> isNormal;
+  final Value<String?> referringPhysician;
+  final Value<String?> protocolUsed;
+  final Value<int> rowid;
+  const RadiologyRecordsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.studyType = const Value.absent(),
+    this.bodyPart = const Value.absent(),
+    this.radiologist = const Value.absent(),
+    this.facility = const Value.absent(),
+    this.studyDate = const Value.absent(),
+    this.technique = const Value.absent(),
+    this.contrast = const Value.absent(),
+    this.findings = const Value.absent(),
+    this.impression = const Value.absent(),
+    this.recommendation = const Value.absent(),
+    this.urgency = const Value.absent(),
+    this.isNormal = const Value.absent(),
+    this.referringPhysician = const Value.absent(),
+    this.protocolUsed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RadiologyRecordsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String studyType,
+    this.bodyPart = const Value.absent(),
+    this.radiologist = const Value.absent(),
+    this.facility = const Value.absent(),
+    required DateTime studyDate,
+    this.technique = const Value.absent(),
+    this.contrast = const Value.absent(),
+    this.findings = const Value.absent(),
+    this.impression = const Value.absent(),
+    this.recommendation = const Value.absent(),
+    required String urgency,
+    this.isNormal = const Value.absent(),
+    this.referringPhysician = const Value.absent(),
+    this.protocolUsed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       studyType = Value(studyType),
+       studyDate = Value(studyDate),
+       urgency = Value(urgency);
+  static Insertable<RadiologyRecord> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? studyType,
+    Expression<String>? bodyPart,
+    Expression<String>? radiologist,
+    Expression<String>? facility,
+    Expression<DateTime>? studyDate,
+    Expression<String>? technique,
+    Expression<String>? contrast,
+    Expression<String>? findings,
+    Expression<String>? impression,
+    Expression<String>? recommendation,
+    Expression<String>? urgency,
+    Expression<bool>? isNormal,
+    Expression<String>? referringPhysician,
+    Expression<String>? protocolUsed,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (studyType != null) 'study_type': studyType,
+      if (bodyPart != null) 'body_part': bodyPart,
+      if (radiologist != null) 'radiologist': radiologist,
+      if (facility != null) 'facility': facility,
+      if (studyDate != null) 'study_date': studyDate,
+      if (technique != null) 'technique': technique,
+      if (contrast != null) 'contrast': contrast,
+      if (findings != null) 'findings': findings,
+      if (impression != null) 'impression': impression,
+      if (recommendation != null) 'recommendation': recommendation,
+      if (urgency != null) 'urgency': urgency,
+      if (isNormal != null) 'is_normal': isNormal,
+      if (referringPhysician != null) 'referring_physician': referringPhysician,
+      if (protocolUsed != null) 'protocol_used': protocolUsed,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RadiologyRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? studyType,
+    Value<String?>? bodyPart,
+    Value<String?>? radiologist,
+    Value<String?>? facility,
+    Value<DateTime>? studyDate,
+    Value<String?>? technique,
+    Value<String?>? contrast,
+    Value<String?>? findings,
+    Value<String?>? impression,
+    Value<String?>? recommendation,
+    Value<String>? urgency,
+    Value<bool>? isNormal,
+    Value<String?>? referringPhysician,
+    Value<String?>? protocolUsed,
+    Value<int>? rowid,
+  }) {
+    return RadiologyRecordsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      studyType: studyType ?? this.studyType,
+      bodyPart: bodyPart ?? this.bodyPart,
+      radiologist: radiologist ?? this.radiologist,
+      facility: facility ?? this.facility,
+      studyDate: studyDate ?? this.studyDate,
+      technique: technique ?? this.technique,
+      contrast: contrast ?? this.contrast,
+      findings: findings ?? this.findings,
+      impression: impression ?? this.impression,
+      recommendation: recommendation ?? this.recommendation,
+      urgency: urgency ?? this.urgency,
+      isNormal: isNormal ?? this.isNormal,
+      referringPhysician: referringPhysician ?? this.referringPhysician,
+      protocolUsed: protocolUsed ?? this.protocolUsed,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (studyType.present) {
+      map['study_type'] = Variable<String>(studyType.value);
+    }
+    if (bodyPart.present) {
+      map['body_part'] = Variable<String>(bodyPart.value);
+    }
+    if (radiologist.present) {
+      map['radiologist'] = Variable<String>(radiologist.value);
+    }
+    if (facility.present) {
+      map['facility'] = Variable<String>(facility.value);
+    }
+    if (studyDate.present) {
+      map['study_date'] = Variable<DateTime>(studyDate.value);
+    }
+    if (technique.present) {
+      map['technique'] = Variable<String>(technique.value);
+    }
+    if (contrast.present) {
+      map['contrast'] = Variable<String>(contrast.value);
+    }
+    if (findings.present) {
+      map['findings'] = Variable<String>(findings.value);
+    }
+    if (impression.present) {
+      map['impression'] = Variable<String>(impression.value);
+    }
+    if (recommendation.present) {
+      map['recommendation'] = Variable<String>(recommendation.value);
+    }
+    if (urgency.present) {
+      map['urgency'] = Variable<String>(urgency.value);
+    }
+    if (isNormal.present) {
+      map['is_normal'] = Variable<bool>(isNormal.value);
+    }
+    if (referringPhysician.present) {
+      map['referring_physician'] = Variable<String>(referringPhysician.value);
+    }
+    if (protocolUsed.present) {
+      map['protocol_used'] = Variable<String>(protocolUsed.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RadiologyRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('studyType: $studyType, ')
+          ..write('bodyPart: $bodyPart, ')
+          ..write('radiologist: $radiologist, ')
+          ..write('facility: $facility, ')
+          ..write('studyDate: $studyDate, ')
+          ..write('technique: $technique, ')
+          ..write('contrast: $contrast, ')
+          ..write('findings: $findings, ')
+          ..write('impression: $impression, ')
+          ..write('recommendation: $recommendation, ')
+          ..write('urgency: $urgency, ')
+          ..write('isNormal: $isNormal, ')
+          ..write('referringPhysician: $referringPhysician, ')
+          ..write('protocolUsed: $protocolUsed, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PathologyRecordsTable extends PathologyRecords
+    with TableInfo<$PathologyRecordsTable, PathologyRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PathologyRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pathology_record'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _specimenTypeMeta = const VerificationMeta(
+    'specimenType',
+  );
+  @override
+  late final GeneratedColumn<String> specimenType = GeneratedColumn<String>(
+    'specimen_type',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _specimenSiteMeta = const VerificationMeta(
+    'specimenSite',
+  );
+  @override
+  late final GeneratedColumn<String> specimenSite = GeneratedColumn<String>(
+    'specimen_site',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _pathologistMeta = const VerificationMeta(
+    'pathologist',
+  );
+  @override
+  late final GeneratedColumn<String> pathologist = GeneratedColumn<String>(
+    'pathologist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _laboratoryMeta = const VerificationMeta(
+    'laboratory',
+  );
+  @override
+  late final GeneratedColumn<String> laboratory = GeneratedColumn<String>(
+    'laboratory',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _collectionDateMeta = const VerificationMeta(
+    'collectionDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> collectionDate =
+      GeneratedColumn<DateTime>(
+        'collection_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _reportDateMeta = const VerificationMeta(
+    'reportDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> reportDate = GeneratedColumn<DateTime>(
+    'report_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _collectionMethodMeta = const VerificationMeta(
+    'collectionMethod',
+  );
+  @override
+  late final GeneratedColumn<String> collectionMethod = GeneratedColumn<String>(
+    'collection_method',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _grossDescriptionMeta = const VerificationMeta(
+    'grossDescription',
+  );
+  @override
+  late final GeneratedColumn<String> grossDescription = GeneratedColumn<String>(
+    'gross_description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _microscopicFindingsMeta =
+      const VerificationMeta('microscopicFindings');
+  @override
+  late final GeneratedColumn<String> microscopicFindings =
+      GeneratedColumn<String>(
+        'microscopic_findings',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _diagnosisMeta = const VerificationMeta(
+    'diagnosis',
+  );
+  @override
+  late final GeneratedColumn<String> diagnosis = GeneratedColumn<String>(
+    'diagnosis',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stagingGradingMeta = const VerificationMeta(
+    'stagingGrading',
+  );
+  @override
+  late final GeneratedColumn<String> stagingGrading = GeneratedColumn<String>(
+    'staging_grading',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _immunohistochemistryMeta =
+      const VerificationMeta('immunohistochemistry');
+  @override
+  late final GeneratedColumn<String> immunohistochemistry =
+      GeneratedColumn<String>(
+        'immunohistochemistry',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _molecularStudiesMeta = const VerificationMeta(
+    'molecularStudies',
+  );
+  @override
+  late final GeneratedColumn<String> molecularStudies = GeneratedColumn<String>(
+    'molecular_studies',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recommendationMeta = const VerificationMeta(
+    'recommendation',
+  );
+  @override
+  late final GeneratedColumn<String> recommendation = GeneratedColumn<String>(
+    'recommendation',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _urgencyMeta = const VerificationMeta(
+    'urgency',
+  );
+  @override
+  late final GeneratedColumn<String> urgency = GeneratedColumn<String>(
+    'urgency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isMalignantMeta = const VerificationMeta(
+    'isMalignant',
+  );
+  @override
+  late final GeneratedColumn<bool> isMalignant = GeneratedColumn<bool>(
+    'is_malignant',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_malignant" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _referringPhysicianMeta =
+      const VerificationMeta('referringPhysician');
+  @override
+  late final GeneratedColumn<String> referringPhysician =
+      GeneratedColumn<String>(
+        'referring_physician',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    specimenType,
+    specimenSite,
+    pathologist,
+    laboratory,
+    collectionDate,
+    reportDate,
+    collectionMethod,
+    grossDescription,
+    microscopicFindings,
+    diagnosis,
+    stagingGrading,
+    immunohistochemistry,
+    molecularStudies,
+    recommendation,
+    urgency,
+    isMalignant,
+    referringPhysician,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pathology_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PathologyRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('specimen_type')) {
+      context.handle(
+        _specimenTypeMeta,
+        specimenType.isAcceptableOrUnknown(
+          data['specimen_type']!,
+          _specimenTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_specimenTypeMeta);
+    }
+    if (data.containsKey('specimen_site')) {
+      context.handle(
+        _specimenSiteMeta,
+        specimenSite.isAcceptableOrUnknown(
+          data['specimen_site']!,
+          _specimenSiteMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pathologist')) {
+      context.handle(
+        _pathologistMeta,
+        pathologist.isAcceptableOrUnknown(
+          data['pathologist']!,
+          _pathologistMeta,
+        ),
+      );
+    }
+    if (data.containsKey('laboratory')) {
+      context.handle(
+        _laboratoryMeta,
+        laboratory.isAcceptableOrUnknown(data['laboratory']!, _laboratoryMeta),
+      );
+    }
+    if (data.containsKey('collection_date')) {
+      context.handle(
+        _collectionDateMeta,
+        collectionDate.isAcceptableOrUnknown(
+          data['collection_date']!,
+          _collectionDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_collectionDateMeta);
+    }
+    if (data.containsKey('report_date')) {
+      context.handle(
+        _reportDateMeta,
+        reportDate.isAcceptableOrUnknown(data['report_date']!, _reportDateMeta),
+      );
+    }
+    if (data.containsKey('collection_method')) {
+      context.handle(
+        _collectionMethodMeta,
+        collectionMethod.isAcceptableOrUnknown(
+          data['collection_method']!,
+          _collectionMethodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('gross_description')) {
+      context.handle(
+        _grossDescriptionMeta,
+        grossDescription.isAcceptableOrUnknown(
+          data['gross_description']!,
+          _grossDescriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('microscopic_findings')) {
+      context.handle(
+        _microscopicFindingsMeta,
+        microscopicFindings.isAcceptableOrUnknown(
+          data['microscopic_findings']!,
+          _microscopicFindingsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('diagnosis')) {
+      context.handle(
+        _diagnosisMeta,
+        diagnosis.isAcceptableOrUnknown(data['diagnosis']!, _diagnosisMeta),
+      );
+    }
+    if (data.containsKey('staging_grading')) {
+      context.handle(
+        _stagingGradingMeta,
+        stagingGrading.isAcceptableOrUnknown(
+          data['staging_grading']!,
+          _stagingGradingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('immunohistochemistry')) {
+      context.handle(
+        _immunohistochemistryMeta,
+        immunohistochemistry.isAcceptableOrUnknown(
+          data['immunohistochemistry']!,
+          _immunohistochemistryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('molecular_studies')) {
+      context.handle(
+        _molecularStudiesMeta,
+        molecularStudies.isAcceptableOrUnknown(
+          data['molecular_studies']!,
+          _molecularStudiesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('recommendation')) {
+      context.handle(
+        _recommendationMeta,
+        recommendation.isAcceptableOrUnknown(
+          data['recommendation']!,
+          _recommendationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('urgency')) {
+      context.handle(
+        _urgencyMeta,
+        urgency.isAcceptableOrUnknown(data['urgency']!, _urgencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_urgencyMeta);
+    }
+    if (data.containsKey('is_malignant')) {
+      context.handle(
+        _isMalignantMeta,
+        isMalignant.isAcceptableOrUnknown(
+          data['is_malignant']!,
+          _isMalignantMeta,
+        ),
+      );
+    }
+    if (data.containsKey('referring_physician')) {
+      context.handle(
+        _referringPhysicianMeta,
+        referringPhysician.isAcceptableOrUnknown(
+          data['referring_physician']!,
+          _referringPhysicianMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PathologyRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PathologyRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      specimenType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specimen_type'],
+      )!,
+      specimenSite: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specimen_site'],
+      ),
+      pathologist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pathologist'],
+      ),
+      laboratory: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}laboratory'],
+      ),
+      collectionDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}collection_date'],
+      )!,
+      reportDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}report_date'],
+      ),
+      collectionMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}collection_method'],
+      ),
+      grossDescription: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gross_description'],
+      ),
+      microscopicFindings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}microscopic_findings'],
+      ),
+      diagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}diagnosis'],
+      ),
+      stagingGrading: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staging_grading'],
+      ),
+      immunohistochemistry: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}immunohistochemistry'],
+      ),
+      molecularStudies: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}molecular_studies'],
+      ),
+      recommendation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recommendation'],
+      ),
+      urgency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}urgency'],
+      )!,
+      isMalignant: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_malignant'],
+      )!,
+      referringPhysician: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referring_physician'],
+      ),
+    );
+  }
+
+  @override
+  $PathologyRecordsTable createAlias(String alias) {
+    return $PathologyRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class PathologyRecord extends DataClass implements Insertable<PathologyRecord> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String specimenType;
+  final String? specimenSite;
+  final String? pathologist;
+  final String? laboratory;
+  final DateTime collectionDate;
+  final DateTime? reportDate;
+  final String? collectionMethod;
+  final String? grossDescription;
+  final String? microscopicFindings;
+  final String? diagnosis;
+  final String? stagingGrading;
+  final String? immunohistochemistry;
+  final String? molecularStudies;
+  final String? recommendation;
+  final String urgency;
+  final bool isMalignant;
+  final String? referringPhysician;
+  const PathologyRecord({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.specimenType,
+    this.specimenSite,
+    this.pathologist,
+    this.laboratory,
+    required this.collectionDate,
+    this.reportDate,
+    this.collectionMethod,
+    this.grossDescription,
+    this.microscopicFindings,
+    this.diagnosis,
+    this.stagingGrading,
+    this.immunohistochemistry,
+    this.molecularStudies,
+    this.recommendation,
+    required this.urgency,
+    required this.isMalignant,
+    this.referringPhysician,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['specimen_type'] = Variable<String>(specimenType);
+    if (!nullToAbsent || specimenSite != null) {
+      map['specimen_site'] = Variable<String>(specimenSite);
+    }
+    if (!nullToAbsent || pathologist != null) {
+      map['pathologist'] = Variable<String>(pathologist);
+    }
+    if (!nullToAbsent || laboratory != null) {
+      map['laboratory'] = Variable<String>(laboratory);
+    }
+    map['collection_date'] = Variable<DateTime>(collectionDate);
+    if (!nullToAbsent || reportDate != null) {
+      map['report_date'] = Variable<DateTime>(reportDate);
+    }
+    if (!nullToAbsent || collectionMethod != null) {
+      map['collection_method'] = Variable<String>(collectionMethod);
+    }
+    if (!nullToAbsent || grossDescription != null) {
+      map['gross_description'] = Variable<String>(grossDescription);
+    }
+    if (!nullToAbsent || microscopicFindings != null) {
+      map['microscopic_findings'] = Variable<String>(microscopicFindings);
+    }
+    if (!nullToAbsent || diagnosis != null) {
+      map['diagnosis'] = Variable<String>(diagnosis);
+    }
+    if (!nullToAbsent || stagingGrading != null) {
+      map['staging_grading'] = Variable<String>(stagingGrading);
+    }
+    if (!nullToAbsent || immunohistochemistry != null) {
+      map['immunohistochemistry'] = Variable<String>(immunohistochemistry);
+    }
+    if (!nullToAbsent || molecularStudies != null) {
+      map['molecular_studies'] = Variable<String>(molecularStudies);
+    }
+    if (!nullToAbsent || recommendation != null) {
+      map['recommendation'] = Variable<String>(recommendation);
+    }
+    map['urgency'] = Variable<String>(urgency);
+    map['is_malignant'] = Variable<bool>(isMalignant);
+    if (!nullToAbsent || referringPhysician != null) {
+      map['referring_physician'] = Variable<String>(referringPhysician);
+    }
+    return map;
+  }
+
+  PathologyRecordsCompanion toCompanion(bool nullToAbsent) {
+    return PathologyRecordsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      specimenType: Value(specimenType),
+      specimenSite: specimenSite == null && nullToAbsent
+          ? const Value.absent()
+          : Value(specimenSite),
+      pathologist: pathologist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pathologist),
+      laboratory: laboratory == null && nullToAbsent
+          ? const Value.absent()
+          : Value(laboratory),
+      collectionDate: Value(collectionDate),
+      reportDate: reportDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reportDate),
+      collectionMethod: collectionMethod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(collectionMethod),
+      grossDescription: grossDescription == null && nullToAbsent
+          ? const Value.absent()
+          : Value(grossDescription),
+      microscopicFindings: microscopicFindings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(microscopicFindings),
+      diagnosis: diagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(diagnosis),
+      stagingGrading: stagingGrading == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stagingGrading),
+      immunohistochemistry: immunohistochemistry == null && nullToAbsent
+          ? const Value.absent()
+          : Value(immunohistochemistry),
+      molecularStudies: molecularStudies == null && nullToAbsent
+          ? const Value.absent()
+          : Value(molecularStudies),
+      recommendation: recommendation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recommendation),
+      urgency: Value(urgency),
+      isMalignant: Value(isMalignant),
+      referringPhysician: referringPhysician == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referringPhysician),
+    );
+  }
+
+  factory PathologyRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PathologyRecord(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      specimenType: serializer.fromJson<String>(json['specimenType']),
+      specimenSite: serializer.fromJson<String?>(json['specimenSite']),
+      pathologist: serializer.fromJson<String?>(json['pathologist']),
+      laboratory: serializer.fromJson<String?>(json['laboratory']),
+      collectionDate: serializer.fromJson<DateTime>(json['collectionDate']),
+      reportDate: serializer.fromJson<DateTime?>(json['reportDate']),
+      collectionMethod: serializer.fromJson<String?>(json['collectionMethod']),
+      grossDescription: serializer.fromJson<String?>(json['grossDescription']),
+      microscopicFindings: serializer.fromJson<String?>(
+        json['microscopicFindings'],
+      ),
+      diagnosis: serializer.fromJson<String?>(json['diagnosis']),
+      stagingGrading: serializer.fromJson<String?>(json['stagingGrading']),
+      immunohistochemistry: serializer.fromJson<String?>(
+        json['immunohistochemistry'],
+      ),
+      molecularStudies: serializer.fromJson<String?>(json['molecularStudies']),
+      recommendation: serializer.fromJson<String?>(json['recommendation']),
+      urgency: serializer.fromJson<String>(json['urgency']),
+      isMalignant: serializer.fromJson<bool>(json['isMalignant']),
+      referringPhysician: serializer.fromJson<String?>(
+        json['referringPhysician'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'specimenType': serializer.toJson<String>(specimenType),
+      'specimenSite': serializer.toJson<String?>(specimenSite),
+      'pathologist': serializer.toJson<String?>(pathologist),
+      'laboratory': serializer.toJson<String?>(laboratory),
+      'collectionDate': serializer.toJson<DateTime>(collectionDate),
+      'reportDate': serializer.toJson<DateTime?>(reportDate),
+      'collectionMethod': serializer.toJson<String?>(collectionMethod),
+      'grossDescription': serializer.toJson<String?>(grossDescription),
+      'microscopicFindings': serializer.toJson<String?>(microscopicFindings),
+      'diagnosis': serializer.toJson<String?>(diagnosis),
+      'stagingGrading': serializer.toJson<String?>(stagingGrading),
+      'immunohistochemistry': serializer.toJson<String?>(immunohistochemistry),
+      'molecularStudies': serializer.toJson<String?>(molecularStudies),
+      'recommendation': serializer.toJson<String?>(recommendation),
+      'urgency': serializer.toJson<String>(urgency),
+      'isMalignant': serializer.toJson<bool>(isMalignant),
+      'referringPhysician': serializer.toJson<String?>(referringPhysician),
+    };
+  }
+
+  PathologyRecord copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? specimenType,
+    Value<String?> specimenSite = const Value.absent(),
+    Value<String?> pathologist = const Value.absent(),
+    Value<String?> laboratory = const Value.absent(),
+    DateTime? collectionDate,
+    Value<DateTime?> reportDate = const Value.absent(),
+    Value<String?> collectionMethod = const Value.absent(),
+    Value<String?> grossDescription = const Value.absent(),
+    Value<String?> microscopicFindings = const Value.absent(),
+    Value<String?> diagnosis = const Value.absent(),
+    Value<String?> stagingGrading = const Value.absent(),
+    Value<String?> immunohistochemistry = const Value.absent(),
+    Value<String?> molecularStudies = const Value.absent(),
+    Value<String?> recommendation = const Value.absent(),
+    String? urgency,
+    bool? isMalignant,
+    Value<String?> referringPhysician = const Value.absent(),
+  }) => PathologyRecord(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    specimenType: specimenType ?? this.specimenType,
+    specimenSite: specimenSite.present ? specimenSite.value : this.specimenSite,
+    pathologist: pathologist.present ? pathologist.value : this.pathologist,
+    laboratory: laboratory.present ? laboratory.value : this.laboratory,
+    collectionDate: collectionDate ?? this.collectionDate,
+    reportDate: reportDate.present ? reportDate.value : this.reportDate,
+    collectionMethod: collectionMethod.present
+        ? collectionMethod.value
+        : this.collectionMethod,
+    grossDescription: grossDescription.present
+        ? grossDescription.value
+        : this.grossDescription,
+    microscopicFindings: microscopicFindings.present
+        ? microscopicFindings.value
+        : this.microscopicFindings,
+    diagnosis: diagnosis.present ? diagnosis.value : this.diagnosis,
+    stagingGrading: stagingGrading.present
+        ? stagingGrading.value
+        : this.stagingGrading,
+    immunohistochemistry: immunohistochemistry.present
+        ? immunohistochemistry.value
+        : this.immunohistochemistry,
+    molecularStudies: molecularStudies.present
+        ? molecularStudies.value
+        : this.molecularStudies,
+    recommendation: recommendation.present
+        ? recommendation.value
+        : this.recommendation,
+    urgency: urgency ?? this.urgency,
+    isMalignant: isMalignant ?? this.isMalignant,
+    referringPhysician: referringPhysician.present
+        ? referringPhysician.value
+        : this.referringPhysician,
+  );
+  PathologyRecord copyWithCompanion(PathologyRecordsCompanion data) {
+    return PathologyRecord(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      specimenType: data.specimenType.present
+          ? data.specimenType.value
+          : this.specimenType,
+      specimenSite: data.specimenSite.present
+          ? data.specimenSite.value
+          : this.specimenSite,
+      pathologist: data.pathologist.present
+          ? data.pathologist.value
+          : this.pathologist,
+      laboratory: data.laboratory.present
+          ? data.laboratory.value
+          : this.laboratory,
+      collectionDate: data.collectionDate.present
+          ? data.collectionDate.value
+          : this.collectionDate,
+      reportDate: data.reportDate.present
+          ? data.reportDate.value
+          : this.reportDate,
+      collectionMethod: data.collectionMethod.present
+          ? data.collectionMethod.value
+          : this.collectionMethod,
+      grossDescription: data.grossDescription.present
+          ? data.grossDescription.value
+          : this.grossDescription,
+      microscopicFindings: data.microscopicFindings.present
+          ? data.microscopicFindings.value
+          : this.microscopicFindings,
+      diagnosis: data.diagnosis.present ? data.diagnosis.value : this.diagnosis,
+      stagingGrading: data.stagingGrading.present
+          ? data.stagingGrading.value
+          : this.stagingGrading,
+      immunohistochemistry: data.immunohistochemistry.present
+          ? data.immunohistochemistry.value
+          : this.immunohistochemistry,
+      molecularStudies: data.molecularStudies.present
+          ? data.molecularStudies.value
+          : this.molecularStudies,
+      recommendation: data.recommendation.present
+          ? data.recommendation.value
+          : this.recommendation,
+      urgency: data.urgency.present ? data.urgency.value : this.urgency,
+      isMalignant: data.isMalignant.present
+          ? data.isMalignant.value
+          : this.isMalignant,
+      referringPhysician: data.referringPhysician.present
+          ? data.referringPhysician.value
+          : this.referringPhysician,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PathologyRecord(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('specimenType: $specimenType, ')
+          ..write('specimenSite: $specimenSite, ')
+          ..write('pathologist: $pathologist, ')
+          ..write('laboratory: $laboratory, ')
+          ..write('collectionDate: $collectionDate, ')
+          ..write('reportDate: $reportDate, ')
+          ..write('collectionMethod: $collectionMethod, ')
+          ..write('grossDescription: $grossDescription, ')
+          ..write('microscopicFindings: $microscopicFindings, ')
+          ..write('diagnosis: $diagnosis, ')
+          ..write('stagingGrading: $stagingGrading, ')
+          ..write('immunohistochemistry: $immunohistochemistry, ')
+          ..write('molecularStudies: $molecularStudies, ')
+          ..write('recommendation: $recommendation, ')
+          ..write('urgency: $urgency, ')
+          ..write('isMalignant: $isMalignant, ')
+          ..write('referringPhysician: $referringPhysician')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    specimenType,
+    specimenSite,
+    pathologist,
+    laboratory,
+    collectionDate,
+    reportDate,
+    collectionMethod,
+    grossDescription,
+    microscopicFindings,
+    diagnosis,
+    stagingGrading,
+    immunohistochemistry,
+    molecularStudies,
+    recommendation,
+    urgency,
+    isMalignant,
+    referringPhysician,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PathologyRecord &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.specimenType == this.specimenType &&
+          other.specimenSite == this.specimenSite &&
+          other.pathologist == this.pathologist &&
+          other.laboratory == this.laboratory &&
+          other.collectionDate == this.collectionDate &&
+          other.reportDate == this.reportDate &&
+          other.collectionMethod == this.collectionMethod &&
+          other.grossDescription == this.grossDescription &&
+          other.microscopicFindings == this.microscopicFindings &&
+          other.diagnosis == this.diagnosis &&
+          other.stagingGrading == this.stagingGrading &&
+          other.immunohistochemistry == this.immunohistochemistry &&
+          other.molecularStudies == this.molecularStudies &&
+          other.recommendation == this.recommendation &&
+          other.urgency == this.urgency &&
+          other.isMalignant == this.isMalignant &&
+          other.referringPhysician == this.referringPhysician);
+}
+
+class PathologyRecordsCompanion extends UpdateCompanion<PathologyRecord> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> specimenType;
+  final Value<String?> specimenSite;
+  final Value<String?> pathologist;
+  final Value<String?> laboratory;
+  final Value<DateTime> collectionDate;
+  final Value<DateTime?> reportDate;
+  final Value<String?> collectionMethod;
+  final Value<String?> grossDescription;
+  final Value<String?> microscopicFindings;
+  final Value<String?> diagnosis;
+  final Value<String?> stagingGrading;
+  final Value<String?> immunohistochemistry;
+  final Value<String?> molecularStudies;
+  final Value<String?> recommendation;
+  final Value<String> urgency;
+  final Value<bool> isMalignant;
+  final Value<String?> referringPhysician;
+  final Value<int> rowid;
+  const PathologyRecordsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.specimenType = const Value.absent(),
+    this.specimenSite = const Value.absent(),
+    this.pathologist = const Value.absent(),
+    this.laboratory = const Value.absent(),
+    this.collectionDate = const Value.absent(),
+    this.reportDate = const Value.absent(),
+    this.collectionMethod = const Value.absent(),
+    this.grossDescription = const Value.absent(),
+    this.microscopicFindings = const Value.absent(),
+    this.diagnosis = const Value.absent(),
+    this.stagingGrading = const Value.absent(),
+    this.immunohistochemistry = const Value.absent(),
+    this.molecularStudies = const Value.absent(),
+    this.recommendation = const Value.absent(),
+    this.urgency = const Value.absent(),
+    this.isMalignant = const Value.absent(),
+    this.referringPhysician = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PathologyRecordsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String specimenType,
+    this.specimenSite = const Value.absent(),
+    this.pathologist = const Value.absent(),
+    this.laboratory = const Value.absent(),
+    required DateTime collectionDate,
+    this.reportDate = const Value.absent(),
+    this.collectionMethod = const Value.absent(),
+    this.grossDescription = const Value.absent(),
+    this.microscopicFindings = const Value.absent(),
+    this.diagnosis = const Value.absent(),
+    this.stagingGrading = const Value.absent(),
+    this.immunohistochemistry = const Value.absent(),
+    this.molecularStudies = const Value.absent(),
+    this.recommendation = const Value.absent(),
+    required String urgency,
+    this.isMalignant = const Value.absent(),
+    this.referringPhysician = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       specimenType = Value(specimenType),
+       collectionDate = Value(collectionDate),
+       urgency = Value(urgency);
+  static Insertable<PathologyRecord> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? specimenType,
+    Expression<String>? specimenSite,
+    Expression<String>? pathologist,
+    Expression<String>? laboratory,
+    Expression<DateTime>? collectionDate,
+    Expression<DateTime>? reportDate,
+    Expression<String>? collectionMethod,
+    Expression<String>? grossDescription,
+    Expression<String>? microscopicFindings,
+    Expression<String>? diagnosis,
+    Expression<String>? stagingGrading,
+    Expression<String>? immunohistochemistry,
+    Expression<String>? molecularStudies,
+    Expression<String>? recommendation,
+    Expression<String>? urgency,
+    Expression<bool>? isMalignant,
+    Expression<String>? referringPhysician,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (specimenType != null) 'specimen_type': specimenType,
+      if (specimenSite != null) 'specimen_site': specimenSite,
+      if (pathologist != null) 'pathologist': pathologist,
+      if (laboratory != null) 'laboratory': laboratory,
+      if (collectionDate != null) 'collection_date': collectionDate,
+      if (reportDate != null) 'report_date': reportDate,
+      if (collectionMethod != null) 'collection_method': collectionMethod,
+      if (grossDescription != null) 'gross_description': grossDescription,
+      if (microscopicFindings != null)
+        'microscopic_findings': microscopicFindings,
+      if (diagnosis != null) 'diagnosis': diagnosis,
+      if (stagingGrading != null) 'staging_grading': stagingGrading,
+      if (immunohistochemistry != null)
+        'immunohistochemistry': immunohistochemistry,
+      if (molecularStudies != null) 'molecular_studies': molecularStudies,
+      if (recommendation != null) 'recommendation': recommendation,
+      if (urgency != null) 'urgency': urgency,
+      if (isMalignant != null) 'is_malignant': isMalignant,
+      if (referringPhysician != null) 'referring_physician': referringPhysician,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PathologyRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? specimenType,
+    Value<String?>? specimenSite,
+    Value<String?>? pathologist,
+    Value<String?>? laboratory,
+    Value<DateTime>? collectionDate,
+    Value<DateTime?>? reportDate,
+    Value<String?>? collectionMethod,
+    Value<String?>? grossDescription,
+    Value<String?>? microscopicFindings,
+    Value<String?>? diagnosis,
+    Value<String?>? stagingGrading,
+    Value<String?>? immunohistochemistry,
+    Value<String?>? molecularStudies,
+    Value<String?>? recommendation,
+    Value<String>? urgency,
+    Value<bool>? isMalignant,
+    Value<String?>? referringPhysician,
+    Value<int>? rowid,
+  }) {
+    return PathologyRecordsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      specimenType: specimenType ?? this.specimenType,
+      specimenSite: specimenSite ?? this.specimenSite,
+      pathologist: pathologist ?? this.pathologist,
+      laboratory: laboratory ?? this.laboratory,
+      collectionDate: collectionDate ?? this.collectionDate,
+      reportDate: reportDate ?? this.reportDate,
+      collectionMethod: collectionMethod ?? this.collectionMethod,
+      grossDescription: grossDescription ?? this.grossDescription,
+      microscopicFindings: microscopicFindings ?? this.microscopicFindings,
+      diagnosis: diagnosis ?? this.diagnosis,
+      stagingGrading: stagingGrading ?? this.stagingGrading,
+      immunohistochemistry: immunohistochemistry ?? this.immunohistochemistry,
+      molecularStudies: molecularStudies ?? this.molecularStudies,
+      recommendation: recommendation ?? this.recommendation,
+      urgency: urgency ?? this.urgency,
+      isMalignant: isMalignant ?? this.isMalignant,
+      referringPhysician: referringPhysician ?? this.referringPhysician,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (specimenType.present) {
+      map['specimen_type'] = Variable<String>(specimenType.value);
+    }
+    if (specimenSite.present) {
+      map['specimen_site'] = Variable<String>(specimenSite.value);
+    }
+    if (pathologist.present) {
+      map['pathologist'] = Variable<String>(pathologist.value);
+    }
+    if (laboratory.present) {
+      map['laboratory'] = Variable<String>(laboratory.value);
+    }
+    if (collectionDate.present) {
+      map['collection_date'] = Variable<DateTime>(collectionDate.value);
+    }
+    if (reportDate.present) {
+      map['report_date'] = Variable<DateTime>(reportDate.value);
+    }
+    if (collectionMethod.present) {
+      map['collection_method'] = Variable<String>(collectionMethod.value);
+    }
+    if (grossDescription.present) {
+      map['gross_description'] = Variable<String>(grossDescription.value);
+    }
+    if (microscopicFindings.present) {
+      map['microscopic_findings'] = Variable<String>(microscopicFindings.value);
+    }
+    if (diagnosis.present) {
+      map['diagnosis'] = Variable<String>(diagnosis.value);
+    }
+    if (stagingGrading.present) {
+      map['staging_grading'] = Variable<String>(stagingGrading.value);
+    }
+    if (immunohistochemistry.present) {
+      map['immunohistochemistry'] = Variable<String>(
+        immunohistochemistry.value,
+      );
+    }
+    if (molecularStudies.present) {
+      map['molecular_studies'] = Variable<String>(molecularStudies.value);
+    }
+    if (recommendation.present) {
+      map['recommendation'] = Variable<String>(recommendation.value);
+    }
+    if (urgency.present) {
+      map['urgency'] = Variable<String>(urgency.value);
+    }
+    if (isMalignant.present) {
+      map['is_malignant'] = Variable<bool>(isMalignant.value);
+    }
+    if (referringPhysician.present) {
+      map['referring_physician'] = Variable<String>(referringPhysician.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PathologyRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('specimenType: $specimenType, ')
+          ..write('specimenSite: $specimenSite, ')
+          ..write('pathologist: $pathologist, ')
+          ..write('laboratory: $laboratory, ')
+          ..write('collectionDate: $collectionDate, ')
+          ..write('reportDate: $reportDate, ')
+          ..write('collectionMethod: $collectionMethod, ')
+          ..write('grossDescription: $grossDescription, ')
+          ..write('microscopicFindings: $microscopicFindings, ')
+          ..write('diagnosis: $diagnosis, ')
+          ..write('stagingGrading: $stagingGrading, ')
+          ..write('immunohistochemistry: $immunohistochemistry, ')
+          ..write('molecularStudies: $molecularStudies, ')
+          ..write('recommendation: $recommendation, ')
+          ..write('urgency: $urgency, ')
+          ..write('isMalignant: $isMalignant, ')
+          ..write('referringPhysician: $referringPhysician, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DischargeSummariesTable extends DischargeSummaries
+    with TableInfo<$DischargeSummariesTable, DischargeSummary> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DischargeSummariesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('discharge_summary'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _hospitalMeta = const VerificationMeta(
+    'hospital',
+  );
+  @override
+  late final GeneratedColumn<String> hospital = GeneratedColumn<String>(
+    'hospital',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 150,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _attendingPhysicianMeta =
+      const VerificationMeta('attendingPhysician');
+  @override
+  late final GeneratedColumn<String> attendingPhysician =
+      GeneratedColumn<String>(
+        'attending_physician',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _departmentMeta = const VerificationMeta(
+    'department',
+  );
+  @override
+  late final GeneratedColumn<String> department = GeneratedColumn<String>(
+    'department',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _admissionDateMeta = const VerificationMeta(
+    'admissionDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> admissionDate =
+      GeneratedColumn<DateTime>(
+        'admission_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _dischargeDateMeta = const VerificationMeta(
+    'dischargeDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dischargeDate =
+      GeneratedColumn<DateTime>(
+        'discharge_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _lengthOfStayMeta = const VerificationMeta(
+    'lengthOfStay',
+  );
+  @override
+  late final GeneratedColumn<int> lengthOfStay = GeneratedColumn<int>(
+    'length_of_stay',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _admissionDiagnosisMeta =
+      const VerificationMeta('admissionDiagnosis');
+  @override
+  late final GeneratedColumn<String> admissionDiagnosis =
+      GeneratedColumn<String>(
+        'admission_diagnosis',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dischargeDiagnosisMeta =
+      const VerificationMeta('dischargeDiagnosis');
+  @override
+  late final GeneratedColumn<String> dischargeDiagnosis =
+      GeneratedColumn<String>(
+        'discharge_diagnosis',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _principalDiagnosisMeta =
+      const VerificationMeta('principalDiagnosis');
+  @override
+  late final GeneratedColumn<String> principalDiagnosis =
+      GeneratedColumn<String>(
+        'principal_diagnosis',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _secondaryDiagnosesMeta =
+      const VerificationMeta('secondaryDiagnoses');
+  @override
+  late final GeneratedColumn<String> secondaryDiagnoses =
+      GeneratedColumn<String>(
+        'secondary_diagnoses',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _proceduresPerformedMeta =
+      const VerificationMeta('proceduresPerformed');
+  @override
+  late final GeneratedColumn<String> proceduresPerformed =
+      GeneratedColumn<String>(
+        'procedures_performed',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _hospitalCourseMeta = const VerificationMeta(
+    'hospitalCourse',
+  );
+  @override
+  late final GeneratedColumn<String> hospitalCourse = GeneratedColumn<String>(
+    'hospital_course',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dischargeConditionMeta =
+      const VerificationMeta('dischargeCondition');
+  @override
+  late final GeneratedColumn<String> dischargeCondition =
+      GeneratedColumn<String>(
+        'discharge_condition',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dischargeDestinationMeta =
+      const VerificationMeta('dischargeDestination');
+  @override
+  late final GeneratedColumn<String> dischargeDestination =
+      GeneratedColumn<String>(
+        'discharge_destination',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dischargeMedicationsMeta =
+      const VerificationMeta('dischargeMedications');
+  @override
+  late final GeneratedColumn<String> dischargeMedications =
+      GeneratedColumn<String>(
+        'discharge_medications',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _followUpInstructionsMeta =
+      const VerificationMeta('followUpInstructions');
+  @override
+  late final GeneratedColumn<String> followUpInstructions =
+      GeneratedColumn<String>(
+        'follow_up_instructions',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dietInstructionsMeta = const VerificationMeta(
+    'dietInstructions',
+  );
+  @override
+  late final GeneratedColumn<String> dietInstructions = GeneratedColumn<String>(
+    'diet_instructions',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _activityRestrictionsMeta =
+      const VerificationMeta('activityRestrictions');
+  @override
+  late final GeneratedColumn<String> activityRestrictions =
+      GeneratedColumn<String>(
+        'activity_restrictions',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _followUpDateMeta = const VerificationMeta(
+    'followUpDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> followUpDate = GeneratedColumn<DateTime>(
+    'follow_up_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    hospital,
+    attendingPhysician,
+    department,
+    admissionDate,
+    dischargeDate,
+    lengthOfStay,
+    admissionDiagnosis,
+    dischargeDiagnosis,
+    principalDiagnosis,
+    secondaryDiagnoses,
+    proceduresPerformed,
+    hospitalCourse,
+    dischargeCondition,
+    dischargeDestination,
+    dischargeMedications,
+    followUpInstructions,
+    dietInstructions,
+    activityRestrictions,
+    followUpDate,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'discharge_summaries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DischargeSummary> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('hospital')) {
+      context.handle(
+        _hospitalMeta,
+        hospital.isAcceptableOrUnknown(data['hospital']!, _hospitalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hospitalMeta);
+    }
+    if (data.containsKey('attending_physician')) {
+      context.handle(
+        _attendingPhysicianMeta,
+        attendingPhysician.isAcceptableOrUnknown(
+          data['attending_physician']!,
+          _attendingPhysicianMeta,
+        ),
+      );
+    }
+    if (data.containsKey('department')) {
+      context.handle(
+        _departmentMeta,
+        department.isAcceptableOrUnknown(data['department']!, _departmentMeta),
+      );
+    }
+    if (data.containsKey('admission_date')) {
+      context.handle(
+        _admissionDateMeta,
+        admissionDate.isAcceptableOrUnknown(
+          data['admission_date']!,
+          _admissionDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_admissionDateMeta);
+    }
+    if (data.containsKey('discharge_date')) {
+      context.handle(
+        _dischargeDateMeta,
+        dischargeDate.isAcceptableOrUnknown(
+          data['discharge_date']!,
+          _dischargeDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dischargeDateMeta);
+    }
+    if (data.containsKey('length_of_stay')) {
+      context.handle(
+        _lengthOfStayMeta,
+        lengthOfStay.isAcceptableOrUnknown(
+          data['length_of_stay']!,
+          _lengthOfStayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('admission_diagnosis')) {
+      context.handle(
+        _admissionDiagnosisMeta,
+        admissionDiagnosis.isAcceptableOrUnknown(
+          data['admission_diagnosis']!,
+          _admissionDiagnosisMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discharge_diagnosis')) {
+      context.handle(
+        _dischargeDiagnosisMeta,
+        dischargeDiagnosis.isAcceptableOrUnknown(
+          data['discharge_diagnosis']!,
+          _dischargeDiagnosisMeta,
+        ),
+      );
+    }
+    if (data.containsKey('principal_diagnosis')) {
+      context.handle(
+        _principalDiagnosisMeta,
+        principalDiagnosis.isAcceptableOrUnknown(
+          data['principal_diagnosis']!,
+          _principalDiagnosisMeta,
+        ),
+      );
+    }
+    if (data.containsKey('secondary_diagnoses')) {
+      context.handle(
+        _secondaryDiagnosesMeta,
+        secondaryDiagnoses.isAcceptableOrUnknown(
+          data['secondary_diagnoses']!,
+          _secondaryDiagnosesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('procedures_performed')) {
+      context.handle(
+        _proceduresPerformedMeta,
+        proceduresPerformed.isAcceptableOrUnknown(
+          data['procedures_performed']!,
+          _proceduresPerformedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('hospital_course')) {
+      context.handle(
+        _hospitalCourseMeta,
+        hospitalCourse.isAcceptableOrUnknown(
+          data['hospital_course']!,
+          _hospitalCourseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discharge_condition')) {
+      context.handle(
+        _dischargeConditionMeta,
+        dischargeCondition.isAcceptableOrUnknown(
+          data['discharge_condition']!,
+          _dischargeConditionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discharge_destination')) {
+      context.handle(
+        _dischargeDestinationMeta,
+        dischargeDestination.isAcceptableOrUnknown(
+          data['discharge_destination']!,
+          _dischargeDestinationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discharge_medications')) {
+      context.handle(
+        _dischargeMedicationsMeta,
+        dischargeMedications.isAcceptableOrUnknown(
+          data['discharge_medications']!,
+          _dischargeMedicationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('follow_up_instructions')) {
+      context.handle(
+        _followUpInstructionsMeta,
+        followUpInstructions.isAcceptableOrUnknown(
+          data['follow_up_instructions']!,
+          _followUpInstructionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('diet_instructions')) {
+      context.handle(
+        _dietInstructionsMeta,
+        dietInstructions.isAcceptableOrUnknown(
+          data['diet_instructions']!,
+          _dietInstructionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('activity_restrictions')) {
+      context.handle(
+        _activityRestrictionsMeta,
+        activityRestrictions.isAcceptableOrUnknown(
+          data['activity_restrictions']!,
+          _activityRestrictionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('follow_up_date')) {
+      context.handle(
+        _followUpDateMeta,
+        followUpDate.isAcceptableOrUnknown(
+          data['follow_up_date']!,
+          _followUpDateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DischargeSummary map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DischargeSummary(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      hospital: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hospital'],
+      )!,
+      attendingPhysician: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attending_physician'],
+      ),
+      department: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}department'],
+      ),
+      admissionDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}admission_date'],
+      )!,
+      dischargeDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}discharge_date'],
+      )!,
+      lengthOfStay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}length_of_stay'],
+      ),
+      admissionDiagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}admission_diagnosis'],
+      ),
+      dischargeDiagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discharge_diagnosis'],
+      ),
+      principalDiagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}principal_diagnosis'],
+      ),
+      secondaryDiagnoses: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}secondary_diagnoses'],
+      ),
+      proceduresPerformed: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}procedures_performed'],
+      ),
+      hospitalCourse: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hospital_course'],
+      ),
+      dischargeCondition: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discharge_condition'],
+      ),
+      dischargeDestination: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discharge_destination'],
+      ),
+      dischargeMedications: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discharge_medications'],
+      ),
+      followUpInstructions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}follow_up_instructions'],
+      ),
+      dietInstructions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}diet_instructions'],
+      ),
+      activityRestrictions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}activity_restrictions'],
+      ),
+      followUpDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}follow_up_date'],
+      ),
+    );
+  }
+
+  @override
+  $DischargeSummariesTable createAlias(String alias) {
+    return $DischargeSummariesTable(attachedDatabase, alias);
+  }
+}
+
+class DischargeSummary extends DataClass
+    implements Insertable<DischargeSummary> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String hospital;
+  final String? attendingPhysician;
+  final String? department;
+  final DateTime admissionDate;
+  final DateTime dischargeDate;
+  final int? lengthOfStay;
+  final String? admissionDiagnosis;
+  final String? dischargeDiagnosis;
+  final String? principalDiagnosis;
+  final String? secondaryDiagnoses;
+  final String? proceduresPerformed;
+  final String? hospitalCourse;
+  final String? dischargeCondition;
+  final String? dischargeDestination;
+  final String? dischargeMedications;
+  final String? followUpInstructions;
+  final String? dietInstructions;
+  final String? activityRestrictions;
+  final DateTime? followUpDate;
+  const DischargeSummary({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.hospital,
+    this.attendingPhysician,
+    this.department,
+    required this.admissionDate,
+    required this.dischargeDate,
+    this.lengthOfStay,
+    this.admissionDiagnosis,
+    this.dischargeDiagnosis,
+    this.principalDiagnosis,
+    this.secondaryDiagnoses,
+    this.proceduresPerformed,
+    this.hospitalCourse,
+    this.dischargeCondition,
+    this.dischargeDestination,
+    this.dischargeMedications,
+    this.followUpInstructions,
+    this.dietInstructions,
+    this.activityRestrictions,
+    this.followUpDate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['hospital'] = Variable<String>(hospital);
+    if (!nullToAbsent || attendingPhysician != null) {
+      map['attending_physician'] = Variable<String>(attendingPhysician);
+    }
+    if (!nullToAbsent || department != null) {
+      map['department'] = Variable<String>(department);
+    }
+    map['admission_date'] = Variable<DateTime>(admissionDate);
+    map['discharge_date'] = Variable<DateTime>(dischargeDate);
+    if (!nullToAbsent || lengthOfStay != null) {
+      map['length_of_stay'] = Variable<int>(lengthOfStay);
+    }
+    if (!nullToAbsent || admissionDiagnosis != null) {
+      map['admission_diagnosis'] = Variable<String>(admissionDiagnosis);
+    }
+    if (!nullToAbsent || dischargeDiagnosis != null) {
+      map['discharge_diagnosis'] = Variable<String>(dischargeDiagnosis);
+    }
+    if (!nullToAbsent || principalDiagnosis != null) {
+      map['principal_diagnosis'] = Variable<String>(principalDiagnosis);
+    }
+    if (!nullToAbsent || secondaryDiagnoses != null) {
+      map['secondary_diagnoses'] = Variable<String>(secondaryDiagnoses);
+    }
+    if (!nullToAbsent || proceduresPerformed != null) {
+      map['procedures_performed'] = Variable<String>(proceduresPerformed);
+    }
+    if (!nullToAbsent || hospitalCourse != null) {
+      map['hospital_course'] = Variable<String>(hospitalCourse);
+    }
+    if (!nullToAbsent || dischargeCondition != null) {
+      map['discharge_condition'] = Variable<String>(dischargeCondition);
+    }
+    if (!nullToAbsent || dischargeDestination != null) {
+      map['discharge_destination'] = Variable<String>(dischargeDestination);
+    }
+    if (!nullToAbsent || dischargeMedications != null) {
+      map['discharge_medications'] = Variable<String>(dischargeMedications);
+    }
+    if (!nullToAbsent || followUpInstructions != null) {
+      map['follow_up_instructions'] = Variable<String>(followUpInstructions);
+    }
+    if (!nullToAbsent || dietInstructions != null) {
+      map['diet_instructions'] = Variable<String>(dietInstructions);
+    }
+    if (!nullToAbsent || activityRestrictions != null) {
+      map['activity_restrictions'] = Variable<String>(activityRestrictions);
+    }
+    if (!nullToAbsent || followUpDate != null) {
+      map['follow_up_date'] = Variable<DateTime>(followUpDate);
+    }
+    return map;
+  }
+
+  DischargeSummariesCompanion toCompanion(bool nullToAbsent) {
+    return DischargeSummariesCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      hospital: Value(hospital),
+      attendingPhysician: attendingPhysician == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attendingPhysician),
+      department: department == null && nullToAbsent
+          ? const Value.absent()
+          : Value(department),
+      admissionDate: Value(admissionDate),
+      dischargeDate: Value(dischargeDate),
+      lengthOfStay: lengthOfStay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lengthOfStay),
+      admissionDiagnosis: admissionDiagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(admissionDiagnosis),
+      dischargeDiagnosis: dischargeDiagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dischargeDiagnosis),
+      principalDiagnosis: principalDiagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(principalDiagnosis),
+      secondaryDiagnoses: secondaryDiagnoses == null && nullToAbsent
+          ? const Value.absent()
+          : Value(secondaryDiagnoses),
+      proceduresPerformed: proceduresPerformed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(proceduresPerformed),
+      hospitalCourse: hospitalCourse == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hospitalCourse),
+      dischargeCondition: dischargeCondition == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dischargeCondition),
+      dischargeDestination: dischargeDestination == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dischargeDestination),
+      dischargeMedications: dischargeMedications == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dischargeMedications),
+      followUpInstructions: followUpInstructions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(followUpInstructions),
+      dietInstructions: dietInstructions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dietInstructions),
+      activityRestrictions: activityRestrictions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(activityRestrictions),
+      followUpDate: followUpDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(followUpDate),
+    );
+  }
+
+  factory DischargeSummary.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DischargeSummary(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      hospital: serializer.fromJson<String>(json['hospital']),
+      attendingPhysician: serializer.fromJson<String?>(
+        json['attendingPhysician'],
+      ),
+      department: serializer.fromJson<String?>(json['department']),
+      admissionDate: serializer.fromJson<DateTime>(json['admissionDate']),
+      dischargeDate: serializer.fromJson<DateTime>(json['dischargeDate']),
+      lengthOfStay: serializer.fromJson<int?>(json['lengthOfStay']),
+      admissionDiagnosis: serializer.fromJson<String?>(
+        json['admissionDiagnosis'],
+      ),
+      dischargeDiagnosis: serializer.fromJson<String?>(
+        json['dischargeDiagnosis'],
+      ),
+      principalDiagnosis: serializer.fromJson<String?>(
+        json['principalDiagnosis'],
+      ),
+      secondaryDiagnoses: serializer.fromJson<String?>(
+        json['secondaryDiagnoses'],
+      ),
+      proceduresPerformed: serializer.fromJson<String?>(
+        json['proceduresPerformed'],
+      ),
+      hospitalCourse: serializer.fromJson<String?>(json['hospitalCourse']),
+      dischargeCondition: serializer.fromJson<String?>(
+        json['dischargeCondition'],
+      ),
+      dischargeDestination: serializer.fromJson<String?>(
+        json['dischargeDestination'],
+      ),
+      dischargeMedications: serializer.fromJson<String?>(
+        json['dischargeMedications'],
+      ),
+      followUpInstructions: serializer.fromJson<String?>(
+        json['followUpInstructions'],
+      ),
+      dietInstructions: serializer.fromJson<String?>(json['dietInstructions']),
+      activityRestrictions: serializer.fromJson<String?>(
+        json['activityRestrictions'],
+      ),
+      followUpDate: serializer.fromJson<DateTime?>(json['followUpDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'hospital': serializer.toJson<String>(hospital),
+      'attendingPhysician': serializer.toJson<String?>(attendingPhysician),
+      'department': serializer.toJson<String?>(department),
+      'admissionDate': serializer.toJson<DateTime>(admissionDate),
+      'dischargeDate': serializer.toJson<DateTime>(dischargeDate),
+      'lengthOfStay': serializer.toJson<int?>(lengthOfStay),
+      'admissionDiagnosis': serializer.toJson<String?>(admissionDiagnosis),
+      'dischargeDiagnosis': serializer.toJson<String?>(dischargeDiagnosis),
+      'principalDiagnosis': serializer.toJson<String?>(principalDiagnosis),
+      'secondaryDiagnoses': serializer.toJson<String?>(secondaryDiagnoses),
+      'proceduresPerformed': serializer.toJson<String?>(proceduresPerformed),
+      'hospitalCourse': serializer.toJson<String?>(hospitalCourse),
+      'dischargeCondition': serializer.toJson<String?>(dischargeCondition),
+      'dischargeDestination': serializer.toJson<String?>(dischargeDestination),
+      'dischargeMedications': serializer.toJson<String?>(dischargeMedications),
+      'followUpInstructions': serializer.toJson<String?>(followUpInstructions),
+      'dietInstructions': serializer.toJson<String?>(dietInstructions),
+      'activityRestrictions': serializer.toJson<String?>(activityRestrictions),
+      'followUpDate': serializer.toJson<DateTime?>(followUpDate),
+    };
+  }
+
+  DischargeSummary copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? hospital,
+    Value<String?> attendingPhysician = const Value.absent(),
+    Value<String?> department = const Value.absent(),
+    DateTime? admissionDate,
+    DateTime? dischargeDate,
+    Value<int?> lengthOfStay = const Value.absent(),
+    Value<String?> admissionDiagnosis = const Value.absent(),
+    Value<String?> dischargeDiagnosis = const Value.absent(),
+    Value<String?> principalDiagnosis = const Value.absent(),
+    Value<String?> secondaryDiagnoses = const Value.absent(),
+    Value<String?> proceduresPerformed = const Value.absent(),
+    Value<String?> hospitalCourse = const Value.absent(),
+    Value<String?> dischargeCondition = const Value.absent(),
+    Value<String?> dischargeDestination = const Value.absent(),
+    Value<String?> dischargeMedications = const Value.absent(),
+    Value<String?> followUpInstructions = const Value.absent(),
+    Value<String?> dietInstructions = const Value.absent(),
+    Value<String?> activityRestrictions = const Value.absent(),
+    Value<DateTime?> followUpDate = const Value.absent(),
+  }) => DischargeSummary(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    hospital: hospital ?? this.hospital,
+    attendingPhysician: attendingPhysician.present
+        ? attendingPhysician.value
+        : this.attendingPhysician,
+    department: department.present ? department.value : this.department,
+    admissionDate: admissionDate ?? this.admissionDate,
+    dischargeDate: dischargeDate ?? this.dischargeDate,
+    lengthOfStay: lengthOfStay.present ? lengthOfStay.value : this.lengthOfStay,
+    admissionDiagnosis: admissionDiagnosis.present
+        ? admissionDiagnosis.value
+        : this.admissionDiagnosis,
+    dischargeDiagnosis: dischargeDiagnosis.present
+        ? dischargeDiagnosis.value
+        : this.dischargeDiagnosis,
+    principalDiagnosis: principalDiagnosis.present
+        ? principalDiagnosis.value
+        : this.principalDiagnosis,
+    secondaryDiagnoses: secondaryDiagnoses.present
+        ? secondaryDiagnoses.value
+        : this.secondaryDiagnoses,
+    proceduresPerformed: proceduresPerformed.present
+        ? proceduresPerformed.value
+        : this.proceduresPerformed,
+    hospitalCourse: hospitalCourse.present
+        ? hospitalCourse.value
+        : this.hospitalCourse,
+    dischargeCondition: dischargeCondition.present
+        ? dischargeCondition.value
+        : this.dischargeCondition,
+    dischargeDestination: dischargeDestination.present
+        ? dischargeDestination.value
+        : this.dischargeDestination,
+    dischargeMedications: dischargeMedications.present
+        ? dischargeMedications.value
+        : this.dischargeMedications,
+    followUpInstructions: followUpInstructions.present
+        ? followUpInstructions.value
+        : this.followUpInstructions,
+    dietInstructions: dietInstructions.present
+        ? dietInstructions.value
+        : this.dietInstructions,
+    activityRestrictions: activityRestrictions.present
+        ? activityRestrictions.value
+        : this.activityRestrictions,
+    followUpDate: followUpDate.present ? followUpDate.value : this.followUpDate,
+  );
+  DischargeSummary copyWithCompanion(DischargeSummariesCompanion data) {
+    return DischargeSummary(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      hospital: data.hospital.present ? data.hospital.value : this.hospital,
+      attendingPhysician: data.attendingPhysician.present
+          ? data.attendingPhysician.value
+          : this.attendingPhysician,
+      department: data.department.present
+          ? data.department.value
+          : this.department,
+      admissionDate: data.admissionDate.present
+          ? data.admissionDate.value
+          : this.admissionDate,
+      dischargeDate: data.dischargeDate.present
+          ? data.dischargeDate.value
+          : this.dischargeDate,
+      lengthOfStay: data.lengthOfStay.present
+          ? data.lengthOfStay.value
+          : this.lengthOfStay,
+      admissionDiagnosis: data.admissionDiagnosis.present
+          ? data.admissionDiagnosis.value
+          : this.admissionDiagnosis,
+      dischargeDiagnosis: data.dischargeDiagnosis.present
+          ? data.dischargeDiagnosis.value
+          : this.dischargeDiagnosis,
+      principalDiagnosis: data.principalDiagnosis.present
+          ? data.principalDiagnosis.value
+          : this.principalDiagnosis,
+      secondaryDiagnoses: data.secondaryDiagnoses.present
+          ? data.secondaryDiagnoses.value
+          : this.secondaryDiagnoses,
+      proceduresPerformed: data.proceduresPerformed.present
+          ? data.proceduresPerformed.value
+          : this.proceduresPerformed,
+      hospitalCourse: data.hospitalCourse.present
+          ? data.hospitalCourse.value
+          : this.hospitalCourse,
+      dischargeCondition: data.dischargeCondition.present
+          ? data.dischargeCondition.value
+          : this.dischargeCondition,
+      dischargeDestination: data.dischargeDestination.present
+          ? data.dischargeDestination.value
+          : this.dischargeDestination,
+      dischargeMedications: data.dischargeMedications.present
+          ? data.dischargeMedications.value
+          : this.dischargeMedications,
+      followUpInstructions: data.followUpInstructions.present
+          ? data.followUpInstructions.value
+          : this.followUpInstructions,
+      dietInstructions: data.dietInstructions.present
+          ? data.dietInstructions.value
+          : this.dietInstructions,
+      activityRestrictions: data.activityRestrictions.present
+          ? data.activityRestrictions.value
+          : this.activityRestrictions,
+      followUpDate: data.followUpDate.present
+          ? data.followUpDate.value
+          : this.followUpDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DischargeSummary(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('hospital: $hospital, ')
+          ..write('attendingPhysician: $attendingPhysician, ')
+          ..write('department: $department, ')
+          ..write('admissionDate: $admissionDate, ')
+          ..write('dischargeDate: $dischargeDate, ')
+          ..write('lengthOfStay: $lengthOfStay, ')
+          ..write('admissionDiagnosis: $admissionDiagnosis, ')
+          ..write('dischargeDiagnosis: $dischargeDiagnosis, ')
+          ..write('principalDiagnosis: $principalDiagnosis, ')
+          ..write('secondaryDiagnoses: $secondaryDiagnoses, ')
+          ..write('proceduresPerformed: $proceduresPerformed, ')
+          ..write('hospitalCourse: $hospitalCourse, ')
+          ..write('dischargeCondition: $dischargeCondition, ')
+          ..write('dischargeDestination: $dischargeDestination, ')
+          ..write('dischargeMedications: $dischargeMedications, ')
+          ..write('followUpInstructions: $followUpInstructions, ')
+          ..write('dietInstructions: $dietInstructions, ')
+          ..write('activityRestrictions: $activityRestrictions, ')
+          ..write('followUpDate: $followUpDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    hospital,
+    attendingPhysician,
+    department,
+    admissionDate,
+    dischargeDate,
+    lengthOfStay,
+    admissionDiagnosis,
+    dischargeDiagnosis,
+    principalDiagnosis,
+    secondaryDiagnoses,
+    proceduresPerformed,
+    hospitalCourse,
+    dischargeCondition,
+    dischargeDestination,
+    dischargeMedications,
+    followUpInstructions,
+    dietInstructions,
+    activityRestrictions,
+    followUpDate,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DischargeSummary &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.hospital == this.hospital &&
+          other.attendingPhysician == this.attendingPhysician &&
+          other.department == this.department &&
+          other.admissionDate == this.admissionDate &&
+          other.dischargeDate == this.dischargeDate &&
+          other.lengthOfStay == this.lengthOfStay &&
+          other.admissionDiagnosis == this.admissionDiagnosis &&
+          other.dischargeDiagnosis == this.dischargeDiagnosis &&
+          other.principalDiagnosis == this.principalDiagnosis &&
+          other.secondaryDiagnoses == this.secondaryDiagnoses &&
+          other.proceduresPerformed == this.proceduresPerformed &&
+          other.hospitalCourse == this.hospitalCourse &&
+          other.dischargeCondition == this.dischargeCondition &&
+          other.dischargeDestination == this.dischargeDestination &&
+          other.dischargeMedications == this.dischargeMedications &&
+          other.followUpInstructions == this.followUpInstructions &&
+          other.dietInstructions == this.dietInstructions &&
+          other.activityRestrictions == this.activityRestrictions &&
+          other.followUpDate == this.followUpDate);
+}
+
+class DischargeSummariesCompanion extends UpdateCompanion<DischargeSummary> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> hospital;
+  final Value<String?> attendingPhysician;
+  final Value<String?> department;
+  final Value<DateTime> admissionDate;
+  final Value<DateTime> dischargeDate;
+  final Value<int?> lengthOfStay;
+  final Value<String?> admissionDiagnosis;
+  final Value<String?> dischargeDiagnosis;
+  final Value<String?> principalDiagnosis;
+  final Value<String?> secondaryDiagnoses;
+  final Value<String?> proceduresPerformed;
+  final Value<String?> hospitalCourse;
+  final Value<String?> dischargeCondition;
+  final Value<String?> dischargeDestination;
+  final Value<String?> dischargeMedications;
+  final Value<String?> followUpInstructions;
+  final Value<String?> dietInstructions;
+  final Value<String?> activityRestrictions;
+  final Value<DateTime?> followUpDate;
+  final Value<int> rowid;
+  const DischargeSummariesCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.hospital = const Value.absent(),
+    this.attendingPhysician = const Value.absent(),
+    this.department = const Value.absent(),
+    this.admissionDate = const Value.absent(),
+    this.dischargeDate = const Value.absent(),
+    this.lengthOfStay = const Value.absent(),
+    this.admissionDiagnosis = const Value.absent(),
+    this.dischargeDiagnosis = const Value.absent(),
+    this.principalDiagnosis = const Value.absent(),
+    this.secondaryDiagnoses = const Value.absent(),
+    this.proceduresPerformed = const Value.absent(),
+    this.hospitalCourse = const Value.absent(),
+    this.dischargeCondition = const Value.absent(),
+    this.dischargeDestination = const Value.absent(),
+    this.dischargeMedications = const Value.absent(),
+    this.followUpInstructions = const Value.absent(),
+    this.dietInstructions = const Value.absent(),
+    this.activityRestrictions = const Value.absent(),
+    this.followUpDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DischargeSummariesCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String hospital,
+    this.attendingPhysician = const Value.absent(),
+    this.department = const Value.absent(),
+    required DateTime admissionDate,
+    required DateTime dischargeDate,
+    this.lengthOfStay = const Value.absent(),
+    this.admissionDiagnosis = const Value.absent(),
+    this.dischargeDiagnosis = const Value.absent(),
+    this.principalDiagnosis = const Value.absent(),
+    this.secondaryDiagnoses = const Value.absent(),
+    this.proceduresPerformed = const Value.absent(),
+    this.hospitalCourse = const Value.absent(),
+    this.dischargeCondition = const Value.absent(),
+    this.dischargeDestination = const Value.absent(),
+    this.dischargeMedications = const Value.absent(),
+    this.followUpInstructions = const Value.absent(),
+    this.dietInstructions = const Value.absent(),
+    this.activityRestrictions = const Value.absent(),
+    this.followUpDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       hospital = Value(hospital),
+       admissionDate = Value(admissionDate),
+       dischargeDate = Value(dischargeDate);
+  static Insertable<DischargeSummary> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? hospital,
+    Expression<String>? attendingPhysician,
+    Expression<String>? department,
+    Expression<DateTime>? admissionDate,
+    Expression<DateTime>? dischargeDate,
+    Expression<int>? lengthOfStay,
+    Expression<String>? admissionDiagnosis,
+    Expression<String>? dischargeDiagnosis,
+    Expression<String>? principalDiagnosis,
+    Expression<String>? secondaryDiagnoses,
+    Expression<String>? proceduresPerformed,
+    Expression<String>? hospitalCourse,
+    Expression<String>? dischargeCondition,
+    Expression<String>? dischargeDestination,
+    Expression<String>? dischargeMedications,
+    Expression<String>? followUpInstructions,
+    Expression<String>? dietInstructions,
+    Expression<String>? activityRestrictions,
+    Expression<DateTime>? followUpDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (hospital != null) 'hospital': hospital,
+      if (attendingPhysician != null) 'attending_physician': attendingPhysician,
+      if (department != null) 'department': department,
+      if (admissionDate != null) 'admission_date': admissionDate,
+      if (dischargeDate != null) 'discharge_date': dischargeDate,
+      if (lengthOfStay != null) 'length_of_stay': lengthOfStay,
+      if (admissionDiagnosis != null) 'admission_diagnosis': admissionDiagnosis,
+      if (dischargeDiagnosis != null) 'discharge_diagnosis': dischargeDiagnosis,
+      if (principalDiagnosis != null) 'principal_diagnosis': principalDiagnosis,
+      if (secondaryDiagnoses != null) 'secondary_diagnoses': secondaryDiagnoses,
+      if (proceduresPerformed != null)
+        'procedures_performed': proceduresPerformed,
+      if (hospitalCourse != null) 'hospital_course': hospitalCourse,
+      if (dischargeCondition != null) 'discharge_condition': dischargeCondition,
+      if (dischargeDestination != null)
+        'discharge_destination': dischargeDestination,
+      if (dischargeMedications != null)
+        'discharge_medications': dischargeMedications,
+      if (followUpInstructions != null)
+        'follow_up_instructions': followUpInstructions,
+      if (dietInstructions != null) 'diet_instructions': dietInstructions,
+      if (activityRestrictions != null)
+        'activity_restrictions': activityRestrictions,
+      if (followUpDate != null) 'follow_up_date': followUpDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DischargeSummariesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? hospital,
+    Value<String?>? attendingPhysician,
+    Value<String?>? department,
+    Value<DateTime>? admissionDate,
+    Value<DateTime>? dischargeDate,
+    Value<int?>? lengthOfStay,
+    Value<String?>? admissionDiagnosis,
+    Value<String?>? dischargeDiagnosis,
+    Value<String?>? principalDiagnosis,
+    Value<String?>? secondaryDiagnoses,
+    Value<String?>? proceduresPerformed,
+    Value<String?>? hospitalCourse,
+    Value<String?>? dischargeCondition,
+    Value<String?>? dischargeDestination,
+    Value<String?>? dischargeMedications,
+    Value<String?>? followUpInstructions,
+    Value<String?>? dietInstructions,
+    Value<String?>? activityRestrictions,
+    Value<DateTime?>? followUpDate,
+    Value<int>? rowid,
+  }) {
+    return DischargeSummariesCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      hospital: hospital ?? this.hospital,
+      attendingPhysician: attendingPhysician ?? this.attendingPhysician,
+      department: department ?? this.department,
+      admissionDate: admissionDate ?? this.admissionDate,
+      dischargeDate: dischargeDate ?? this.dischargeDate,
+      lengthOfStay: lengthOfStay ?? this.lengthOfStay,
+      admissionDiagnosis: admissionDiagnosis ?? this.admissionDiagnosis,
+      dischargeDiagnosis: dischargeDiagnosis ?? this.dischargeDiagnosis,
+      principalDiagnosis: principalDiagnosis ?? this.principalDiagnosis,
+      secondaryDiagnoses: secondaryDiagnoses ?? this.secondaryDiagnoses,
+      proceduresPerformed: proceduresPerformed ?? this.proceduresPerformed,
+      hospitalCourse: hospitalCourse ?? this.hospitalCourse,
+      dischargeCondition: dischargeCondition ?? this.dischargeCondition,
+      dischargeDestination: dischargeDestination ?? this.dischargeDestination,
+      dischargeMedications: dischargeMedications ?? this.dischargeMedications,
+      followUpInstructions: followUpInstructions ?? this.followUpInstructions,
+      dietInstructions: dietInstructions ?? this.dietInstructions,
+      activityRestrictions: activityRestrictions ?? this.activityRestrictions,
+      followUpDate: followUpDate ?? this.followUpDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (hospital.present) {
+      map['hospital'] = Variable<String>(hospital.value);
+    }
+    if (attendingPhysician.present) {
+      map['attending_physician'] = Variable<String>(attendingPhysician.value);
+    }
+    if (department.present) {
+      map['department'] = Variable<String>(department.value);
+    }
+    if (admissionDate.present) {
+      map['admission_date'] = Variable<DateTime>(admissionDate.value);
+    }
+    if (dischargeDate.present) {
+      map['discharge_date'] = Variable<DateTime>(dischargeDate.value);
+    }
+    if (lengthOfStay.present) {
+      map['length_of_stay'] = Variable<int>(lengthOfStay.value);
+    }
+    if (admissionDiagnosis.present) {
+      map['admission_diagnosis'] = Variable<String>(admissionDiagnosis.value);
+    }
+    if (dischargeDiagnosis.present) {
+      map['discharge_diagnosis'] = Variable<String>(dischargeDiagnosis.value);
+    }
+    if (principalDiagnosis.present) {
+      map['principal_diagnosis'] = Variable<String>(principalDiagnosis.value);
+    }
+    if (secondaryDiagnoses.present) {
+      map['secondary_diagnoses'] = Variable<String>(secondaryDiagnoses.value);
+    }
+    if (proceduresPerformed.present) {
+      map['procedures_performed'] = Variable<String>(proceduresPerformed.value);
+    }
+    if (hospitalCourse.present) {
+      map['hospital_course'] = Variable<String>(hospitalCourse.value);
+    }
+    if (dischargeCondition.present) {
+      map['discharge_condition'] = Variable<String>(dischargeCondition.value);
+    }
+    if (dischargeDestination.present) {
+      map['discharge_destination'] = Variable<String>(
+        dischargeDestination.value,
+      );
+    }
+    if (dischargeMedications.present) {
+      map['discharge_medications'] = Variable<String>(
+        dischargeMedications.value,
+      );
+    }
+    if (followUpInstructions.present) {
+      map['follow_up_instructions'] = Variable<String>(
+        followUpInstructions.value,
+      );
+    }
+    if (dietInstructions.present) {
+      map['diet_instructions'] = Variable<String>(dietInstructions.value);
+    }
+    if (activityRestrictions.present) {
+      map['activity_restrictions'] = Variable<String>(
+        activityRestrictions.value,
+      );
+    }
+    if (followUpDate.present) {
+      map['follow_up_date'] = Variable<DateTime>(followUpDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DischargeSummariesCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('hospital: $hospital, ')
+          ..write('attendingPhysician: $attendingPhysician, ')
+          ..write('department: $department, ')
+          ..write('admissionDate: $admissionDate, ')
+          ..write('dischargeDate: $dischargeDate, ')
+          ..write('lengthOfStay: $lengthOfStay, ')
+          ..write('admissionDiagnosis: $admissionDiagnosis, ')
+          ..write('dischargeDiagnosis: $dischargeDiagnosis, ')
+          ..write('principalDiagnosis: $principalDiagnosis, ')
+          ..write('secondaryDiagnoses: $secondaryDiagnoses, ')
+          ..write('proceduresPerformed: $proceduresPerformed, ')
+          ..write('hospitalCourse: $hospitalCourse, ')
+          ..write('dischargeCondition: $dischargeCondition, ')
+          ..write('dischargeDestination: $dischargeDestination, ')
+          ..write('dischargeMedications: $dischargeMedications, ')
+          ..write('followUpInstructions: $followUpInstructions, ')
+          ..write('dietInstructions: $dietInstructions, ')
+          ..write('activityRestrictions: $activityRestrictions, ')
+          ..write('followUpDate: $followUpDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HospitalAdmissionsTable extends HospitalAdmissions
+    with TableInfo<$HospitalAdmissionsTable, HospitalAdmission> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HospitalAdmissionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('hospital_admission'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _hospitalMeta = const VerificationMeta(
+    'hospital',
+  );
+  @override
+  late final GeneratedColumn<String> hospital = GeneratedColumn<String>(
+    'hospital',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 150,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _admittingPhysicianMeta =
+      const VerificationMeta('admittingPhysician');
+  @override
+  late final GeneratedColumn<String> admittingPhysician =
+      GeneratedColumn<String>(
+        'admitting_physician',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _departmentMeta = const VerificationMeta(
+    'department',
+  );
+  @override
+  late final GeneratedColumn<String> department = GeneratedColumn<String>(
+    'department',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _admissionDateMeta = const VerificationMeta(
+    'admissionDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> admissionDate =
+      GeneratedColumn<DateTime>(
+        'admission_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _dischargeDateMeta = const VerificationMeta(
+    'dischargeDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dischargeDate =
+      GeneratedColumn<DateTime>(
+        'discharge_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _admissionTypeMeta = const VerificationMeta(
+    'admissionType',
+  );
+  @override
+  late final GeneratedColumn<String> admissionType = GeneratedColumn<String>(
+    'admission_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chiefComplaintMeta = const VerificationMeta(
+    'chiefComplaint',
+  );
+  @override
+  late final GeneratedColumn<String> chiefComplaint = GeneratedColumn<String>(
+    'chief_complaint',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reasonForAdmissionMeta =
+      const VerificationMeta('reasonForAdmission');
+  @override
+  late final GeneratedColumn<String> reasonForAdmission =
+      GeneratedColumn<String>(
+        'reason_for_admission',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _presentingSymptomsMeta =
+      const VerificationMeta('presentingSymptoms');
+  @override
+  late final GeneratedColumn<String> presentingSymptoms =
+      GeneratedColumn<String>(
+        'presenting_symptoms',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _vitalSignsMeta = const VerificationMeta(
+    'vitalSigns',
+  );
+  @override
+  late final GeneratedColumn<String> vitalSigns = GeneratedColumn<String>(
+    'vital_signs',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _initialDiagnosisMeta = const VerificationMeta(
+    'initialDiagnosis',
+  );
+  @override
+  late final GeneratedColumn<String> initialDiagnosis = GeneratedColumn<String>(
+    'initial_diagnosis',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _workingDiagnosisMeta = const VerificationMeta(
+    'workingDiagnosis',
+  );
+  @override
+  late final GeneratedColumn<String> workingDiagnosis = GeneratedColumn<String>(
+    'working_diagnosis',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _treatmentPlanMeta = const VerificationMeta(
+    'treatmentPlan',
+  );
+  @override
+  late final GeneratedColumn<String> treatmentPlan = GeneratedColumn<String>(
+    'treatment_plan',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _medicationsOnAdmissionMeta =
+      const VerificationMeta('medicationsOnAdmission');
+  @override
+  late final GeneratedColumn<String> medicationsOnAdmission =
+      GeneratedColumn<String>(
+        'medications_on_admission',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _allergiesNotedMeta = const VerificationMeta(
+    'allergiesNoted',
+  );
+  @override
+  late final GeneratedColumn<String> allergiesNoted = GeneratedColumn<String>(
+    'allergies_noted',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emergencyContactMeta = const VerificationMeta(
+    'emergencyContact',
+  );
+  @override
+  late final GeneratedColumn<String> emergencyContact = GeneratedColumn<String>(
+    'emergency_contact',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _insuranceInformationMeta =
+      const VerificationMeta('insuranceInformation');
+  @override
+  late final GeneratedColumn<String> insuranceInformation =
+      GeneratedColumn<String>(
+        'insurance_information',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isEmergencyAdmissionMeta =
+      const VerificationMeta('isEmergencyAdmission');
+  @override
+  late final GeneratedColumn<bool> isEmergencyAdmission = GeneratedColumn<bool>(
+    'is_emergency_admission',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_emergency_admission" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _referringPhysicianMeta =
+      const VerificationMeta('referringPhysician');
+  @override
+  late final GeneratedColumn<String> referringPhysician =
+      GeneratedColumn<String>(
+        'referring_physician',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _roomNumberMeta = const VerificationMeta(
+    'roomNumber',
+  );
+  @override
+  late final GeneratedColumn<String> roomNumber = GeneratedColumn<String>(
+    'room_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    hospital,
+    admittingPhysician,
+    department,
+    admissionDate,
+    dischargeDate,
+    admissionType,
+    chiefComplaint,
+    reasonForAdmission,
+    presentingSymptoms,
+    vitalSigns,
+    initialDiagnosis,
+    workingDiagnosis,
+    treatmentPlan,
+    medicationsOnAdmission,
+    allergiesNoted,
+    emergencyContact,
+    insuranceInformation,
+    isEmergencyAdmission,
+    referringPhysician,
+    roomNumber,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hospital_admissions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HospitalAdmission> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('hospital')) {
+      context.handle(
+        _hospitalMeta,
+        hospital.isAcceptableOrUnknown(data['hospital']!, _hospitalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hospitalMeta);
+    }
+    if (data.containsKey('admitting_physician')) {
+      context.handle(
+        _admittingPhysicianMeta,
+        admittingPhysician.isAcceptableOrUnknown(
+          data['admitting_physician']!,
+          _admittingPhysicianMeta,
+        ),
+      );
+    }
+    if (data.containsKey('department')) {
+      context.handle(
+        _departmentMeta,
+        department.isAcceptableOrUnknown(data['department']!, _departmentMeta),
+      );
+    }
+    if (data.containsKey('admission_date')) {
+      context.handle(
+        _admissionDateMeta,
+        admissionDate.isAcceptableOrUnknown(
+          data['admission_date']!,
+          _admissionDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_admissionDateMeta);
+    }
+    if (data.containsKey('discharge_date')) {
+      context.handle(
+        _dischargeDateMeta,
+        dischargeDate.isAcceptableOrUnknown(
+          data['discharge_date']!,
+          _dischargeDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('admission_type')) {
+      context.handle(
+        _admissionTypeMeta,
+        admissionType.isAcceptableOrUnknown(
+          data['admission_type']!,
+          _admissionTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_admissionTypeMeta);
+    }
+    if (data.containsKey('chief_complaint')) {
+      context.handle(
+        _chiefComplaintMeta,
+        chiefComplaint.isAcceptableOrUnknown(
+          data['chief_complaint']!,
+          _chiefComplaintMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reason_for_admission')) {
+      context.handle(
+        _reasonForAdmissionMeta,
+        reasonForAdmission.isAcceptableOrUnknown(
+          data['reason_for_admission']!,
+          _reasonForAdmissionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('presenting_symptoms')) {
+      context.handle(
+        _presentingSymptomsMeta,
+        presentingSymptoms.isAcceptableOrUnknown(
+          data['presenting_symptoms']!,
+          _presentingSymptomsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('vital_signs')) {
+      context.handle(
+        _vitalSignsMeta,
+        vitalSigns.isAcceptableOrUnknown(data['vital_signs']!, _vitalSignsMeta),
+      );
+    }
+    if (data.containsKey('initial_diagnosis')) {
+      context.handle(
+        _initialDiagnosisMeta,
+        initialDiagnosis.isAcceptableOrUnknown(
+          data['initial_diagnosis']!,
+          _initialDiagnosisMeta,
+        ),
+      );
+    }
+    if (data.containsKey('working_diagnosis')) {
+      context.handle(
+        _workingDiagnosisMeta,
+        workingDiagnosis.isAcceptableOrUnknown(
+          data['working_diagnosis']!,
+          _workingDiagnosisMeta,
+        ),
+      );
+    }
+    if (data.containsKey('treatment_plan')) {
+      context.handle(
+        _treatmentPlanMeta,
+        treatmentPlan.isAcceptableOrUnknown(
+          data['treatment_plan']!,
+          _treatmentPlanMeta,
+        ),
+      );
+    }
+    if (data.containsKey('medications_on_admission')) {
+      context.handle(
+        _medicationsOnAdmissionMeta,
+        medicationsOnAdmission.isAcceptableOrUnknown(
+          data['medications_on_admission']!,
+          _medicationsOnAdmissionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('allergies_noted')) {
+      context.handle(
+        _allergiesNotedMeta,
+        allergiesNoted.isAcceptableOrUnknown(
+          data['allergies_noted']!,
+          _allergiesNotedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('emergency_contact')) {
+      context.handle(
+        _emergencyContactMeta,
+        emergencyContact.isAcceptableOrUnknown(
+          data['emergency_contact']!,
+          _emergencyContactMeta,
+        ),
+      );
+    }
+    if (data.containsKey('insurance_information')) {
+      context.handle(
+        _insuranceInformationMeta,
+        insuranceInformation.isAcceptableOrUnknown(
+          data['insurance_information']!,
+          _insuranceInformationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_emergency_admission')) {
+      context.handle(
+        _isEmergencyAdmissionMeta,
+        isEmergencyAdmission.isAcceptableOrUnknown(
+          data['is_emergency_admission']!,
+          _isEmergencyAdmissionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('referring_physician')) {
+      context.handle(
+        _referringPhysicianMeta,
+        referringPhysician.isAcceptableOrUnknown(
+          data['referring_physician']!,
+          _referringPhysicianMeta,
+        ),
+      );
+    }
+    if (data.containsKey('room_number')) {
+      context.handle(
+        _roomNumberMeta,
+        roomNumber.isAcceptableOrUnknown(data['room_number']!, _roomNumberMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HospitalAdmission map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HospitalAdmission(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      hospital: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hospital'],
+      )!,
+      admittingPhysician: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}admitting_physician'],
+      ),
+      department: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}department'],
+      ),
+      admissionDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}admission_date'],
+      )!,
+      dischargeDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}discharge_date'],
+      ),
+      admissionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}admission_type'],
+      )!,
+      chiefComplaint: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chief_complaint'],
+      ),
+      reasonForAdmission: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason_for_admission'],
+      ),
+      presentingSymptoms: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presenting_symptoms'],
+      ),
+      vitalSigns: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vital_signs'],
+      ),
+      initialDiagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}initial_diagnosis'],
+      ),
+      workingDiagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}working_diagnosis'],
+      ),
+      treatmentPlan: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatment_plan'],
+      ),
+      medicationsOnAdmission: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medications_on_admission'],
+      ),
+      allergiesNoted: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}allergies_noted'],
+      ),
+      emergencyContact: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}emergency_contact'],
+      ),
+      insuranceInformation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}insurance_information'],
+      ),
+      isEmergencyAdmission: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_emergency_admission'],
+      )!,
+      referringPhysician: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}referring_physician'],
+      ),
+      roomNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}room_number'],
+      ),
+    );
+  }
+
+  @override
+  $HospitalAdmissionsTable createAlias(String alias) {
+    return $HospitalAdmissionsTable(attachedDatabase, alias);
+  }
+}
+
+class HospitalAdmission extends DataClass
+    implements Insertable<HospitalAdmission> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String hospital;
+  final String? admittingPhysician;
+  final String? department;
+  final DateTime admissionDate;
+  final DateTime? dischargeDate;
+  final String admissionType;
+  final String? chiefComplaint;
+  final String? reasonForAdmission;
+  final String? presentingSymptoms;
+  final String? vitalSigns;
+  final String? initialDiagnosis;
+  final String? workingDiagnosis;
+  final String? treatmentPlan;
+  final String? medicationsOnAdmission;
+  final String? allergiesNoted;
+  final String? emergencyContact;
+  final String? insuranceInformation;
+  final bool isEmergencyAdmission;
+  final String? referringPhysician;
+  final String? roomNumber;
+  const HospitalAdmission({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.hospital,
+    this.admittingPhysician,
+    this.department,
+    required this.admissionDate,
+    this.dischargeDate,
+    required this.admissionType,
+    this.chiefComplaint,
+    this.reasonForAdmission,
+    this.presentingSymptoms,
+    this.vitalSigns,
+    this.initialDiagnosis,
+    this.workingDiagnosis,
+    this.treatmentPlan,
+    this.medicationsOnAdmission,
+    this.allergiesNoted,
+    this.emergencyContact,
+    this.insuranceInformation,
+    required this.isEmergencyAdmission,
+    this.referringPhysician,
+    this.roomNumber,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['hospital'] = Variable<String>(hospital);
+    if (!nullToAbsent || admittingPhysician != null) {
+      map['admitting_physician'] = Variable<String>(admittingPhysician);
+    }
+    if (!nullToAbsent || department != null) {
+      map['department'] = Variable<String>(department);
+    }
+    map['admission_date'] = Variable<DateTime>(admissionDate);
+    if (!nullToAbsent || dischargeDate != null) {
+      map['discharge_date'] = Variable<DateTime>(dischargeDate);
+    }
+    map['admission_type'] = Variable<String>(admissionType);
+    if (!nullToAbsent || chiefComplaint != null) {
+      map['chief_complaint'] = Variable<String>(chiefComplaint);
+    }
+    if (!nullToAbsent || reasonForAdmission != null) {
+      map['reason_for_admission'] = Variable<String>(reasonForAdmission);
+    }
+    if (!nullToAbsent || presentingSymptoms != null) {
+      map['presenting_symptoms'] = Variable<String>(presentingSymptoms);
+    }
+    if (!nullToAbsent || vitalSigns != null) {
+      map['vital_signs'] = Variable<String>(vitalSigns);
+    }
+    if (!nullToAbsent || initialDiagnosis != null) {
+      map['initial_diagnosis'] = Variable<String>(initialDiagnosis);
+    }
+    if (!nullToAbsent || workingDiagnosis != null) {
+      map['working_diagnosis'] = Variable<String>(workingDiagnosis);
+    }
+    if (!nullToAbsent || treatmentPlan != null) {
+      map['treatment_plan'] = Variable<String>(treatmentPlan);
+    }
+    if (!nullToAbsent || medicationsOnAdmission != null) {
+      map['medications_on_admission'] = Variable<String>(
+        medicationsOnAdmission,
+      );
+    }
+    if (!nullToAbsent || allergiesNoted != null) {
+      map['allergies_noted'] = Variable<String>(allergiesNoted);
+    }
+    if (!nullToAbsent || emergencyContact != null) {
+      map['emergency_contact'] = Variable<String>(emergencyContact);
+    }
+    if (!nullToAbsent || insuranceInformation != null) {
+      map['insurance_information'] = Variable<String>(insuranceInformation);
+    }
+    map['is_emergency_admission'] = Variable<bool>(isEmergencyAdmission);
+    if (!nullToAbsent || referringPhysician != null) {
+      map['referring_physician'] = Variable<String>(referringPhysician);
+    }
+    if (!nullToAbsent || roomNumber != null) {
+      map['room_number'] = Variable<String>(roomNumber);
+    }
+    return map;
+  }
+
+  HospitalAdmissionsCompanion toCompanion(bool nullToAbsent) {
+    return HospitalAdmissionsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      hospital: Value(hospital),
+      admittingPhysician: admittingPhysician == null && nullToAbsent
+          ? const Value.absent()
+          : Value(admittingPhysician),
+      department: department == null && nullToAbsent
+          ? const Value.absent()
+          : Value(department),
+      admissionDate: Value(admissionDate),
+      dischargeDate: dischargeDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dischargeDate),
+      admissionType: Value(admissionType),
+      chiefComplaint: chiefComplaint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chiefComplaint),
+      reasonForAdmission: reasonForAdmission == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reasonForAdmission),
+      presentingSymptoms: presentingSymptoms == null && nullToAbsent
+          ? const Value.absent()
+          : Value(presentingSymptoms),
+      vitalSigns: vitalSigns == null && nullToAbsent
+          ? const Value.absent()
+          : Value(vitalSigns),
+      initialDiagnosis: initialDiagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(initialDiagnosis),
+      workingDiagnosis: workingDiagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(workingDiagnosis),
+      treatmentPlan: treatmentPlan == null && nullToAbsent
+          ? const Value.absent()
+          : Value(treatmentPlan),
+      medicationsOnAdmission: medicationsOnAdmission == null && nullToAbsent
+          ? const Value.absent()
+          : Value(medicationsOnAdmission),
+      allergiesNoted: allergiesNoted == null && nullToAbsent
+          ? const Value.absent()
+          : Value(allergiesNoted),
+      emergencyContact: emergencyContact == null && nullToAbsent
+          ? const Value.absent()
+          : Value(emergencyContact),
+      insuranceInformation: insuranceInformation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(insuranceInformation),
+      isEmergencyAdmission: Value(isEmergencyAdmission),
+      referringPhysician: referringPhysician == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referringPhysician),
+      roomNumber: roomNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roomNumber),
+    );
+  }
+
+  factory HospitalAdmission.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HospitalAdmission(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      hospital: serializer.fromJson<String>(json['hospital']),
+      admittingPhysician: serializer.fromJson<String?>(
+        json['admittingPhysician'],
+      ),
+      department: serializer.fromJson<String?>(json['department']),
+      admissionDate: serializer.fromJson<DateTime>(json['admissionDate']),
+      dischargeDate: serializer.fromJson<DateTime?>(json['dischargeDate']),
+      admissionType: serializer.fromJson<String>(json['admissionType']),
+      chiefComplaint: serializer.fromJson<String?>(json['chiefComplaint']),
+      reasonForAdmission: serializer.fromJson<String?>(
+        json['reasonForAdmission'],
+      ),
+      presentingSymptoms: serializer.fromJson<String?>(
+        json['presentingSymptoms'],
+      ),
+      vitalSigns: serializer.fromJson<String?>(json['vitalSigns']),
+      initialDiagnosis: serializer.fromJson<String?>(json['initialDiagnosis']),
+      workingDiagnosis: serializer.fromJson<String?>(json['workingDiagnosis']),
+      treatmentPlan: serializer.fromJson<String?>(json['treatmentPlan']),
+      medicationsOnAdmission: serializer.fromJson<String?>(
+        json['medicationsOnAdmission'],
+      ),
+      allergiesNoted: serializer.fromJson<String?>(json['allergiesNoted']),
+      emergencyContact: serializer.fromJson<String?>(json['emergencyContact']),
+      insuranceInformation: serializer.fromJson<String?>(
+        json['insuranceInformation'],
+      ),
+      isEmergencyAdmission: serializer.fromJson<bool>(
+        json['isEmergencyAdmission'],
+      ),
+      referringPhysician: serializer.fromJson<String?>(
+        json['referringPhysician'],
+      ),
+      roomNumber: serializer.fromJson<String?>(json['roomNumber']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'hospital': serializer.toJson<String>(hospital),
+      'admittingPhysician': serializer.toJson<String?>(admittingPhysician),
+      'department': serializer.toJson<String?>(department),
+      'admissionDate': serializer.toJson<DateTime>(admissionDate),
+      'dischargeDate': serializer.toJson<DateTime?>(dischargeDate),
+      'admissionType': serializer.toJson<String>(admissionType),
+      'chiefComplaint': serializer.toJson<String?>(chiefComplaint),
+      'reasonForAdmission': serializer.toJson<String?>(reasonForAdmission),
+      'presentingSymptoms': serializer.toJson<String?>(presentingSymptoms),
+      'vitalSigns': serializer.toJson<String?>(vitalSigns),
+      'initialDiagnosis': serializer.toJson<String?>(initialDiagnosis),
+      'workingDiagnosis': serializer.toJson<String?>(workingDiagnosis),
+      'treatmentPlan': serializer.toJson<String?>(treatmentPlan),
+      'medicationsOnAdmission': serializer.toJson<String?>(
+        medicationsOnAdmission,
+      ),
+      'allergiesNoted': serializer.toJson<String?>(allergiesNoted),
+      'emergencyContact': serializer.toJson<String?>(emergencyContact),
+      'insuranceInformation': serializer.toJson<String?>(insuranceInformation),
+      'isEmergencyAdmission': serializer.toJson<bool>(isEmergencyAdmission),
+      'referringPhysician': serializer.toJson<String?>(referringPhysician),
+      'roomNumber': serializer.toJson<String?>(roomNumber),
+    };
+  }
+
+  HospitalAdmission copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? hospital,
+    Value<String?> admittingPhysician = const Value.absent(),
+    Value<String?> department = const Value.absent(),
+    DateTime? admissionDate,
+    Value<DateTime?> dischargeDate = const Value.absent(),
+    String? admissionType,
+    Value<String?> chiefComplaint = const Value.absent(),
+    Value<String?> reasonForAdmission = const Value.absent(),
+    Value<String?> presentingSymptoms = const Value.absent(),
+    Value<String?> vitalSigns = const Value.absent(),
+    Value<String?> initialDiagnosis = const Value.absent(),
+    Value<String?> workingDiagnosis = const Value.absent(),
+    Value<String?> treatmentPlan = const Value.absent(),
+    Value<String?> medicationsOnAdmission = const Value.absent(),
+    Value<String?> allergiesNoted = const Value.absent(),
+    Value<String?> emergencyContact = const Value.absent(),
+    Value<String?> insuranceInformation = const Value.absent(),
+    bool? isEmergencyAdmission,
+    Value<String?> referringPhysician = const Value.absent(),
+    Value<String?> roomNumber = const Value.absent(),
+  }) => HospitalAdmission(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    hospital: hospital ?? this.hospital,
+    admittingPhysician: admittingPhysician.present
+        ? admittingPhysician.value
+        : this.admittingPhysician,
+    department: department.present ? department.value : this.department,
+    admissionDate: admissionDate ?? this.admissionDate,
+    dischargeDate: dischargeDate.present
+        ? dischargeDate.value
+        : this.dischargeDate,
+    admissionType: admissionType ?? this.admissionType,
+    chiefComplaint: chiefComplaint.present
+        ? chiefComplaint.value
+        : this.chiefComplaint,
+    reasonForAdmission: reasonForAdmission.present
+        ? reasonForAdmission.value
+        : this.reasonForAdmission,
+    presentingSymptoms: presentingSymptoms.present
+        ? presentingSymptoms.value
+        : this.presentingSymptoms,
+    vitalSigns: vitalSigns.present ? vitalSigns.value : this.vitalSigns,
+    initialDiagnosis: initialDiagnosis.present
+        ? initialDiagnosis.value
+        : this.initialDiagnosis,
+    workingDiagnosis: workingDiagnosis.present
+        ? workingDiagnosis.value
+        : this.workingDiagnosis,
+    treatmentPlan: treatmentPlan.present
+        ? treatmentPlan.value
+        : this.treatmentPlan,
+    medicationsOnAdmission: medicationsOnAdmission.present
+        ? medicationsOnAdmission.value
+        : this.medicationsOnAdmission,
+    allergiesNoted: allergiesNoted.present
+        ? allergiesNoted.value
+        : this.allergiesNoted,
+    emergencyContact: emergencyContact.present
+        ? emergencyContact.value
+        : this.emergencyContact,
+    insuranceInformation: insuranceInformation.present
+        ? insuranceInformation.value
+        : this.insuranceInformation,
+    isEmergencyAdmission: isEmergencyAdmission ?? this.isEmergencyAdmission,
+    referringPhysician: referringPhysician.present
+        ? referringPhysician.value
+        : this.referringPhysician,
+    roomNumber: roomNumber.present ? roomNumber.value : this.roomNumber,
+  );
+  HospitalAdmission copyWithCompanion(HospitalAdmissionsCompanion data) {
+    return HospitalAdmission(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      hospital: data.hospital.present ? data.hospital.value : this.hospital,
+      admittingPhysician: data.admittingPhysician.present
+          ? data.admittingPhysician.value
+          : this.admittingPhysician,
+      department: data.department.present
+          ? data.department.value
+          : this.department,
+      admissionDate: data.admissionDate.present
+          ? data.admissionDate.value
+          : this.admissionDate,
+      dischargeDate: data.dischargeDate.present
+          ? data.dischargeDate.value
+          : this.dischargeDate,
+      admissionType: data.admissionType.present
+          ? data.admissionType.value
+          : this.admissionType,
+      chiefComplaint: data.chiefComplaint.present
+          ? data.chiefComplaint.value
+          : this.chiefComplaint,
+      reasonForAdmission: data.reasonForAdmission.present
+          ? data.reasonForAdmission.value
+          : this.reasonForAdmission,
+      presentingSymptoms: data.presentingSymptoms.present
+          ? data.presentingSymptoms.value
+          : this.presentingSymptoms,
+      vitalSigns: data.vitalSigns.present
+          ? data.vitalSigns.value
+          : this.vitalSigns,
+      initialDiagnosis: data.initialDiagnosis.present
+          ? data.initialDiagnosis.value
+          : this.initialDiagnosis,
+      workingDiagnosis: data.workingDiagnosis.present
+          ? data.workingDiagnosis.value
+          : this.workingDiagnosis,
+      treatmentPlan: data.treatmentPlan.present
+          ? data.treatmentPlan.value
+          : this.treatmentPlan,
+      medicationsOnAdmission: data.medicationsOnAdmission.present
+          ? data.medicationsOnAdmission.value
+          : this.medicationsOnAdmission,
+      allergiesNoted: data.allergiesNoted.present
+          ? data.allergiesNoted.value
+          : this.allergiesNoted,
+      emergencyContact: data.emergencyContact.present
+          ? data.emergencyContact.value
+          : this.emergencyContact,
+      insuranceInformation: data.insuranceInformation.present
+          ? data.insuranceInformation.value
+          : this.insuranceInformation,
+      isEmergencyAdmission: data.isEmergencyAdmission.present
+          ? data.isEmergencyAdmission.value
+          : this.isEmergencyAdmission,
+      referringPhysician: data.referringPhysician.present
+          ? data.referringPhysician.value
+          : this.referringPhysician,
+      roomNumber: data.roomNumber.present
+          ? data.roomNumber.value
+          : this.roomNumber,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HospitalAdmission(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('hospital: $hospital, ')
+          ..write('admittingPhysician: $admittingPhysician, ')
+          ..write('department: $department, ')
+          ..write('admissionDate: $admissionDate, ')
+          ..write('dischargeDate: $dischargeDate, ')
+          ..write('admissionType: $admissionType, ')
+          ..write('chiefComplaint: $chiefComplaint, ')
+          ..write('reasonForAdmission: $reasonForAdmission, ')
+          ..write('presentingSymptoms: $presentingSymptoms, ')
+          ..write('vitalSigns: $vitalSigns, ')
+          ..write('initialDiagnosis: $initialDiagnosis, ')
+          ..write('workingDiagnosis: $workingDiagnosis, ')
+          ..write('treatmentPlan: $treatmentPlan, ')
+          ..write('medicationsOnAdmission: $medicationsOnAdmission, ')
+          ..write('allergiesNoted: $allergiesNoted, ')
+          ..write('emergencyContact: $emergencyContact, ')
+          ..write('insuranceInformation: $insuranceInformation, ')
+          ..write('isEmergencyAdmission: $isEmergencyAdmission, ')
+          ..write('referringPhysician: $referringPhysician, ')
+          ..write('roomNumber: $roomNumber')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    hospital,
+    admittingPhysician,
+    department,
+    admissionDate,
+    dischargeDate,
+    admissionType,
+    chiefComplaint,
+    reasonForAdmission,
+    presentingSymptoms,
+    vitalSigns,
+    initialDiagnosis,
+    workingDiagnosis,
+    treatmentPlan,
+    medicationsOnAdmission,
+    allergiesNoted,
+    emergencyContact,
+    insuranceInformation,
+    isEmergencyAdmission,
+    referringPhysician,
+    roomNumber,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HospitalAdmission &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.hospital == this.hospital &&
+          other.admittingPhysician == this.admittingPhysician &&
+          other.department == this.department &&
+          other.admissionDate == this.admissionDate &&
+          other.dischargeDate == this.dischargeDate &&
+          other.admissionType == this.admissionType &&
+          other.chiefComplaint == this.chiefComplaint &&
+          other.reasonForAdmission == this.reasonForAdmission &&
+          other.presentingSymptoms == this.presentingSymptoms &&
+          other.vitalSigns == this.vitalSigns &&
+          other.initialDiagnosis == this.initialDiagnosis &&
+          other.workingDiagnosis == this.workingDiagnosis &&
+          other.treatmentPlan == this.treatmentPlan &&
+          other.medicationsOnAdmission == this.medicationsOnAdmission &&
+          other.allergiesNoted == this.allergiesNoted &&
+          other.emergencyContact == this.emergencyContact &&
+          other.insuranceInformation == this.insuranceInformation &&
+          other.isEmergencyAdmission == this.isEmergencyAdmission &&
+          other.referringPhysician == this.referringPhysician &&
+          other.roomNumber == this.roomNumber);
+}
+
+class HospitalAdmissionsCompanion extends UpdateCompanion<HospitalAdmission> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> hospital;
+  final Value<String?> admittingPhysician;
+  final Value<String?> department;
+  final Value<DateTime> admissionDate;
+  final Value<DateTime?> dischargeDate;
+  final Value<String> admissionType;
+  final Value<String?> chiefComplaint;
+  final Value<String?> reasonForAdmission;
+  final Value<String?> presentingSymptoms;
+  final Value<String?> vitalSigns;
+  final Value<String?> initialDiagnosis;
+  final Value<String?> workingDiagnosis;
+  final Value<String?> treatmentPlan;
+  final Value<String?> medicationsOnAdmission;
+  final Value<String?> allergiesNoted;
+  final Value<String?> emergencyContact;
+  final Value<String?> insuranceInformation;
+  final Value<bool> isEmergencyAdmission;
+  final Value<String?> referringPhysician;
+  final Value<String?> roomNumber;
+  final Value<int> rowid;
+  const HospitalAdmissionsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.hospital = const Value.absent(),
+    this.admittingPhysician = const Value.absent(),
+    this.department = const Value.absent(),
+    this.admissionDate = const Value.absent(),
+    this.dischargeDate = const Value.absent(),
+    this.admissionType = const Value.absent(),
+    this.chiefComplaint = const Value.absent(),
+    this.reasonForAdmission = const Value.absent(),
+    this.presentingSymptoms = const Value.absent(),
+    this.vitalSigns = const Value.absent(),
+    this.initialDiagnosis = const Value.absent(),
+    this.workingDiagnosis = const Value.absent(),
+    this.treatmentPlan = const Value.absent(),
+    this.medicationsOnAdmission = const Value.absent(),
+    this.allergiesNoted = const Value.absent(),
+    this.emergencyContact = const Value.absent(),
+    this.insuranceInformation = const Value.absent(),
+    this.isEmergencyAdmission = const Value.absent(),
+    this.referringPhysician = const Value.absent(),
+    this.roomNumber = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HospitalAdmissionsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String hospital,
+    this.admittingPhysician = const Value.absent(),
+    this.department = const Value.absent(),
+    required DateTime admissionDate,
+    this.dischargeDate = const Value.absent(),
+    required String admissionType,
+    this.chiefComplaint = const Value.absent(),
+    this.reasonForAdmission = const Value.absent(),
+    this.presentingSymptoms = const Value.absent(),
+    this.vitalSigns = const Value.absent(),
+    this.initialDiagnosis = const Value.absent(),
+    this.workingDiagnosis = const Value.absent(),
+    this.treatmentPlan = const Value.absent(),
+    this.medicationsOnAdmission = const Value.absent(),
+    this.allergiesNoted = const Value.absent(),
+    this.emergencyContact = const Value.absent(),
+    this.insuranceInformation = const Value.absent(),
+    this.isEmergencyAdmission = const Value.absent(),
+    this.referringPhysician = const Value.absent(),
+    this.roomNumber = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       hospital = Value(hospital),
+       admissionDate = Value(admissionDate),
+       admissionType = Value(admissionType);
+  static Insertable<HospitalAdmission> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? hospital,
+    Expression<String>? admittingPhysician,
+    Expression<String>? department,
+    Expression<DateTime>? admissionDate,
+    Expression<DateTime>? dischargeDate,
+    Expression<String>? admissionType,
+    Expression<String>? chiefComplaint,
+    Expression<String>? reasonForAdmission,
+    Expression<String>? presentingSymptoms,
+    Expression<String>? vitalSigns,
+    Expression<String>? initialDiagnosis,
+    Expression<String>? workingDiagnosis,
+    Expression<String>? treatmentPlan,
+    Expression<String>? medicationsOnAdmission,
+    Expression<String>? allergiesNoted,
+    Expression<String>? emergencyContact,
+    Expression<String>? insuranceInformation,
+    Expression<bool>? isEmergencyAdmission,
+    Expression<String>? referringPhysician,
+    Expression<String>? roomNumber,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (hospital != null) 'hospital': hospital,
+      if (admittingPhysician != null) 'admitting_physician': admittingPhysician,
+      if (department != null) 'department': department,
+      if (admissionDate != null) 'admission_date': admissionDate,
+      if (dischargeDate != null) 'discharge_date': dischargeDate,
+      if (admissionType != null) 'admission_type': admissionType,
+      if (chiefComplaint != null) 'chief_complaint': chiefComplaint,
+      if (reasonForAdmission != null)
+        'reason_for_admission': reasonForAdmission,
+      if (presentingSymptoms != null) 'presenting_symptoms': presentingSymptoms,
+      if (vitalSigns != null) 'vital_signs': vitalSigns,
+      if (initialDiagnosis != null) 'initial_diagnosis': initialDiagnosis,
+      if (workingDiagnosis != null) 'working_diagnosis': workingDiagnosis,
+      if (treatmentPlan != null) 'treatment_plan': treatmentPlan,
+      if (medicationsOnAdmission != null)
+        'medications_on_admission': medicationsOnAdmission,
+      if (allergiesNoted != null) 'allergies_noted': allergiesNoted,
+      if (emergencyContact != null) 'emergency_contact': emergencyContact,
+      if (insuranceInformation != null)
+        'insurance_information': insuranceInformation,
+      if (isEmergencyAdmission != null)
+        'is_emergency_admission': isEmergencyAdmission,
+      if (referringPhysician != null) 'referring_physician': referringPhysician,
+      if (roomNumber != null) 'room_number': roomNumber,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HospitalAdmissionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? hospital,
+    Value<String?>? admittingPhysician,
+    Value<String?>? department,
+    Value<DateTime>? admissionDate,
+    Value<DateTime?>? dischargeDate,
+    Value<String>? admissionType,
+    Value<String?>? chiefComplaint,
+    Value<String?>? reasonForAdmission,
+    Value<String?>? presentingSymptoms,
+    Value<String?>? vitalSigns,
+    Value<String?>? initialDiagnosis,
+    Value<String?>? workingDiagnosis,
+    Value<String?>? treatmentPlan,
+    Value<String?>? medicationsOnAdmission,
+    Value<String?>? allergiesNoted,
+    Value<String?>? emergencyContact,
+    Value<String?>? insuranceInformation,
+    Value<bool>? isEmergencyAdmission,
+    Value<String?>? referringPhysician,
+    Value<String?>? roomNumber,
+    Value<int>? rowid,
+  }) {
+    return HospitalAdmissionsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      hospital: hospital ?? this.hospital,
+      admittingPhysician: admittingPhysician ?? this.admittingPhysician,
+      department: department ?? this.department,
+      admissionDate: admissionDate ?? this.admissionDate,
+      dischargeDate: dischargeDate ?? this.dischargeDate,
+      admissionType: admissionType ?? this.admissionType,
+      chiefComplaint: chiefComplaint ?? this.chiefComplaint,
+      reasonForAdmission: reasonForAdmission ?? this.reasonForAdmission,
+      presentingSymptoms: presentingSymptoms ?? this.presentingSymptoms,
+      vitalSigns: vitalSigns ?? this.vitalSigns,
+      initialDiagnosis: initialDiagnosis ?? this.initialDiagnosis,
+      workingDiagnosis: workingDiagnosis ?? this.workingDiagnosis,
+      treatmentPlan: treatmentPlan ?? this.treatmentPlan,
+      medicationsOnAdmission:
+          medicationsOnAdmission ?? this.medicationsOnAdmission,
+      allergiesNoted: allergiesNoted ?? this.allergiesNoted,
+      emergencyContact: emergencyContact ?? this.emergencyContact,
+      insuranceInformation: insuranceInformation ?? this.insuranceInformation,
+      isEmergencyAdmission: isEmergencyAdmission ?? this.isEmergencyAdmission,
+      referringPhysician: referringPhysician ?? this.referringPhysician,
+      roomNumber: roomNumber ?? this.roomNumber,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (hospital.present) {
+      map['hospital'] = Variable<String>(hospital.value);
+    }
+    if (admittingPhysician.present) {
+      map['admitting_physician'] = Variable<String>(admittingPhysician.value);
+    }
+    if (department.present) {
+      map['department'] = Variable<String>(department.value);
+    }
+    if (admissionDate.present) {
+      map['admission_date'] = Variable<DateTime>(admissionDate.value);
+    }
+    if (dischargeDate.present) {
+      map['discharge_date'] = Variable<DateTime>(dischargeDate.value);
+    }
+    if (admissionType.present) {
+      map['admission_type'] = Variable<String>(admissionType.value);
+    }
+    if (chiefComplaint.present) {
+      map['chief_complaint'] = Variable<String>(chiefComplaint.value);
+    }
+    if (reasonForAdmission.present) {
+      map['reason_for_admission'] = Variable<String>(reasonForAdmission.value);
+    }
+    if (presentingSymptoms.present) {
+      map['presenting_symptoms'] = Variable<String>(presentingSymptoms.value);
+    }
+    if (vitalSigns.present) {
+      map['vital_signs'] = Variable<String>(vitalSigns.value);
+    }
+    if (initialDiagnosis.present) {
+      map['initial_diagnosis'] = Variable<String>(initialDiagnosis.value);
+    }
+    if (workingDiagnosis.present) {
+      map['working_diagnosis'] = Variable<String>(workingDiagnosis.value);
+    }
+    if (treatmentPlan.present) {
+      map['treatment_plan'] = Variable<String>(treatmentPlan.value);
+    }
+    if (medicationsOnAdmission.present) {
+      map['medications_on_admission'] = Variable<String>(
+        medicationsOnAdmission.value,
+      );
+    }
+    if (allergiesNoted.present) {
+      map['allergies_noted'] = Variable<String>(allergiesNoted.value);
+    }
+    if (emergencyContact.present) {
+      map['emergency_contact'] = Variable<String>(emergencyContact.value);
+    }
+    if (insuranceInformation.present) {
+      map['insurance_information'] = Variable<String>(
+        insuranceInformation.value,
+      );
+    }
+    if (isEmergencyAdmission.present) {
+      map['is_emergency_admission'] = Variable<bool>(
+        isEmergencyAdmission.value,
+      );
+    }
+    if (referringPhysician.present) {
+      map['referring_physician'] = Variable<String>(referringPhysician.value);
+    }
+    if (roomNumber.present) {
+      map['room_number'] = Variable<String>(roomNumber.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HospitalAdmissionsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('hospital: $hospital, ')
+          ..write('admittingPhysician: $admittingPhysician, ')
+          ..write('department: $department, ')
+          ..write('admissionDate: $admissionDate, ')
+          ..write('dischargeDate: $dischargeDate, ')
+          ..write('admissionType: $admissionType, ')
+          ..write('chiefComplaint: $chiefComplaint, ')
+          ..write('reasonForAdmission: $reasonForAdmission, ')
+          ..write('presentingSymptoms: $presentingSymptoms, ')
+          ..write('vitalSigns: $vitalSigns, ')
+          ..write('initialDiagnosis: $initialDiagnosis, ')
+          ..write('workingDiagnosis: $workingDiagnosis, ')
+          ..write('treatmentPlan: $treatmentPlan, ')
+          ..write('medicationsOnAdmission: $medicationsOnAdmission, ')
+          ..write('allergiesNoted: $allergiesNoted, ')
+          ..write('emergencyContact: $emergencyContact, ')
+          ..write('insuranceInformation: $insuranceInformation, ')
+          ..write('isEmergencyAdmission: $isEmergencyAdmission, ')
+          ..write('referringPhysician: $referringPhysician, ')
+          ..write('roomNumber: $roomNumber, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DentalRecordsTable extends DentalRecords
+    with TableInfo<$DentalRecordsTable, DentalRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DentalRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('dental_record'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _procedureTypeMeta = const VerificationMeta(
+    'procedureType',
+  );
+  @override
+  late final GeneratedColumn<String> procedureType = GeneratedColumn<String>(
+    'procedure_type',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dentistNameMeta = const VerificationMeta(
+    'dentistName',
+  );
+  @override
+  late final GeneratedColumn<String> dentistName = GeneratedColumn<String>(
+    'dentist_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dentalOfficeMeta = const VerificationMeta(
+    'dentalOffice',
+  );
+  @override
+  late final GeneratedColumn<String> dentalOffice = GeneratedColumn<String>(
+    'dental_office',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _appointmentDateMeta = const VerificationMeta(
+    'appointmentDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> appointmentDate =
+      GeneratedColumn<DateTime>(
+        'appointment_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _toothNumbersMeta = const VerificationMeta(
+    'toothNumbers',
+  );
+  @override
+  late final GeneratedColumn<String> toothNumbers = GeneratedColumn<String>(
+    'tooth_numbers',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _treatmentAreaMeta = const VerificationMeta(
+    'treatmentArea',
+  );
+  @override
+  late final GeneratedColumn<String> treatmentArea = GeneratedColumn<String>(
+    'treatment_area',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _chiefComplaintMeta = const VerificationMeta(
+    'chiefComplaint',
+  );
+  @override
+  late final GeneratedColumn<String> chiefComplaint = GeneratedColumn<String>(
+    'chief_complaint',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clinicalFindingsMeta = const VerificationMeta(
+    'clinicalFindings',
+  );
+  @override
+  late final GeneratedColumn<String> clinicalFindings = GeneratedColumn<String>(
+    'clinical_findings',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _diagnosisMeta = const VerificationMeta(
+    'diagnosis',
+  );
+  @override
+  late final GeneratedColumn<String> diagnosis = GeneratedColumn<String>(
+    'diagnosis',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _treatmentProvidedMeta = const VerificationMeta(
+    'treatmentProvided',
+  );
+  @override
+  late final GeneratedColumn<String> treatmentProvided =
+      GeneratedColumn<String>(
+        'treatment_provided',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _materialsUsedMeta = const VerificationMeta(
+    'materialsUsed',
+  );
+  @override
+  late final GeneratedColumn<String> materialsUsed = GeneratedColumn<String>(
+    'materials_used',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _anesthesiaUsedMeta = const VerificationMeta(
+    'anesthesiaUsed',
+  );
+  @override
+  late final GeneratedColumn<String> anesthesiaUsed = GeneratedColumn<String>(
+    'anesthesia_used',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _postTreatmentInstructionsMeta =
+      const VerificationMeta('postTreatmentInstructions');
+  @override
+  late final GeneratedColumn<String> postTreatmentInstructions =
+      GeneratedColumn<String>(
+        'post_treatment_instructions',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _followUpRequiredMeta = const VerificationMeta(
+    'followUpRequired',
+  );
+  @override
+  late final GeneratedColumn<String> followUpRequired = GeneratedColumn<String>(
+    'follow_up_required',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nextAppointmentMeta = const VerificationMeta(
+    'nextAppointment',
+  );
+  @override
+  late final GeneratedColumn<DateTime> nextAppointment =
+      GeneratedColumn<DateTime>(
+        'next_appointment',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _costMeta = const VerificationMeta('cost');
+  @override
+  late final GeneratedColumn<double> cost = GeneratedColumn<double>(
+    'cost',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _insuranceClaimMeta = const VerificationMeta(
+    'insuranceClaim',
+  );
+  @override
+  late final GeneratedColumn<String> insuranceClaim = GeneratedColumn<String>(
+    'insurance_claim',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isEmergencyVisitMeta = const VerificationMeta(
+    'isEmergencyVisit',
+  );
+  @override
+  late final GeneratedColumn<bool> isEmergencyVisit = GeneratedColumn<bool>(
+    'is_emergency_visit',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_emergency_visit" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    procedureType,
+    dentistName,
+    dentalOffice,
+    appointmentDate,
+    toothNumbers,
+    treatmentArea,
+    chiefComplaint,
+    clinicalFindings,
+    diagnosis,
+    treatmentProvided,
+    materialsUsed,
+    anesthesiaUsed,
+    postTreatmentInstructions,
+    followUpRequired,
+    nextAppointment,
+    cost,
+    insuranceClaim,
+    isEmergencyVisit,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dental_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DentalRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('procedure_type')) {
+      context.handle(
+        _procedureTypeMeta,
+        procedureType.isAcceptableOrUnknown(
+          data['procedure_type']!,
+          _procedureTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_procedureTypeMeta);
+    }
+    if (data.containsKey('dentist_name')) {
+      context.handle(
+        _dentistNameMeta,
+        dentistName.isAcceptableOrUnknown(
+          data['dentist_name']!,
+          _dentistNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dental_office')) {
+      context.handle(
+        _dentalOfficeMeta,
+        dentalOffice.isAcceptableOrUnknown(
+          data['dental_office']!,
+          _dentalOfficeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_date')) {
+      context.handle(
+        _appointmentDateMeta,
+        appointmentDate.isAcceptableOrUnknown(
+          data['appointment_date']!,
+          _appointmentDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_appointmentDateMeta);
+    }
+    if (data.containsKey('tooth_numbers')) {
+      context.handle(
+        _toothNumbersMeta,
+        toothNumbers.isAcceptableOrUnknown(
+          data['tooth_numbers']!,
+          _toothNumbersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('treatment_area')) {
+      context.handle(
+        _treatmentAreaMeta,
+        treatmentArea.isAcceptableOrUnknown(
+          data['treatment_area']!,
+          _treatmentAreaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('chief_complaint')) {
+      context.handle(
+        _chiefComplaintMeta,
+        chiefComplaint.isAcceptableOrUnknown(
+          data['chief_complaint']!,
+          _chiefComplaintMeta,
+        ),
+      );
+    }
+    if (data.containsKey('clinical_findings')) {
+      context.handle(
+        _clinicalFindingsMeta,
+        clinicalFindings.isAcceptableOrUnknown(
+          data['clinical_findings']!,
+          _clinicalFindingsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('diagnosis')) {
+      context.handle(
+        _diagnosisMeta,
+        diagnosis.isAcceptableOrUnknown(data['diagnosis']!, _diagnosisMeta),
+      );
+    }
+    if (data.containsKey('treatment_provided')) {
+      context.handle(
+        _treatmentProvidedMeta,
+        treatmentProvided.isAcceptableOrUnknown(
+          data['treatment_provided']!,
+          _treatmentProvidedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('materials_used')) {
+      context.handle(
+        _materialsUsedMeta,
+        materialsUsed.isAcceptableOrUnknown(
+          data['materials_used']!,
+          _materialsUsedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('anesthesia_used')) {
+      context.handle(
+        _anesthesiaUsedMeta,
+        anesthesiaUsed.isAcceptableOrUnknown(
+          data['anesthesia_used']!,
+          _anesthesiaUsedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('post_treatment_instructions')) {
+      context.handle(
+        _postTreatmentInstructionsMeta,
+        postTreatmentInstructions.isAcceptableOrUnknown(
+          data['post_treatment_instructions']!,
+          _postTreatmentInstructionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('follow_up_required')) {
+      context.handle(
+        _followUpRequiredMeta,
+        followUpRequired.isAcceptableOrUnknown(
+          data['follow_up_required']!,
+          _followUpRequiredMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_appointment')) {
+      context.handle(
+        _nextAppointmentMeta,
+        nextAppointment.isAcceptableOrUnknown(
+          data['next_appointment']!,
+          _nextAppointmentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cost')) {
+      context.handle(
+        _costMeta,
+        cost.isAcceptableOrUnknown(data['cost']!, _costMeta),
+      );
+    }
+    if (data.containsKey('insurance_claim')) {
+      context.handle(
+        _insuranceClaimMeta,
+        insuranceClaim.isAcceptableOrUnknown(
+          data['insurance_claim']!,
+          _insuranceClaimMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_emergency_visit')) {
+      context.handle(
+        _isEmergencyVisitMeta,
+        isEmergencyVisit.isAcceptableOrUnknown(
+          data['is_emergency_visit']!,
+          _isEmergencyVisitMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DentalRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DentalRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      procedureType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}procedure_type'],
+      )!,
+      dentistName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dentist_name'],
+      ),
+      dentalOffice: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dental_office'],
+      ),
+      appointmentDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}appointment_date'],
+      )!,
+      toothNumbers: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tooth_numbers'],
+      ),
+      treatmentArea: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatment_area'],
+      ),
+      chiefComplaint: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chief_complaint'],
+      ),
+      clinicalFindings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clinical_findings'],
+      ),
+      diagnosis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}diagnosis'],
+      ),
+      treatmentProvided: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatment_provided'],
+      ),
+      materialsUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}materials_used'],
+      ),
+      anesthesiaUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}anesthesia_used'],
+      ),
+      postTreatmentInstructions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}post_treatment_instructions'],
+      ),
+      followUpRequired: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}follow_up_required'],
+      ),
+      nextAppointment: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}next_appointment'],
+      ),
+      cost: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cost'],
+      ),
+      insuranceClaim: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}insurance_claim'],
+      ),
+      isEmergencyVisit: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_emergency_visit'],
+      )!,
+    );
+  }
+
+  @override
+  $DentalRecordsTable createAlias(String alias) {
+    return $DentalRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class DentalRecord extends DataClass implements Insertable<DentalRecord> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String procedureType;
+  final String? dentistName;
+  final String? dentalOffice;
+  final DateTime appointmentDate;
+  final String? toothNumbers;
+  final String? treatmentArea;
+  final String? chiefComplaint;
+  final String? clinicalFindings;
+  final String? diagnosis;
+  final String? treatmentProvided;
+  final String? materialsUsed;
+  final String? anesthesiaUsed;
+  final String? postTreatmentInstructions;
+  final String? followUpRequired;
+  final DateTime? nextAppointment;
+  final double? cost;
+  final String? insuranceClaim;
+  final bool isEmergencyVisit;
+  const DentalRecord({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.procedureType,
+    this.dentistName,
+    this.dentalOffice,
+    required this.appointmentDate,
+    this.toothNumbers,
+    this.treatmentArea,
+    this.chiefComplaint,
+    this.clinicalFindings,
+    this.diagnosis,
+    this.treatmentProvided,
+    this.materialsUsed,
+    this.anesthesiaUsed,
+    this.postTreatmentInstructions,
+    this.followUpRequired,
+    this.nextAppointment,
+    this.cost,
+    this.insuranceClaim,
+    required this.isEmergencyVisit,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['procedure_type'] = Variable<String>(procedureType);
+    if (!nullToAbsent || dentistName != null) {
+      map['dentist_name'] = Variable<String>(dentistName);
+    }
+    if (!nullToAbsent || dentalOffice != null) {
+      map['dental_office'] = Variable<String>(dentalOffice);
+    }
+    map['appointment_date'] = Variable<DateTime>(appointmentDate);
+    if (!nullToAbsent || toothNumbers != null) {
+      map['tooth_numbers'] = Variable<String>(toothNumbers);
+    }
+    if (!nullToAbsent || treatmentArea != null) {
+      map['treatment_area'] = Variable<String>(treatmentArea);
+    }
+    if (!nullToAbsent || chiefComplaint != null) {
+      map['chief_complaint'] = Variable<String>(chiefComplaint);
+    }
+    if (!nullToAbsent || clinicalFindings != null) {
+      map['clinical_findings'] = Variable<String>(clinicalFindings);
+    }
+    if (!nullToAbsent || diagnosis != null) {
+      map['diagnosis'] = Variable<String>(diagnosis);
+    }
+    if (!nullToAbsent || treatmentProvided != null) {
+      map['treatment_provided'] = Variable<String>(treatmentProvided);
+    }
+    if (!nullToAbsent || materialsUsed != null) {
+      map['materials_used'] = Variable<String>(materialsUsed);
+    }
+    if (!nullToAbsent || anesthesiaUsed != null) {
+      map['anesthesia_used'] = Variable<String>(anesthesiaUsed);
+    }
+    if (!nullToAbsent || postTreatmentInstructions != null) {
+      map['post_treatment_instructions'] = Variable<String>(
+        postTreatmentInstructions,
+      );
+    }
+    if (!nullToAbsent || followUpRequired != null) {
+      map['follow_up_required'] = Variable<String>(followUpRequired);
+    }
+    if (!nullToAbsent || nextAppointment != null) {
+      map['next_appointment'] = Variable<DateTime>(nextAppointment);
+    }
+    if (!nullToAbsent || cost != null) {
+      map['cost'] = Variable<double>(cost);
+    }
+    if (!nullToAbsent || insuranceClaim != null) {
+      map['insurance_claim'] = Variable<String>(insuranceClaim);
+    }
+    map['is_emergency_visit'] = Variable<bool>(isEmergencyVisit);
+    return map;
+  }
+
+  DentalRecordsCompanion toCompanion(bool nullToAbsent) {
+    return DentalRecordsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      procedureType: Value(procedureType),
+      dentistName: dentistName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dentistName),
+      dentalOffice: dentalOffice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dentalOffice),
+      appointmentDate: Value(appointmentDate),
+      toothNumbers: toothNumbers == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toothNumbers),
+      treatmentArea: treatmentArea == null && nullToAbsent
+          ? const Value.absent()
+          : Value(treatmentArea),
+      chiefComplaint: chiefComplaint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chiefComplaint),
+      clinicalFindings: clinicalFindings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(clinicalFindings),
+      diagnosis: diagnosis == null && nullToAbsent
+          ? const Value.absent()
+          : Value(diagnosis),
+      treatmentProvided: treatmentProvided == null && nullToAbsent
+          ? const Value.absent()
+          : Value(treatmentProvided),
+      materialsUsed: materialsUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(materialsUsed),
+      anesthesiaUsed: anesthesiaUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(anesthesiaUsed),
+      postTreatmentInstructions:
+          postTreatmentInstructions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(postTreatmentInstructions),
+      followUpRequired: followUpRequired == null && nullToAbsent
+          ? const Value.absent()
+          : Value(followUpRequired),
+      nextAppointment: nextAppointment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextAppointment),
+      cost: cost == null && nullToAbsent ? const Value.absent() : Value(cost),
+      insuranceClaim: insuranceClaim == null && nullToAbsent
+          ? const Value.absent()
+          : Value(insuranceClaim),
+      isEmergencyVisit: Value(isEmergencyVisit),
+    );
+  }
+
+  factory DentalRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DentalRecord(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      procedureType: serializer.fromJson<String>(json['procedureType']),
+      dentistName: serializer.fromJson<String?>(json['dentistName']),
+      dentalOffice: serializer.fromJson<String?>(json['dentalOffice']),
+      appointmentDate: serializer.fromJson<DateTime>(json['appointmentDate']),
+      toothNumbers: serializer.fromJson<String?>(json['toothNumbers']),
+      treatmentArea: serializer.fromJson<String?>(json['treatmentArea']),
+      chiefComplaint: serializer.fromJson<String?>(json['chiefComplaint']),
+      clinicalFindings: serializer.fromJson<String?>(json['clinicalFindings']),
+      diagnosis: serializer.fromJson<String?>(json['diagnosis']),
+      treatmentProvided: serializer.fromJson<String?>(
+        json['treatmentProvided'],
+      ),
+      materialsUsed: serializer.fromJson<String?>(json['materialsUsed']),
+      anesthesiaUsed: serializer.fromJson<String?>(json['anesthesiaUsed']),
+      postTreatmentInstructions: serializer.fromJson<String?>(
+        json['postTreatmentInstructions'],
+      ),
+      followUpRequired: serializer.fromJson<String?>(json['followUpRequired']),
+      nextAppointment: serializer.fromJson<DateTime?>(json['nextAppointment']),
+      cost: serializer.fromJson<double?>(json['cost']),
+      insuranceClaim: serializer.fromJson<String?>(json['insuranceClaim']),
+      isEmergencyVisit: serializer.fromJson<bool>(json['isEmergencyVisit']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'procedureType': serializer.toJson<String>(procedureType),
+      'dentistName': serializer.toJson<String?>(dentistName),
+      'dentalOffice': serializer.toJson<String?>(dentalOffice),
+      'appointmentDate': serializer.toJson<DateTime>(appointmentDate),
+      'toothNumbers': serializer.toJson<String?>(toothNumbers),
+      'treatmentArea': serializer.toJson<String?>(treatmentArea),
+      'chiefComplaint': serializer.toJson<String?>(chiefComplaint),
+      'clinicalFindings': serializer.toJson<String?>(clinicalFindings),
+      'diagnosis': serializer.toJson<String?>(diagnosis),
+      'treatmentProvided': serializer.toJson<String?>(treatmentProvided),
+      'materialsUsed': serializer.toJson<String?>(materialsUsed),
+      'anesthesiaUsed': serializer.toJson<String?>(anesthesiaUsed),
+      'postTreatmentInstructions': serializer.toJson<String?>(
+        postTreatmentInstructions,
+      ),
+      'followUpRequired': serializer.toJson<String?>(followUpRequired),
+      'nextAppointment': serializer.toJson<DateTime?>(nextAppointment),
+      'cost': serializer.toJson<double?>(cost),
+      'insuranceClaim': serializer.toJson<String?>(insuranceClaim),
+      'isEmergencyVisit': serializer.toJson<bool>(isEmergencyVisit),
+    };
+  }
+
+  DentalRecord copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? procedureType,
+    Value<String?> dentistName = const Value.absent(),
+    Value<String?> dentalOffice = const Value.absent(),
+    DateTime? appointmentDate,
+    Value<String?> toothNumbers = const Value.absent(),
+    Value<String?> treatmentArea = const Value.absent(),
+    Value<String?> chiefComplaint = const Value.absent(),
+    Value<String?> clinicalFindings = const Value.absent(),
+    Value<String?> diagnosis = const Value.absent(),
+    Value<String?> treatmentProvided = const Value.absent(),
+    Value<String?> materialsUsed = const Value.absent(),
+    Value<String?> anesthesiaUsed = const Value.absent(),
+    Value<String?> postTreatmentInstructions = const Value.absent(),
+    Value<String?> followUpRequired = const Value.absent(),
+    Value<DateTime?> nextAppointment = const Value.absent(),
+    Value<double?> cost = const Value.absent(),
+    Value<String?> insuranceClaim = const Value.absent(),
+    bool? isEmergencyVisit,
+  }) => DentalRecord(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    procedureType: procedureType ?? this.procedureType,
+    dentistName: dentistName.present ? dentistName.value : this.dentistName,
+    dentalOffice: dentalOffice.present ? dentalOffice.value : this.dentalOffice,
+    appointmentDate: appointmentDate ?? this.appointmentDate,
+    toothNumbers: toothNumbers.present ? toothNumbers.value : this.toothNumbers,
+    treatmentArea: treatmentArea.present
+        ? treatmentArea.value
+        : this.treatmentArea,
+    chiefComplaint: chiefComplaint.present
+        ? chiefComplaint.value
+        : this.chiefComplaint,
+    clinicalFindings: clinicalFindings.present
+        ? clinicalFindings.value
+        : this.clinicalFindings,
+    diagnosis: diagnosis.present ? diagnosis.value : this.diagnosis,
+    treatmentProvided: treatmentProvided.present
+        ? treatmentProvided.value
+        : this.treatmentProvided,
+    materialsUsed: materialsUsed.present
+        ? materialsUsed.value
+        : this.materialsUsed,
+    anesthesiaUsed: anesthesiaUsed.present
+        ? anesthesiaUsed.value
+        : this.anesthesiaUsed,
+    postTreatmentInstructions: postTreatmentInstructions.present
+        ? postTreatmentInstructions.value
+        : this.postTreatmentInstructions,
+    followUpRequired: followUpRequired.present
+        ? followUpRequired.value
+        : this.followUpRequired,
+    nextAppointment: nextAppointment.present
+        ? nextAppointment.value
+        : this.nextAppointment,
+    cost: cost.present ? cost.value : this.cost,
+    insuranceClaim: insuranceClaim.present
+        ? insuranceClaim.value
+        : this.insuranceClaim,
+    isEmergencyVisit: isEmergencyVisit ?? this.isEmergencyVisit,
+  );
+  DentalRecord copyWithCompanion(DentalRecordsCompanion data) {
+    return DentalRecord(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      procedureType: data.procedureType.present
+          ? data.procedureType.value
+          : this.procedureType,
+      dentistName: data.dentistName.present
+          ? data.dentistName.value
+          : this.dentistName,
+      dentalOffice: data.dentalOffice.present
+          ? data.dentalOffice.value
+          : this.dentalOffice,
+      appointmentDate: data.appointmentDate.present
+          ? data.appointmentDate.value
+          : this.appointmentDate,
+      toothNumbers: data.toothNumbers.present
+          ? data.toothNumbers.value
+          : this.toothNumbers,
+      treatmentArea: data.treatmentArea.present
+          ? data.treatmentArea.value
+          : this.treatmentArea,
+      chiefComplaint: data.chiefComplaint.present
+          ? data.chiefComplaint.value
+          : this.chiefComplaint,
+      clinicalFindings: data.clinicalFindings.present
+          ? data.clinicalFindings.value
+          : this.clinicalFindings,
+      diagnosis: data.diagnosis.present ? data.diagnosis.value : this.diagnosis,
+      treatmentProvided: data.treatmentProvided.present
+          ? data.treatmentProvided.value
+          : this.treatmentProvided,
+      materialsUsed: data.materialsUsed.present
+          ? data.materialsUsed.value
+          : this.materialsUsed,
+      anesthesiaUsed: data.anesthesiaUsed.present
+          ? data.anesthesiaUsed.value
+          : this.anesthesiaUsed,
+      postTreatmentInstructions: data.postTreatmentInstructions.present
+          ? data.postTreatmentInstructions.value
+          : this.postTreatmentInstructions,
+      followUpRequired: data.followUpRequired.present
+          ? data.followUpRequired.value
+          : this.followUpRequired,
+      nextAppointment: data.nextAppointment.present
+          ? data.nextAppointment.value
+          : this.nextAppointment,
+      cost: data.cost.present ? data.cost.value : this.cost,
+      insuranceClaim: data.insuranceClaim.present
+          ? data.insuranceClaim.value
+          : this.insuranceClaim,
+      isEmergencyVisit: data.isEmergencyVisit.present
+          ? data.isEmergencyVisit.value
+          : this.isEmergencyVisit,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DentalRecord(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('procedureType: $procedureType, ')
+          ..write('dentistName: $dentistName, ')
+          ..write('dentalOffice: $dentalOffice, ')
+          ..write('appointmentDate: $appointmentDate, ')
+          ..write('toothNumbers: $toothNumbers, ')
+          ..write('treatmentArea: $treatmentArea, ')
+          ..write('chiefComplaint: $chiefComplaint, ')
+          ..write('clinicalFindings: $clinicalFindings, ')
+          ..write('diagnosis: $diagnosis, ')
+          ..write('treatmentProvided: $treatmentProvided, ')
+          ..write('materialsUsed: $materialsUsed, ')
+          ..write('anesthesiaUsed: $anesthesiaUsed, ')
+          ..write('postTreatmentInstructions: $postTreatmentInstructions, ')
+          ..write('followUpRequired: $followUpRequired, ')
+          ..write('nextAppointment: $nextAppointment, ')
+          ..write('cost: $cost, ')
+          ..write('insuranceClaim: $insuranceClaim, ')
+          ..write('isEmergencyVisit: $isEmergencyVisit')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    procedureType,
+    dentistName,
+    dentalOffice,
+    appointmentDate,
+    toothNumbers,
+    treatmentArea,
+    chiefComplaint,
+    clinicalFindings,
+    diagnosis,
+    treatmentProvided,
+    materialsUsed,
+    anesthesiaUsed,
+    postTreatmentInstructions,
+    followUpRequired,
+    nextAppointment,
+    cost,
+    insuranceClaim,
+    isEmergencyVisit,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DentalRecord &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.procedureType == this.procedureType &&
+          other.dentistName == this.dentistName &&
+          other.dentalOffice == this.dentalOffice &&
+          other.appointmentDate == this.appointmentDate &&
+          other.toothNumbers == this.toothNumbers &&
+          other.treatmentArea == this.treatmentArea &&
+          other.chiefComplaint == this.chiefComplaint &&
+          other.clinicalFindings == this.clinicalFindings &&
+          other.diagnosis == this.diagnosis &&
+          other.treatmentProvided == this.treatmentProvided &&
+          other.materialsUsed == this.materialsUsed &&
+          other.anesthesiaUsed == this.anesthesiaUsed &&
+          other.postTreatmentInstructions == this.postTreatmentInstructions &&
+          other.followUpRequired == this.followUpRequired &&
+          other.nextAppointment == this.nextAppointment &&
+          other.cost == this.cost &&
+          other.insuranceClaim == this.insuranceClaim &&
+          other.isEmergencyVisit == this.isEmergencyVisit);
+}
+
+class DentalRecordsCompanion extends UpdateCompanion<DentalRecord> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> procedureType;
+  final Value<String?> dentistName;
+  final Value<String?> dentalOffice;
+  final Value<DateTime> appointmentDate;
+  final Value<String?> toothNumbers;
+  final Value<String?> treatmentArea;
+  final Value<String?> chiefComplaint;
+  final Value<String?> clinicalFindings;
+  final Value<String?> diagnosis;
+  final Value<String?> treatmentProvided;
+  final Value<String?> materialsUsed;
+  final Value<String?> anesthesiaUsed;
+  final Value<String?> postTreatmentInstructions;
+  final Value<String?> followUpRequired;
+  final Value<DateTime?> nextAppointment;
+  final Value<double?> cost;
+  final Value<String?> insuranceClaim;
+  final Value<bool> isEmergencyVisit;
+  final Value<int> rowid;
+  const DentalRecordsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.procedureType = const Value.absent(),
+    this.dentistName = const Value.absent(),
+    this.dentalOffice = const Value.absent(),
+    this.appointmentDate = const Value.absent(),
+    this.toothNumbers = const Value.absent(),
+    this.treatmentArea = const Value.absent(),
+    this.chiefComplaint = const Value.absent(),
+    this.clinicalFindings = const Value.absent(),
+    this.diagnosis = const Value.absent(),
+    this.treatmentProvided = const Value.absent(),
+    this.materialsUsed = const Value.absent(),
+    this.anesthesiaUsed = const Value.absent(),
+    this.postTreatmentInstructions = const Value.absent(),
+    this.followUpRequired = const Value.absent(),
+    this.nextAppointment = const Value.absent(),
+    this.cost = const Value.absent(),
+    this.insuranceClaim = const Value.absent(),
+    this.isEmergencyVisit = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DentalRecordsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String procedureType,
+    this.dentistName = const Value.absent(),
+    this.dentalOffice = const Value.absent(),
+    required DateTime appointmentDate,
+    this.toothNumbers = const Value.absent(),
+    this.treatmentArea = const Value.absent(),
+    this.chiefComplaint = const Value.absent(),
+    this.clinicalFindings = const Value.absent(),
+    this.diagnosis = const Value.absent(),
+    this.treatmentProvided = const Value.absent(),
+    this.materialsUsed = const Value.absent(),
+    this.anesthesiaUsed = const Value.absent(),
+    this.postTreatmentInstructions = const Value.absent(),
+    this.followUpRequired = const Value.absent(),
+    this.nextAppointment = const Value.absent(),
+    this.cost = const Value.absent(),
+    this.insuranceClaim = const Value.absent(),
+    this.isEmergencyVisit = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       procedureType = Value(procedureType),
+       appointmentDate = Value(appointmentDate);
+  static Insertable<DentalRecord> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? procedureType,
+    Expression<String>? dentistName,
+    Expression<String>? dentalOffice,
+    Expression<DateTime>? appointmentDate,
+    Expression<String>? toothNumbers,
+    Expression<String>? treatmentArea,
+    Expression<String>? chiefComplaint,
+    Expression<String>? clinicalFindings,
+    Expression<String>? diagnosis,
+    Expression<String>? treatmentProvided,
+    Expression<String>? materialsUsed,
+    Expression<String>? anesthesiaUsed,
+    Expression<String>? postTreatmentInstructions,
+    Expression<String>? followUpRequired,
+    Expression<DateTime>? nextAppointment,
+    Expression<double>? cost,
+    Expression<String>? insuranceClaim,
+    Expression<bool>? isEmergencyVisit,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (procedureType != null) 'procedure_type': procedureType,
+      if (dentistName != null) 'dentist_name': dentistName,
+      if (dentalOffice != null) 'dental_office': dentalOffice,
+      if (appointmentDate != null) 'appointment_date': appointmentDate,
+      if (toothNumbers != null) 'tooth_numbers': toothNumbers,
+      if (treatmentArea != null) 'treatment_area': treatmentArea,
+      if (chiefComplaint != null) 'chief_complaint': chiefComplaint,
+      if (clinicalFindings != null) 'clinical_findings': clinicalFindings,
+      if (diagnosis != null) 'diagnosis': diagnosis,
+      if (treatmentProvided != null) 'treatment_provided': treatmentProvided,
+      if (materialsUsed != null) 'materials_used': materialsUsed,
+      if (anesthesiaUsed != null) 'anesthesia_used': anesthesiaUsed,
+      if (postTreatmentInstructions != null)
+        'post_treatment_instructions': postTreatmentInstructions,
+      if (followUpRequired != null) 'follow_up_required': followUpRequired,
+      if (nextAppointment != null) 'next_appointment': nextAppointment,
+      if (cost != null) 'cost': cost,
+      if (insuranceClaim != null) 'insurance_claim': insuranceClaim,
+      if (isEmergencyVisit != null) 'is_emergency_visit': isEmergencyVisit,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DentalRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? procedureType,
+    Value<String?>? dentistName,
+    Value<String?>? dentalOffice,
+    Value<DateTime>? appointmentDate,
+    Value<String?>? toothNumbers,
+    Value<String?>? treatmentArea,
+    Value<String?>? chiefComplaint,
+    Value<String?>? clinicalFindings,
+    Value<String?>? diagnosis,
+    Value<String?>? treatmentProvided,
+    Value<String?>? materialsUsed,
+    Value<String?>? anesthesiaUsed,
+    Value<String?>? postTreatmentInstructions,
+    Value<String?>? followUpRequired,
+    Value<DateTime?>? nextAppointment,
+    Value<double?>? cost,
+    Value<String?>? insuranceClaim,
+    Value<bool>? isEmergencyVisit,
+    Value<int>? rowid,
+  }) {
+    return DentalRecordsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      procedureType: procedureType ?? this.procedureType,
+      dentistName: dentistName ?? this.dentistName,
+      dentalOffice: dentalOffice ?? this.dentalOffice,
+      appointmentDate: appointmentDate ?? this.appointmentDate,
+      toothNumbers: toothNumbers ?? this.toothNumbers,
+      treatmentArea: treatmentArea ?? this.treatmentArea,
+      chiefComplaint: chiefComplaint ?? this.chiefComplaint,
+      clinicalFindings: clinicalFindings ?? this.clinicalFindings,
+      diagnosis: diagnosis ?? this.diagnosis,
+      treatmentProvided: treatmentProvided ?? this.treatmentProvided,
+      materialsUsed: materialsUsed ?? this.materialsUsed,
+      anesthesiaUsed: anesthesiaUsed ?? this.anesthesiaUsed,
+      postTreatmentInstructions:
+          postTreatmentInstructions ?? this.postTreatmentInstructions,
+      followUpRequired: followUpRequired ?? this.followUpRequired,
+      nextAppointment: nextAppointment ?? this.nextAppointment,
+      cost: cost ?? this.cost,
+      insuranceClaim: insuranceClaim ?? this.insuranceClaim,
+      isEmergencyVisit: isEmergencyVisit ?? this.isEmergencyVisit,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (procedureType.present) {
+      map['procedure_type'] = Variable<String>(procedureType.value);
+    }
+    if (dentistName.present) {
+      map['dentist_name'] = Variable<String>(dentistName.value);
+    }
+    if (dentalOffice.present) {
+      map['dental_office'] = Variable<String>(dentalOffice.value);
+    }
+    if (appointmentDate.present) {
+      map['appointment_date'] = Variable<DateTime>(appointmentDate.value);
+    }
+    if (toothNumbers.present) {
+      map['tooth_numbers'] = Variable<String>(toothNumbers.value);
+    }
+    if (treatmentArea.present) {
+      map['treatment_area'] = Variable<String>(treatmentArea.value);
+    }
+    if (chiefComplaint.present) {
+      map['chief_complaint'] = Variable<String>(chiefComplaint.value);
+    }
+    if (clinicalFindings.present) {
+      map['clinical_findings'] = Variable<String>(clinicalFindings.value);
+    }
+    if (diagnosis.present) {
+      map['diagnosis'] = Variable<String>(diagnosis.value);
+    }
+    if (treatmentProvided.present) {
+      map['treatment_provided'] = Variable<String>(treatmentProvided.value);
+    }
+    if (materialsUsed.present) {
+      map['materials_used'] = Variable<String>(materialsUsed.value);
+    }
+    if (anesthesiaUsed.present) {
+      map['anesthesia_used'] = Variable<String>(anesthesiaUsed.value);
+    }
+    if (postTreatmentInstructions.present) {
+      map['post_treatment_instructions'] = Variable<String>(
+        postTreatmentInstructions.value,
+      );
+    }
+    if (followUpRequired.present) {
+      map['follow_up_required'] = Variable<String>(followUpRequired.value);
+    }
+    if (nextAppointment.present) {
+      map['next_appointment'] = Variable<DateTime>(nextAppointment.value);
+    }
+    if (cost.present) {
+      map['cost'] = Variable<double>(cost.value);
+    }
+    if (insuranceClaim.present) {
+      map['insurance_claim'] = Variable<String>(insuranceClaim.value);
+    }
+    if (isEmergencyVisit.present) {
+      map['is_emergency_visit'] = Variable<bool>(isEmergencyVisit.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DentalRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('procedureType: $procedureType, ')
+          ..write('dentistName: $dentistName, ')
+          ..write('dentalOffice: $dentalOffice, ')
+          ..write('appointmentDate: $appointmentDate, ')
+          ..write('toothNumbers: $toothNumbers, ')
+          ..write('treatmentArea: $treatmentArea, ')
+          ..write('chiefComplaint: $chiefComplaint, ')
+          ..write('clinicalFindings: $clinicalFindings, ')
+          ..write('diagnosis: $diagnosis, ')
+          ..write('treatmentProvided: $treatmentProvided, ')
+          ..write('materialsUsed: $materialsUsed, ')
+          ..write('anesthesiaUsed: $anesthesiaUsed, ')
+          ..write('postTreatmentInstructions: $postTreatmentInstructions, ')
+          ..write('followUpRequired: $followUpRequired, ')
+          ..write('nextAppointment: $nextAppointment, ')
+          ..write('cost: $cost, ')
+          ..write('insuranceClaim: $insuranceClaim, ')
+          ..write('isEmergencyVisit: $isEmergencyVisit, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MentalHealthRecordsTable extends MentalHealthRecords
+    with TableInfo<$MentalHealthRecordsTable, MentalHealthRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MentalHealthRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('mental_health_record'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sessionTypeMeta = const VerificationMeta(
+    'sessionType',
+  );
+  @override
+  late final GeneratedColumn<String> sessionType = GeneratedColumn<String>(
+    'session_type',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerNameMeta = const VerificationMeta(
+    'providerName',
+  );
+  @override
+  late final GeneratedColumn<String> providerName = GeneratedColumn<String>(
+    'provider_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _providerTypeMeta = const VerificationMeta(
+    'providerType',
+  );
+  @override
+  late final GeneratedColumn<String> providerType = GeneratedColumn<String>(
+    'provider_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _facilityMeta = const VerificationMeta(
+    'facility',
+  );
+  @override
+  late final GeneratedColumn<String> facility = GeneratedColumn<String>(
+    'facility',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sessionDateMeta = const VerificationMeta(
+    'sessionDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> sessionDate = GeneratedColumn<DateTime>(
+    'session_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sessionDurationMeta = const VerificationMeta(
+    'sessionDuration',
+  );
+  @override
+  late final GeneratedColumn<int> sessionDuration = GeneratedColumn<int>(
+    'session_duration',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _presentingConcernsMeta =
+      const VerificationMeta('presentingConcerns');
+  @override
+  late final GeneratedColumn<String> presentingConcerns =
+      GeneratedColumn<String>(
+        'presenting_concerns',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _moodAssessmentMeta = const VerificationMeta(
+    'moodAssessment',
+  );
+  @override
+  late final GeneratedColumn<String> moodAssessment = GeneratedColumn<String>(
+    'mood_assessment',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _thoughtProcessMeta = const VerificationMeta(
+    'thoughtProcess',
+  );
+  @override
+  late final GeneratedColumn<String> thoughtProcess = GeneratedColumn<String>(
+    'thought_process',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _riskAssessmentMeta = const VerificationMeta(
+    'riskAssessment',
+  );
+  @override
+  late final GeneratedColumn<String> riskAssessment = GeneratedColumn<String>(
+    'risk_assessment',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _treatmentGoalsMeta = const VerificationMeta(
+    'treatmentGoals',
+  );
+  @override
+  late final GeneratedColumn<String> treatmentGoals = GeneratedColumn<String>(
+    'treatment_goals',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _interventionsMeta = const VerificationMeta(
+    'interventions',
+  );
+  @override
+  late final GeneratedColumn<String> interventions = GeneratedColumn<String>(
+    'interventions',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _homeworkMeta = const VerificationMeta(
+    'homework',
+  );
+  @override
+  late final GeneratedColumn<String> homework = GeneratedColumn<String>(
+    'homework',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _medicationDiscussionMeta =
+      const VerificationMeta('medicationDiscussion');
+  @override
+  late final GeneratedColumn<String> medicationDiscussion =
+      GeneratedColumn<String>(
+        'medication_discussion',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _progressNotesMeta = const VerificationMeta(
+    'progressNotes',
+  );
+  @override
+  late final GeneratedColumn<String> progressNotes = GeneratedColumn<String>(
+    'progress_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _planForNextSessionMeta =
+      const VerificationMeta('planForNextSession');
+  @override
+  late final GeneratedColumn<String> planForNextSession =
+      GeneratedColumn<String>(
+        'plan_for_next_session',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _nextAppointmentMeta = const VerificationMeta(
+    'nextAppointment',
+  );
+  @override
+  late final GeneratedColumn<DateTime> nextAppointment =
+      GeneratedColumn<DateTime>(
+        'next_appointment',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _moodRatingMeta = const VerificationMeta(
+    'moodRating',
+  );
+  @override
+  late final GeneratedColumn<int> moodRating = GeneratedColumn<int>(
+    'mood_rating',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _anxietyRatingMeta = const VerificationMeta(
+    'anxietyRating',
+  );
+  @override
+  late final GeneratedColumn<int> anxietyRating = GeneratedColumn<int>(
+    'anxiety_rating',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isCrisisSessionMeta = const VerificationMeta(
+    'isCrisisSession',
+  );
+  @override
+  late final GeneratedColumn<bool> isCrisisSession = GeneratedColumn<bool>(
+    'is_crisis_session',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_crisis_session" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    sessionType,
+    providerName,
+    providerType,
+    facility,
+    sessionDate,
+    sessionDuration,
+    presentingConcerns,
+    moodAssessment,
+    thoughtProcess,
+    riskAssessment,
+    treatmentGoals,
+    interventions,
+    homework,
+    medicationDiscussion,
+    progressNotes,
+    planForNextSession,
+    nextAppointment,
+    moodRating,
+    anxietyRating,
+    isCrisisSession,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'mental_health_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MentalHealthRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('session_type')) {
+      context.handle(
+        _sessionTypeMeta,
+        sessionType.isAcceptableOrUnknown(
+          data['session_type']!,
+          _sessionTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionTypeMeta);
+    }
+    if (data.containsKey('provider_name')) {
+      context.handle(
+        _providerNameMeta,
+        providerName.isAcceptableOrUnknown(
+          data['provider_name']!,
+          _providerNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('provider_type')) {
+      context.handle(
+        _providerTypeMeta,
+        providerType.isAcceptableOrUnknown(
+          data['provider_type']!,
+          _providerTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('facility')) {
+      context.handle(
+        _facilityMeta,
+        facility.isAcceptableOrUnknown(data['facility']!, _facilityMeta),
+      );
+    }
+    if (data.containsKey('session_date')) {
+      context.handle(
+        _sessionDateMeta,
+        sessionDate.isAcceptableOrUnknown(
+          data['session_date']!,
+          _sessionDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionDateMeta);
+    }
+    if (data.containsKey('session_duration')) {
+      context.handle(
+        _sessionDurationMeta,
+        sessionDuration.isAcceptableOrUnknown(
+          data['session_duration']!,
+          _sessionDurationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('presenting_concerns')) {
+      context.handle(
+        _presentingConcernsMeta,
+        presentingConcerns.isAcceptableOrUnknown(
+          data['presenting_concerns']!,
+          _presentingConcernsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('mood_assessment')) {
+      context.handle(
+        _moodAssessmentMeta,
+        moodAssessment.isAcceptableOrUnknown(
+          data['mood_assessment']!,
+          _moodAssessmentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('thought_process')) {
+      context.handle(
+        _thoughtProcessMeta,
+        thoughtProcess.isAcceptableOrUnknown(
+          data['thought_process']!,
+          _thoughtProcessMeta,
+        ),
+      );
+    }
+    if (data.containsKey('risk_assessment')) {
+      context.handle(
+        _riskAssessmentMeta,
+        riskAssessment.isAcceptableOrUnknown(
+          data['risk_assessment']!,
+          _riskAssessmentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('treatment_goals')) {
+      context.handle(
+        _treatmentGoalsMeta,
+        treatmentGoals.isAcceptableOrUnknown(
+          data['treatment_goals']!,
+          _treatmentGoalsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('interventions')) {
+      context.handle(
+        _interventionsMeta,
+        interventions.isAcceptableOrUnknown(
+          data['interventions']!,
+          _interventionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('homework')) {
+      context.handle(
+        _homeworkMeta,
+        homework.isAcceptableOrUnknown(data['homework']!, _homeworkMeta),
+      );
+    }
+    if (data.containsKey('medication_discussion')) {
+      context.handle(
+        _medicationDiscussionMeta,
+        medicationDiscussion.isAcceptableOrUnknown(
+          data['medication_discussion']!,
+          _medicationDiscussionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('progress_notes')) {
+      context.handle(
+        _progressNotesMeta,
+        progressNotes.isAcceptableOrUnknown(
+          data['progress_notes']!,
+          _progressNotesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('plan_for_next_session')) {
+      context.handle(
+        _planForNextSessionMeta,
+        planForNextSession.isAcceptableOrUnknown(
+          data['plan_for_next_session']!,
+          _planForNextSessionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_appointment')) {
+      context.handle(
+        _nextAppointmentMeta,
+        nextAppointment.isAcceptableOrUnknown(
+          data['next_appointment']!,
+          _nextAppointmentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('mood_rating')) {
+      context.handle(
+        _moodRatingMeta,
+        moodRating.isAcceptableOrUnknown(data['mood_rating']!, _moodRatingMeta),
+      );
+    }
+    if (data.containsKey('anxiety_rating')) {
+      context.handle(
+        _anxietyRatingMeta,
+        anxietyRating.isAcceptableOrUnknown(
+          data['anxiety_rating']!,
+          _anxietyRatingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_crisis_session')) {
+      context.handle(
+        _isCrisisSessionMeta,
+        isCrisisSession.isAcceptableOrUnknown(
+          data['is_crisis_session']!,
+          _isCrisisSessionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MentalHealthRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MentalHealthRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sessionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_type'],
+      )!,
+      providerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_name'],
+      ),
+      providerType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_type'],
+      ),
+      facility: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}facility'],
+      ),
+      sessionDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}session_date'],
+      )!,
+      sessionDuration: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}session_duration'],
+      ),
+      presentingConcerns: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}presenting_concerns'],
+      ),
+      moodAssessment: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mood_assessment'],
+      ),
+      thoughtProcess: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thought_process'],
+      ),
+      riskAssessment: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}risk_assessment'],
+      ),
+      treatmentGoals: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatment_goals'],
+      ),
+      interventions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}interventions'],
+      ),
+      homework: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}homework'],
+      ),
+      medicationDiscussion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medication_discussion'],
+      ),
+      progressNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}progress_notes'],
+      ),
+      planForNextSession: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan_for_next_session'],
+      ),
+      nextAppointment: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}next_appointment'],
+      ),
+      moodRating: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}mood_rating'],
+      ),
+      anxietyRating: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}anxiety_rating'],
+      ),
+      isCrisisSession: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_crisis_session'],
+      )!,
+    );
+  }
+
+  @override
+  $MentalHealthRecordsTable createAlias(String alias) {
+    return $MentalHealthRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class MentalHealthRecord extends DataClass
+    implements Insertable<MentalHealthRecord> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String sessionType;
+  final String? providerName;
+  final String? providerType;
+  final String? facility;
+  final DateTime sessionDate;
+  final int? sessionDuration;
+  final String? presentingConcerns;
+  final String? moodAssessment;
+  final String? thoughtProcess;
+  final String? riskAssessment;
+  final String? treatmentGoals;
+  final String? interventions;
+  final String? homework;
+  final String? medicationDiscussion;
+  final String? progressNotes;
+  final String? planForNextSession;
+  final DateTime? nextAppointment;
+  final int? moodRating;
+  final int? anxietyRating;
+  final bool isCrisisSession;
+  const MentalHealthRecord({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.sessionType,
+    this.providerName,
+    this.providerType,
+    this.facility,
+    required this.sessionDate,
+    this.sessionDuration,
+    this.presentingConcerns,
+    this.moodAssessment,
+    this.thoughtProcess,
+    this.riskAssessment,
+    this.treatmentGoals,
+    this.interventions,
+    this.homework,
+    this.medicationDiscussion,
+    this.progressNotes,
+    this.planForNextSession,
+    this.nextAppointment,
+    this.moodRating,
+    this.anxietyRating,
+    required this.isCrisisSession,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['session_type'] = Variable<String>(sessionType);
+    if (!nullToAbsent || providerName != null) {
+      map['provider_name'] = Variable<String>(providerName);
+    }
+    if (!nullToAbsent || providerType != null) {
+      map['provider_type'] = Variable<String>(providerType);
+    }
+    if (!nullToAbsent || facility != null) {
+      map['facility'] = Variable<String>(facility);
+    }
+    map['session_date'] = Variable<DateTime>(sessionDate);
+    if (!nullToAbsent || sessionDuration != null) {
+      map['session_duration'] = Variable<int>(sessionDuration);
+    }
+    if (!nullToAbsent || presentingConcerns != null) {
+      map['presenting_concerns'] = Variable<String>(presentingConcerns);
+    }
+    if (!nullToAbsent || moodAssessment != null) {
+      map['mood_assessment'] = Variable<String>(moodAssessment);
+    }
+    if (!nullToAbsent || thoughtProcess != null) {
+      map['thought_process'] = Variable<String>(thoughtProcess);
+    }
+    if (!nullToAbsent || riskAssessment != null) {
+      map['risk_assessment'] = Variable<String>(riskAssessment);
+    }
+    if (!nullToAbsent || treatmentGoals != null) {
+      map['treatment_goals'] = Variable<String>(treatmentGoals);
+    }
+    if (!nullToAbsent || interventions != null) {
+      map['interventions'] = Variable<String>(interventions);
+    }
+    if (!nullToAbsent || homework != null) {
+      map['homework'] = Variable<String>(homework);
+    }
+    if (!nullToAbsent || medicationDiscussion != null) {
+      map['medication_discussion'] = Variable<String>(medicationDiscussion);
+    }
+    if (!nullToAbsent || progressNotes != null) {
+      map['progress_notes'] = Variable<String>(progressNotes);
+    }
+    if (!nullToAbsent || planForNextSession != null) {
+      map['plan_for_next_session'] = Variable<String>(planForNextSession);
+    }
+    if (!nullToAbsent || nextAppointment != null) {
+      map['next_appointment'] = Variable<DateTime>(nextAppointment);
+    }
+    if (!nullToAbsent || moodRating != null) {
+      map['mood_rating'] = Variable<int>(moodRating);
+    }
+    if (!nullToAbsent || anxietyRating != null) {
+      map['anxiety_rating'] = Variable<int>(anxietyRating);
+    }
+    map['is_crisis_session'] = Variable<bool>(isCrisisSession);
+    return map;
+  }
+
+  MentalHealthRecordsCompanion toCompanion(bool nullToAbsent) {
+    return MentalHealthRecordsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      sessionType: Value(sessionType),
+      providerName: providerName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(providerName),
+      providerType: providerType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(providerType),
+      facility: facility == null && nullToAbsent
+          ? const Value.absent()
+          : Value(facility),
+      sessionDate: Value(sessionDate),
+      sessionDuration: sessionDuration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionDuration),
+      presentingConcerns: presentingConcerns == null && nullToAbsent
+          ? const Value.absent()
+          : Value(presentingConcerns),
+      moodAssessment: moodAssessment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(moodAssessment),
+      thoughtProcess: thoughtProcess == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thoughtProcess),
+      riskAssessment: riskAssessment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(riskAssessment),
+      treatmentGoals: treatmentGoals == null && nullToAbsent
+          ? const Value.absent()
+          : Value(treatmentGoals),
+      interventions: interventions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(interventions),
+      homework: homework == null && nullToAbsent
+          ? const Value.absent()
+          : Value(homework),
+      medicationDiscussion: medicationDiscussion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(medicationDiscussion),
+      progressNotes: progressNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(progressNotes),
+      planForNextSession: planForNextSession == null && nullToAbsent
+          ? const Value.absent()
+          : Value(planForNextSession),
+      nextAppointment: nextAppointment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextAppointment),
+      moodRating: moodRating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(moodRating),
+      anxietyRating: anxietyRating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(anxietyRating),
+      isCrisisSession: Value(isCrisisSession),
+    );
+  }
+
+  factory MentalHealthRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MentalHealthRecord(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sessionType: serializer.fromJson<String>(json['sessionType']),
+      providerName: serializer.fromJson<String?>(json['providerName']),
+      providerType: serializer.fromJson<String?>(json['providerType']),
+      facility: serializer.fromJson<String?>(json['facility']),
+      sessionDate: serializer.fromJson<DateTime>(json['sessionDate']),
+      sessionDuration: serializer.fromJson<int?>(json['sessionDuration']),
+      presentingConcerns: serializer.fromJson<String?>(
+        json['presentingConcerns'],
+      ),
+      moodAssessment: serializer.fromJson<String?>(json['moodAssessment']),
+      thoughtProcess: serializer.fromJson<String?>(json['thoughtProcess']),
+      riskAssessment: serializer.fromJson<String?>(json['riskAssessment']),
+      treatmentGoals: serializer.fromJson<String?>(json['treatmentGoals']),
+      interventions: serializer.fromJson<String?>(json['interventions']),
+      homework: serializer.fromJson<String?>(json['homework']),
+      medicationDiscussion: serializer.fromJson<String?>(
+        json['medicationDiscussion'],
+      ),
+      progressNotes: serializer.fromJson<String?>(json['progressNotes']),
+      planForNextSession: serializer.fromJson<String?>(
+        json['planForNextSession'],
+      ),
+      nextAppointment: serializer.fromJson<DateTime?>(json['nextAppointment']),
+      moodRating: serializer.fromJson<int?>(json['moodRating']),
+      anxietyRating: serializer.fromJson<int?>(json['anxietyRating']),
+      isCrisisSession: serializer.fromJson<bool>(json['isCrisisSession']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sessionType': serializer.toJson<String>(sessionType),
+      'providerName': serializer.toJson<String?>(providerName),
+      'providerType': serializer.toJson<String?>(providerType),
+      'facility': serializer.toJson<String?>(facility),
+      'sessionDate': serializer.toJson<DateTime>(sessionDate),
+      'sessionDuration': serializer.toJson<int?>(sessionDuration),
+      'presentingConcerns': serializer.toJson<String?>(presentingConcerns),
+      'moodAssessment': serializer.toJson<String?>(moodAssessment),
+      'thoughtProcess': serializer.toJson<String?>(thoughtProcess),
+      'riskAssessment': serializer.toJson<String?>(riskAssessment),
+      'treatmentGoals': serializer.toJson<String?>(treatmentGoals),
+      'interventions': serializer.toJson<String?>(interventions),
+      'homework': serializer.toJson<String?>(homework),
+      'medicationDiscussion': serializer.toJson<String?>(medicationDiscussion),
+      'progressNotes': serializer.toJson<String?>(progressNotes),
+      'planForNextSession': serializer.toJson<String?>(planForNextSession),
+      'nextAppointment': serializer.toJson<DateTime?>(nextAppointment),
+      'moodRating': serializer.toJson<int?>(moodRating),
+      'anxietyRating': serializer.toJson<int?>(anxietyRating),
+      'isCrisisSession': serializer.toJson<bool>(isCrisisSession),
+    };
+  }
+
+  MentalHealthRecord copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? sessionType,
+    Value<String?> providerName = const Value.absent(),
+    Value<String?> providerType = const Value.absent(),
+    Value<String?> facility = const Value.absent(),
+    DateTime? sessionDate,
+    Value<int?> sessionDuration = const Value.absent(),
+    Value<String?> presentingConcerns = const Value.absent(),
+    Value<String?> moodAssessment = const Value.absent(),
+    Value<String?> thoughtProcess = const Value.absent(),
+    Value<String?> riskAssessment = const Value.absent(),
+    Value<String?> treatmentGoals = const Value.absent(),
+    Value<String?> interventions = const Value.absent(),
+    Value<String?> homework = const Value.absent(),
+    Value<String?> medicationDiscussion = const Value.absent(),
+    Value<String?> progressNotes = const Value.absent(),
+    Value<String?> planForNextSession = const Value.absent(),
+    Value<DateTime?> nextAppointment = const Value.absent(),
+    Value<int?> moodRating = const Value.absent(),
+    Value<int?> anxietyRating = const Value.absent(),
+    bool? isCrisisSession,
+  }) => MentalHealthRecord(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    sessionType: sessionType ?? this.sessionType,
+    providerName: providerName.present ? providerName.value : this.providerName,
+    providerType: providerType.present ? providerType.value : this.providerType,
+    facility: facility.present ? facility.value : this.facility,
+    sessionDate: sessionDate ?? this.sessionDate,
+    sessionDuration: sessionDuration.present
+        ? sessionDuration.value
+        : this.sessionDuration,
+    presentingConcerns: presentingConcerns.present
+        ? presentingConcerns.value
+        : this.presentingConcerns,
+    moodAssessment: moodAssessment.present
+        ? moodAssessment.value
+        : this.moodAssessment,
+    thoughtProcess: thoughtProcess.present
+        ? thoughtProcess.value
+        : this.thoughtProcess,
+    riskAssessment: riskAssessment.present
+        ? riskAssessment.value
+        : this.riskAssessment,
+    treatmentGoals: treatmentGoals.present
+        ? treatmentGoals.value
+        : this.treatmentGoals,
+    interventions: interventions.present
+        ? interventions.value
+        : this.interventions,
+    homework: homework.present ? homework.value : this.homework,
+    medicationDiscussion: medicationDiscussion.present
+        ? medicationDiscussion.value
+        : this.medicationDiscussion,
+    progressNotes: progressNotes.present
+        ? progressNotes.value
+        : this.progressNotes,
+    planForNextSession: planForNextSession.present
+        ? planForNextSession.value
+        : this.planForNextSession,
+    nextAppointment: nextAppointment.present
+        ? nextAppointment.value
+        : this.nextAppointment,
+    moodRating: moodRating.present ? moodRating.value : this.moodRating,
+    anxietyRating: anxietyRating.present
+        ? anxietyRating.value
+        : this.anxietyRating,
+    isCrisisSession: isCrisisSession ?? this.isCrisisSession,
+  );
+  MentalHealthRecord copyWithCompanion(MentalHealthRecordsCompanion data) {
+    return MentalHealthRecord(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sessionType: data.sessionType.present
+          ? data.sessionType.value
+          : this.sessionType,
+      providerName: data.providerName.present
+          ? data.providerName.value
+          : this.providerName,
+      providerType: data.providerType.present
+          ? data.providerType.value
+          : this.providerType,
+      facility: data.facility.present ? data.facility.value : this.facility,
+      sessionDate: data.sessionDate.present
+          ? data.sessionDate.value
+          : this.sessionDate,
+      sessionDuration: data.sessionDuration.present
+          ? data.sessionDuration.value
+          : this.sessionDuration,
+      presentingConcerns: data.presentingConcerns.present
+          ? data.presentingConcerns.value
+          : this.presentingConcerns,
+      moodAssessment: data.moodAssessment.present
+          ? data.moodAssessment.value
+          : this.moodAssessment,
+      thoughtProcess: data.thoughtProcess.present
+          ? data.thoughtProcess.value
+          : this.thoughtProcess,
+      riskAssessment: data.riskAssessment.present
+          ? data.riskAssessment.value
+          : this.riskAssessment,
+      treatmentGoals: data.treatmentGoals.present
+          ? data.treatmentGoals.value
+          : this.treatmentGoals,
+      interventions: data.interventions.present
+          ? data.interventions.value
+          : this.interventions,
+      homework: data.homework.present ? data.homework.value : this.homework,
+      medicationDiscussion: data.medicationDiscussion.present
+          ? data.medicationDiscussion.value
+          : this.medicationDiscussion,
+      progressNotes: data.progressNotes.present
+          ? data.progressNotes.value
+          : this.progressNotes,
+      planForNextSession: data.planForNextSession.present
+          ? data.planForNextSession.value
+          : this.planForNextSession,
+      nextAppointment: data.nextAppointment.present
+          ? data.nextAppointment.value
+          : this.nextAppointment,
+      moodRating: data.moodRating.present
+          ? data.moodRating.value
+          : this.moodRating,
+      anxietyRating: data.anxietyRating.present
+          ? data.anxietyRating.value
+          : this.anxietyRating,
+      isCrisisSession: data.isCrisisSession.present
+          ? data.isCrisisSession.value
+          : this.isCrisisSession,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MentalHealthRecord(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('sessionType: $sessionType, ')
+          ..write('providerName: $providerName, ')
+          ..write('providerType: $providerType, ')
+          ..write('facility: $facility, ')
+          ..write('sessionDate: $sessionDate, ')
+          ..write('sessionDuration: $sessionDuration, ')
+          ..write('presentingConcerns: $presentingConcerns, ')
+          ..write('moodAssessment: $moodAssessment, ')
+          ..write('thoughtProcess: $thoughtProcess, ')
+          ..write('riskAssessment: $riskAssessment, ')
+          ..write('treatmentGoals: $treatmentGoals, ')
+          ..write('interventions: $interventions, ')
+          ..write('homework: $homework, ')
+          ..write('medicationDiscussion: $medicationDiscussion, ')
+          ..write('progressNotes: $progressNotes, ')
+          ..write('planForNextSession: $planForNextSession, ')
+          ..write('nextAppointment: $nextAppointment, ')
+          ..write('moodRating: $moodRating, ')
+          ..write('anxietyRating: $anxietyRating, ')
+          ..write('isCrisisSession: $isCrisisSession')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    sessionType,
+    providerName,
+    providerType,
+    facility,
+    sessionDate,
+    sessionDuration,
+    presentingConcerns,
+    moodAssessment,
+    thoughtProcess,
+    riskAssessment,
+    treatmentGoals,
+    interventions,
+    homework,
+    medicationDiscussion,
+    progressNotes,
+    planForNextSession,
+    nextAppointment,
+    moodRating,
+    anxietyRating,
+    isCrisisSession,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MentalHealthRecord &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.sessionType == this.sessionType &&
+          other.providerName == this.providerName &&
+          other.providerType == this.providerType &&
+          other.facility == this.facility &&
+          other.sessionDate == this.sessionDate &&
+          other.sessionDuration == this.sessionDuration &&
+          other.presentingConcerns == this.presentingConcerns &&
+          other.moodAssessment == this.moodAssessment &&
+          other.thoughtProcess == this.thoughtProcess &&
+          other.riskAssessment == this.riskAssessment &&
+          other.treatmentGoals == this.treatmentGoals &&
+          other.interventions == this.interventions &&
+          other.homework == this.homework &&
+          other.medicationDiscussion == this.medicationDiscussion &&
+          other.progressNotes == this.progressNotes &&
+          other.planForNextSession == this.planForNextSession &&
+          other.nextAppointment == this.nextAppointment &&
+          other.moodRating == this.moodRating &&
+          other.anxietyRating == this.anxietyRating &&
+          other.isCrisisSession == this.isCrisisSession);
+}
+
+class MentalHealthRecordsCompanion extends UpdateCompanion<MentalHealthRecord> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> sessionType;
+  final Value<String?> providerName;
+  final Value<String?> providerType;
+  final Value<String?> facility;
+  final Value<DateTime> sessionDate;
+  final Value<int?> sessionDuration;
+  final Value<String?> presentingConcerns;
+  final Value<String?> moodAssessment;
+  final Value<String?> thoughtProcess;
+  final Value<String?> riskAssessment;
+  final Value<String?> treatmentGoals;
+  final Value<String?> interventions;
+  final Value<String?> homework;
+  final Value<String?> medicationDiscussion;
+  final Value<String?> progressNotes;
+  final Value<String?> planForNextSession;
+  final Value<DateTime?> nextAppointment;
+  final Value<int?> moodRating;
+  final Value<int?> anxietyRating;
+  final Value<bool> isCrisisSession;
+  final Value<int> rowid;
+  const MentalHealthRecordsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sessionType = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.providerType = const Value.absent(),
+    this.facility = const Value.absent(),
+    this.sessionDate = const Value.absent(),
+    this.sessionDuration = const Value.absent(),
+    this.presentingConcerns = const Value.absent(),
+    this.moodAssessment = const Value.absent(),
+    this.thoughtProcess = const Value.absent(),
+    this.riskAssessment = const Value.absent(),
+    this.treatmentGoals = const Value.absent(),
+    this.interventions = const Value.absent(),
+    this.homework = const Value.absent(),
+    this.medicationDiscussion = const Value.absent(),
+    this.progressNotes = const Value.absent(),
+    this.planForNextSession = const Value.absent(),
+    this.nextAppointment = const Value.absent(),
+    this.moodRating = const Value.absent(),
+    this.anxietyRating = const Value.absent(),
+    this.isCrisisSession = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MentalHealthRecordsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String sessionType,
+    this.providerName = const Value.absent(),
+    this.providerType = const Value.absent(),
+    this.facility = const Value.absent(),
+    required DateTime sessionDate,
+    this.sessionDuration = const Value.absent(),
+    this.presentingConcerns = const Value.absent(),
+    this.moodAssessment = const Value.absent(),
+    this.thoughtProcess = const Value.absent(),
+    this.riskAssessment = const Value.absent(),
+    this.treatmentGoals = const Value.absent(),
+    this.interventions = const Value.absent(),
+    this.homework = const Value.absent(),
+    this.medicationDiscussion = const Value.absent(),
+    this.progressNotes = const Value.absent(),
+    this.planForNextSession = const Value.absent(),
+    this.nextAppointment = const Value.absent(),
+    this.moodRating = const Value.absent(),
+    this.anxietyRating = const Value.absent(),
+    this.isCrisisSession = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       sessionType = Value(sessionType),
+       sessionDate = Value(sessionDate);
+  static Insertable<MentalHealthRecord> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? sessionType,
+    Expression<String>? providerName,
+    Expression<String>? providerType,
+    Expression<String>? facility,
+    Expression<DateTime>? sessionDate,
+    Expression<int>? sessionDuration,
+    Expression<String>? presentingConcerns,
+    Expression<String>? moodAssessment,
+    Expression<String>? thoughtProcess,
+    Expression<String>? riskAssessment,
+    Expression<String>? treatmentGoals,
+    Expression<String>? interventions,
+    Expression<String>? homework,
+    Expression<String>? medicationDiscussion,
+    Expression<String>? progressNotes,
+    Expression<String>? planForNextSession,
+    Expression<DateTime>? nextAppointment,
+    Expression<int>? moodRating,
+    Expression<int>? anxietyRating,
+    Expression<bool>? isCrisisSession,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (sessionType != null) 'session_type': sessionType,
+      if (providerName != null) 'provider_name': providerName,
+      if (providerType != null) 'provider_type': providerType,
+      if (facility != null) 'facility': facility,
+      if (sessionDate != null) 'session_date': sessionDate,
+      if (sessionDuration != null) 'session_duration': sessionDuration,
+      if (presentingConcerns != null) 'presenting_concerns': presentingConcerns,
+      if (moodAssessment != null) 'mood_assessment': moodAssessment,
+      if (thoughtProcess != null) 'thought_process': thoughtProcess,
+      if (riskAssessment != null) 'risk_assessment': riskAssessment,
+      if (treatmentGoals != null) 'treatment_goals': treatmentGoals,
+      if (interventions != null) 'interventions': interventions,
+      if (homework != null) 'homework': homework,
+      if (medicationDiscussion != null)
+        'medication_discussion': medicationDiscussion,
+      if (progressNotes != null) 'progress_notes': progressNotes,
+      if (planForNextSession != null)
+        'plan_for_next_session': planForNextSession,
+      if (nextAppointment != null) 'next_appointment': nextAppointment,
+      if (moodRating != null) 'mood_rating': moodRating,
+      if (anxietyRating != null) 'anxiety_rating': anxietyRating,
+      if (isCrisisSession != null) 'is_crisis_session': isCrisisSession,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MentalHealthRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? sessionType,
+    Value<String?>? providerName,
+    Value<String?>? providerType,
+    Value<String?>? facility,
+    Value<DateTime>? sessionDate,
+    Value<int?>? sessionDuration,
+    Value<String?>? presentingConcerns,
+    Value<String?>? moodAssessment,
+    Value<String?>? thoughtProcess,
+    Value<String?>? riskAssessment,
+    Value<String?>? treatmentGoals,
+    Value<String?>? interventions,
+    Value<String?>? homework,
+    Value<String?>? medicationDiscussion,
+    Value<String?>? progressNotes,
+    Value<String?>? planForNextSession,
+    Value<DateTime?>? nextAppointment,
+    Value<int?>? moodRating,
+    Value<int?>? anxietyRating,
+    Value<bool>? isCrisisSession,
+    Value<int>? rowid,
+  }) {
+    return MentalHealthRecordsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      sessionType: sessionType ?? this.sessionType,
+      providerName: providerName ?? this.providerName,
+      providerType: providerType ?? this.providerType,
+      facility: facility ?? this.facility,
+      sessionDate: sessionDate ?? this.sessionDate,
+      sessionDuration: sessionDuration ?? this.sessionDuration,
+      presentingConcerns: presentingConcerns ?? this.presentingConcerns,
+      moodAssessment: moodAssessment ?? this.moodAssessment,
+      thoughtProcess: thoughtProcess ?? this.thoughtProcess,
+      riskAssessment: riskAssessment ?? this.riskAssessment,
+      treatmentGoals: treatmentGoals ?? this.treatmentGoals,
+      interventions: interventions ?? this.interventions,
+      homework: homework ?? this.homework,
+      medicationDiscussion: medicationDiscussion ?? this.medicationDiscussion,
+      progressNotes: progressNotes ?? this.progressNotes,
+      planForNextSession: planForNextSession ?? this.planForNextSession,
+      nextAppointment: nextAppointment ?? this.nextAppointment,
+      moodRating: moodRating ?? this.moodRating,
+      anxietyRating: anxietyRating ?? this.anxietyRating,
+      isCrisisSession: isCrisisSession ?? this.isCrisisSession,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sessionType.present) {
+      map['session_type'] = Variable<String>(sessionType.value);
+    }
+    if (providerName.present) {
+      map['provider_name'] = Variable<String>(providerName.value);
+    }
+    if (providerType.present) {
+      map['provider_type'] = Variable<String>(providerType.value);
+    }
+    if (facility.present) {
+      map['facility'] = Variable<String>(facility.value);
+    }
+    if (sessionDate.present) {
+      map['session_date'] = Variable<DateTime>(sessionDate.value);
+    }
+    if (sessionDuration.present) {
+      map['session_duration'] = Variable<int>(sessionDuration.value);
+    }
+    if (presentingConcerns.present) {
+      map['presenting_concerns'] = Variable<String>(presentingConcerns.value);
+    }
+    if (moodAssessment.present) {
+      map['mood_assessment'] = Variable<String>(moodAssessment.value);
+    }
+    if (thoughtProcess.present) {
+      map['thought_process'] = Variable<String>(thoughtProcess.value);
+    }
+    if (riskAssessment.present) {
+      map['risk_assessment'] = Variable<String>(riskAssessment.value);
+    }
+    if (treatmentGoals.present) {
+      map['treatment_goals'] = Variable<String>(treatmentGoals.value);
+    }
+    if (interventions.present) {
+      map['interventions'] = Variable<String>(interventions.value);
+    }
+    if (homework.present) {
+      map['homework'] = Variable<String>(homework.value);
+    }
+    if (medicationDiscussion.present) {
+      map['medication_discussion'] = Variable<String>(
+        medicationDiscussion.value,
+      );
+    }
+    if (progressNotes.present) {
+      map['progress_notes'] = Variable<String>(progressNotes.value);
+    }
+    if (planForNextSession.present) {
+      map['plan_for_next_session'] = Variable<String>(planForNextSession.value);
+    }
+    if (nextAppointment.present) {
+      map['next_appointment'] = Variable<DateTime>(nextAppointment.value);
+    }
+    if (moodRating.present) {
+      map['mood_rating'] = Variable<int>(moodRating.value);
+    }
+    if (anxietyRating.present) {
+      map['anxiety_rating'] = Variable<int>(anxietyRating.value);
+    }
+    if (isCrisisSession.present) {
+      map['is_crisis_session'] = Variable<bool>(isCrisisSession.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MentalHealthRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('sessionType: $sessionType, ')
+          ..write('providerName: $providerName, ')
+          ..write('providerType: $providerType, ')
+          ..write('facility: $facility, ')
+          ..write('sessionDate: $sessionDate, ')
+          ..write('sessionDuration: $sessionDuration, ')
+          ..write('presentingConcerns: $presentingConcerns, ')
+          ..write('moodAssessment: $moodAssessment, ')
+          ..write('thoughtProcess: $thoughtProcess, ')
+          ..write('riskAssessment: $riskAssessment, ')
+          ..write('treatmentGoals: $treatmentGoals, ')
+          ..write('interventions: $interventions, ')
+          ..write('homework: $homework, ')
+          ..write('medicationDiscussion: $medicationDiscussion, ')
+          ..write('progressNotes: $progressNotes, ')
+          ..write('planForNextSession: $planForNextSession, ')
+          ..write('nextAppointment: $nextAppointment, ')
+          ..write('moodRating: $moodRating, ')
+          ..write('anxietyRating: $anxietyRating, ')
+          ..write('isCrisisSession: $isCrisisSession, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $GeneralRecordsTable extends GeneralRecords
+    with TableInfo<$GeneralRecordsTable, GeneralRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GeneralRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordTypeMeta = const VerificationMeta(
+    'recordType',
+  );
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+    'record_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('general_record'),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordDate = GeneratedColumn<DateTime>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subcategoryMeta = const VerificationMeta(
+    'subcategory',
+  );
+  @override
+  late final GeneratedColumn<String> subcategory = GeneratedColumn<String>(
+    'subcategory',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _providerNameMeta = const VerificationMeta(
+    'providerName',
+  );
+  @override
+  late final GeneratedColumn<String> providerName = GeneratedColumn<String>(
+    'provider_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _institutionMeta = const VerificationMeta(
+    'institution',
+  );
+  @override
+  late final GeneratedColumn<String> institution = GeneratedColumn<String>(
+    'institution',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _documentDateMeta = const VerificationMeta(
+    'documentDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> documentDate = GeneratedColumn<DateTime>(
+    'document_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _documentTypeMeta = const VerificationMeta(
+    'documentType',
+  );
+  @override
+  late final GeneratedColumn<String> documentType = GeneratedColumn<String>(
+    'document_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenceNumberMeta = const VerificationMeta(
+    'referenceNumber',
+  );
+  @override
+  late final GeneratedColumn<String> referenceNumber = GeneratedColumn<String>(
+    'reference_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _relatedConditionMeta = const VerificationMeta(
+    'relatedCondition',
+  );
+  @override
+  late final GeneratedColumn<String> relatedCondition = GeneratedColumn<String>(
+    'related_condition',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _followUpRequiredMeta = const VerificationMeta(
+    'followUpRequired',
+  );
+  @override
+  late final GeneratedColumn<String> followUpRequired = GeneratedColumn<String>(
+    'follow_up_required',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _expirationDateMeta = const VerificationMeta(
+    'expirationDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> expirationDate =
+      GeneratedColumn<DateTime>(
+        'expiration_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _reminderDateMeta = const VerificationMeta(
+    'reminderDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> reminderDate = GeneratedColumn<DateTime>(
+    'reminder_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+    'tags',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isConfidentialMeta = const VerificationMeta(
+    'isConfidential',
+  );
+  @override
+  late final GeneratedColumn<bool> isConfidential = GeneratedColumn<bool>(
+    'is_confidential',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_confidential" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _requiresActionMeta = const VerificationMeta(
+    'requiresAction',
+  );
+  @override
+  late final GeneratedColumn<bool> requiresAction = GeneratedColumn<bool>(
+    'requires_action',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("requires_action" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    category,
+    subcategory,
+    providerName,
+    institution,
+    documentDate,
+    documentType,
+    referenceNumber,
+    relatedCondition,
+    notes,
+    followUpRequired,
+    expirationDate,
+    reminderDate,
+    tags,
+    isConfidential,
+    requiresAction,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'general_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GeneralRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+        _recordTypeMeta,
+        recordType.isAcceptableOrUnknown(data['record_type']!, _recordTypeMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('subcategory')) {
+      context.handle(
+        _subcategoryMeta,
+        subcategory.isAcceptableOrUnknown(
+          data['subcategory']!,
+          _subcategoryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('provider_name')) {
+      context.handle(
+        _providerNameMeta,
+        providerName.isAcceptableOrUnknown(
+          data['provider_name']!,
+          _providerNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('institution')) {
+      context.handle(
+        _institutionMeta,
+        institution.isAcceptableOrUnknown(
+          data['institution']!,
+          _institutionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('document_date')) {
+      context.handle(
+        _documentDateMeta,
+        documentDate.isAcceptableOrUnknown(
+          data['document_date']!,
+          _documentDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('document_type')) {
+      context.handle(
+        _documentTypeMeta,
+        documentType.isAcceptableOrUnknown(
+          data['document_type']!,
+          _documentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_number')) {
+      context.handle(
+        _referenceNumberMeta,
+        referenceNumber.isAcceptableOrUnknown(
+          data['reference_number']!,
+          _referenceNumberMeta,
+        ),
+      );
+    }
+    if (data.containsKey('related_condition')) {
+      context.handle(
+        _relatedConditionMeta,
+        relatedCondition.isAcceptableOrUnknown(
+          data['related_condition']!,
+          _relatedConditionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('follow_up_required')) {
+      context.handle(
+        _followUpRequiredMeta,
+        followUpRequired.isAcceptableOrUnknown(
+          data['follow_up_required']!,
+          _followUpRequiredMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expiration_date')) {
+      context.handle(
+        _expirationDateMeta,
+        expirationDate.isAcceptableOrUnknown(
+          data['expiration_date']!,
+          _expirationDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reminder_date')) {
+      context.handle(
+        _reminderDateMeta,
+        reminderDate.isAcceptableOrUnknown(
+          data['reminder_date']!,
+          _reminderDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tags')) {
+      context.handle(
+        _tagsMeta,
+        tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta),
+      );
+    }
+    if (data.containsKey('is_confidential')) {
+      context.handle(
+        _isConfidentialMeta,
+        isConfidential.isAcceptableOrUnknown(
+          data['is_confidential']!,
+          _isConfidentialMeta,
+        ),
+      );
+    }
+    if (data.containsKey('requires_action')) {
+      context.handle(
+        _requiresActionMeta,
+        requiresAction.isAcceptableOrUnknown(
+          data['requires_action']!,
+          _requiresActionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GeneralRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GeneralRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      recordType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}record_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      subcategory: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subcategory'],
+      ),
+      providerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_name'],
+      ),
+      institution: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}institution'],
+      ),
+      documentDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}document_date'],
+      ),
+      documentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}document_type'],
+      ),
+      referenceNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_number'],
+      ),
+      relatedCondition: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}related_condition'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      followUpRequired: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}follow_up_required'],
+      ),
+      expirationDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expiration_date'],
+      ),
+      reminderDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}reminder_date'],
+      ),
+      tags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags'],
+      ),
+      isConfidential: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_confidential'],
+      )!,
+      requiresAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}requires_action'],
+      )!,
+    );
+  }
+
+  @override
+  $GeneralRecordsTable createAlias(String alias) {
+    return $GeneralRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class GeneralRecord extends DataClass implements Insertable<GeneralRecord> {
+  final String id;
+  final String profileId;
+  final String recordType;
+  final String title;
+  final String? description;
+  final DateTime recordDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
+  final String category;
+  final String? subcategory;
+  final String? providerName;
+  final String? institution;
+  final DateTime? documentDate;
+  final String? documentType;
+  final String? referenceNumber;
+  final String? relatedCondition;
+  final String? notes;
+  final String? followUpRequired;
+  final DateTime? expirationDate;
+  final DateTime? reminderDate;
+  final String? tags;
+  final bool isConfidential;
+  final bool requiresAction;
+  const GeneralRecord({
+    required this.id,
+    required this.profileId,
+    required this.recordType,
+    required this.title,
+    this.description,
+    required this.recordDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.category,
+    this.subcategory,
+    this.providerName,
+    this.institution,
+    this.documentDate,
+    this.documentType,
+    this.referenceNumber,
+    this.relatedCondition,
+    this.notes,
+    this.followUpRequired,
+    this.expirationDate,
+    this.reminderDate,
+    this.tags,
+    required this.isConfidential,
+    required this.requiresAction,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['record_type'] = Variable<String>(recordType);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['record_date'] = Variable<DateTime>(recordDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['is_active'] = Variable<bool>(isActive);
+    map['category'] = Variable<String>(category);
+    if (!nullToAbsent || subcategory != null) {
+      map['subcategory'] = Variable<String>(subcategory);
+    }
+    if (!nullToAbsent || providerName != null) {
+      map['provider_name'] = Variable<String>(providerName);
+    }
+    if (!nullToAbsent || institution != null) {
+      map['institution'] = Variable<String>(institution);
+    }
+    if (!nullToAbsent || documentDate != null) {
+      map['document_date'] = Variable<DateTime>(documentDate);
+    }
+    if (!nullToAbsent || documentType != null) {
+      map['document_type'] = Variable<String>(documentType);
+    }
+    if (!nullToAbsent || referenceNumber != null) {
+      map['reference_number'] = Variable<String>(referenceNumber);
+    }
+    if (!nullToAbsent || relatedCondition != null) {
+      map['related_condition'] = Variable<String>(relatedCondition);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || followUpRequired != null) {
+      map['follow_up_required'] = Variable<String>(followUpRequired);
+    }
+    if (!nullToAbsent || expirationDate != null) {
+      map['expiration_date'] = Variable<DateTime>(expirationDate);
+    }
+    if (!nullToAbsent || reminderDate != null) {
+      map['reminder_date'] = Variable<DateTime>(reminderDate);
+    }
+    if (!nullToAbsent || tags != null) {
+      map['tags'] = Variable<String>(tags);
+    }
+    map['is_confidential'] = Variable<bool>(isConfidential);
+    map['requires_action'] = Variable<bool>(requiresAction);
+    return map;
+  }
+
+  GeneralRecordsCompanion toCompanion(bool nullToAbsent) {
+    return GeneralRecordsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      recordType: Value(recordType),
+      title: Value(title),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      recordDate: Value(recordDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isActive: Value(isActive),
+      category: Value(category),
+      subcategory: subcategory == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subcategory),
+      providerName: providerName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(providerName),
+      institution: institution == null && nullToAbsent
+          ? const Value.absent()
+          : Value(institution),
+      documentDate: documentDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(documentDate),
+      documentType: documentType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(documentType),
+      referenceNumber: referenceNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceNumber),
+      relatedCondition: relatedCondition == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relatedCondition),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      followUpRequired: followUpRequired == null && nullToAbsent
+          ? const Value.absent()
+          : Value(followUpRequired),
+      expirationDate: expirationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expirationDate),
+      reminderDate: reminderDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reminderDate),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      isConfidential: Value(isConfidential),
+      requiresAction: Value(requiresAction),
+    );
+  }
+
+  factory GeneralRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GeneralRecord(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String?>(json['description']),
+      recordDate: serializer.fromJson<DateTime>(json['recordDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      category: serializer.fromJson<String>(json['category']),
+      subcategory: serializer.fromJson<String?>(json['subcategory']),
+      providerName: serializer.fromJson<String?>(json['providerName']),
+      institution: serializer.fromJson<String?>(json['institution']),
+      documentDate: serializer.fromJson<DateTime?>(json['documentDate']),
+      documentType: serializer.fromJson<String?>(json['documentType']),
+      referenceNumber: serializer.fromJson<String?>(json['referenceNumber']),
+      relatedCondition: serializer.fromJson<String?>(json['relatedCondition']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      followUpRequired: serializer.fromJson<String?>(json['followUpRequired']),
+      expirationDate: serializer.fromJson<DateTime?>(json['expirationDate']),
+      reminderDate: serializer.fromJson<DateTime?>(json['reminderDate']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      isConfidential: serializer.fromJson<bool>(json['isConfidential']),
+      requiresAction: serializer.fromJson<bool>(json['requiresAction']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'recordType': serializer.toJson<String>(recordType),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String?>(description),
+      'recordDate': serializer.toJson<DateTime>(recordDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'category': serializer.toJson<String>(category),
+      'subcategory': serializer.toJson<String?>(subcategory),
+      'providerName': serializer.toJson<String?>(providerName),
+      'institution': serializer.toJson<String?>(institution),
+      'documentDate': serializer.toJson<DateTime?>(documentDate),
+      'documentType': serializer.toJson<String?>(documentType),
+      'referenceNumber': serializer.toJson<String?>(referenceNumber),
+      'relatedCondition': serializer.toJson<String?>(relatedCondition),
+      'notes': serializer.toJson<String?>(notes),
+      'followUpRequired': serializer.toJson<String?>(followUpRequired),
+      'expirationDate': serializer.toJson<DateTime?>(expirationDate),
+      'reminderDate': serializer.toJson<DateTime?>(reminderDate),
+      'tags': serializer.toJson<String?>(tags),
+      'isConfidential': serializer.toJson<bool>(isConfidential),
+      'requiresAction': serializer.toJson<bool>(requiresAction),
+    };
+  }
+
+  GeneralRecord copyWith({
+    String? id,
+    String? profileId,
+    String? recordType,
+    String? title,
+    Value<String?> description = const Value.absent(),
+    DateTime? recordDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? category,
+    Value<String?> subcategory = const Value.absent(),
+    Value<String?> providerName = const Value.absent(),
+    Value<String?> institution = const Value.absent(),
+    Value<DateTime?> documentDate = const Value.absent(),
+    Value<String?> documentType = const Value.absent(),
+    Value<String?> referenceNumber = const Value.absent(),
+    Value<String?> relatedCondition = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    Value<String?> followUpRequired = const Value.absent(),
+    Value<DateTime?> expirationDate = const Value.absent(),
+    Value<DateTime?> reminderDate = const Value.absent(),
+    Value<String?> tags = const Value.absent(),
+    bool? isConfidential,
+    bool? requiresAction,
+  }) => GeneralRecord(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    recordType: recordType ?? this.recordType,
+    title: title ?? this.title,
+    description: description.present ? description.value : this.description,
+    recordDate: recordDate ?? this.recordDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    category: category ?? this.category,
+    subcategory: subcategory.present ? subcategory.value : this.subcategory,
+    providerName: providerName.present ? providerName.value : this.providerName,
+    institution: institution.present ? institution.value : this.institution,
+    documentDate: documentDate.present ? documentDate.value : this.documentDate,
+    documentType: documentType.present ? documentType.value : this.documentType,
+    referenceNumber: referenceNumber.present
+        ? referenceNumber.value
+        : this.referenceNumber,
+    relatedCondition: relatedCondition.present
+        ? relatedCondition.value
+        : this.relatedCondition,
+    notes: notes.present ? notes.value : this.notes,
+    followUpRequired: followUpRequired.present
+        ? followUpRequired.value
+        : this.followUpRequired,
+    expirationDate: expirationDate.present
+        ? expirationDate.value
+        : this.expirationDate,
+    reminderDate: reminderDate.present ? reminderDate.value : this.reminderDate,
+    tags: tags.present ? tags.value : this.tags,
+    isConfidential: isConfidential ?? this.isConfidential,
+    requiresAction: requiresAction ?? this.requiresAction,
+  );
+  GeneralRecord copyWithCompanion(GeneralRecordsCompanion data) {
+    return GeneralRecord(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      recordType: data.recordType.present
+          ? data.recordType.value
+          : this.recordType,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      category: data.category.present ? data.category.value : this.category,
+      subcategory: data.subcategory.present
+          ? data.subcategory.value
+          : this.subcategory,
+      providerName: data.providerName.present
+          ? data.providerName.value
+          : this.providerName,
+      institution: data.institution.present
+          ? data.institution.value
+          : this.institution,
+      documentDate: data.documentDate.present
+          ? data.documentDate.value
+          : this.documentDate,
+      documentType: data.documentType.present
+          ? data.documentType.value
+          : this.documentType,
+      referenceNumber: data.referenceNumber.present
+          ? data.referenceNumber.value
+          : this.referenceNumber,
+      relatedCondition: data.relatedCondition.present
+          ? data.relatedCondition.value
+          : this.relatedCondition,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      followUpRequired: data.followUpRequired.present
+          ? data.followUpRequired.value
+          : this.followUpRequired,
+      expirationDate: data.expirationDate.present
+          ? data.expirationDate.value
+          : this.expirationDate,
+      reminderDate: data.reminderDate.present
+          ? data.reminderDate.value
+          : this.reminderDate,
+      tags: data.tags.present ? data.tags.value : this.tags,
+      isConfidential: data.isConfidential.present
+          ? data.isConfidential.value
+          : this.isConfidential,
+      requiresAction: data.requiresAction.present
+          ? data.requiresAction.value
+          : this.requiresAction,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GeneralRecord(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('category: $category, ')
+          ..write('subcategory: $subcategory, ')
+          ..write('providerName: $providerName, ')
+          ..write('institution: $institution, ')
+          ..write('documentDate: $documentDate, ')
+          ..write('documentType: $documentType, ')
+          ..write('referenceNumber: $referenceNumber, ')
+          ..write('relatedCondition: $relatedCondition, ')
+          ..write('notes: $notes, ')
+          ..write('followUpRequired: $followUpRequired, ')
+          ..write('expirationDate: $expirationDate, ')
+          ..write('reminderDate: $reminderDate, ')
+          ..write('tags: $tags, ')
+          ..write('isConfidential: $isConfidential, ')
+          ..write('requiresAction: $requiresAction')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    recordType,
+    title,
+    description,
+    recordDate,
+    createdAt,
+    updatedAt,
+    isActive,
+    category,
+    subcategory,
+    providerName,
+    institution,
+    documentDate,
+    documentType,
+    referenceNumber,
+    relatedCondition,
+    notes,
+    followUpRequired,
+    expirationDate,
+    reminderDate,
+    tags,
+    isConfidential,
+    requiresAction,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GeneralRecord &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.recordType == this.recordType &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.recordDate == this.recordDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isActive == this.isActive &&
+          other.category == this.category &&
+          other.subcategory == this.subcategory &&
+          other.providerName == this.providerName &&
+          other.institution == this.institution &&
+          other.documentDate == this.documentDate &&
+          other.documentType == this.documentType &&
+          other.referenceNumber == this.referenceNumber &&
+          other.relatedCondition == this.relatedCondition &&
+          other.notes == this.notes &&
+          other.followUpRequired == this.followUpRequired &&
+          other.expirationDate == this.expirationDate &&
+          other.reminderDate == this.reminderDate &&
+          other.tags == this.tags &&
+          other.isConfidential == this.isConfidential &&
+          other.requiresAction == this.requiresAction);
+}
+
+class GeneralRecordsCompanion extends UpdateCompanion<GeneralRecord> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> recordType;
+  final Value<String> title;
+  final Value<String?> description;
+  final Value<DateTime> recordDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> isActive;
+  final Value<String> category;
+  final Value<String?> subcategory;
+  final Value<String?> providerName;
+  final Value<String?> institution;
+  final Value<DateTime?> documentDate;
+  final Value<String?> documentType;
+  final Value<String?> referenceNumber;
+  final Value<String?> relatedCondition;
+  final Value<String?> notes;
+  final Value<String?> followUpRequired;
+  final Value<DateTime?> expirationDate;
+  final Value<DateTime?> reminderDate;
+  final Value<String?> tags;
+  final Value<bool> isConfidential;
+  final Value<bool> requiresAction;
+  final Value<int> rowid;
+  const GeneralRecordsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.category = const Value.absent(),
+    this.subcategory = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.institution = const Value.absent(),
+    this.documentDate = const Value.absent(),
+    this.documentType = const Value.absent(),
+    this.referenceNumber = const Value.absent(),
+    this.relatedCondition = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.followUpRequired = const Value.absent(),
+    this.expirationDate = const Value.absent(),
+    this.reminderDate = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.isConfidential = const Value.absent(),
+    this.requiresAction = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  GeneralRecordsCompanion.insert({
+    required String id,
+    required String profileId,
+    this.recordType = const Value.absent(),
+    required String title,
+    this.description = const Value.absent(),
+    required DateTime recordDate,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required String category,
+    this.subcategory = const Value.absent(),
+    this.providerName = const Value.absent(),
+    this.institution = const Value.absent(),
+    this.documentDate = const Value.absent(),
+    this.documentType = const Value.absent(),
+    this.referenceNumber = const Value.absent(),
+    this.relatedCondition = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.followUpRequired = const Value.absent(),
+    this.expirationDate = const Value.absent(),
+    this.reminderDate = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.isConfidential = const Value.absent(),
+    this.requiresAction = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       title = Value(title),
+       recordDate = Value(recordDate),
+       category = Value(category);
+  static Insertable<GeneralRecord> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? recordType,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? recordDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isActive,
+    Expression<String>? category,
+    Expression<String>? subcategory,
+    Expression<String>? providerName,
+    Expression<String>? institution,
+    Expression<DateTime>? documentDate,
+    Expression<String>? documentType,
+    Expression<String>? referenceNumber,
+    Expression<String>? relatedCondition,
+    Expression<String>? notes,
+    Expression<String>? followUpRequired,
+    Expression<DateTime>? expirationDate,
+    Expression<DateTime>? reminderDate,
+    Expression<String>? tags,
+    Expression<bool>? isConfidential,
+    Expression<bool>? requiresAction,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (recordType != null) 'record_type': recordType,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (recordDate != null) 'record_date': recordDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (category != null) 'category': category,
+      if (subcategory != null) 'subcategory': subcategory,
+      if (providerName != null) 'provider_name': providerName,
+      if (institution != null) 'institution': institution,
+      if (documentDate != null) 'document_date': documentDate,
+      if (documentType != null) 'document_type': documentType,
+      if (referenceNumber != null) 'reference_number': referenceNumber,
+      if (relatedCondition != null) 'related_condition': relatedCondition,
+      if (notes != null) 'notes': notes,
+      if (followUpRequired != null) 'follow_up_required': followUpRequired,
+      if (expirationDate != null) 'expiration_date': expirationDate,
+      if (reminderDate != null) 'reminder_date': reminderDate,
+      if (tags != null) 'tags': tags,
+      if (isConfidential != null) 'is_confidential': isConfidential,
+      if (requiresAction != null) 'requires_action': requiresAction,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  GeneralRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? recordType,
+    Value<String>? title,
+    Value<String?>? description,
+    Value<DateTime>? recordDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? isActive,
+    Value<String>? category,
+    Value<String?>? subcategory,
+    Value<String?>? providerName,
+    Value<String?>? institution,
+    Value<DateTime?>? documentDate,
+    Value<String?>? documentType,
+    Value<String?>? referenceNumber,
+    Value<String?>? relatedCondition,
+    Value<String?>? notes,
+    Value<String?>? followUpRequired,
+    Value<DateTime?>? expirationDate,
+    Value<DateTime?>? reminderDate,
+    Value<String?>? tags,
+    Value<bool>? isConfidential,
+    Value<bool>? requiresAction,
+    Value<int>? rowid,
+  }) {
+    return GeneralRecordsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      recordType: recordType ?? this.recordType,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      recordDate: recordDate ?? this.recordDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      category: category ?? this.category,
+      subcategory: subcategory ?? this.subcategory,
+      providerName: providerName ?? this.providerName,
+      institution: institution ?? this.institution,
+      documentDate: documentDate ?? this.documentDate,
+      documentType: documentType ?? this.documentType,
+      referenceNumber: referenceNumber ?? this.referenceNumber,
+      relatedCondition: relatedCondition ?? this.relatedCondition,
+      notes: notes ?? this.notes,
+      followUpRequired: followUpRequired ?? this.followUpRequired,
+      expirationDate: expirationDate ?? this.expirationDate,
+      reminderDate: reminderDate ?? this.reminderDate,
+      tags: tags ?? this.tags,
+      isConfidential: isConfidential ?? this.isConfidential,
+      requiresAction: requiresAction ?? this.requiresAction,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<DateTime>(recordDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (subcategory.present) {
+      map['subcategory'] = Variable<String>(subcategory.value);
+    }
+    if (providerName.present) {
+      map['provider_name'] = Variable<String>(providerName.value);
+    }
+    if (institution.present) {
+      map['institution'] = Variable<String>(institution.value);
+    }
+    if (documentDate.present) {
+      map['document_date'] = Variable<DateTime>(documentDate.value);
+    }
+    if (documentType.present) {
+      map['document_type'] = Variable<String>(documentType.value);
+    }
+    if (referenceNumber.present) {
+      map['reference_number'] = Variable<String>(referenceNumber.value);
+    }
+    if (relatedCondition.present) {
+      map['related_condition'] = Variable<String>(relatedCondition.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (followUpRequired.present) {
+      map['follow_up_required'] = Variable<String>(followUpRequired.value);
+    }
+    if (expirationDate.present) {
+      map['expiration_date'] = Variable<DateTime>(expirationDate.value);
+    }
+    if (reminderDate.present) {
+      map['reminder_date'] = Variable<DateTime>(reminderDate.value);
+    }
+    if (tags.present) {
+      map['tags'] = Variable<String>(tags.value);
+    }
+    if (isConfidential.present) {
+      map['is_confidential'] = Variable<bool>(isConfidential.value);
+    }
+    if (requiresAction.present) {
+      map['requires_action'] = Variable<bool>(requiresAction.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GeneralRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('recordType: $recordType, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('category: $category, ')
+          ..write('subcategory: $subcategory, ')
+          ..write('providerName: $providerName, ')
+          ..write('institution: $institution, ')
+          ..write('documentDate: $documentDate, ')
+          ..write('documentType: $documentType, ')
+          ..write('referenceNumber: $referenceNumber, ')
+          ..write('relatedCondition: $relatedCondition, ')
+          ..write('notes: $notes, ')
+          ..write('followUpRequired: $followUpRequired, ')
+          ..write('expirationDate: $expirationDate, ')
+          ..write('reminderDate: $reminderDate, ')
+          ..write('tags: $tags, ')
+          ..write('isConfidential: $isConfidential, ')
+          ..write('requiresAction: $requiresAction, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -8687,6 +21562,29 @@ class $AttachmentsTable extends Attachments
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _thumbnailPathMeta = const VerificationMeta(
+    'thumbnailPath',
+  );
+  @override
+  late final GeneratedColumn<String> thumbnailPath = GeneratedColumn<String>(
+    'thumbnail_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -8741,6 +21639,21 @@ class $AttachmentsTable extends Attachments
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _isConfidentialMeta = const VerificationMeta(
+    'isConfidential',
+  );
+  @override
+  late final GeneratedColumn<bool> isConfidential = GeneratedColumn<bool>(
+    'is_confidential',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_confidential" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -8751,10 +21664,13 @@ class $AttachmentsTable extends Attachments
     mimeType,
     fileSize,
     description,
+    thumbnailPath,
+    sortOrder,
     createdAt,
     updatedAt,
     isActive,
     isSynced,
+    isConfidential,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -8828,6 +21744,21 @@ class $AttachmentsTable extends Attachments
         ),
       );
     }
+    if (data.containsKey('thumbnail_path')) {
+      context.handle(
+        _thumbnailPathMeta,
+        thumbnailPath.isAcceptableOrUnknown(
+          data['thumbnail_path']!,
+          _thumbnailPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -8850,6 +21781,15 @@ class $AttachmentsTable extends Attachments
       context.handle(
         _isSyncedMeta,
         isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('is_confidential')) {
+      context.handle(
+        _isConfidentialMeta,
+        isConfidential.isAcceptableOrUnknown(
+          data['is_confidential']!,
+          _isConfidentialMeta,
+        ),
       );
     }
     return context;
@@ -8893,6 +21833,14 @@ class $AttachmentsTable extends Attachments
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       ),
+      thumbnailPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumbnail_path'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -8908,6 +21856,10 @@ class $AttachmentsTable extends Attachments
       isSynced: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_synced'],
+      )!,
+      isConfidential: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_confidential'],
       )!,
     );
   }
@@ -8927,10 +21879,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
   final String? mimeType;
   final int fileSize;
   final String? description;
+  final String? thumbnailPath;
+  final int sortOrder;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isActive;
   final bool isSynced;
+  final bool isConfidential;
   const Attachment({
     required this.id,
     required this.recordId,
@@ -8940,10 +21895,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     this.mimeType,
     required this.fileSize,
     this.description,
+    this.thumbnailPath,
+    required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
     required this.isActive,
     required this.isSynced,
+    required this.isConfidential,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8960,10 +21918,15 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
+    if (!nullToAbsent || thumbnailPath != null) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     map['is_active'] = Variable<bool>(isActive);
     map['is_synced'] = Variable<bool>(isSynced);
+    map['is_confidential'] = Variable<bool>(isConfidential);
     return map;
   }
 
@@ -8981,10 +21944,15 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
+      thumbnailPath: thumbnailPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnailPath),
+      sortOrder: Value(sortOrder),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       isActive: Value(isActive),
       isSynced: Value(isSynced),
+      isConfidential: Value(isConfidential),
     );
   }
 
@@ -9002,10 +21970,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       mimeType: serializer.fromJson<String?>(json['mimeType']),
       fileSize: serializer.fromJson<int>(json['fileSize']),
       description: serializer.fromJson<String?>(json['description']),
+      thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       isActive: serializer.fromJson<bool>(json['isActive']),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
+      isConfidential: serializer.fromJson<bool>(json['isConfidential']),
     );
   }
   @override
@@ -9020,10 +21991,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       'mimeType': serializer.toJson<String?>(mimeType),
       'fileSize': serializer.toJson<int>(fileSize),
       'description': serializer.toJson<String?>(description),
+      'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
+      'sortOrder': serializer.toJson<int>(sortOrder),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'isActive': serializer.toJson<bool>(isActive),
       'isSynced': serializer.toJson<bool>(isSynced),
+      'isConfidential': serializer.toJson<bool>(isConfidential),
     };
   }
 
@@ -9036,10 +22010,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     Value<String?> mimeType = const Value.absent(),
     int? fileSize,
     Value<String?> description = const Value.absent(),
+    Value<String?> thumbnailPath = const Value.absent(),
+    int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
     bool? isSynced,
+    bool? isConfidential,
   }) => Attachment(
     id: id ?? this.id,
     recordId: recordId ?? this.recordId,
@@ -9049,10 +22026,15 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     mimeType: mimeType.present ? mimeType.value : this.mimeType,
     fileSize: fileSize ?? this.fileSize,
     description: description.present ? description.value : this.description,
+    thumbnailPath: thumbnailPath.present
+        ? thumbnailPath.value
+        : this.thumbnailPath,
+    sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     isActive: isActive ?? this.isActive,
     isSynced: isSynced ?? this.isSynced,
+    isConfidential: isConfidential ?? this.isConfidential,
   );
   Attachment copyWithCompanion(AttachmentsCompanion data) {
     return Attachment(
@@ -9066,10 +22048,17 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       description: data.description.present
           ? data.description.value
           : this.description,
+      thumbnailPath: data.thumbnailPath.present
+          ? data.thumbnailPath.value
+          : this.thumbnailPath,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      isConfidential: data.isConfidential.present
+          ? data.isConfidential.value
+          : this.isConfidential,
     );
   }
 
@@ -9084,10 +22073,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           ..write('mimeType: $mimeType, ')
           ..write('fileSize: $fileSize, ')
           ..write('description: $description, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isActive: $isActive, ')
-          ..write('isSynced: $isSynced')
+          ..write('isSynced: $isSynced, ')
+          ..write('isConfidential: $isConfidential')
           ..write(')'))
         .toString();
   }
@@ -9102,10 +22094,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     mimeType,
     fileSize,
     description,
+    thumbnailPath,
+    sortOrder,
     createdAt,
     updatedAt,
     isActive,
     isSynced,
+    isConfidential,
   );
   @override
   bool operator ==(Object other) =>
@@ -9119,10 +22114,13 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           other.mimeType == this.mimeType &&
           other.fileSize == this.fileSize &&
           other.description == this.description &&
+          other.thumbnailPath == this.thumbnailPath &&
+          other.sortOrder == this.sortOrder &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.isActive == this.isActive &&
-          other.isSynced == this.isSynced);
+          other.isSynced == this.isSynced &&
+          other.isConfidential == this.isConfidential);
 }
 
 class AttachmentsCompanion extends UpdateCompanion<Attachment> {
@@ -9134,10 +22132,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
   final Value<String?> mimeType;
   final Value<int> fileSize;
   final Value<String?> description;
+  final Value<String?> thumbnailPath;
+  final Value<int> sortOrder;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<bool> isActive;
   final Value<bool> isSynced;
+  final Value<bool> isConfidential;
   final Value<int> rowid;
   const AttachmentsCompanion({
     this.id = const Value.absent(),
@@ -9148,10 +22149,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     this.mimeType = const Value.absent(),
     this.fileSize = const Value.absent(),
     this.description = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isActive = const Value.absent(),
     this.isSynced = const Value.absent(),
+    this.isConfidential = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AttachmentsCompanion.insert({
@@ -9163,10 +22167,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     this.mimeType = const Value.absent(),
     required int fileSize,
     this.description = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isActive = const Value.absent(),
     this.isSynced = const Value.absent(),
+    this.isConfidential = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        recordId = Value(recordId),
@@ -9183,10 +22190,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     Expression<String>? mimeType,
     Expression<int>? fileSize,
     Expression<String>? description,
+    Expression<String>? thumbnailPath,
+    Expression<int>? sortOrder,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<bool>? isActive,
     Expression<bool>? isSynced,
+    Expression<bool>? isConfidential,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9198,10 +22208,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
       if (mimeType != null) 'mime_type': mimeType,
       if (fileSize != null) 'file_size': fileSize,
       if (description != null) 'description': description,
+      if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
+      if (sortOrder != null) 'sort_order': sortOrder,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isActive != null) 'is_active': isActive,
       if (isSynced != null) 'is_synced': isSynced,
+      if (isConfidential != null) 'is_confidential': isConfidential,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -9215,10 +22228,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     Value<String?>? mimeType,
     Value<int>? fileSize,
     Value<String?>? description,
+    Value<String?>? thumbnailPath,
+    Value<int>? sortOrder,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<bool>? isActive,
     Value<bool>? isSynced,
+    Value<bool>? isConfidential,
     Value<int>? rowid,
   }) {
     return AttachmentsCompanion(
@@ -9230,10 +22246,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
       mimeType: mimeType ?? this.mimeType,
       fileSize: fileSize ?? this.fileSize,
       description: description ?? this.description,
+      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
       isSynced: isSynced ?? this.isSynced,
+      isConfidential: isConfidential ?? this.isConfidential,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -9265,6 +22284,12 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (thumbnailPath.present) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -9276,6 +22301,9 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     }
     if (isSynced.present) {
       map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (isConfidential.present) {
+      map['is_confidential'] = Variable<bool>(isConfidential.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -9294,10 +22322,13 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
           ..write('mimeType: $mimeType, ')
           ..write('fileSize: $fileSize, ')
           ..write('description: $description, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isActive: $isActive, ')
           ..write('isSynced: $isSynced, ')
+          ..write('isConfidential: $isConfidential, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11128,25 +24159,55 @@ class $SearchHistoryTable extends SearchHistory
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _queryMeta = const VerificationMeta('query');
+  static const VerificationMeta _searchTermMeta = const VerificationMeta(
+    'searchTerm',
+  );
   @override
-  late final GeneratedColumn<String> query = GeneratedColumn<String>(
-    'query',
+  late final GeneratedColumn<String> searchTerm = GeneratedColumn<String>(
+    'search_term',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _searchTypeMeta = const VerificationMeta(
+    'searchType',
+  );
+  @override
+  late final GeneratedColumn<String> searchType = GeneratedColumn<String>(
+    'search_type',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _filtersMeta = const VerificationMeta(
-    'filters',
+  static const VerificationMeta _searchCountMeta = const VerificationMeta(
+    'searchCount',
   );
   @override
-  late final GeneratedColumn<String> filters = GeneratedColumn<String>(
-    'filters',
+  late final GeneratedColumn<int> searchCount = GeneratedColumn<int>(
+    'search_count',
     aliasedName,
-    true,
-    type: DriftSqlType.string,
+    false,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _lastSearchedMeta = const VerificationMeta(
+    'lastSearched',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSearched = GeneratedColumn<DateTime>(
+    'last_searched',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -11160,25 +24221,30 @@ class $SearchHistoryTable extends SearchHistory
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-  static const VerificationMeta _useCountMeta = const VerificationMeta(
-    'useCount',
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
   );
   @override
-  late final GeneratedColumn<int> useCount = GeneratedColumn<int>(
-    'use_count',
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultValue: const Constant(1),
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
   );
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    query,
-    filters,
+    searchTerm,
+    searchType,
+    searchCount,
+    lastSearched,
     createdAt,
-    useCount,
+    isActive,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -11197,18 +24263,38 @@ class $SearchHistoryTable extends SearchHistory
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('query')) {
+    if (data.containsKey('search_term')) {
       context.handle(
-        _queryMeta,
-        query.isAcceptableOrUnknown(data['query']!, _queryMeta),
+        _searchTermMeta,
+        searchTerm.isAcceptableOrUnknown(data['search_term']!, _searchTermMeta),
       );
     } else if (isInserting) {
-      context.missing(_queryMeta);
+      context.missing(_searchTermMeta);
     }
-    if (data.containsKey('filters')) {
+    if (data.containsKey('search_type')) {
       context.handle(
-        _filtersMeta,
-        filters.isAcceptableOrUnknown(data['filters']!, _filtersMeta),
+        _searchTypeMeta,
+        searchType.isAcceptableOrUnknown(data['search_type']!, _searchTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_searchTypeMeta);
+    }
+    if (data.containsKey('search_count')) {
+      context.handle(
+        _searchCountMeta,
+        searchCount.isAcceptableOrUnknown(
+          data['search_count']!,
+          _searchCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_searched')) {
+      context.handle(
+        _lastSearchedMeta,
+        lastSearched.isAcceptableOrUnknown(
+          data['last_searched']!,
+          _lastSearchedMeta,
+        ),
       );
     }
     if (data.containsKey('created_at')) {
@@ -11217,10 +24303,10 @@ class $SearchHistoryTable extends SearchHistory
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
-    if (data.containsKey('use_count')) {
+    if (data.containsKey('is_active')) {
       context.handle(
-        _useCountMeta,
-        useCount.isAcceptableOrUnknown(data['use_count']!, _useCountMeta),
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
       );
     }
     return context;
@@ -11236,21 +24322,29 @@ class $SearchHistoryTable extends SearchHistory
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      query: attachedDatabase.typeMapping.read(
+      searchTerm: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}query'],
+        data['${effectivePrefix}search_term'],
       )!,
-      filters: attachedDatabase.typeMapping.read(
+      searchType: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}filters'],
-      ),
+        data['${effectivePrefix}search_type'],
+      )!,
+      searchCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}search_count'],
+      )!,
+      lastSearched: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_searched'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
-      useCount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}use_count'],
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
       )!,
     );
   }
@@ -11264,39 +24358,43 @@ class $SearchHistoryTable extends SearchHistory
 class SearchHistoryData extends DataClass
     implements Insertable<SearchHistoryData> {
   final String id;
-  final String query;
-  final String? filters;
+  final String searchTerm;
+  final String searchType;
+  final int searchCount;
+  final DateTime lastSearched;
   final DateTime createdAt;
-  final int useCount;
+  final bool isActive;
   const SearchHistoryData({
     required this.id,
-    required this.query,
-    this.filters,
+    required this.searchTerm,
+    required this.searchType,
+    required this.searchCount,
+    required this.lastSearched,
     required this.createdAt,
-    required this.useCount,
+    required this.isActive,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['query'] = Variable<String>(query);
-    if (!nullToAbsent || filters != null) {
-      map['filters'] = Variable<String>(filters);
-    }
+    map['search_term'] = Variable<String>(searchTerm);
+    map['search_type'] = Variable<String>(searchType);
+    map['search_count'] = Variable<int>(searchCount);
+    map['last_searched'] = Variable<DateTime>(lastSearched);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['use_count'] = Variable<int>(useCount);
+    map['is_active'] = Variable<bool>(isActive);
     return map;
   }
 
   SearchHistoryCompanion toCompanion(bool nullToAbsent) {
     return SearchHistoryCompanion(
       id: Value(id),
-      query: Value(query),
-      filters: filters == null && nullToAbsent
-          ? const Value.absent()
-          : Value(filters),
+      searchTerm: Value(searchTerm),
+      searchType: Value(searchType),
+      searchCount: Value(searchCount),
+      lastSearched: Value(lastSearched),
       createdAt: Value(createdAt),
-      useCount: Value(useCount),
+      isActive: Value(isActive),
     );
   }
 
@@ -11307,10 +24405,12 @@ class SearchHistoryData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SearchHistoryData(
       id: serializer.fromJson<String>(json['id']),
-      query: serializer.fromJson<String>(json['query']),
-      filters: serializer.fromJson<String?>(json['filters']),
+      searchTerm: serializer.fromJson<String>(json['searchTerm']),
+      searchType: serializer.fromJson<String>(json['searchType']),
+      searchCount: serializer.fromJson<int>(json['searchCount']),
+      lastSearched: serializer.fromJson<DateTime>(json['lastSearched']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      useCount: serializer.fromJson<int>(json['useCount']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
     );
   }
   @override
@@ -11318,33 +24418,49 @@ class SearchHistoryData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'query': serializer.toJson<String>(query),
-      'filters': serializer.toJson<String?>(filters),
+      'searchTerm': serializer.toJson<String>(searchTerm),
+      'searchType': serializer.toJson<String>(searchType),
+      'searchCount': serializer.toJson<int>(searchCount),
+      'lastSearched': serializer.toJson<DateTime>(lastSearched),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'useCount': serializer.toJson<int>(useCount),
+      'isActive': serializer.toJson<bool>(isActive),
     };
   }
 
   SearchHistoryData copyWith({
     String? id,
-    String? query,
-    Value<String?> filters = const Value.absent(),
+    String? searchTerm,
+    String? searchType,
+    int? searchCount,
+    DateTime? lastSearched,
     DateTime? createdAt,
-    int? useCount,
+    bool? isActive,
   }) => SearchHistoryData(
     id: id ?? this.id,
-    query: query ?? this.query,
-    filters: filters.present ? filters.value : this.filters,
+    searchTerm: searchTerm ?? this.searchTerm,
+    searchType: searchType ?? this.searchType,
+    searchCount: searchCount ?? this.searchCount,
+    lastSearched: lastSearched ?? this.lastSearched,
     createdAt: createdAt ?? this.createdAt,
-    useCount: useCount ?? this.useCount,
+    isActive: isActive ?? this.isActive,
   );
   SearchHistoryData copyWithCompanion(SearchHistoryCompanion data) {
     return SearchHistoryData(
       id: data.id.present ? data.id.value : this.id,
-      query: data.query.present ? data.query.value : this.query,
-      filters: data.filters.present ? data.filters.value : this.filters,
+      searchTerm: data.searchTerm.present
+          ? data.searchTerm.value
+          : this.searchTerm,
+      searchType: data.searchType.present
+          ? data.searchType.value
+          : this.searchType,
+      searchCount: data.searchCount.present
+          ? data.searchCount.value
+          : this.searchCount,
+      lastSearched: data.lastSearched.present
+          ? data.lastSearched.value
+          : this.lastSearched,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      useCount: data.useCount.present ? data.useCount.value : this.useCount,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
     );
   }
 
@@ -11352,83 +24468,110 @@ class SearchHistoryData extends DataClass
   String toString() {
     return (StringBuffer('SearchHistoryData(')
           ..write('id: $id, ')
-          ..write('query: $query, ')
-          ..write('filters: $filters, ')
+          ..write('searchTerm: $searchTerm, ')
+          ..write('searchType: $searchType, ')
+          ..write('searchCount: $searchCount, ')
+          ..write('lastSearched: $lastSearched, ')
           ..write('createdAt: $createdAt, ')
-          ..write('useCount: $useCount')
+          ..write('isActive: $isActive')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, query, filters, createdAt, useCount);
+  int get hashCode => Object.hash(
+    id,
+    searchTerm,
+    searchType,
+    searchCount,
+    lastSearched,
+    createdAt,
+    isActive,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SearchHistoryData &&
           other.id == this.id &&
-          other.query == this.query &&
-          other.filters == this.filters &&
+          other.searchTerm == this.searchTerm &&
+          other.searchType == this.searchType &&
+          other.searchCount == this.searchCount &&
+          other.lastSearched == this.lastSearched &&
           other.createdAt == this.createdAt &&
-          other.useCount == this.useCount);
+          other.isActive == this.isActive);
 }
 
 class SearchHistoryCompanion extends UpdateCompanion<SearchHistoryData> {
   final Value<String> id;
-  final Value<String> query;
-  final Value<String?> filters;
+  final Value<String> searchTerm;
+  final Value<String> searchType;
+  final Value<int> searchCount;
+  final Value<DateTime> lastSearched;
   final Value<DateTime> createdAt;
-  final Value<int> useCount;
+  final Value<bool> isActive;
   final Value<int> rowid;
   const SearchHistoryCompanion({
     this.id = const Value.absent(),
-    this.query = const Value.absent(),
-    this.filters = const Value.absent(),
+    this.searchTerm = const Value.absent(),
+    this.searchType = const Value.absent(),
+    this.searchCount = const Value.absent(),
+    this.lastSearched = const Value.absent(),
     this.createdAt = const Value.absent(),
-    this.useCount = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SearchHistoryCompanion.insert({
     required String id,
-    required String query,
-    this.filters = const Value.absent(),
+    required String searchTerm,
+    required String searchType,
+    this.searchCount = const Value.absent(),
+    this.lastSearched = const Value.absent(),
     this.createdAt = const Value.absent(),
-    this.useCount = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
-       query = Value(query);
+       searchTerm = Value(searchTerm),
+       searchType = Value(searchType);
   static Insertable<SearchHistoryData> custom({
     Expression<String>? id,
-    Expression<String>? query,
-    Expression<String>? filters,
+    Expression<String>? searchTerm,
+    Expression<String>? searchType,
+    Expression<int>? searchCount,
+    Expression<DateTime>? lastSearched,
     Expression<DateTime>? createdAt,
-    Expression<int>? useCount,
+    Expression<bool>? isActive,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (query != null) 'query': query,
-      if (filters != null) 'filters': filters,
+      if (searchTerm != null) 'search_term': searchTerm,
+      if (searchType != null) 'search_type': searchType,
+      if (searchCount != null) 'search_count': searchCount,
+      if (lastSearched != null) 'last_searched': lastSearched,
       if (createdAt != null) 'created_at': createdAt,
-      if (useCount != null) 'use_count': useCount,
+      if (isActive != null) 'is_active': isActive,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   SearchHistoryCompanion copyWith({
     Value<String>? id,
-    Value<String>? query,
-    Value<String?>? filters,
+    Value<String>? searchTerm,
+    Value<String>? searchType,
+    Value<int>? searchCount,
+    Value<DateTime>? lastSearched,
     Value<DateTime>? createdAt,
-    Value<int>? useCount,
+    Value<bool>? isActive,
     Value<int>? rowid,
   }) {
     return SearchHistoryCompanion(
       id: id ?? this.id,
-      query: query ?? this.query,
-      filters: filters ?? this.filters,
+      searchTerm: searchTerm ?? this.searchTerm,
+      searchType: searchType ?? this.searchType,
+      searchCount: searchCount ?? this.searchCount,
+      lastSearched: lastSearched ?? this.lastSearched,
       createdAt: createdAt ?? this.createdAt,
-      useCount: useCount ?? this.useCount,
+      isActive: isActive ?? this.isActive,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -11439,17 +24582,23 @@ class SearchHistoryCompanion extends UpdateCompanion<SearchHistoryData> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (query.present) {
-      map['query'] = Variable<String>(query.value);
+    if (searchTerm.present) {
+      map['search_term'] = Variable<String>(searchTerm.value);
     }
-    if (filters.present) {
-      map['filters'] = Variable<String>(filters.value);
+    if (searchType.present) {
+      map['search_type'] = Variable<String>(searchType.value);
+    }
+    if (searchCount.present) {
+      map['search_count'] = Variable<int>(searchCount.value);
+    }
+    if (lastSearched.present) {
+      map['last_searched'] = Variable<DateTime>(lastSearched.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
-    if (useCount.present) {
-      map['use_count'] = Variable<int>(useCount.value);
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -11461,10 +24610,12 @@ class SearchHistoryCompanion extends UpdateCompanion<SearchHistoryData> {
   String toString() {
     return (StringBuffer('SearchHistoryCompanion(')
           ..write('id: $id, ')
-          ..write('query: $query, ')
-          ..write('filters: $filters, ')
+          ..write('searchTerm: $searchTerm, ')
+          ..write('searchType: $searchType, ')
+          ..write('searchCount: $searchCount, ')
+          ..write('lastSearched: $lastSearched, ')
           ..write('createdAt: $createdAt, ')
-          ..write('useCount: $useCount, ')
+          ..write('isActive: $isActive, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11484,6 +24635,23 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AllergiesTable allergies = $AllergiesTable(this);
   late final $ChronicConditionsTable chronicConditions =
       $ChronicConditionsTable(this);
+  late final $SurgicalRecordsTable surgicalRecords = $SurgicalRecordsTable(
+    this,
+  );
+  late final $RadiologyRecordsTable radiologyRecords = $RadiologyRecordsTable(
+    this,
+  );
+  late final $PathologyRecordsTable pathologyRecords = $PathologyRecordsTable(
+    this,
+  );
+  late final $DischargeSummariesTable dischargeSummaries =
+      $DischargeSummariesTable(this);
+  late final $HospitalAdmissionsTable hospitalAdmissions =
+      $HospitalAdmissionsTable(this);
+  late final $DentalRecordsTable dentalRecords = $DentalRecordsTable(this);
+  late final $MentalHealthRecordsTable mentalHealthRecords =
+      $MentalHealthRecordsTable(this);
+  late final $GeneralRecordsTable generalRecords = $GeneralRecordsTable(this);
   late final $TagsTable tags = $TagsTable(this);
   late final $AttachmentsTable attachments = $AttachmentsTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
@@ -11503,6 +24671,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     vaccinations,
     allergies,
     chronicConditions,
+    surgicalRecords,
+    radiologyRecords,
+    pathologyRecords,
+    dischargeSummaries,
+    hospitalAdmissions,
+    dentalRecords,
+    mentalHealthRecords,
+    generalRecords,
     tags,
     attachments,
     reminders,
@@ -12341,9 +25517,10 @@ typedef $$PrescriptionsTableCreateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<bool> isActive,
-      required String medicationName,
-      required String dosage,
-      required String frequency,
+      required String prescriptionType,
+      Value<String?> medicationName,
+      Value<String?> dosage,
+      Value<String?> frequency,
       Value<String?> instructions,
       Value<String?> prescribingDoctor,
       Value<String?> pharmacy,
@@ -12351,6 +25528,18 @@ typedef $$PrescriptionsTableCreateCompanionBuilder =
       Value<DateTime?> endDate,
       Value<int?> refillsRemaining,
       Value<bool> isPrescriptionActive,
+      Value<DateTime?> appointmentDate,
+      Value<String?> appointmentTime,
+      Value<String?> doctorName,
+      Value<String?> specialty,
+      Value<String?> clinicName,
+      Value<String?> clinicAddress,
+      Value<String?> appointmentType,
+      Value<String?> reasonForVisit,
+      Value<String?> appointmentStatus,
+      Value<String?> appointmentNotes,
+      Value<bool> reminderSet,
+      Value<int?> reminderMinutes,
       Value<int> rowid,
     });
 typedef $$PrescriptionsTableUpdateCompanionBuilder =
@@ -12364,9 +25553,10 @@ typedef $$PrescriptionsTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<bool> isActive,
-      Value<String> medicationName,
-      Value<String> dosage,
-      Value<String> frequency,
+      Value<String> prescriptionType,
+      Value<String?> medicationName,
+      Value<String?> dosage,
+      Value<String?> frequency,
       Value<String?> instructions,
       Value<String?> prescribingDoctor,
       Value<String?> pharmacy,
@@ -12374,6 +25564,18 @@ typedef $$PrescriptionsTableUpdateCompanionBuilder =
       Value<DateTime?> endDate,
       Value<int?> refillsRemaining,
       Value<bool> isPrescriptionActive,
+      Value<DateTime?> appointmentDate,
+      Value<String?> appointmentTime,
+      Value<String?> doctorName,
+      Value<String?> specialty,
+      Value<String?> clinicName,
+      Value<String?> clinicAddress,
+      Value<String?> appointmentType,
+      Value<String?> reasonForVisit,
+      Value<String?> appointmentStatus,
+      Value<String?> appointmentNotes,
+      Value<bool> reminderSet,
+      Value<int?> reminderMinutes,
       Value<int> rowid,
     });
 
@@ -12431,6 +25633,11 @@ class $$PrescriptionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get prescriptionType => $composableBuilder(
+    column: $table.prescriptionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get medicationName => $composableBuilder(
     column: $table.medicationName,
     builder: (column) => ColumnFilters(column),
@@ -12478,6 +25685,66 @@ class $$PrescriptionsTableFilterComposer
 
   ColumnFilters<bool> get isPrescriptionActive => $composableBuilder(
     column: $table.isPrescriptionActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get appointmentDate => $composableBuilder(
+    column: $table.appointmentDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appointmentTime => $composableBuilder(
+    column: $table.appointmentTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get doctorName => $composableBuilder(
+    column: $table.doctorName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get specialty => $composableBuilder(
+    column: $table.specialty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clinicName => $composableBuilder(
+    column: $table.clinicName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clinicAddress => $composableBuilder(
+    column: $table.clinicAddress,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appointmentType => $composableBuilder(
+    column: $table.appointmentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reasonForVisit => $composableBuilder(
+    column: $table.reasonForVisit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appointmentStatus => $composableBuilder(
+    column: $table.appointmentStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appointmentNotes => $composableBuilder(
+    column: $table.appointmentNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get reminderSet => $composableBuilder(
+    column: $table.reminderSet,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reminderMinutes => $composableBuilder(
+    column: $table.reminderMinutes,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -12536,6 +25803,11 @@ class $$PrescriptionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get prescriptionType => $composableBuilder(
+    column: $table.prescriptionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get medicationName => $composableBuilder(
     column: $table.medicationName,
     builder: (column) => ColumnOrderings(column),
@@ -12585,6 +25857,66 @@ class $$PrescriptionsTableOrderingComposer
     column: $table.isPrescriptionActive,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get appointmentDate => $composableBuilder(
+    column: $table.appointmentDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appointmentTime => $composableBuilder(
+    column: $table.appointmentTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get doctorName => $composableBuilder(
+    column: $table.doctorName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get specialty => $composableBuilder(
+    column: $table.specialty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clinicName => $composableBuilder(
+    column: $table.clinicName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clinicAddress => $composableBuilder(
+    column: $table.clinicAddress,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appointmentType => $composableBuilder(
+    column: $table.appointmentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reasonForVisit => $composableBuilder(
+    column: $table.reasonForVisit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appointmentStatus => $composableBuilder(
+    column: $table.appointmentStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appointmentNotes => $composableBuilder(
+    column: $table.appointmentNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get reminderSet => $composableBuilder(
+    column: $table.reminderSet,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reminderMinutes => $composableBuilder(
+    column: $table.reminderMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PrescriptionsTableAnnotationComposer
@@ -12629,6 +25961,11 @@ class $$PrescriptionsTableAnnotationComposer
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
 
+  GeneratedColumn<String> get prescriptionType => $composableBuilder(
+    column: $table.prescriptionType,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get medicationName => $composableBuilder(
     column: $table.medicationName,
     builder: (column) => column,
@@ -12666,6 +26003,64 @@ class $$PrescriptionsTableAnnotationComposer
 
   GeneratedColumn<bool> get isPrescriptionActive => $composableBuilder(
     column: $table.isPrescriptionActive,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get appointmentDate => $composableBuilder(
+    column: $table.appointmentDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appointmentTime => $composableBuilder(
+    column: $table.appointmentTime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get doctorName => $composableBuilder(
+    column: $table.doctorName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get specialty =>
+      $composableBuilder(column: $table.specialty, builder: (column) => column);
+
+  GeneratedColumn<String> get clinicName => $composableBuilder(
+    column: $table.clinicName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clinicAddress => $composableBuilder(
+    column: $table.clinicAddress,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appointmentType => $composableBuilder(
+    column: $table.appointmentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reasonForVisit => $composableBuilder(
+    column: $table.reasonForVisit,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appointmentStatus => $composableBuilder(
+    column: $table.appointmentStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appointmentNotes => $composableBuilder(
+    column: $table.appointmentNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get reminderSet => $composableBuilder(
+    column: $table.reminderSet,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get reminderMinutes => $composableBuilder(
+    column: $table.reminderMinutes,
     builder: (column) => column,
   );
 }
@@ -12710,9 +26105,10 @@ class $$PrescriptionsTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
-                Value<String> medicationName = const Value.absent(),
-                Value<String> dosage = const Value.absent(),
-                Value<String> frequency = const Value.absent(),
+                Value<String> prescriptionType = const Value.absent(),
+                Value<String?> medicationName = const Value.absent(),
+                Value<String?> dosage = const Value.absent(),
+                Value<String?> frequency = const Value.absent(),
                 Value<String?> instructions = const Value.absent(),
                 Value<String?> prescribingDoctor = const Value.absent(),
                 Value<String?> pharmacy = const Value.absent(),
@@ -12720,6 +26116,18 @@ class $$PrescriptionsTableTableManager
                 Value<DateTime?> endDate = const Value.absent(),
                 Value<int?> refillsRemaining = const Value.absent(),
                 Value<bool> isPrescriptionActive = const Value.absent(),
+                Value<DateTime?> appointmentDate = const Value.absent(),
+                Value<String?> appointmentTime = const Value.absent(),
+                Value<String?> doctorName = const Value.absent(),
+                Value<String?> specialty = const Value.absent(),
+                Value<String?> clinicName = const Value.absent(),
+                Value<String?> clinicAddress = const Value.absent(),
+                Value<String?> appointmentType = const Value.absent(),
+                Value<String?> reasonForVisit = const Value.absent(),
+                Value<String?> appointmentStatus = const Value.absent(),
+                Value<String?> appointmentNotes = const Value.absent(),
+                Value<bool> reminderSet = const Value.absent(),
+                Value<int?> reminderMinutes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PrescriptionsCompanion(
                 id: id,
@@ -12731,6 +26139,7 @@ class $$PrescriptionsTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isActive: isActive,
+                prescriptionType: prescriptionType,
                 medicationName: medicationName,
                 dosage: dosage,
                 frequency: frequency,
@@ -12741,6 +26150,18 @@ class $$PrescriptionsTableTableManager
                 endDate: endDate,
                 refillsRemaining: refillsRemaining,
                 isPrescriptionActive: isPrescriptionActive,
+                appointmentDate: appointmentDate,
+                appointmentTime: appointmentTime,
+                doctorName: doctorName,
+                specialty: specialty,
+                clinicName: clinicName,
+                clinicAddress: clinicAddress,
+                appointmentType: appointmentType,
+                reasonForVisit: reasonForVisit,
+                appointmentStatus: appointmentStatus,
+                appointmentNotes: appointmentNotes,
+                reminderSet: reminderSet,
+                reminderMinutes: reminderMinutes,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12754,9 +26175,10 @@ class $$PrescriptionsTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
-                required String medicationName,
-                required String dosage,
-                required String frequency,
+                required String prescriptionType,
+                Value<String?> medicationName = const Value.absent(),
+                Value<String?> dosage = const Value.absent(),
+                Value<String?> frequency = const Value.absent(),
                 Value<String?> instructions = const Value.absent(),
                 Value<String?> prescribingDoctor = const Value.absent(),
                 Value<String?> pharmacy = const Value.absent(),
@@ -12764,6 +26186,18 @@ class $$PrescriptionsTableTableManager
                 Value<DateTime?> endDate = const Value.absent(),
                 Value<int?> refillsRemaining = const Value.absent(),
                 Value<bool> isPrescriptionActive = const Value.absent(),
+                Value<DateTime?> appointmentDate = const Value.absent(),
+                Value<String?> appointmentTime = const Value.absent(),
+                Value<String?> doctorName = const Value.absent(),
+                Value<String?> specialty = const Value.absent(),
+                Value<String?> clinicName = const Value.absent(),
+                Value<String?> clinicAddress = const Value.absent(),
+                Value<String?> appointmentType = const Value.absent(),
+                Value<String?> reasonForVisit = const Value.absent(),
+                Value<String?> appointmentStatus = const Value.absent(),
+                Value<String?> appointmentNotes = const Value.absent(),
+                Value<bool> reminderSet = const Value.absent(),
+                Value<int?> reminderMinutes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PrescriptionsCompanion.insert(
                 id: id,
@@ -12775,6 +26209,7 @@ class $$PrescriptionsTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isActive: isActive,
+                prescriptionType: prescriptionType,
                 medicationName: medicationName,
                 dosage: dosage,
                 frequency: frequency,
@@ -12785,6 +26220,18 @@ class $$PrescriptionsTableTableManager
                 endDate: endDate,
                 refillsRemaining: refillsRemaining,
                 isPrescriptionActive: isPrescriptionActive,
+                appointmentDate: appointmentDate,
+                appointmentTime: appointmentTime,
+                doctorName: doctorName,
+                specialty: specialty,
+                clinicName: clinicName,
+                clinicAddress: clinicAddress,
+                appointmentType: appointmentType,
+                reasonForVisit: reasonForVisit,
+                appointmentStatus: appointmentStatus,
+                appointmentNotes: appointmentNotes,
+                reminderSet: reminderSet,
+                reminderMinutes: reminderMinutes,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -15095,6 +28542,5199 @@ typedef $$ChronicConditionsTableProcessedTableManager =
       ChronicCondition,
       PrefetchHooks Function()
     >;
+typedef $$SurgicalRecordsTableCreateCompanionBuilder =
+    SurgicalRecordsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String procedureName,
+      Value<String?> surgeonName,
+      Value<String?> hospital,
+      Value<String?> operatingRoom,
+      required DateTime surgeryDate,
+      Value<DateTime?> surgeryStartTime,
+      Value<DateTime?> surgeryEndTime,
+      Value<String?> anesthesiaType,
+      Value<String?> anesthesiologist,
+      Value<String?> indication,
+      Value<String?> findings,
+      Value<String?> complications,
+      Value<String?> recoveryNotes,
+      Value<String?> followUpPlan,
+      Value<DateTime?> dischargeDate,
+      Value<bool> isEmergency,
+      Value<int> rowid,
+    });
+typedef $$SurgicalRecordsTableUpdateCompanionBuilder =
+    SurgicalRecordsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> procedureName,
+      Value<String?> surgeonName,
+      Value<String?> hospital,
+      Value<String?> operatingRoom,
+      Value<DateTime> surgeryDate,
+      Value<DateTime?> surgeryStartTime,
+      Value<DateTime?> surgeryEndTime,
+      Value<String?> anesthesiaType,
+      Value<String?> anesthesiologist,
+      Value<String?> indication,
+      Value<String?> findings,
+      Value<String?> complications,
+      Value<String?> recoveryNotes,
+      Value<String?> followUpPlan,
+      Value<DateTime?> dischargeDate,
+      Value<bool> isEmergency,
+      Value<int> rowid,
+    });
+
+class $$SurgicalRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $SurgicalRecordsTable> {
+  $$SurgicalRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get procedureName => $composableBuilder(
+    column: $table.procedureName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get surgeonName => $composableBuilder(
+    column: $table.surgeonName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hospital => $composableBuilder(
+    column: $table.hospital,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get operatingRoom => $composableBuilder(
+    column: $table.operatingRoom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get surgeryDate => $composableBuilder(
+    column: $table.surgeryDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get surgeryStartTime => $composableBuilder(
+    column: $table.surgeryStartTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get surgeryEndTime => $composableBuilder(
+    column: $table.surgeryEndTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get anesthesiaType => $composableBuilder(
+    column: $table.anesthesiaType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get anesthesiologist => $composableBuilder(
+    column: $table.anesthesiologist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get indication => $composableBuilder(
+    column: $table.indication,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get findings => $composableBuilder(
+    column: $table.findings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get complications => $composableBuilder(
+    column: $table.complications,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recoveryNotes => $composableBuilder(
+    column: $table.recoveryNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get followUpPlan => $composableBuilder(
+    column: $table.followUpPlan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEmergency => $composableBuilder(
+    column: $table.isEmergency,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SurgicalRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SurgicalRecordsTable> {
+  $$SurgicalRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get procedureName => $composableBuilder(
+    column: $table.procedureName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get surgeonName => $composableBuilder(
+    column: $table.surgeonName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hospital => $composableBuilder(
+    column: $table.hospital,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get operatingRoom => $composableBuilder(
+    column: $table.operatingRoom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get surgeryDate => $composableBuilder(
+    column: $table.surgeryDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get surgeryStartTime => $composableBuilder(
+    column: $table.surgeryStartTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get surgeryEndTime => $composableBuilder(
+    column: $table.surgeryEndTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get anesthesiaType => $composableBuilder(
+    column: $table.anesthesiaType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get anesthesiologist => $composableBuilder(
+    column: $table.anesthesiologist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get indication => $composableBuilder(
+    column: $table.indication,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get findings => $composableBuilder(
+    column: $table.findings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get complications => $composableBuilder(
+    column: $table.complications,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recoveryNotes => $composableBuilder(
+    column: $table.recoveryNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get followUpPlan => $composableBuilder(
+    column: $table.followUpPlan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEmergency => $composableBuilder(
+    column: $table.isEmergency,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SurgicalRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SurgicalRecordsTable> {
+  $$SurgicalRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get procedureName => $composableBuilder(
+    column: $table.procedureName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get surgeonName => $composableBuilder(
+    column: $table.surgeonName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get hospital =>
+      $composableBuilder(column: $table.hospital, builder: (column) => column);
+
+  GeneratedColumn<String> get operatingRoom => $composableBuilder(
+    column: $table.operatingRoom,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get surgeryDate => $composableBuilder(
+    column: $table.surgeryDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get surgeryStartTime => $composableBuilder(
+    column: $table.surgeryStartTime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get surgeryEndTime => $composableBuilder(
+    column: $table.surgeryEndTime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get anesthesiaType => $composableBuilder(
+    column: $table.anesthesiaType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get anesthesiologist => $composableBuilder(
+    column: $table.anesthesiologist,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get indication => $composableBuilder(
+    column: $table.indication,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get findings =>
+      $composableBuilder(column: $table.findings, builder: (column) => column);
+
+  GeneratedColumn<String> get complications => $composableBuilder(
+    column: $table.complications,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get recoveryNotes => $composableBuilder(
+    column: $table.recoveryNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get followUpPlan => $composableBuilder(
+    column: $table.followUpPlan,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isEmergency => $composableBuilder(
+    column: $table.isEmergency,
+    builder: (column) => column,
+  );
+}
+
+class $$SurgicalRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SurgicalRecordsTable,
+          SurgicalRecord,
+          $$SurgicalRecordsTableFilterComposer,
+          $$SurgicalRecordsTableOrderingComposer,
+          $$SurgicalRecordsTableAnnotationComposer,
+          $$SurgicalRecordsTableCreateCompanionBuilder,
+          $$SurgicalRecordsTableUpdateCompanionBuilder,
+          (
+            SurgicalRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $SurgicalRecordsTable,
+              SurgicalRecord
+            >,
+          ),
+          SurgicalRecord,
+          PrefetchHooks Function()
+        > {
+  $$SurgicalRecordsTableTableManager(
+    _$AppDatabase db,
+    $SurgicalRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SurgicalRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SurgicalRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SurgicalRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> procedureName = const Value.absent(),
+                Value<String?> surgeonName = const Value.absent(),
+                Value<String?> hospital = const Value.absent(),
+                Value<String?> operatingRoom = const Value.absent(),
+                Value<DateTime> surgeryDate = const Value.absent(),
+                Value<DateTime?> surgeryStartTime = const Value.absent(),
+                Value<DateTime?> surgeryEndTime = const Value.absent(),
+                Value<String?> anesthesiaType = const Value.absent(),
+                Value<String?> anesthesiologist = const Value.absent(),
+                Value<String?> indication = const Value.absent(),
+                Value<String?> findings = const Value.absent(),
+                Value<String?> complications = const Value.absent(),
+                Value<String?> recoveryNotes = const Value.absent(),
+                Value<String?> followUpPlan = const Value.absent(),
+                Value<DateTime?> dischargeDate = const Value.absent(),
+                Value<bool> isEmergency = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SurgicalRecordsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                procedureName: procedureName,
+                surgeonName: surgeonName,
+                hospital: hospital,
+                operatingRoom: operatingRoom,
+                surgeryDate: surgeryDate,
+                surgeryStartTime: surgeryStartTime,
+                surgeryEndTime: surgeryEndTime,
+                anesthesiaType: anesthesiaType,
+                anesthesiologist: anesthesiologist,
+                indication: indication,
+                findings: findings,
+                complications: complications,
+                recoveryNotes: recoveryNotes,
+                followUpPlan: followUpPlan,
+                dischargeDate: dischargeDate,
+                isEmergency: isEmergency,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String procedureName,
+                Value<String?> surgeonName = const Value.absent(),
+                Value<String?> hospital = const Value.absent(),
+                Value<String?> operatingRoom = const Value.absent(),
+                required DateTime surgeryDate,
+                Value<DateTime?> surgeryStartTime = const Value.absent(),
+                Value<DateTime?> surgeryEndTime = const Value.absent(),
+                Value<String?> anesthesiaType = const Value.absent(),
+                Value<String?> anesthesiologist = const Value.absent(),
+                Value<String?> indication = const Value.absent(),
+                Value<String?> findings = const Value.absent(),
+                Value<String?> complications = const Value.absent(),
+                Value<String?> recoveryNotes = const Value.absent(),
+                Value<String?> followUpPlan = const Value.absent(),
+                Value<DateTime?> dischargeDate = const Value.absent(),
+                Value<bool> isEmergency = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SurgicalRecordsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                procedureName: procedureName,
+                surgeonName: surgeonName,
+                hospital: hospital,
+                operatingRoom: operatingRoom,
+                surgeryDate: surgeryDate,
+                surgeryStartTime: surgeryStartTime,
+                surgeryEndTime: surgeryEndTime,
+                anesthesiaType: anesthesiaType,
+                anesthesiologist: anesthesiologist,
+                indication: indication,
+                findings: findings,
+                complications: complications,
+                recoveryNotes: recoveryNotes,
+                followUpPlan: followUpPlan,
+                dischargeDate: dischargeDate,
+                isEmergency: isEmergency,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SurgicalRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SurgicalRecordsTable,
+      SurgicalRecord,
+      $$SurgicalRecordsTableFilterComposer,
+      $$SurgicalRecordsTableOrderingComposer,
+      $$SurgicalRecordsTableAnnotationComposer,
+      $$SurgicalRecordsTableCreateCompanionBuilder,
+      $$SurgicalRecordsTableUpdateCompanionBuilder,
+      (
+        SurgicalRecord,
+        BaseReferences<_$AppDatabase, $SurgicalRecordsTable, SurgicalRecord>,
+      ),
+      SurgicalRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$RadiologyRecordsTableCreateCompanionBuilder =
+    RadiologyRecordsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String studyType,
+      Value<String?> bodyPart,
+      Value<String?> radiologist,
+      Value<String?> facility,
+      required DateTime studyDate,
+      Value<String?> technique,
+      Value<String?> contrast,
+      Value<String?> findings,
+      Value<String?> impression,
+      Value<String?> recommendation,
+      required String urgency,
+      Value<bool> isNormal,
+      Value<String?> referringPhysician,
+      Value<String?> protocolUsed,
+      Value<int> rowid,
+    });
+typedef $$RadiologyRecordsTableUpdateCompanionBuilder =
+    RadiologyRecordsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> studyType,
+      Value<String?> bodyPart,
+      Value<String?> radiologist,
+      Value<String?> facility,
+      Value<DateTime> studyDate,
+      Value<String?> technique,
+      Value<String?> contrast,
+      Value<String?> findings,
+      Value<String?> impression,
+      Value<String?> recommendation,
+      Value<String> urgency,
+      Value<bool> isNormal,
+      Value<String?> referringPhysician,
+      Value<String?> protocolUsed,
+      Value<int> rowid,
+    });
+
+class $$RadiologyRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $RadiologyRecordsTable> {
+  $$RadiologyRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get studyType => $composableBuilder(
+    column: $table.studyType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bodyPart => $composableBuilder(
+    column: $table.bodyPart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get radiologist => $composableBuilder(
+    column: $table.radiologist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get facility => $composableBuilder(
+    column: $table.facility,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get studyDate => $composableBuilder(
+    column: $table.studyDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get technique => $composableBuilder(
+    column: $table.technique,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contrast => $composableBuilder(
+    column: $table.contrast,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get findings => $composableBuilder(
+    column: $table.findings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get impression => $composableBuilder(
+    column: $table.impression,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recommendation => $composableBuilder(
+    column: $table.recommendation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get urgency => $composableBuilder(
+    column: $table.urgency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isNormal => $composableBuilder(
+    column: $table.isNormal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get protocolUsed => $composableBuilder(
+    column: $table.protocolUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RadiologyRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RadiologyRecordsTable> {
+  $$RadiologyRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get studyType => $composableBuilder(
+    column: $table.studyType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bodyPart => $composableBuilder(
+    column: $table.bodyPart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get radiologist => $composableBuilder(
+    column: $table.radiologist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get facility => $composableBuilder(
+    column: $table.facility,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get studyDate => $composableBuilder(
+    column: $table.studyDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get technique => $composableBuilder(
+    column: $table.technique,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contrast => $composableBuilder(
+    column: $table.contrast,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get findings => $composableBuilder(
+    column: $table.findings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get impression => $composableBuilder(
+    column: $table.impression,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recommendation => $composableBuilder(
+    column: $table.recommendation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get urgency => $composableBuilder(
+    column: $table.urgency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isNormal => $composableBuilder(
+    column: $table.isNormal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get protocolUsed => $composableBuilder(
+    column: $table.protocolUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RadiologyRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RadiologyRecordsTable> {
+  $$RadiologyRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get studyType =>
+      $composableBuilder(column: $table.studyType, builder: (column) => column);
+
+  GeneratedColumn<String> get bodyPart =>
+      $composableBuilder(column: $table.bodyPart, builder: (column) => column);
+
+  GeneratedColumn<String> get radiologist => $composableBuilder(
+    column: $table.radiologist,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get facility =>
+      $composableBuilder(column: $table.facility, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get studyDate =>
+      $composableBuilder(column: $table.studyDate, builder: (column) => column);
+
+  GeneratedColumn<String> get technique =>
+      $composableBuilder(column: $table.technique, builder: (column) => column);
+
+  GeneratedColumn<String> get contrast =>
+      $composableBuilder(column: $table.contrast, builder: (column) => column);
+
+  GeneratedColumn<String> get findings =>
+      $composableBuilder(column: $table.findings, builder: (column) => column);
+
+  GeneratedColumn<String> get impression => $composableBuilder(
+    column: $table.impression,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get recommendation => $composableBuilder(
+    column: $table.recommendation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get urgency =>
+      $composableBuilder(column: $table.urgency, builder: (column) => column);
+
+  GeneratedColumn<bool> get isNormal =>
+      $composableBuilder(column: $table.isNormal, builder: (column) => column);
+
+  GeneratedColumn<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get protocolUsed => $composableBuilder(
+    column: $table.protocolUsed,
+    builder: (column) => column,
+  );
+}
+
+class $$RadiologyRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RadiologyRecordsTable,
+          RadiologyRecord,
+          $$RadiologyRecordsTableFilterComposer,
+          $$RadiologyRecordsTableOrderingComposer,
+          $$RadiologyRecordsTableAnnotationComposer,
+          $$RadiologyRecordsTableCreateCompanionBuilder,
+          $$RadiologyRecordsTableUpdateCompanionBuilder,
+          (
+            RadiologyRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $RadiologyRecordsTable,
+              RadiologyRecord
+            >,
+          ),
+          RadiologyRecord,
+          PrefetchHooks Function()
+        > {
+  $$RadiologyRecordsTableTableManager(
+    _$AppDatabase db,
+    $RadiologyRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RadiologyRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RadiologyRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RadiologyRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> studyType = const Value.absent(),
+                Value<String?> bodyPart = const Value.absent(),
+                Value<String?> radiologist = const Value.absent(),
+                Value<String?> facility = const Value.absent(),
+                Value<DateTime> studyDate = const Value.absent(),
+                Value<String?> technique = const Value.absent(),
+                Value<String?> contrast = const Value.absent(),
+                Value<String?> findings = const Value.absent(),
+                Value<String?> impression = const Value.absent(),
+                Value<String?> recommendation = const Value.absent(),
+                Value<String> urgency = const Value.absent(),
+                Value<bool> isNormal = const Value.absent(),
+                Value<String?> referringPhysician = const Value.absent(),
+                Value<String?> protocolUsed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RadiologyRecordsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                studyType: studyType,
+                bodyPart: bodyPart,
+                radiologist: radiologist,
+                facility: facility,
+                studyDate: studyDate,
+                technique: technique,
+                contrast: contrast,
+                findings: findings,
+                impression: impression,
+                recommendation: recommendation,
+                urgency: urgency,
+                isNormal: isNormal,
+                referringPhysician: referringPhysician,
+                protocolUsed: protocolUsed,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String studyType,
+                Value<String?> bodyPart = const Value.absent(),
+                Value<String?> radiologist = const Value.absent(),
+                Value<String?> facility = const Value.absent(),
+                required DateTime studyDate,
+                Value<String?> technique = const Value.absent(),
+                Value<String?> contrast = const Value.absent(),
+                Value<String?> findings = const Value.absent(),
+                Value<String?> impression = const Value.absent(),
+                Value<String?> recommendation = const Value.absent(),
+                required String urgency,
+                Value<bool> isNormal = const Value.absent(),
+                Value<String?> referringPhysician = const Value.absent(),
+                Value<String?> protocolUsed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RadiologyRecordsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                studyType: studyType,
+                bodyPart: bodyPart,
+                radiologist: radiologist,
+                facility: facility,
+                studyDate: studyDate,
+                technique: technique,
+                contrast: contrast,
+                findings: findings,
+                impression: impression,
+                recommendation: recommendation,
+                urgency: urgency,
+                isNormal: isNormal,
+                referringPhysician: referringPhysician,
+                protocolUsed: protocolUsed,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RadiologyRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RadiologyRecordsTable,
+      RadiologyRecord,
+      $$RadiologyRecordsTableFilterComposer,
+      $$RadiologyRecordsTableOrderingComposer,
+      $$RadiologyRecordsTableAnnotationComposer,
+      $$RadiologyRecordsTableCreateCompanionBuilder,
+      $$RadiologyRecordsTableUpdateCompanionBuilder,
+      (
+        RadiologyRecord,
+        BaseReferences<_$AppDatabase, $RadiologyRecordsTable, RadiologyRecord>,
+      ),
+      RadiologyRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$PathologyRecordsTableCreateCompanionBuilder =
+    PathologyRecordsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String specimenType,
+      Value<String?> specimenSite,
+      Value<String?> pathologist,
+      Value<String?> laboratory,
+      required DateTime collectionDate,
+      Value<DateTime?> reportDate,
+      Value<String?> collectionMethod,
+      Value<String?> grossDescription,
+      Value<String?> microscopicFindings,
+      Value<String?> diagnosis,
+      Value<String?> stagingGrading,
+      Value<String?> immunohistochemistry,
+      Value<String?> molecularStudies,
+      Value<String?> recommendation,
+      required String urgency,
+      Value<bool> isMalignant,
+      Value<String?> referringPhysician,
+      Value<int> rowid,
+    });
+typedef $$PathologyRecordsTableUpdateCompanionBuilder =
+    PathologyRecordsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> specimenType,
+      Value<String?> specimenSite,
+      Value<String?> pathologist,
+      Value<String?> laboratory,
+      Value<DateTime> collectionDate,
+      Value<DateTime?> reportDate,
+      Value<String?> collectionMethod,
+      Value<String?> grossDescription,
+      Value<String?> microscopicFindings,
+      Value<String?> diagnosis,
+      Value<String?> stagingGrading,
+      Value<String?> immunohistochemistry,
+      Value<String?> molecularStudies,
+      Value<String?> recommendation,
+      Value<String> urgency,
+      Value<bool> isMalignant,
+      Value<String?> referringPhysician,
+      Value<int> rowid,
+    });
+
+class $$PathologyRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $PathologyRecordsTable> {
+  $$PathologyRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get specimenType => $composableBuilder(
+    column: $table.specimenType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get specimenSite => $composableBuilder(
+    column: $table.specimenSite,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pathologist => $composableBuilder(
+    column: $table.pathologist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get laboratory => $composableBuilder(
+    column: $table.laboratory,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get collectionDate => $composableBuilder(
+    column: $table.collectionDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get reportDate => $composableBuilder(
+    column: $table.reportDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get collectionMethod => $composableBuilder(
+    column: $table.collectionMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get grossDescription => $composableBuilder(
+    column: $table.grossDescription,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get microscopicFindings => $composableBuilder(
+    column: $table.microscopicFindings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get diagnosis => $composableBuilder(
+    column: $table.diagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stagingGrading => $composableBuilder(
+    column: $table.stagingGrading,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get immunohistochemistry => $composableBuilder(
+    column: $table.immunohistochemistry,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get molecularStudies => $composableBuilder(
+    column: $table.molecularStudies,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recommendation => $composableBuilder(
+    column: $table.recommendation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get urgency => $composableBuilder(
+    column: $table.urgency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isMalignant => $composableBuilder(
+    column: $table.isMalignant,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PathologyRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PathologyRecordsTable> {
+  $$PathologyRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get specimenType => $composableBuilder(
+    column: $table.specimenType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get specimenSite => $composableBuilder(
+    column: $table.specimenSite,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pathologist => $composableBuilder(
+    column: $table.pathologist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get laboratory => $composableBuilder(
+    column: $table.laboratory,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get collectionDate => $composableBuilder(
+    column: $table.collectionDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get reportDate => $composableBuilder(
+    column: $table.reportDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get collectionMethod => $composableBuilder(
+    column: $table.collectionMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get grossDescription => $composableBuilder(
+    column: $table.grossDescription,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get microscopicFindings => $composableBuilder(
+    column: $table.microscopicFindings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get diagnosis => $composableBuilder(
+    column: $table.diagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stagingGrading => $composableBuilder(
+    column: $table.stagingGrading,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get immunohistochemistry => $composableBuilder(
+    column: $table.immunohistochemistry,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get molecularStudies => $composableBuilder(
+    column: $table.molecularStudies,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recommendation => $composableBuilder(
+    column: $table.recommendation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get urgency => $composableBuilder(
+    column: $table.urgency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isMalignant => $composableBuilder(
+    column: $table.isMalignant,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PathologyRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PathologyRecordsTable> {
+  $$PathologyRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get specimenType => $composableBuilder(
+    column: $table.specimenType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get specimenSite => $composableBuilder(
+    column: $table.specimenSite,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pathologist => $composableBuilder(
+    column: $table.pathologist,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get laboratory => $composableBuilder(
+    column: $table.laboratory,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get collectionDate => $composableBuilder(
+    column: $table.collectionDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get reportDate => $composableBuilder(
+    column: $table.reportDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get collectionMethod => $composableBuilder(
+    column: $table.collectionMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get grossDescription => $composableBuilder(
+    column: $table.grossDescription,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get microscopicFindings => $composableBuilder(
+    column: $table.microscopicFindings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get diagnosis =>
+      $composableBuilder(column: $table.diagnosis, builder: (column) => column);
+
+  GeneratedColumn<String> get stagingGrading => $composableBuilder(
+    column: $table.stagingGrading,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get immunohistochemistry => $composableBuilder(
+    column: $table.immunohistochemistry,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get molecularStudies => $composableBuilder(
+    column: $table.molecularStudies,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get recommendation => $composableBuilder(
+    column: $table.recommendation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get urgency =>
+      $composableBuilder(column: $table.urgency, builder: (column) => column);
+
+  GeneratedColumn<bool> get isMalignant => $composableBuilder(
+    column: $table.isMalignant,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => column,
+  );
+}
+
+class $$PathologyRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PathologyRecordsTable,
+          PathologyRecord,
+          $$PathologyRecordsTableFilterComposer,
+          $$PathologyRecordsTableOrderingComposer,
+          $$PathologyRecordsTableAnnotationComposer,
+          $$PathologyRecordsTableCreateCompanionBuilder,
+          $$PathologyRecordsTableUpdateCompanionBuilder,
+          (
+            PathologyRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $PathologyRecordsTable,
+              PathologyRecord
+            >,
+          ),
+          PathologyRecord,
+          PrefetchHooks Function()
+        > {
+  $$PathologyRecordsTableTableManager(
+    _$AppDatabase db,
+    $PathologyRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PathologyRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PathologyRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PathologyRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> specimenType = const Value.absent(),
+                Value<String?> specimenSite = const Value.absent(),
+                Value<String?> pathologist = const Value.absent(),
+                Value<String?> laboratory = const Value.absent(),
+                Value<DateTime> collectionDate = const Value.absent(),
+                Value<DateTime?> reportDate = const Value.absent(),
+                Value<String?> collectionMethod = const Value.absent(),
+                Value<String?> grossDescription = const Value.absent(),
+                Value<String?> microscopicFindings = const Value.absent(),
+                Value<String?> diagnosis = const Value.absent(),
+                Value<String?> stagingGrading = const Value.absent(),
+                Value<String?> immunohistochemistry = const Value.absent(),
+                Value<String?> molecularStudies = const Value.absent(),
+                Value<String?> recommendation = const Value.absent(),
+                Value<String> urgency = const Value.absent(),
+                Value<bool> isMalignant = const Value.absent(),
+                Value<String?> referringPhysician = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PathologyRecordsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                specimenType: specimenType,
+                specimenSite: specimenSite,
+                pathologist: pathologist,
+                laboratory: laboratory,
+                collectionDate: collectionDate,
+                reportDate: reportDate,
+                collectionMethod: collectionMethod,
+                grossDescription: grossDescription,
+                microscopicFindings: microscopicFindings,
+                diagnosis: diagnosis,
+                stagingGrading: stagingGrading,
+                immunohistochemistry: immunohistochemistry,
+                molecularStudies: molecularStudies,
+                recommendation: recommendation,
+                urgency: urgency,
+                isMalignant: isMalignant,
+                referringPhysician: referringPhysician,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String specimenType,
+                Value<String?> specimenSite = const Value.absent(),
+                Value<String?> pathologist = const Value.absent(),
+                Value<String?> laboratory = const Value.absent(),
+                required DateTime collectionDate,
+                Value<DateTime?> reportDate = const Value.absent(),
+                Value<String?> collectionMethod = const Value.absent(),
+                Value<String?> grossDescription = const Value.absent(),
+                Value<String?> microscopicFindings = const Value.absent(),
+                Value<String?> diagnosis = const Value.absent(),
+                Value<String?> stagingGrading = const Value.absent(),
+                Value<String?> immunohistochemistry = const Value.absent(),
+                Value<String?> molecularStudies = const Value.absent(),
+                Value<String?> recommendation = const Value.absent(),
+                required String urgency,
+                Value<bool> isMalignant = const Value.absent(),
+                Value<String?> referringPhysician = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PathologyRecordsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                specimenType: specimenType,
+                specimenSite: specimenSite,
+                pathologist: pathologist,
+                laboratory: laboratory,
+                collectionDate: collectionDate,
+                reportDate: reportDate,
+                collectionMethod: collectionMethod,
+                grossDescription: grossDescription,
+                microscopicFindings: microscopicFindings,
+                diagnosis: diagnosis,
+                stagingGrading: stagingGrading,
+                immunohistochemistry: immunohistochemistry,
+                molecularStudies: molecularStudies,
+                recommendation: recommendation,
+                urgency: urgency,
+                isMalignant: isMalignant,
+                referringPhysician: referringPhysician,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PathologyRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PathologyRecordsTable,
+      PathologyRecord,
+      $$PathologyRecordsTableFilterComposer,
+      $$PathologyRecordsTableOrderingComposer,
+      $$PathologyRecordsTableAnnotationComposer,
+      $$PathologyRecordsTableCreateCompanionBuilder,
+      $$PathologyRecordsTableUpdateCompanionBuilder,
+      (
+        PathologyRecord,
+        BaseReferences<_$AppDatabase, $PathologyRecordsTable, PathologyRecord>,
+      ),
+      PathologyRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$DischargeSummariesTableCreateCompanionBuilder =
+    DischargeSummariesCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String hospital,
+      Value<String?> attendingPhysician,
+      Value<String?> department,
+      required DateTime admissionDate,
+      required DateTime dischargeDate,
+      Value<int?> lengthOfStay,
+      Value<String?> admissionDiagnosis,
+      Value<String?> dischargeDiagnosis,
+      Value<String?> principalDiagnosis,
+      Value<String?> secondaryDiagnoses,
+      Value<String?> proceduresPerformed,
+      Value<String?> hospitalCourse,
+      Value<String?> dischargeCondition,
+      Value<String?> dischargeDestination,
+      Value<String?> dischargeMedications,
+      Value<String?> followUpInstructions,
+      Value<String?> dietInstructions,
+      Value<String?> activityRestrictions,
+      Value<DateTime?> followUpDate,
+      Value<int> rowid,
+    });
+typedef $$DischargeSummariesTableUpdateCompanionBuilder =
+    DischargeSummariesCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> hospital,
+      Value<String?> attendingPhysician,
+      Value<String?> department,
+      Value<DateTime> admissionDate,
+      Value<DateTime> dischargeDate,
+      Value<int?> lengthOfStay,
+      Value<String?> admissionDiagnosis,
+      Value<String?> dischargeDiagnosis,
+      Value<String?> principalDiagnosis,
+      Value<String?> secondaryDiagnoses,
+      Value<String?> proceduresPerformed,
+      Value<String?> hospitalCourse,
+      Value<String?> dischargeCondition,
+      Value<String?> dischargeDestination,
+      Value<String?> dischargeMedications,
+      Value<String?> followUpInstructions,
+      Value<String?> dietInstructions,
+      Value<String?> activityRestrictions,
+      Value<DateTime?> followUpDate,
+      Value<int> rowid,
+    });
+
+class $$DischargeSummariesTableFilterComposer
+    extends Composer<_$AppDatabase, $DischargeSummariesTable> {
+  $$DischargeSummariesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hospital => $composableBuilder(
+    column: $table.hospital,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get attendingPhysician => $composableBuilder(
+    column: $table.attendingPhysician,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get admissionDate => $composableBuilder(
+    column: $table.admissionDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lengthOfStay => $composableBuilder(
+    column: $table.lengthOfStay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get admissionDiagnosis => $composableBuilder(
+    column: $table.admissionDiagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dischargeDiagnosis => $composableBuilder(
+    column: $table.dischargeDiagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get principalDiagnosis => $composableBuilder(
+    column: $table.principalDiagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get secondaryDiagnoses => $composableBuilder(
+    column: $table.secondaryDiagnoses,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get proceduresPerformed => $composableBuilder(
+    column: $table.proceduresPerformed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hospitalCourse => $composableBuilder(
+    column: $table.hospitalCourse,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dischargeCondition => $composableBuilder(
+    column: $table.dischargeCondition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dischargeDestination => $composableBuilder(
+    column: $table.dischargeDestination,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dischargeMedications => $composableBuilder(
+    column: $table.dischargeMedications,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get followUpInstructions => $composableBuilder(
+    column: $table.followUpInstructions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dietInstructions => $composableBuilder(
+    column: $table.dietInstructions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get activityRestrictions => $composableBuilder(
+    column: $table.activityRestrictions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get followUpDate => $composableBuilder(
+    column: $table.followUpDate,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DischargeSummariesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DischargeSummariesTable> {
+  $$DischargeSummariesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hospital => $composableBuilder(
+    column: $table.hospital,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get attendingPhysician => $composableBuilder(
+    column: $table.attendingPhysician,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get admissionDate => $composableBuilder(
+    column: $table.admissionDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lengthOfStay => $composableBuilder(
+    column: $table.lengthOfStay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get admissionDiagnosis => $composableBuilder(
+    column: $table.admissionDiagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dischargeDiagnosis => $composableBuilder(
+    column: $table.dischargeDiagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get principalDiagnosis => $composableBuilder(
+    column: $table.principalDiagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get secondaryDiagnoses => $composableBuilder(
+    column: $table.secondaryDiagnoses,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get proceduresPerformed => $composableBuilder(
+    column: $table.proceduresPerformed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hospitalCourse => $composableBuilder(
+    column: $table.hospitalCourse,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dischargeCondition => $composableBuilder(
+    column: $table.dischargeCondition,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dischargeDestination => $composableBuilder(
+    column: $table.dischargeDestination,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dischargeMedications => $composableBuilder(
+    column: $table.dischargeMedications,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get followUpInstructions => $composableBuilder(
+    column: $table.followUpInstructions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dietInstructions => $composableBuilder(
+    column: $table.dietInstructions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get activityRestrictions => $composableBuilder(
+    column: $table.activityRestrictions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get followUpDate => $composableBuilder(
+    column: $table.followUpDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DischargeSummariesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DischargeSummariesTable> {
+  $$DischargeSummariesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get hospital =>
+      $composableBuilder(column: $table.hospital, builder: (column) => column);
+
+  GeneratedColumn<String> get attendingPhysician => $composableBuilder(
+    column: $table.attendingPhysician,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get admissionDate => $composableBuilder(
+    column: $table.admissionDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lengthOfStay => $composableBuilder(
+    column: $table.lengthOfStay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get admissionDiagnosis => $composableBuilder(
+    column: $table.admissionDiagnosis,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dischargeDiagnosis => $composableBuilder(
+    column: $table.dischargeDiagnosis,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get principalDiagnosis => $composableBuilder(
+    column: $table.principalDiagnosis,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get secondaryDiagnoses => $composableBuilder(
+    column: $table.secondaryDiagnoses,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get proceduresPerformed => $composableBuilder(
+    column: $table.proceduresPerformed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get hospitalCourse => $composableBuilder(
+    column: $table.hospitalCourse,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dischargeCondition => $composableBuilder(
+    column: $table.dischargeCondition,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dischargeDestination => $composableBuilder(
+    column: $table.dischargeDestination,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dischargeMedications => $composableBuilder(
+    column: $table.dischargeMedications,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get followUpInstructions => $composableBuilder(
+    column: $table.followUpInstructions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dietInstructions => $composableBuilder(
+    column: $table.dietInstructions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get activityRestrictions => $composableBuilder(
+    column: $table.activityRestrictions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get followUpDate => $composableBuilder(
+    column: $table.followUpDate,
+    builder: (column) => column,
+  );
+}
+
+class $$DischargeSummariesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DischargeSummariesTable,
+          DischargeSummary,
+          $$DischargeSummariesTableFilterComposer,
+          $$DischargeSummariesTableOrderingComposer,
+          $$DischargeSummariesTableAnnotationComposer,
+          $$DischargeSummariesTableCreateCompanionBuilder,
+          $$DischargeSummariesTableUpdateCompanionBuilder,
+          (
+            DischargeSummary,
+            BaseReferences<
+              _$AppDatabase,
+              $DischargeSummariesTable,
+              DischargeSummary
+            >,
+          ),
+          DischargeSummary,
+          PrefetchHooks Function()
+        > {
+  $$DischargeSummariesTableTableManager(
+    _$AppDatabase db,
+    $DischargeSummariesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DischargeSummariesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DischargeSummariesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DischargeSummariesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> hospital = const Value.absent(),
+                Value<String?> attendingPhysician = const Value.absent(),
+                Value<String?> department = const Value.absent(),
+                Value<DateTime> admissionDate = const Value.absent(),
+                Value<DateTime> dischargeDate = const Value.absent(),
+                Value<int?> lengthOfStay = const Value.absent(),
+                Value<String?> admissionDiagnosis = const Value.absent(),
+                Value<String?> dischargeDiagnosis = const Value.absent(),
+                Value<String?> principalDiagnosis = const Value.absent(),
+                Value<String?> secondaryDiagnoses = const Value.absent(),
+                Value<String?> proceduresPerformed = const Value.absent(),
+                Value<String?> hospitalCourse = const Value.absent(),
+                Value<String?> dischargeCondition = const Value.absent(),
+                Value<String?> dischargeDestination = const Value.absent(),
+                Value<String?> dischargeMedications = const Value.absent(),
+                Value<String?> followUpInstructions = const Value.absent(),
+                Value<String?> dietInstructions = const Value.absent(),
+                Value<String?> activityRestrictions = const Value.absent(),
+                Value<DateTime?> followUpDate = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DischargeSummariesCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                hospital: hospital,
+                attendingPhysician: attendingPhysician,
+                department: department,
+                admissionDate: admissionDate,
+                dischargeDate: dischargeDate,
+                lengthOfStay: lengthOfStay,
+                admissionDiagnosis: admissionDiagnosis,
+                dischargeDiagnosis: dischargeDiagnosis,
+                principalDiagnosis: principalDiagnosis,
+                secondaryDiagnoses: secondaryDiagnoses,
+                proceduresPerformed: proceduresPerformed,
+                hospitalCourse: hospitalCourse,
+                dischargeCondition: dischargeCondition,
+                dischargeDestination: dischargeDestination,
+                dischargeMedications: dischargeMedications,
+                followUpInstructions: followUpInstructions,
+                dietInstructions: dietInstructions,
+                activityRestrictions: activityRestrictions,
+                followUpDate: followUpDate,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String hospital,
+                Value<String?> attendingPhysician = const Value.absent(),
+                Value<String?> department = const Value.absent(),
+                required DateTime admissionDate,
+                required DateTime dischargeDate,
+                Value<int?> lengthOfStay = const Value.absent(),
+                Value<String?> admissionDiagnosis = const Value.absent(),
+                Value<String?> dischargeDiagnosis = const Value.absent(),
+                Value<String?> principalDiagnosis = const Value.absent(),
+                Value<String?> secondaryDiagnoses = const Value.absent(),
+                Value<String?> proceduresPerformed = const Value.absent(),
+                Value<String?> hospitalCourse = const Value.absent(),
+                Value<String?> dischargeCondition = const Value.absent(),
+                Value<String?> dischargeDestination = const Value.absent(),
+                Value<String?> dischargeMedications = const Value.absent(),
+                Value<String?> followUpInstructions = const Value.absent(),
+                Value<String?> dietInstructions = const Value.absent(),
+                Value<String?> activityRestrictions = const Value.absent(),
+                Value<DateTime?> followUpDate = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DischargeSummariesCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                hospital: hospital,
+                attendingPhysician: attendingPhysician,
+                department: department,
+                admissionDate: admissionDate,
+                dischargeDate: dischargeDate,
+                lengthOfStay: lengthOfStay,
+                admissionDiagnosis: admissionDiagnosis,
+                dischargeDiagnosis: dischargeDiagnosis,
+                principalDiagnosis: principalDiagnosis,
+                secondaryDiagnoses: secondaryDiagnoses,
+                proceduresPerformed: proceduresPerformed,
+                hospitalCourse: hospitalCourse,
+                dischargeCondition: dischargeCondition,
+                dischargeDestination: dischargeDestination,
+                dischargeMedications: dischargeMedications,
+                followUpInstructions: followUpInstructions,
+                dietInstructions: dietInstructions,
+                activityRestrictions: activityRestrictions,
+                followUpDate: followUpDate,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DischargeSummariesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DischargeSummariesTable,
+      DischargeSummary,
+      $$DischargeSummariesTableFilterComposer,
+      $$DischargeSummariesTableOrderingComposer,
+      $$DischargeSummariesTableAnnotationComposer,
+      $$DischargeSummariesTableCreateCompanionBuilder,
+      $$DischargeSummariesTableUpdateCompanionBuilder,
+      (
+        DischargeSummary,
+        BaseReferences<
+          _$AppDatabase,
+          $DischargeSummariesTable,
+          DischargeSummary
+        >,
+      ),
+      DischargeSummary,
+      PrefetchHooks Function()
+    >;
+typedef $$HospitalAdmissionsTableCreateCompanionBuilder =
+    HospitalAdmissionsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String hospital,
+      Value<String?> admittingPhysician,
+      Value<String?> department,
+      required DateTime admissionDate,
+      Value<DateTime?> dischargeDate,
+      required String admissionType,
+      Value<String?> chiefComplaint,
+      Value<String?> reasonForAdmission,
+      Value<String?> presentingSymptoms,
+      Value<String?> vitalSigns,
+      Value<String?> initialDiagnosis,
+      Value<String?> workingDiagnosis,
+      Value<String?> treatmentPlan,
+      Value<String?> medicationsOnAdmission,
+      Value<String?> allergiesNoted,
+      Value<String?> emergencyContact,
+      Value<String?> insuranceInformation,
+      Value<bool> isEmergencyAdmission,
+      Value<String?> referringPhysician,
+      Value<String?> roomNumber,
+      Value<int> rowid,
+    });
+typedef $$HospitalAdmissionsTableUpdateCompanionBuilder =
+    HospitalAdmissionsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> hospital,
+      Value<String?> admittingPhysician,
+      Value<String?> department,
+      Value<DateTime> admissionDate,
+      Value<DateTime?> dischargeDate,
+      Value<String> admissionType,
+      Value<String?> chiefComplaint,
+      Value<String?> reasonForAdmission,
+      Value<String?> presentingSymptoms,
+      Value<String?> vitalSigns,
+      Value<String?> initialDiagnosis,
+      Value<String?> workingDiagnosis,
+      Value<String?> treatmentPlan,
+      Value<String?> medicationsOnAdmission,
+      Value<String?> allergiesNoted,
+      Value<String?> emergencyContact,
+      Value<String?> insuranceInformation,
+      Value<bool> isEmergencyAdmission,
+      Value<String?> referringPhysician,
+      Value<String?> roomNumber,
+      Value<int> rowid,
+    });
+
+class $$HospitalAdmissionsTableFilterComposer
+    extends Composer<_$AppDatabase, $HospitalAdmissionsTable> {
+  $$HospitalAdmissionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hospital => $composableBuilder(
+    column: $table.hospital,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get admittingPhysician => $composableBuilder(
+    column: $table.admittingPhysician,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get admissionDate => $composableBuilder(
+    column: $table.admissionDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get admissionType => $composableBuilder(
+    column: $table.admissionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chiefComplaint => $composableBuilder(
+    column: $table.chiefComplaint,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reasonForAdmission => $composableBuilder(
+    column: $table.reasonForAdmission,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get presentingSymptoms => $composableBuilder(
+    column: $table.presentingSymptoms,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vitalSigns => $composableBuilder(
+    column: $table.vitalSigns,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get initialDiagnosis => $composableBuilder(
+    column: $table.initialDiagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workingDiagnosis => $composableBuilder(
+    column: $table.workingDiagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatmentPlan => $composableBuilder(
+    column: $table.treatmentPlan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicationsOnAdmission => $composableBuilder(
+    column: $table.medicationsOnAdmission,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get allergiesNoted => $composableBuilder(
+    column: $table.allergiesNoted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get emergencyContact => $composableBuilder(
+    column: $table.emergencyContact,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get insuranceInformation => $composableBuilder(
+    column: $table.insuranceInformation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEmergencyAdmission => $composableBuilder(
+    column: $table.isEmergencyAdmission,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get roomNumber => $composableBuilder(
+    column: $table.roomNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HospitalAdmissionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HospitalAdmissionsTable> {
+  $$HospitalAdmissionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hospital => $composableBuilder(
+    column: $table.hospital,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get admittingPhysician => $composableBuilder(
+    column: $table.admittingPhysician,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get admissionDate => $composableBuilder(
+    column: $table.admissionDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get admissionType => $composableBuilder(
+    column: $table.admissionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chiefComplaint => $composableBuilder(
+    column: $table.chiefComplaint,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reasonForAdmission => $composableBuilder(
+    column: $table.reasonForAdmission,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get presentingSymptoms => $composableBuilder(
+    column: $table.presentingSymptoms,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vitalSigns => $composableBuilder(
+    column: $table.vitalSigns,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get initialDiagnosis => $composableBuilder(
+    column: $table.initialDiagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workingDiagnosis => $composableBuilder(
+    column: $table.workingDiagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatmentPlan => $composableBuilder(
+    column: $table.treatmentPlan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicationsOnAdmission => $composableBuilder(
+    column: $table.medicationsOnAdmission,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get allergiesNoted => $composableBuilder(
+    column: $table.allergiesNoted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get emergencyContact => $composableBuilder(
+    column: $table.emergencyContact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get insuranceInformation => $composableBuilder(
+    column: $table.insuranceInformation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEmergencyAdmission => $composableBuilder(
+    column: $table.isEmergencyAdmission,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get roomNumber => $composableBuilder(
+    column: $table.roomNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HospitalAdmissionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HospitalAdmissionsTable> {
+  $$HospitalAdmissionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get hospital =>
+      $composableBuilder(column: $table.hospital, builder: (column) => column);
+
+  GeneratedColumn<String> get admittingPhysician => $composableBuilder(
+    column: $table.admittingPhysician,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get admissionDate => $composableBuilder(
+    column: $table.admissionDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get dischargeDate => $composableBuilder(
+    column: $table.dischargeDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get admissionType => $composableBuilder(
+    column: $table.admissionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get chiefComplaint => $composableBuilder(
+    column: $table.chiefComplaint,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reasonForAdmission => $composableBuilder(
+    column: $table.reasonForAdmission,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get presentingSymptoms => $composableBuilder(
+    column: $table.presentingSymptoms,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get vitalSigns => $composableBuilder(
+    column: $table.vitalSigns,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get initialDiagnosis => $composableBuilder(
+    column: $table.initialDiagnosis,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get workingDiagnosis => $composableBuilder(
+    column: $table.workingDiagnosis,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get treatmentPlan => $composableBuilder(
+    column: $table.treatmentPlan,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get medicationsOnAdmission => $composableBuilder(
+    column: $table.medicationsOnAdmission,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get allergiesNoted => $composableBuilder(
+    column: $table.allergiesNoted,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get emergencyContact => $composableBuilder(
+    column: $table.emergencyContact,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get insuranceInformation => $composableBuilder(
+    column: $table.insuranceInformation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isEmergencyAdmission => $composableBuilder(
+    column: $table.isEmergencyAdmission,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referringPhysician => $composableBuilder(
+    column: $table.referringPhysician,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get roomNumber => $composableBuilder(
+    column: $table.roomNumber,
+    builder: (column) => column,
+  );
+}
+
+class $$HospitalAdmissionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HospitalAdmissionsTable,
+          HospitalAdmission,
+          $$HospitalAdmissionsTableFilterComposer,
+          $$HospitalAdmissionsTableOrderingComposer,
+          $$HospitalAdmissionsTableAnnotationComposer,
+          $$HospitalAdmissionsTableCreateCompanionBuilder,
+          $$HospitalAdmissionsTableUpdateCompanionBuilder,
+          (
+            HospitalAdmission,
+            BaseReferences<
+              _$AppDatabase,
+              $HospitalAdmissionsTable,
+              HospitalAdmission
+            >,
+          ),
+          HospitalAdmission,
+          PrefetchHooks Function()
+        > {
+  $$HospitalAdmissionsTableTableManager(
+    _$AppDatabase db,
+    $HospitalAdmissionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HospitalAdmissionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HospitalAdmissionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HospitalAdmissionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> hospital = const Value.absent(),
+                Value<String?> admittingPhysician = const Value.absent(),
+                Value<String?> department = const Value.absent(),
+                Value<DateTime> admissionDate = const Value.absent(),
+                Value<DateTime?> dischargeDate = const Value.absent(),
+                Value<String> admissionType = const Value.absent(),
+                Value<String?> chiefComplaint = const Value.absent(),
+                Value<String?> reasonForAdmission = const Value.absent(),
+                Value<String?> presentingSymptoms = const Value.absent(),
+                Value<String?> vitalSigns = const Value.absent(),
+                Value<String?> initialDiagnosis = const Value.absent(),
+                Value<String?> workingDiagnosis = const Value.absent(),
+                Value<String?> treatmentPlan = const Value.absent(),
+                Value<String?> medicationsOnAdmission = const Value.absent(),
+                Value<String?> allergiesNoted = const Value.absent(),
+                Value<String?> emergencyContact = const Value.absent(),
+                Value<String?> insuranceInformation = const Value.absent(),
+                Value<bool> isEmergencyAdmission = const Value.absent(),
+                Value<String?> referringPhysician = const Value.absent(),
+                Value<String?> roomNumber = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HospitalAdmissionsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                hospital: hospital,
+                admittingPhysician: admittingPhysician,
+                department: department,
+                admissionDate: admissionDate,
+                dischargeDate: dischargeDate,
+                admissionType: admissionType,
+                chiefComplaint: chiefComplaint,
+                reasonForAdmission: reasonForAdmission,
+                presentingSymptoms: presentingSymptoms,
+                vitalSigns: vitalSigns,
+                initialDiagnosis: initialDiagnosis,
+                workingDiagnosis: workingDiagnosis,
+                treatmentPlan: treatmentPlan,
+                medicationsOnAdmission: medicationsOnAdmission,
+                allergiesNoted: allergiesNoted,
+                emergencyContact: emergencyContact,
+                insuranceInformation: insuranceInformation,
+                isEmergencyAdmission: isEmergencyAdmission,
+                referringPhysician: referringPhysician,
+                roomNumber: roomNumber,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String hospital,
+                Value<String?> admittingPhysician = const Value.absent(),
+                Value<String?> department = const Value.absent(),
+                required DateTime admissionDate,
+                Value<DateTime?> dischargeDate = const Value.absent(),
+                required String admissionType,
+                Value<String?> chiefComplaint = const Value.absent(),
+                Value<String?> reasonForAdmission = const Value.absent(),
+                Value<String?> presentingSymptoms = const Value.absent(),
+                Value<String?> vitalSigns = const Value.absent(),
+                Value<String?> initialDiagnosis = const Value.absent(),
+                Value<String?> workingDiagnosis = const Value.absent(),
+                Value<String?> treatmentPlan = const Value.absent(),
+                Value<String?> medicationsOnAdmission = const Value.absent(),
+                Value<String?> allergiesNoted = const Value.absent(),
+                Value<String?> emergencyContact = const Value.absent(),
+                Value<String?> insuranceInformation = const Value.absent(),
+                Value<bool> isEmergencyAdmission = const Value.absent(),
+                Value<String?> referringPhysician = const Value.absent(),
+                Value<String?> roomNumber = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HospitalAdmissionsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                hospital: hospital,
+                admittingPhysician: admittingPhysician,
+                department: department,
+                admissionDate: admissionDate,
+                dischargeDate: dischargeDate,
+                admissionType: admissionType,
+                chiefComplaint: chiefComplaint,
+                reasonForAdmission: reasonForAdmission,
+                presentingSymptoms: presentingSymptoms,
+                vitalSigns: vitalSigns,
+                initialDiagnosis: initialDiagnosis,
+                workingDiagnosis: workingDiagnosis,
+                treatmentPlan: treatmentPlan,
+                medicationsOnAdmission: medicationsOnAdmission,
+                allergiesNoted: allergiesNoted,
+                emergencyContact: emergencyContact,
+                insuranceInformation: insuranceInformation,
+                isEmergencyAdmission: isEmergencyAdmission,
+                referringPhysician: referringPhysician,
+                roomNumber: roomNumber,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HospitalAdmissionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HospitalAdmissionsTable,
+      HospitalAdmission,
+      $$HospitalAdmissionsTableFilterComposer,
+      $$HospitalAdmissionsTableOrderingComposer,
+      $$HospitalAdmissionsTableAnnotationComposer,
+      $$HospitalAdmissionsTableCreateCompanionBuilder,
+      $$HospitalAdmissionsTableUpdateCompanionBuilder,
+      (
+        HospitalAdmission,
+        BaseReferences<
+          _$AppDatabase,
+          $HospitalAdmissionsTable,
+          HospitalAdmission
+        >,
+      ),
+      HospitalAdmission,
+      PrefetchHooks Function()
+    >;
+typedef $$DentalRecordsTableCreateCompanionBuilder =
+    DentalRecordsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String procedureType,
+      Value<String?> dentistName,
+      Value<String?> dentalOffice,
+      required DateTime appointmentDate,
+      Value<String?> toothNumbers,
+      Value<String?> treatmentArea,
+      Value<String?> chiefComplaint,
+      Value<String?> clinicalFindings,
+      Value<String?> diagnosis,
+      Value<String?> treatmentProvided,
+      Value<String?> materialsUsed,
+      Value<String?> anesthesiaUsed,
+      Value<String?> postTreatmentInstructions,
+      Value<String?> followUpRequired,
+      Value<DateTime?> nextAppointment,
+      Value<double?> cost,
+      Value<String?> insuranceClaim,
+      Value<bool> isEmergencyVisit,
+      Value<int> rowid,
+    });
+typedef $$DentalRecordsTableUpdateCompanionBuilder =
+    DentalRecordsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> procedureType,
+      Value<String?> dentistName,
+      Value<String?> dentalOffice,
+      Value<DateTime> appointmentDate,
+      Value<String?> toothNumbers,
+      Value<String?> treatmentArea,
+      Value<String?> chiefComplaint,
+      Value<String?> clinicalFindings,
+      Value<String?> diagnosis,
+      Value<String?> treatmentProvided,
+      Value<String?> materialsUsed,
+      Value<String?> anesthesiaUsed,
+      Value<String?> postTreatmentInstructions,
+      Value<String?> followUpRequired,
+      Value<DateTime?> nextAppointment,
+      Value<double?> cost,
+      Value<String?> insuranceClaim,
+      Value<bool> isEmergencyVisit,
+      Value<int> rowid,
+    });
+
+class $$DentalRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $DentalRecordsTable> {
+  $$DentalRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get procedureType => $composableBuilder(
+    column: $table.procedureType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dentistName => $composableBuilder(
+    column: $table.dentistName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dentalOffice => $composableBuilder(
+    column: $table.dentalOffice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get appointmentDate => $composableBuilder(
+    column: $table.appointmentDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toothNumbers => $composableBuilder(
+    column: $table.toothNumbers,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatmentArea => $composableBuilder(
+    column: $table.treatmentArea,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chiefComplaint => $composableBuilder(
+    column: $table.chiefComplaint,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clinicalFindings => $composableBuilder(
+    column: $table.clinicalFindings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get diagnosis => $composableBuilder(
+    column: $table.diagnosis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatmentProvided => $composableBuilder(
+    column: $table.treatmentProvided,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get materialsUsed => $composableBuilder(
+    column: $table.materialsUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get anesthesiaUsed => $composableBuilder(
+    column: $table.anesthesiaUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get postTreatmentInstructions => $composableBuilder(
+    column: $table.postTreatmentInstructions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get followUpRequired => $composableBuilder(
+    column: $table.followUpRequired,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get nextAppointment => $composableBuilder(
+    column: $table.nextAppointment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cost => $composableBuilder(
+    column: $table.cost,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get insuranceClaim => $composableBuilder(
+    column: $table.insuranceClaim,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEmergencyVisit => $composableBuilder(
+    column: $table.isEmergencyVisit,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DentalRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DentalRecordsTable> {
+  $$DentalRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get procedureType => $composableBuilder(
+    column: $table.procedureType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dentistName => $composableBuilder(
+    column: $table.dentistName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dentalOffice => $composableBuilder(
+    column: $table.dentalOffice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get appointmentDate => $composableBuilder(
+    column: $table.appointmentDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toothNumbers => $composableBuilder(
+    column: $table.toothNumbers,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatmentArea => $composableBuilder(
+    column: $table.treatmentArea,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chiefComplaint => $composableBuilder(
+    column: $table.chiefComplaint,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clinicalFindings => $composableBuilder(
+    column: $table.clinicalFindings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get diagnosis => $composableBuilder(
+    column: $table.diagnosis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatmentProvided => $composableBuilder(
+    column: $table.treatmentProvided,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get materialsUsed => $composableBuilder(
+    column: $table.materialsUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get anesthesiaUsed => $composableBuilder(
+    column: $table.anesthesiaUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get postTreatmentInstructions => $composableBuilder(
+    column: $table.postTreatmentInstructions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get followUpRequired => $composableBuilder(
+    column: $table.followUpRequired,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get nextAppointment => $composableBuilder(
+    column: $table.nextAppointment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get cost => $composableBuilder(
+    column: $table.cost,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get insuranceClaim => $composableBuilder(
+    column: $table.insuranceClaim,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEmergencyVisit => $composableBuilder(
+    column: $table.isEmergencyVisit,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DentalRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DentalRecordsTable> {
+  $$DentalRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get procedureType => $composableBuilder(
+    column: $table.procedureType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dentistName => $composableBuilder(
+    column: $table.dentistName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dentalOffice => $composableBuilder(
+    column: $table.dentalOffice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get appointmentDate => $composableBuilder(
+    column: $table.appointmentDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get toothNumbers => $composableBuilder(
+    column: $table.toothNumbers,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get treatmentArea => $composableBuilder(
+    column: $table.treatmentArea,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get chiefComplaint => $composableBuilder(
+    column: $table.chiefComplaint,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clinicalFindings => $composableBuilder(
+    column: $table.clinicalFindings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get diagnosis =>
+      $composableBuilder(column: $table.diagnosis, builder: (column) => column);
+
+  GeneratedColumn<String> get treatmentProvided => $composableBuilder(
+    column: $table.treatmentProvided,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get materialsUsed => $composableBuilder(
+    column: $table.materialsUsed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get anesthesiaUsed => $composableBuilder(
+    column: $table.anesthesiaUsed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get postTreatmentInstructions => $composableBuilder(
+    column: $table.postTreatmentInstructions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get followUpRequired => $composableBuilder(
+    column: $table.followUpRequired,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get nextAppointment => $composableBuilder(
+    column: $table.nextAppointment,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get cost =>
+      $composableBuilder(column: $table.cost, builder: (column) => column);
+
+  GeneratedColumn<String> get insuranceClaim => $composableBuilder(
+    column: $table.insuranceClaim,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isEmergencyVisit => $composableBuilder(
+    column: $table.isEmergencyVisit,
+    builder: (column) => column,
+  );
+}
+
+class $$DentalRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DentalRecordsTable,
+          DentalRecord,
+          $$DentalRecordsTableFilterComposer,
+          $$DentalRecordsTableOrderingComposer,
+          $$DentalRecordsTableAnnotationComposer,
+          $$DentalRecordsTableCreateCompanionBuilder,
+          $$DentalRecordsTableUpdateCompanionBuilder,
+          (
+            DentalRecord,
+            BaseReferences<_$AppDatabase, $DentalRecordsTable, DentalRecord>,
+          ),
+          DentalRecord,
+          PrefetchHooks Function()
+        > {
+  $$DentalRecordsTableTableManager(_$AppDatabase db, $DentalRecordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DentalRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DentalRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DentalRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> procedureType = const Value.absent(),
+                Value<String?> dentistName = const Value.absent(),
+                Value<String?> dentalOffice = const Value.absent(),
+                Value<DateTime> appointmentDate = const Value.absent(),
+                Value<String?> toothNumbers = const Value.absent(),
+                Value<String?> treatmentArea = const Value.absent(),
+                Value<String?> chiefComplaint = const Value.absent(),
+                Value<String?> clinicalFindings = const Value.absent(),
+                Value<String?> diagnosis = const Value.absent(),
+                Value<String?> treatmentProvided = const Value.absent(),
+                Value<String?> materialsUsed = const Value.absent(),
+                Value<String?> anesthesiaUsed = const Value.absent(),
+                Value<String?> postTreatmentInstructions = const Value.absent(),
+                Value<String?> followUpRequired = const Value.absent(),
+                Value<DateTime?> nextAppointment = const Value.absent(),
+                Value<double?> cost = const Value.absent(),
+                Value<String?> insuranceClaim = const Value.absent(),
+                Value<bool> isEmergencyVisit = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DentalRecordsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                procedureType: procedureType,
+                dentistName: dentistName,
+                dentalOffice: dentalOffice,
+                appointmentDate: appointmentDate,
+                toothNumbers: toothNumbers,
+                treatmentArea: treatmentArea,
+                chiefComplaint: chiefComplaint,
+                clinicalFindings: clinicalFindings,
+                diagnosis: diagnosis,
+                treatmentProvided: treatmentProvided,
+                materialsUsed: materialsUsed,
+                anesthesiaUsed: anesthesiaUsed,
+                postTreatmentInstructions: postTreatmentInstructions,
+                followUpRequired: followUpRequired,
+                nextAppointment: nextAppointment,
+                cost: cost,
+                insuranceClaim: insuranceClaim,
+                isEmergencyVisit: isEmergencyVisit,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String procedureType,
+                Value<String?> dentistName = const Value.absent(),
+                Value<String?> dentalOffice = const Value.absent(),
+                required DateTime appointmentDate,
+                Value<String?> toothNumbers = const Value.absent(),
+                Value<String?> treatmentArea = const Value.absent(),
+                Value<String?> chiefComplaint = const Value.absent(),
+                Value<String?> clinicalFindings = const Value.absent(),
+                Value<String?> diagnosis = const Value.absent(),
+                Value<String?> treatmentProvided = const Value.absent(),
+                Value<String?> materialsUsed = const Value.absent(),
+                Value<String?> anesthesiaUsed = const Value.absent(),
+                Value<String?> postTreatmentInstructions = const Value.absent(),
+                Value<String?> followUpRequired = const Value.absent(),
+                Value<DateTime?> nextAppointment = const Value.absent(),
+                Value<double?> cost = const Value.absent(),
+                Value<String?> insuranceClaim = const Value.absent(),
+                Value<bool> isEmergencyVisit = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DentalRecordsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                procedureType: procedureType,
+                dentistName: dentistName,
+                dentalOffice: dentalOffice,
+                appointmentDate: appointmentDate,
+                toothNumbers: toothNumbers,
+                treatmentArea: treatmentArea,
+                chiefComplaint: chiefComplaint,
+                clinicalFindings: clinicalFindings,
+                diagnosis: diagnosis,
+                treatmentProvided: treatmentProvided,
+                materialsUsed: materialsUsed,
+                anesthesiaUsed: anesthesiaUsed,
+                postTreatmentInstructions: postTreatmentInstructions,
+                followUpRequired: followUpRequired,
+                nextAppointment: nextAppointment,
+                cost: cost,
+                insuranceClaim: insuranceClaim,
+                isEmergencyVisit: isEmergencyVisit,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DentalRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DentalRecordsTable,
+      DentalRecord,
+      $$DentalRecordsTableFilterComposer,
+      $$DentalRecordsTableOrderingComposer,
+      $$DentalRecordsTableAnnotationComposer,
+      $$DentalRecordsTableCreateCompanionBuilder,
+      $$DentalRecordsTableUpdateCompanionBuilder,
+      (
+        DentalRecord,
+        BaseReferences<_$AppDatabase, $DentalRecordsTable, DentalRecord>,
+      ),
+      DentalRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$MentalHealthRecordsTableCreateCompanionBuilder =
+    MentalHealthRecordsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String sessionType,
+      Value<String?> providerName,
+      Value<String?> providerType,
+      Value<String?> facility,
+      required DateTime sessionDate,
+      Value<int?> sessionDuration,
+      Value<String?> presentingConcerns,
+      Value<String?> moodAssessment,
+      Value<String?> thoughtProcess,
+      Value<String?> riskAssessment,
+      Value<String?> treatmentGoals,
+      Value<String?> interventions,
+      Value<String?> homework,
+      Value<String?> medicationDiscussion,
+      Value<String?> progressNotes,
+      Value<String?> planForNextSession,
+      Value<DateTime?> nextAppointment,
+      Value<int?> moodRating,
+      Value<int?> anxietyRating,
+      Value<bool> isCrisisSession,
+      Value<int> rowid,
+    });
+typedef $$MentalHealthRecordsTableUpdateCompanionBuilder =
+    MentalHealthRecordsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> sessionType,
+      Value<String?> providerName,
+      Value<String?> providerType,
+      Value<String?> facility,
+      Value<DateTime> sessionDate,
+      Value<int?> sessionDuration,
+      Value<String?> presentingConcerns,
+      Value<String?> moodAssessment,
+      Value<String?> thoughtProcess,
+      Value<String?> riskAssessment,
+      Value<String?> treatmentGoals,
+      Value<String?> interventions,
+      Value<String?> homework,
+      Value<String?> medicationDiscussion,
+      Value<String?> progressNotes,
+      Value<String?> planForNextSession,
+      Value<DateTime?> nextAppointment,
+      Value<int?> moodRating,
+      Value<int?> anxietyRating,
+      Value<bool> isCrisisSession,
+      Value<int> rowid,
+    });
+
+class $$MentalHealthRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $MentalHealthRecordsTable> {
+  $$MentalHealthRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sessionType => $composableBuilder(
+    column: $table.sessionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerType => $composableBuilder(
+    column: $table.providerType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get facility => $composableBuilder(
+    column: $table.facility,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get sessionDate => $composableBuilder(
+    column: $table.sessionDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sessionDuration => $composableBuilder(
+    column: $table.sessionDuration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get presentingConcerns => $composableBuilder(
+    column: $table.presentingConcerns,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get moodAssessment => $composableBuilder(
+    column: $table.moodAssessment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thoughtProcess => $composableBuilder(
+    column: $table.thoughtProcess,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get riskAssessment => $composableBuilder(
+    column: $table.riskAssessment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatmentGoals => $composableBuilder(
+    column: $table.treatmentGoals,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get interventions => $composableBuilder(
+    column: $table.interventions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get homework => $composableBuilder(
+    column: $table.homework,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicationDiscussion => $composableBuilder(
+    column: $table.medicationDiscussion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get progressNotes => $composableBuilder(
+    column: $table.progressNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get planForNextSession => $composableBuilder(
+    column: $table.planForNextSession,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get nextAppointment => $composableBuilder(
+    column: $table.nextAppointment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get moodRating => $composableBuilder(
+    column: $table.moodRating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get anxietyRating => $composableBuilder(
+    column: $table.anxietyRating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCrisisSession => $composableBuilder(
+    column: $table.isCrisisSession,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MentalHealthRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MentalHealthRecordsTable> {
+  $$MentalHealthRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sessionType => $composableBuilder(
+    column: $table.sessionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerType => $composableBuilder(
+    column: $table.providerType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get facility => $composableBuilder(
+    column: $table.facility,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get sessionDate => $composableBuilder(
+    column: $table.sessionDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sessionDuration => $composableBuilder(
+    column: $table.sessionDuration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get presentingConcerns => $composableBuilder(
+    column: $table.presentingConcerns,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get moodAssessment => $composableBuilder(
+    column: $table.moodAssessment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thoughtProcess => $composableBuilder(
+    column: $table.thoughtProcess,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get riskAssessment => $composableBuilder(
+    column: $table.riskAssessment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatmentGoals => $composableBuilder(
+    column: $table.treatmentGoals,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get interventions => $composableBuilder(
+    column: $table.interventions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get homework => $composableBuilder(
+    column: $table.homework,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicationDiscussion => $composableBuilder(
+    column: $table.medicationDiscussion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get progressNotes => $composableBuilder(
+    column: $table.progressNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get planForNextSession => $composableBuilder(
+    column: $table.planForNextSession,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get nextAppointment => $composableBuilder(
+    column: $table.nextAppointment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get moodRating => $composableBuilder(
+    column: $table.moodRating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get anxietyRating => $composableBuilder(
+    column: $table.anxietyRating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCrisisSession => $composableBuilder(
+    column: $table.isCrisisSession,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MentalHealthRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MentalHealthRecordsTable> {
+  $$MentalHealthRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get sessionType => $composableBuilder(
+    column: $table.sessionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get providerType => $composableBuilder(
+    column: $table.providerType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get facility =>
+      $composableBuilder(column: $table.facility, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get sessionDate => $composableBuilder(
+    column: $table.sessionDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sessionDuration => $composableBuilder(
+    column: $table.sessionDuration,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get presentingConcerns => $composableBuilder(
+    column: $table.presentingConcerns,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get moodAssessment => $composableBuilder(
+    column: $table.moodAssessment,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get thoughtProcess => $composableBuilder(
+    column: $table.thoughtProcess,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get riskAssessment => $composableBuilder(
+    column: $table.riskAssessment,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get treatmentGoals => $composableBuilder(
+    column: $table.treatmentGoals,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get interventions => $composableBuilder(
+    column: $table.interventions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get homework =>
+      $composableBuilder(column: $table.homework, builder: (column) => column);
+
+  GeneratedColumn<String> get medicationDiscussion => $composableBuilder(
+    column: $table.medicationDiscussion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get progressNotes => $composableBuilder(
+    column: $table.progressNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get planForNextSession => $composableBuilder(
+    column: $table.planForNextSession,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get nextAppointment => $composableBuilder(
+    column: $table.nextAppointment,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get moodRating => $composableBuilder(
+    column: $table.moodRating,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get anxietyRating => $composableBuilder(
+    column: $table.anxietyRating,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCrisisSession => $composableBuilder(
+    column: $table.isCrisisSession,
+    builder: (column) => column,
+  );
+}
+
+class $$MentalHealthRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MentalHealthRecordsTable,
+          MentalHealthRecord,
+          $$MentalHealthRecordsTableFilterComposer,
+          $$MentalHealthRecordsTableOrderingComposer,
+          $$MentalHealthRecordsTableAnnotationComposer,
+          $$MentalHealthRecordsTableCreateCompanionBuilder,
+          $$MentalHealthRecordsTableUpdateCompanionBuilder,
+          (
+            MentalHealthRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $MentalHealthRecordsTable,
+              MentalHealthRecord
+            >,
+          ),
+          MentalHealthRecord,
+          PrefetchHooks Function()
+        > {
+  $$MentalHealthRecordsTableTableManager(
+    _$AppDatabase db,
+    $MentalHealthRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MentalHealthRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MentalHealthRecordsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MentalHealthRecordsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> sessionType = const Value.absent(),
+                Value<String?> providerName = const Value.absent(),
+                Value<String?> providerType = const Value.absent(),
+                Value<String?> facility = const Value.absent(),
+                Value<DateTime> sessionDate = const Value.absent(),
+                Value<int?> sessionDuration = const Value.absent(),
+                Value<String?> presentingConcerns = const Value.absent(),
+                Value<String?> moodAssessment = const Value.absent(),
+                Value<String?> thoughtProcess = const Value.absent(),
+                Value<String?> riskAssessment = const Value.absent(),
+                Value<String?> treatmentGoals = const Value.absent(),
+                Value<String?> interventions = const Value.absent(),
+                Value<String?> homework = const Value.absent(),
+                Value<String?> medicationDiscussion = const Value.absent(),
+                Value<String?> progressNotes = const Value.absent(),
+                Value<String?> planForNextSession = const Value.absent(),
+                Value<DateTime?> nextAppointment = const Value.absent(),
+                Value<int?> moodRating = const Value.absent(),
+                Value<int?> anxietyRating = const Value.absent(),
+                Value<bool> isCrisisSession = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MentalHealthRecordsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                sessionType: sessionType,
+                providerName: providerName,
+                providerType: providerType,
+                facility: facility,
+                sessionDate: sessionDate,
+                sessionDuration: sessionDuration,
+                presentingConcerns: presentingConcerns,
+                moodAssessment: moodAssessment,
+                thoughtProcess: thoughtProcess,
+                riskAssessment: riskAssessment,
+                treatmentGoals: treatmentGoals,
+                interventions: interventions,
+                homework: homework,
+                medicationDiscussion: medicationDiscussion,
+                progressNotes: progressNotes,
+                planForNextSession: planForNextSession,
+                nextAppointment: nextAppointment,
+                moodRating: moodRating,
+                anxietyRating: anxietyRating,
+                isCrisisSession: isCrisisSession,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String sessionType,
+                Value<String?> providerName = const Value.absent(),
+                Value<String?> providerType = const Value.absent(),
+                Value<String?> facility = const Value.absent(),
+                required DateTime sessionDate,
+                Value<int?> sessionDuration = const Value.absent(),
+                Value<String?> presentingConcerns = const Value.absent(),
+                Value<String?> moodAssessment = const Value.absent(),
+                Value<String?> thoughtProcess = const Value.absent(),
+                Value<String?> riskAssessment = const Value.absent(),
+                Value<String?> treatmentGoals = const Value.absent(),
+                Value<String?> interventions = const Value.absent(),
+                Value<String?> homework = const Value.absent(),
+                Value<String?> medicationDiscussion = const Value.absent(),
+                Value<String?> progressNotes = const Value.absent(),
+                Value<String?> planForNextSession = const Value.absent(),
+                Value<DateTime?> nextAppointment = const Value.absent(),
+                Value<int?> moodRating = const Value.absent(),
+                Value<int?> anxietyRating = const Value.absent(),
+                Value<bool> isCrisisSession = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MentalHealthRecordsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                sessionType: sessionType,
+                providerName: providerName,
+                providerType: providerType,
+                facility: facility,
+                sessionDate: sessionDate,
+                sessionDuration: sessionDuration,
+                presentingConcerns: presentingConcerns,
+                moodAssessment: moodAssessment,
+                thoughtProcess: thoughtProcess,
+                riskAssessment: riskAssessment,
+                treatmentGoals: treatmentGoals,
+                interventions: interventions,
+                homework: homework,
+                medicationDiscussion: medicationDiscussion,
+                progressNotes: progressNotes,
+                planForNextSession: planForNextSession,
+                nextAppointment: nextAppointment,
+                moodRating: moodRating,
+                anxietyRating: anxietyRating,
+                isCrisisSession: isCrisisSession,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MentalHealthRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MentalHealthRecordsTable,
+      MentalHealthRecord,
+      $$MentalHealthRecordsTableFilterComposer,
+      $$MentalHealthRecordsTableOrderingComposer,
+      $$MentalHealthRecordsTableAnnotationComposer,
+      $$MentalHealthRecordsTableCreateCompanionBuilder,
+      $$MentalHealthRecordsTableUpdateCompanionBuilder,
+      (
+        MentalHealthRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $MentalHealthRecordsTable,
+          MentalHealthRecord
+        >,
+      ),
+      MentalHealthRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$GeneralRecordsTableCreateCompanionBuilder =
+    GeneralRecordsCompanion Function({
+      required String id,
+      required String profileId,
+      Value<String> recordType,
+      required String title,
+      Value<String?> description,
+      required DateTime recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      required String category,
+      Value<String?> subcategory,
+      Value<String?> providerName,
+      Value<String?> institution,
+      Value<DateTime?> documentDate,
+      Value<String?> documentType,
+      Value<String?> referenceNumber,
+      Value<String?> relatedCondition,
+      Value<String?> notes,
+      Value<String?> followUpRequired,
+      Value<DateTime?> expirationDate,
+      Value<DateTime?> reminderDate,
+      Value<String?> tags,
+      Value<bool> isConfidential,
+      Value<bool> requiresAction,
+      Value<int> rowid,
+    });
+typedef $$GeneralRecordsTableUpdateCompanionBuilder =
+    GeneralRecordsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> recordType,
+      Value<String> title,
+      Value<String?> description,
+      Value<DateTime> recordDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> isActive,
+      Value<String> category,
+      Value<String?> subcategory,
+      Value<String?> providerName,
+      Value<String?> institution,
+      Value<DateTime?> documentDate,
+      Value<String?> documentType,
+      Value<String?> referenceNumber,
+      Value<String?> relatedCondition,
+      Value<String?> notes,
+      Value<String?> followUpRequired,
+      Value<DateTime?> expirationDate,
+      Value<DateTime?> reminderDate,
+      Value<String?> tags,
+      Value<bool> isConfidential,
+      Value<bool> requiresAction,
+      Value<int> rowid,
+    });
+
+class $$GeneralRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $GeneralRecordsTable> {
+  $$GeneralRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subcategory => $composableBuilder(
+    column: $table.subcategory,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get institution => $composableBuilder(
+    column: $table.institution,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get documentDate => $composableBuilder(
+    column: $table.documentDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get documentType => $composableBuilder(
+    column: $table.documentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceNumber => $composableBuilder(
+    column: $table.referenceNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relatedCondition => $composableBuilder(
+    column: $table.relatedCondition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get followUpRequired => $composableBuilder(
+    column: $table.followUpRequired,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get expirationDate => $composableBuilder(
+    column: $table.expirationDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get reminderDate => $composableBuilder(
+    column: $table.reminderDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isConfidential => $composableBuilder(
+    column: $table.isConfidential,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get requiresAction => $composableBuilder(
+    column: $table.requiresAction,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GeneralRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $GeneralRecordsTable> {
+  $$GeneralRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subcategory => $composableBuilder(
+    column: $table.subcategory,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get institution => $composableBuilder(
+    column: $table.institution,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get documentDate => $composableBuilder(
+    column: $table.documentDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get documentType => $composableBuilder(
+    column: $table.documentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceNumber => $composableBuilder(
+    column: $table.referenceNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get relatedCondition => $composableBuilder(
+    column: $table.relatedCondition,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get followUpRequired => $composableBuilder(
+    column: $table.followUpRequired,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get expirationDate => $composableBuilder(
+    column: $table.expirationDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get reminderDate => $composableBuilder(
+    column: $table.reminderDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isConfidential => $composableBuilder(
+    column: $table.isConfidential,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get requiresAction => $composableBuilder(
+    column: $table.requiresAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GeneralRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GeneralRecordsTable> {
+  $$GeneralRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordType => $composableBuilder(
+    column: $table.recordType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get subcategory => $composableBuilder(
+    column: $table.subcategory,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get providerName => $composableBuilder(
+    column: $table.providerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get institution => $composableBuilder(
+    column: $table.institution,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get documentDate => $composableBuilder(
+    column: $table.documentDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get documentType => $composableBuilder(
+    column: $table.documentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceNumber => $composableBuilder(
+    column: $table.referenceNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get relatedCondition => $composableBuilder(
+    column: $table.relatedCondition,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get followUpRequired => $composableBuilder(
+    column: $table.followUpRequired,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get expirationDate => $composableBuilder(
+    column: $table.expirationDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get reminderDate => $composableBuilder(
+    column: $table.reminderDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<bool> get isConfidential => $composableBuilder(
+    column: $table.isConfidential,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get requiresAction => $composableBuilder(
+    column: $table.requiresAction,
+    builder: (column) => column,
+  );
+}
+
+class $$GeneralRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GeneralRecordsTable,
+          GeneralRecord,
+          $$GeneralRecordsTableFilterComposer,
+          $$GeneralRecordsTableOrderingComposer,
+          $$GeneralRecordsTableAnnotationComposer,
+          $$GeneralRecordsTableCreateCompanionBuilder,
+          $$GeneralRecordsTableUpdateCompanionBuilder,
+          (
+            GeneralRecord,
+            BaseReferences<_$AppDatabase, $GeneralRecordsTable, GeneralRecord>,
+          ),
+          GeneralRecord,
+          PrefetchHooks Function()
+        > {
+  $$GeneralRecordsTableTableManager(
+    _$AppDatabase db,
+    $GeneralRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GeneralRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GeneralRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GeneralRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> recordType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> recordDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String?> subcategory = const Value.absent(),
+                Value<String?> providerName = const Value.absent(),
+                Value<String?> institution = const Value.absent(),
+                Value<DateTime?> documentDate = const Value.absent(),
+                Value<String?> documentType = const Value.absent(),
+                Value<String?> referenceNumber = const Value.absent(),
+                Value<String?> relatedCondition = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> followUpRequired = const Value.absent(),
+                Value<DateTime?> expirationDate = const Value.absent(),
+                Value<DateTime?> reminderDate = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<bool> isConfidential = const Value.absent(),
+                Value<bool> requiresAction = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GeneralRecordsCompanion(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                category: category,
+                subcategory: subcategory,
+                providerName: providerName,
+                institution: institution,
+                documentDate: documentDate,
+                documentType: documentType,
+                referenceNumber: referenceNumber,
+                relatedCondition: relatedCondition,
+                notes: notes,
+                followUpRequired: followUpRequired,
+                expirationDate: expirationDate,
+                reminderDate: reminderDate,
+                tags: tags,
+                isConfidential: isConfidential,
+                requiresAction: requiresAction,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                Value<String> recordType = const Value.absent(),
+                required String title,
+                Value<String?> description = const Value.absent(),
+                required DateTime recordDate,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required String category,
+                Value<String?> subcategory = const Value.absent(),
+                Value<String?> providerName = const Value.absent(),
+                Value<String?> institution = const Value.absent(),
+                Value<DateTime?> documentDate = const Value.absent(),
+                Value<String?> documentType = const Value.absent(),
+                Value<String?> referenceNumber = const Value.absent(),
+                Value<String?> relatedCondition = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> followUpRequired = const Value.absent(),
+                Value<DateTime?> expirationDate = const Value.absent(),
+                Value<DateTime?> reminderDate = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<bool> isConfidential = const Value.absent(),
+                Value<bool> requiresAction = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GeneralRecordsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                recordType: recordType,
+                title: title,
+                description: description,
+                recordDate: recordDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isActive: isActive,
+                category: category,
+                subcategory: subcategory,
+                providerName: providerName,
+                institution: institution,
+                documentDate: documentDate,
+                documentType: documentType,
+                referenceNumber: referenceNumber,
+                relatedCondition: relatedCondition,
+                notes: notes,
+                followUpRequired: followUpRequired,
+                expirationDate: expirationDate,
+                reminderDate: reminderDate,
+                tags: tags,
+                isConfidential: isConfidential,
+                requiresAction: requiresAction,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GeneralRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GeneralRecordsTable,
+      GeneralRecord,
+      $$GeneralRecordsTableFilterComposer,
+      $$GeneralRecordsTableOrderingComposer,
+      $$GeneralRecordsTableAnnotationComposer,
+      $$GeneralRecordsTableCreateCompanionBuilder,
+      $$GeneralRecordsTableUpdateCompanionBuilder,
+      (
+        GeneralRecord,
+        BaseReferences<_$AppDatabase, $GeneralRecordsTable, GeneralRecord>,
+      ),
+      GeneralRecord,
+      PrefetchHooks Function()
+    >;
 typedef $$TagsTableCreateCompanionBuilder =
     TagsCompanion Function({
       required String id,
@@ -15415,10 +34055,13 @@ typedef $$AttachmentsTableCreateCompanionBuilder =
       Value<String?> mimeType,
       required int fileSize,
       Value<String?> description,
+      Value<String?> thumbnailPath,
+      Value<int> sortOrder,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<bool> isActive,
       Value<bool> isSynced,
+      Value<bool> isConfidential,
       Value<int> rowid,
     });
 typedef $$AttachmentsTableUpdateCompanionBuilder =
@@ -15431,10 +34074,13 @@ typedef $$AttachmentsTableUpdateCompanionBuilder =
       Value<String?> mimeType,
       Value<int> fileSize,
       Value<String?> description,
+      Value<String?> thumbnailPath,
+      Value<int> sortOrder,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<bool> isActive,
       Value<bool> isSynced,
+      Value<bool> isConfidential,
       Value<int> rowid,
     });
 
@@ -15487,6 +34133,16 @@ class $$AttachmentsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -15504,6 +34160,11 @@ class $$AttachmentsTableFilterComposer
 
   ColumnFilters<bool> get isSynced => $composableBuilder(
     column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isConfidential => $composableBuilder(
+    column: $table.isConfidential,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -15557,6 +34218,16 @@ class $$AttachmentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -15574,6 +34245,11 @@ class $$AttachmentsTableOrderingComposer
 
   ColumnOrderings<bool> get isSynced => $composableBuilder(
     column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isConfidential => $composableBuilder(
+    column: $table.isConfidential,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -15613,6 +34289,14 @@ class $$AttachmentsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -15624,6 +34308,11 @@ class $$AttachmentsTableAnnotationComposer
 
   GeneratedColumn<bool> get isSynced =>
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<bool> get isConfidential => $composableBuilder(
+    column: $table.isConfidential,
+    builder: (column) => column,
+  );
 }
 
 class $$AttachmentsTableTableManager
@@ -15665,10 +34354,13 @@ class $$AttachmentsTableTableManager
                 Value<String?> mimeType = const Value.absent(),
                 Value<int> fileSize = const Value.absent(),
                 Value<String?> description = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
+                Value<bool> isConfidential = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AttachmentsCompanion(
                 id: id,
@@ -15679,10 +34371,13 @@ class $$AttachmentsTableTableManager
                 mimeType: mimeType,
                 fileSize: fileSize,
                 description: description,
+                thumbnailPath: thumbnailPath,
+                sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isActive: isActive,
                 isSynced: isSynced,
+                isConfidential: isConfidential,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -15695,10 +34390,13 @@ class $$AttachmentsTableTableManager
                 Value<String?> mimeType = const Value.absent(),
                 required int fileSize,
                 Value<String?> description = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
+                Value<bool> isConfidential = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AttachmentsCompanion.insert(
                 id: id,
@@ -15709,10 +34407,13 @@ class $$AttachmentsTableTableManager
                 mimeType: mimeType,
                 fileSize: fileSize,
                 description: description,
+                thumbnailPath: thumbnailPath,
+                sortOrder: sortOrder,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isActive: isActive,
                 isSynced: isSynced,
+                isConfidential: isConfidential,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16611,19 +35312,23 @@ typedef $$RecordTagsTableProcessedTableManager =
 typedef $$SearchHistoryTableCreateCompanionBuilder =
     SearchHistoryCompanion Function({
       required String id,
-      required String query,
-      Value<String?> filters,
+      required String searchTerm,
+      required String searchType,
+      Value<int> searchCount,
+      Value<DateTime> lastSearched,
       Value<DateTime> createdAt,
-      Value<int> useCount,
+      Value<bool> isActive,
       Value<int> rowid,
     });
 typedef $$SearchHistoryTableUpdateCompanionBuilder =
     SearchHistoryCompanion Function({
       Value<String> id,
-      Value<String> query,
-      Value<String?> filters,
+      Value<String> searchTerm,
+      Value<String> searchType,
+      Value<int> searchCount,
+      Value<DateTime> lastSearched,
       Value<DateTime> createdAt,
-      Value<int> useCount,
+      Value<bool> isActive,
       Value<int> rowid,
     });
 
@@ -16641,13 +35346,23 @@ class $$SearchHistoryTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get query => $composableBuilder(
-    column: $table.query,
+  ColumnFilters<String> get searchTerm => $composableBuilder(
+    column: $table.searchTerm,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get filters => $composableBuilder(
-    column: $table.filters,
+  ColumnFilters<String> get searchType => $composableBuilder(
+    column: $table.searchType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get searchCount => $composableBuilder(
+    column: $table.searchCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSearched => $composableBuilder(
+    column: $table.lastSearched,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16656,8 +35371,8 @@ class $$SearchHistoryTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get useCount => $composableBuilder(
-    column: $table.useCount,
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -16676,13 +35391,23 @@ class $$SearchHistoryTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get query => $composableBuilder(
-    column: $table.query,
+  ColumnOrderings<String> get searchTerm => $composableBuilder(
+    column: $table.searchTerm,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get filters => $composableBuilder(
-    column: $table.filters,
+  ColumnOrderings<String> get searchType => $composableBuilder(
+    column: $table.searchType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get searchCount => $composableBuilder(
+    column: $table.searchCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSearched => $composableBuilder(
+    column: $table.lastSearched,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -16691,8 +35416,8 @@ class $$SearchHistoryTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get useCount => $composableBuilder(
-    column: $table.useCount,
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -16709,17 +35434,31 @@ class $$SearchHistoryTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get query =>
-      $composableBuilder(column: $table.query, builder: (column) => column);
+  GeneratedColumn<String> get searchTerm => $composableBuilder(
+    column: $table.searchTerm,
+    builder: (column) => column,
+  );
 
-  GeneratedColumn<String> get filters =>
-      $composableBuilder(column: $table.filters, builder: (column) => column);
+  GeneratedColumn<String> get searchType => $composableBuilder(
+    column: $table.searchType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get searchCount => $composableBuilder(
+    column: $table.searchCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastSearched => $composableBuilder(
+    column: $table.lastSearched,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<int> get useCount =>
-      $composableBuilder(column: $table.useCount, builder: (column) => column);
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
 }
 
 class $$SearchHistoryTableTableManager
@@ -16758,33 +35497,41 @@ class $$SearchHistoryTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> query = const Value.absent(),
-                Value<String?> filters = const Value.absent(),
+                Value<String> searchTerm = const Value.absent(),
+                Value<String> searchType = const Value.absent(),
+                Value<int> searchCount = const Value.absent(),
+                Value<DateTime> lastSearched = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-                Value<int> useCount = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SearchHistoryCompanion(
                 id: id,
-                query: query,
-                filters: filters,
+                searchTerm: searchTerm,
+                searchType: searchType,
+                searchCount: searchCount,
+                lastSearched: lastSearched,
                 createdAt: createdAt,
-                useCount: useCount,
+                isActive: isActive,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
-                required String query,
-                Value<String?> filters = const Value.absent(),
+                required String searchTerm,
+                required String searchType,
+                Value<int> searchCount = const Value.absent(),
+                Value<DateTime> lastSearched = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-                Value<int> useCount = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SearchHistoryCompanion.insert(
                 id: id,
-                query: query,
-                filters: filters,
+                searchTerm: searchTerm,
+                searchType: searchType,
+                searchCount: searchCount,
+                lastSearched: lastSearched,
                 createdAt: createdAt,
-                useCount: useCount,
+                isActive: isActive,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16832,6 +35579,22 @@ class $AppDatabaseManager {
       $$AllergiesTableTableManager(_db, _db.allergies);
   $$ChronicConditionsTableTableManager get chronicConditions =>
       $$ChronicConditionsTableTableManager(_db, _db.chronicConditions);
+  $$SurgicalRecordsTableTableManager get surgicalRecords =>
+      $$SurgicalRecordsTableTableManager(_db, _db.surgicalRecords);
+  $$RadiologyRecordsTableTableManager get radiologyRecords =>
+      $$RadiologyRecordsTableTableManager(_db, _db.radiologyRecords);
+  $$PathologyRecordsTableTableManager get pathologyRecords =>
+      $$PathologyRecordsTableTableManager(_db, _db.pathologyRecords);
+  $$DischargeSummariesTableTableManager get dischargeSummaries =>
+      $$DischargeSummariesTableTableManager(_db, _db.dischargeSummaries);
+  $$HospitalAdmissionsTableTableManager get hospitalAdmissions =>
+      $$HospitalAdmissionsTableTableManager(_db, _db.hospitalAdmissions);
+  $$DentalRecordsTableTableManager get dentalRecords =>
+      $$DentalRecordsTableTableManager(_db, _db.dentalRecords);
+  $$MentalHealthRecordsTableTableManager get mentalHealthRecords =>
+      $$MentalHealthRecordsTableTableManager(_db, _db.mentalHealthRecords);
+  $$GeneralRecordsTableTableManager get generalRecords =>
+      $$GeneralRecordsTableTableManager(_db, _db.generalRecords);
   $$TagsTableTableManager get tags => $$TagsTableTableManager(_db, _db.tags);
   $$AttachmentsTableTableManager get attachments =>
       $$AttachmentsTableTableManager(_db, _db.attachments);

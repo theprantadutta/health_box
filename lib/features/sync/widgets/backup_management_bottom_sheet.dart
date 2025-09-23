@@ -14,296 +14,467 @@ class BackupManagementBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _BackupManagementBottomSheetState
-    extends ConsumerState<BackupManagementBottomSheet> {
-  bool _showDatabaseBackups = true;
-  bool _showDataExports = true;
+    extends ConsumerState<BackupManagementBottomSheet>
+    with TickerProviderStateMixin {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backupsAsync = ref.watch(googleDriveBackupsProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth > 600;
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Modern handle bar
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            height: 5,
-            width: 50,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.onSurface.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(3),
-            ),
-          ),
-
-          // Modern header with gradient background
-          Container(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.primary.withOpacity(0.1),
-                  theme.colorScheme.primaryContainer.withOpacity(0.05),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    return DraggableScrollableSheet(
+      initialChildSize: 0.9,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 24,
+                offset: const Offset(0, -8),
+                spreadRadius: 0,
               ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
+            ],
+          ),
+          child: Column(
+            children: [
+              // Modern drag handle
+              Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                height: 4,
+                width: 48,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurfaceVariant.withValues(
+                    alpha: 0.4,
+                  ),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              // Header with glassmorphism effect
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: isTablet ? 32 : 20,
+                  vertical: 8,
+                ),
+                padding: EdgeInsets.all(isTablet ? 28 : 20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      theme.colorScheme.secondaryContainer.withValues(
+                        alpha: 0.2,
+                      ),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.1),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    // Icon with animated background
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.colorScheme.primary,
+                            theme.colorScheme.primary.withValues(alpha: 0.8),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.4,
+                            ),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.cloud_queue_rounded,
+                        color: Colors.white,
+                        size: isTablet ? 32 : 28,
+                      ),
+                    ),
+
+                    SizedBox(width: isTablet ? 20 : 16),
+
+                    // Title and subtitle
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Cloud Backups',
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              fontSize: isTablet ? 28 : 24,
+                              color: theme.colorScheme.onSurface,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Manage your secure cloud storage',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontSize: isTablet ? 16 : 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Close button with modern design
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface.withValues(alpha: 0.8),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.outline.withValues(
+                            alpha: 0.2,
+                          ),
+                        ),
+                      ),
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        iconSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Tab bar for different views
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: isTablet ? 32 : 20),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
                     color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.primary.withOpacity(0.3),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.cloud_queue,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Backup Management',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Manage your cloud storage backups',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: theme.colorScheme.outline.withOpacity(0.2),
-                    ),
-                  ),
-                  child: IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.close,
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Modern search and filters
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: theme.colorScheme.outline.withOpacity(0.1),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Search & Filter',
-                  style: theme.textTheme.titleSmall?.copyWith(
+                  indicatorPadding: const EdgeInsets.all(4),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
+                  labelStyle: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.onSurface,
+                    fontSize: isTablet ? 14 : 13,
                   ),
-                ),
-                const SizedBox(height: 16),
-
-                // Modern search bar
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: theme.colorScheme.outline.withOpacity(0.2),
+                  tabs: const [
+                    Tab(
+                      icon: Icon(Icons.view_list_rounded, size: 18),
+                      text: 'All',
                     ),
+                    Tab(
+                      icon: Icon(Icons.storage_rounded, size: 18),
+                      text: 'Database',
+                    ),
+                    Tab(
+                      icon: Icon(Icons.description_rounded, size: 18),
+                      text: 'Exports',
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Search bar with modern design
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: isTablet ? 32 : 20),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
                   ),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search by name or date...',
-                      hintStyle: TextStyle(
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search backups by name or date...',
+                    hintStyle: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.6,
                       ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      fontSize: isTablet ? 16 : 14,
+                    ),
+                    prefixIcon: Container(
+                      padding: const EdgeInsets.all(12),
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.7,
+                        ),
+                        size: 20,
                       ),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? IconButton(
+                    ),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? Container(
+                            margin: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.onSurfaceVariant
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _searchQuery = '');
                               },
                               icon: Icon(
-                                Icons.clear,
-                                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                Icons.close_rounded,
+                                color: theme.colorScheme.onSurfaceVariant,
+                                size: 18,
                               ),
-                            )
-                          : null,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            ),
+                          )
+                        : null,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: isTablet ? 20 : 16,
                     ),
-                    onChanged: (value) => setState(() => _searchQuery = value),
                   ),
+                  style: TextStyle(fontSize: isTablet ? 16 : 14),
+                  onChanged: (value) => setState(() => _searchQuery = value),
                 ),
-                const SizedBox(height: 16),
+              ),
 
-                // Modern filter chips
-                Text(
-                  'Filter by type',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
+              const SizedBox(height: 20),
+
+              // Content area
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
                   children: [
-                    _buildFilterChip(
-                      theme: theme,
-                      label: 'Database Backups',
-                      icon: Icons.data_object,
-                      isSelected: _showDatabaseBackups,
-                      onSelected: (selected) => setState(() => _showDatabaseBackups = selected),
-                    ),
-                    _buildFilterChip(
-                      theme: theme,
-                      label: 'Data Exports',
-                      icon: Icons.description,
-                      isSelected: _showDataExports,
-                      onSelected: (selected) => setState(() => _showDataExports = selected),
+                    _buildBackupContent(scrollController, showAll: true),
+                    _buildBackupContent(scrollController, showDatabase: true),
+                    _buildBackupContent(scrollController, showExports: true),
+                  ],
+                ),
+              ),
+
+              // Modern floating action buttons
+              Container(
+                padding: EdgeInsets.all(isTablet ? 32 : 24),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, -8),
                     ),
                   ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildActionButton(
+                        context: context,
+                        icon: Icons.storage_rounded,
+                        label: 'Database Backup',
+                        subtitle: 'Full backup',
+                        color: theme.colorScheme.primary,
+                        onPressed: _createDatabaseBackup,
+                        isTablet: isTablet,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildActionButton(
+                        context: context,
+                        icon: Icons.file_upload_rounded,
+                        label: 'Data Export',
+                        subtitle: 'JSON export',
+                        color: theme.colorScheme.secondary,
+                        onPressed: _createDataExport,
+                        isTablet: isTablet,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildActionButton({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onPressed,
+    required bool isTablet,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color, color.withValues(alpha: 0.8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: EdgeInsets.all(isTablet ? 20 : 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, color: Colors.white, size: isTablet ? 28 : 24),
+                const SizedBox(height: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: isTablet ? 16 : 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: isTablet ? 13 : 12,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
 
-          const SizedBox(height: 16),
+  Widget _buildBackupContent(
+    ScrollController scrollController, {
+    bool showAll = false,
+    bool showDatabase = false,
+    bool showExports = false,
+  }) {
+    final backupsAsync = ref.watch(googleDriveBackupsProvider);
+    final theme = Theme.of(context);
+    final isTablet = MediaQuery.of(context).size.width > 600;
 
-          // Backup list
-          Expanded(
-            child: backupsAsync.when(
-              loading: () => const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Loading backups...'),
-                  ],
-                ),
-              ),
-              error: (error, _) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 48,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Failed to load backups',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      error.toString(),
-                      style: theme.textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        ref.invalidate(googleDriveBackupsProvider);
-                      },
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              ),
-              data: (backups) => _buildBackupList(backups, theme),
-            ),
-          ),
+    return backupsAsync.when(
+      loading: () => _buildLoadingState(theme, isTablet),
+      error: (error, _) => _buildErrorState(error.toString(), theme, isTablet),
+      data: (backups) => _buildBackupList(
+        backups,
+        scrollController,
+        showAll: showAll,
+        showDatabase: showDatabase,
+        showExports: showExports,
+      ),
+    );
+  }
 
-          // Bottom actions
+  Widget _buildLoadingState(ThemeData theme, bool isTablet) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: theme.cardColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
-                ),
-              ],
+              color: theme.colorScheme.primaryContainer.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(24),
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _createDatabaseBackup(),
-                    icon: const Text('🗄️'),
-                    label: const Text('Database Backup'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _createDataExport(),
-                    icon: const Text('📄'),
-                    label: const Text('Data Export'),
-                  ),
-                ),
-              ],
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Loading your backups...',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: isTablet ? 18 : 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Please wait while we fetch your cloud storage',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontSize: isTablet ? 14 : 13,
             ),
           ),
         ],
@@ -311,229 +482,719 @@ class _BackupManagementBottomSheetState
     );
   }
 
-  Widget _buildBackupList(List<BackupFile> allBackups, ThemeData theme) {
-    // Filter backups based on type and search query
-    final filteredBackups = allBackups.where((backup) {
-      final matchesType = (_showDatabaseBackups &&
-              backup.type == BackupType.database) ||
-          (_showDataExports && backup.type == BackupType.export);
+  Widget _buildErrorState(String error, ThemeData theme, bool isTablet) {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.all(isTablet ? 32 : 24),
+        padding: EdgeInsets.all(isTablet ? 32 : 24),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.errorContainer.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: theme.colorScheme.error.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.error.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                Icons.cloud_off_rounded,
+                size: isTablet ? 48 : 40,
+                color: theme.colorScheme.error,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Unable to load backups',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.error,
+                fontSize: isTablet ? 22 : 18,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Check your internet connection and try again',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onErrorContainer,
+                fontSize: isTablet ? 14 : 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () {
+                ref.invalidate(googleDriveBackupsProvider);
+              },
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Retry'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.error,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTablet ? 24 : 20,
+                  vertical: isTablet ? 16 : 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-      final matchesSearch = _searchQuery.isEmpty ||
-          backup.name.toLowerCase().contains(_searchQuery.toLowerCase());
+  Widget _buildBackupList(
+    List<BackupFile> allBackups,
+    ScrollController scrollController, {
+    bool showAll = false,
+    bool showDatabase = false,
+    bool showExports = false,
+  }) {
+    final theme = Theme.of(context);
+    final isTablet = MediaQuery.of(context).size.width > 600;
+
+    // Filter backups based on tab and search query
+    final filteredBackups = allBackups.where((backup) {
+      bool matchesType = false;
+
+      if (showAll) {
+        matchesType = true;
+      } else if (showDatabase) {
+        matchesType = backup.type == BackupType.database;
+      } else if (showExports) {
+        matchesType = backup.type == BackupType.export;
+      }
+
+      final matchesSearch =
+          _searchQuery.isEmpty ||
+          backup.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          DateFormat('MMM dd, yyyy')
+              .format(backup.createdTime)
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase());
 
       return matchesType && matchesSearch;
     }).toList();
 
     if (filteredBackups.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.cloud_off,
-              size: 64,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No backups found',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Create your first backup using the buttons below',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[500],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
+      return _buildEmptyState(theme, isTablet);
     }
 
     return RefreshIndicator(
       onRefresh: () async {
         ref.invalidate(googleDriveBackupsProvider);
       },
+      color: theme.colorScheme.primary,
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        controller: scrollController,
+        padding: EdgeInsets.symmetric(
+          horizontal: isTablet ? 32 : 20,
+          vertical: 8,
+        ),
         itemCount: filteredBackups.length,
         itemBuilder: (context, index) {
           final backup = filteredBackups[index];
-          return _buildBackupTile(backup, theme);
+          return _buildModernBackupTile(backup, theme, isTablet);
         },
       ),
     );
   }
 
-  Widget _buildBackupTile(BackupFile backup, ThemeData theme) {
-    final dateFormat = DateFormat('MMM dd, yyyy • HH:mm');
+  Widget _buildEmptyState(ThemeData theme, bool isTablet) {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.all(isTablet ? 32 : 24),
+        padding: EdgeInsets.all(isTablet ? 32 : 24),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.3,
+          ),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(
+                Icons.cloud_upload_rounded,
+                size: isTablet ? 64 : 48,
+                color: theme.colorScheme.primary.withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'No backups found',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: isTablet ? 22 : 18,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Create your first backup to secure your medical data in the cloud',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: isTablet ? 14 : 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-    return Card(
+  Widget _buildModernBackupTile(
+    BackupFile backup,
+    ThemeData theme,
+    bool isTablet,
+  ) {
+    final relativeTime = _getRelativeTime(backup.createdTime);
+
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.1),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Dismissible(
         key: Key(backup.id),
         direction: DismissDirection.endToStart,
         background: Container(
           decoration: BoxDecoration(
-            color: Colors.red[400],
-            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [Colors.red.withValues(alpha: 0.1), Colors.red],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
           ),
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20),
-          child: const Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-            size: 32,
+          padding: const EdgeInsets.only(right: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.delete_forever_rounded,
+                color: Colors.white,
+                size: 32,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Delete',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: isTablet ? 12 : 11,
+                ),
+              ),
+            ],
           ),
         ),
         confirmDismiss: (direction) => _confirmDeleteBackup(backup),
         onDismissed: (direction) => _deleteBackup(backup),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(16),
-          leading: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: backup.type == BackupType.database
-                  ? Colors.blue[50]
-                  : Colors.green[50],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                backup.typeIcon,
-                style: const TextStyle(fontSize: 24),
-              ),
-            ),
-          ),
-          title: Text(
-            backup.name,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                backup.type.displayName,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: backup.type == BackupType.database
-                      ? Colors.blue[700]
-                      : Colors.green[700],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Row(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => _showBackupDetails(backup),
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: EdgeInsets.all(isTablet ? 20 : 16),
+              child: Row(
                 children: [
-                  Icon(
-                    Icons.schedule,
-                    size: 14,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    dateFormat.format(backup.createdTime),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[600],
+                  // Modern icon with gradient background
+                  Container(
+                    width: isTablet ? 60 : 52,
+                    height: isTablet ? 60 : 52,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: backup.type == BackupType.database
+                            ? [Colors.blue.shade400, Colors.blue.shade600]
+                            : [Colors.green.shade400, Colors.green.shade600],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              (backup.type == BackupType.database
+                                      ? Colors.blue
+                                      : Colors.green)
+                                  .withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
+                    child: Icon(
+                      backup.type == BackupType.database
+                          ? Icons.storage_rounded
+                          : Icons.description_rounded,
+                      color: Colors.white,
+                      size: isTablet ? 28 : 24,
+                    ),
+                  ),
+
+                  SizedBox(width: isTablet ? 20 : 16),
+
+                  // File info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          backup.name.length > 30
+                              ? '${backup.name.substring(0, 30)}...'
+                              : backup.name,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: isTablet ? 16 : 14,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+
+                        // Type badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: backup.type == BackupType.database
+                                ? Colors.blue.withValues(alpha: 0.1)
+                                : Colors.green.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: backup.type == BackupType.database
+                                  ? Colors.blue.withValues(alpha: 0.3)
+                                  : Colors.green.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            backup.type.displayName,
+                            style: TextStyle(
+                              fontSize: isTablet ? 11 : 10,
+                              fontWeight: FontWeight.w600,
+                              color: backup.type == BackupType.database
+                                  ? Colors.blue.shade700
+                                  : Colors.green.shade700,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
+
+                        // Date and time info
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.schedule_rounded,
+                              size: isTablet ? 14 : 12,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              relativeTime,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontSize: isTablet ? 12 : 11,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Size and actions
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // Size chip
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondaryContainer
+                              .withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          backup.sizeFormatted,
+                          style: TextStyle(
+                            fontSize: isTablet ? 11 : 10,
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.onSecondaryContainer,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Actions menu
+                      Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest
+                              .withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: PopupMenuButton<String>(
+                          icon: Icon(
+                            Icons.more_vert_rounded,
+                            size: isTablet ? 20 : 18,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          onSelected: (action) =>
+                              _handleBackupAction(action, backup),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 'restore',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.restore_rounded,
+                                    size: 18,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('Restore'),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 'download',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.download_rounded,
+                                    size: 18,
+                                    color: theme.colorScheme.secondary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('Download'),
+                                ],
+                              ),
+                            ),
+                            const PopupMenuDivider(),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete_rounded,
+                                    size: 18,
+                                    color: Colors.red.shade600,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                      color: Colors.red.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceVariant,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  backup.sizeFormatted,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 10,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert, size: 20),
-                onSelected: (action) => _handleBackupAction(action, backup),
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'restore',
-                    child: Row(
-                      children: [
-                        Icon(Icons.restore, size: 20),
-                        SizedBox(width: 8),
-                        Text('Restore'),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'download',
-                    child: Row(
-                      children: [
-                        Icon(Icons.download, size: 20),
-                        SizedBox(width: 8),
-                        Text('Download'),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete, size: 20, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('Delete', style: TextStyle(color: Colors.red)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Future<bool?> _confirmDeleteBackup(BackupFile backup) async {
-    return showDialog<bool>(
+  String _getRelativeTime(DateTime createdTime) {
+    final now = DateTime.now();
+    final difference = now.difference(createdTime);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minute${difference.inMinutes == 1 ? '' : 's'} ago';
+    } else {
+      return 'Just now';
+    }
+  }
+
+  void _showBackupDetails(BackupFile backup) {
+    final theme = Theme.of(context);
+    final dateFormat = DateFormat('MMMM dd, yyyy • hh:mm a');
+
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Backup'),
-        content: Text(
-          'Are you sure you want to delete "${backup.name}"?\n\nThis action cannot be undone.',
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+        child: Column(
+          children: [
+            // Handle
+            Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 20),
+              height: 4,
+              width: 48,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.4,
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-            child: const Text('Delete'),
+
+            // Header
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: backup.type == BackupType.database
+                            ? [Colors.blue.shade400, Colors.blue.shade600]
+                            : [Colors.green.shade400, Colors.green.shade600],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      backup.type == BackupType.database
+                          ? Icons.storage_rounded
+                          : Icons.description_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Backup Details',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          backup.type.displayName,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Details
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                children: [
+                  _buildDetailItem(
+                    theme,
+                    'File Name',
+                    backup.name,
+                    Icons.title_rounded,
+                  ),
+                  _buildDetailItem(
+                    theme,
+                    'Created',
+                    dateFormat.format(backup.createdTime),
+                    Icons.schedule_rounded,
+                  ),
+                  _buildDetailItem(
+                    theme,
+                    'File Size',
+                    backup.sizeFormatted,
+                    Icons.storage_rounded,
+                  ),
+                  _buildDetailItem(
+                    theme,
+                    'Type',
+                    backup.type.displayName,
+                    backup.type == BackupType.database
+                        ? Icons.data_object_rounded
+                        : Icons.description_rounded,
+                  ),
+                  if (backup.description != null)
+                    _buildDetailItem(
+                      theme,
+                      'Description',
+                      backup.description!,
+                      Icons.notes_rounded,
+                    ),
+                ],
+              ),
+            ),
+
+            // Actions
+            Container(
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _restoreBackup(backup);
+                      },
+                      icon: const Icon(Icons.restore_rounded),
+                      label: const Text('Restore'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _downloadBackup(backup);
+                      },
+                      icon: const Icon(Icons.download_rounded),
+                      label: const Text('Download'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailItem(
+    ThemeData theme,
+    String label,
+    String value,
+    IconData icon,
+  ) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 20, color: theme.colorScheme.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  // Keep all the existing methods for backup operations
+  Future<bool?> _confirmDeleteBackup(BackupFile backup) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.warning_rounded, color: Colors.orange.shade600),
+              const SizedBox(width: 8),
+              const Text('Delete Backup'),
+            ],
+          ),
+          content: Text(
+            'Are you sure you want to delete "${backup.name}"?\n\nThis action cannot be undone.',
+            style: theme.textTheme.bodyMedium,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -559,9 +1220,19 @@ class _BackupManagementBottomSheetState
       await ref.read(backupOperationsProvider.notifier).createDatabaseBackup();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Database backup created successfully'),
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Database backup created successfully'),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -569,8 +1240,18 @@ class _BackupManagementBottomSheetState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to create backup: $e'),
+            content: Row(
+              children: [
+                const Icon(Icons.error_rounded, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(child: Text('Failed to create backup: $e')),
+              ],
+            ),
             backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -582,9 +1263,19 @@ class _BackupManagementBottomSheetState
       await ref.read(backupOperationsProvider.notifier).createDataExport();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Data export created successfully'),
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Data export created successfully'),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -592,8 +1283,18 @@ class _BackupManagementBottomSheetState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to create export: $e'),
+            content: Row(
+              children: [
+                const Icon(Icons.error_rounded, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(child: Text('Failed to create export: $e')),
+              ],
+            ),
             backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -601,20 +1302,29 @@ class _BackupManagementBottomSheetState
   }
 
   Future<void> _restoreBackup(BackupFile backup) async {
+    final theme = Theme.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Restore Backup'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.restore_rounded, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            const Text('Restore Backup'),
+          ],
+        ),
         content: Text(
           'Are you sure you want to restore "${backup.name}"?\n\n'
           'This will replace your current data with the backup data.',
+          style: theme.textTheme.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Restore'),
           ),
@@ -637,9 +1347,19 @@ class _BackupManagementBottomSheetState
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Backup restored successfully'),
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Backup restored successfully'),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -647,8 +1367,18 @@ class _BackupManagementBottomSheetState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to restore backup: $e'),
+            content: Row(
+              children: [
+                const Icon(Icons.error_rounded, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(child: Text('Failed to restore backup: $e')),
+              ],
+            ),
             backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -658,23 +1388,40 @@ class _BackupManagementBottomSheetState
   Future<void> _downloadBackup(BackupFile backup) async {
     // This would implement local download functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Download functionality will be implemented'),
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.info_rounded, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Download functionality will be implemented'),
+          ],
+        ),
+        backgroundColor: Colors.blue,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 
   Future<void> _deleteBackup(BackupFile backup) async {
     try {
-      await ref
-          .read(backupOperationsProvider.notifier)
-          .deleteBackup(backup.id);
+      await ref.read(backupOperationsProvider.notifier).deleteBackup(backup.id);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Backup deleted successfully'),
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white),
+                SizedBox(width: 8),
+                Text('Backup deleted successfully'),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -682,70 +1429,21 @@ class _BackupManagementBottomSheetState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete backup: $e'),
+            content: Row(
+              children: [
+                const Icon(Icons.error_rounded, color: Colors.white),
+                SizedBox(width: 8),
+                Expanded(child: Text('Failed to delete backup: $e')),
+              ],
+            ),
             backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
     }
-  }
-
-  Widget _buildFilterChip({
-    required ThemeData theme,
-    required String label,
-    required IconData icon,
-    required bool isSelected,
-    required Function(bool) onSelected,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => onSelected(!isSelected),
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? theme.colorScheme.primary.withOpacity(0.1)
-                : theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: isSelected
-                  ? theme.colorScheme.primary.withOpacity(0.3)
-                  : theme.colorScheme.outline.withOpacity(0.2),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 16,
-                color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(0.7),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: isSelected
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.onSurface.withOpacity(0.8),
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 }

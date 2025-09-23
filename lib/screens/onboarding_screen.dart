@@ -344,9 +344,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     return ResponsiveUtils.buildResponsiveContainer(
       context: context,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
           Semantics(
             label: 'Backup strategy icon',
             child: Icon(
@@ -424,6 +425,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
           ],
         ],
+        ),
       ),
     );
   }

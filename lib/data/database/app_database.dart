@@ -15,11 +15,20 @@ import '../models/medication.dart';
 import '../models/vaccination.dart';
 import '../models/allergy.dart';
 import '../models/chronic_condition.dart';
+import '../models/surgical_record.dart';
+import '../models/radiology_record.dart';
+import '../models/pathology_record.dart';
+import '../models/discharge_summary.dart';
+import '../models/hospital_admission.dart';
+import '../models/dental_record.dart';
+import '../models/mental_health_record.dart';
+import '../models/general_record.dart';
 import '../models/tag.dart';
 import '../models/attachment.dart';
 import '../models/reminder.dart';
 import '../models/record_tag.dart';
 import '../models/emergency_card.dart';
+import '../models/search_history.dart';
 
 part 'app_database.g.dart';
 
@@ -33,6 +42,14 @@ part 'app_database.g.dart';
     Vaccinations,
     Allergies,
     ChronicConditions,
+    SurgicalRecords,
+    RadiologyRecords,
+    PathologyRecords,
+    DischargeSummaries,
+    HospitalAdmissions,
+    DentalRecords,
+    MentalHealthRecords,
+    GeneralRecords,
     Tags,
     Attachments,
     Reminders,
@@ -48,7 +65,7 @@ class AppDatabase extends _$AppDatabase {
   static AppDatabase get instance => _instance;
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -147,6 +164,130 @@ class AppDatabase extends _$AppDatabase {
           debugPrint('Medication table recreated successfully with static timestamp constraints');
         } catch (e) {
           debugPrint('Migration to v4 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 4 && to == 5) {
+        // Migration from v4 to v5: Add new medical record types
+        try {
+          debugPrint('Starting migration to v5 - adding new medical record types...');
+
+          // Create all new tables
+          await m.createTable(surgicalRecords);
+          await m.createTable(radiologyRecords);
+          await m.createTable(pathologyRecords);
+          await m.createTable(dischargeSummaries);
+          await m.createTable(hospitalAdmissions);
+          await m.createTable(dentalRecords);
+          await m.createTable(mentalHealthRecords);
+          await m.createTable(generalRecords);
+          await m.createTable(searchHistory);
+
+          // Update the medical_records table constraint to include new record types
+          // First, we need to backup existing data, drop table, recreate, and restore
+          await customStatement('''
+            CREATE TEMPORARY TABLE medical_records_backup AS
+            SELECT * FROM medical_records;
+          ''');
+
+          await customStatement('DROP TABLE medical_records;');
+          await m.createTable(medicalRecords);
+
+          await customStatement('''
+            INSERT INTO medical_records
+            SELECT * FROM medical_records_backup;
+          ''');
+
+          await customStatement('DROP TABLE medical_records_backup;');
+
+          debugPrint('Migration to v5 completed successfully');
+        } catch (e) {
+          debugPrint('Migration to v5 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 5 && to == 6) {
+        // Migration from v5 to v6: Enhanced attachment model
+        try {
+          debugPrint('Starting migration to v6 - enhancing attachment model...');
+
+          // Backup existing attachments data
+          await customStatement('''
+            CREATE TEMPORARY TABLE attachments_backup AS
+            SELECT * FROM attachments;
+          ''');
+
+          // Drop and recreate attachments table with new fields
+          await customStatement('DROP TABLE attachments;');
+          await m.createTable(attachments);
+
+          // Restore existing data with default values for new fields
+          await customStatement('''
+            INSERT INTO attachments (
+              id, record_id, file_name, file_path, file_type, mime_type,
+              file_size, description, created_at, updated_at, is_active, is_synced,
+              thumbnail_path, sort_order, is_confidential
+            )
+            SELECT
+              id, record_id, file_name, file_path, file_type, mime_type,
+              file_size, description, created_at, updated_at, is_active, is_synced,
+              NULL, 0, 0
+            FROM attachments_backup;
+          ''');
+
+          await customStatement('DROP TABLE attachments_backup;');
+
+          debugPrint('Migration to v6 completed successfully');
+        } catch (e) {
+          debugPrint('Migration to v6 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 6 && to == 7) {
+        // Migration from v6 to v7: Enhanced prescription model for appointments
+        try {
+          debugPrint('Starting migration to v7 - enhancing prescription model for appointments...');
+
+          // Backup existing prescriptions data
+          await customStatement('''
+            CREATE TEMPORARY TABLE prescriptions_backup AS
+            SELECT * FROM prescriptions;
+          ''');
+
+          // Drop and recreate prescriptions table with new fields
+          await customStatement('DROP TABLE prescriptions;');
+          await m.createTable(prescriptions);
+
+          // Restore existing data with default values for new fields
+          await customStatement('''
+            INSERT INTO prescriptions (
+              id, profile_id, record_type, title, description, record_date,
+              created_at, updated_at, is_active, prescription_type,
+              medication_name, dosage, frequency, instructions, prescribing_doctor,
+              pharmacy, start_date, end_date, refills_remaining, is_prescription_active,
+              appointment_date, appointment_time, doctor_name, specialty, clinic_name,
+              clinic_address, appointment_type, reason_for_visit, appointment_status,
+              appointment_notes, reminder_set, reminder_minutes
+            )
+            SELECT
+              id, profile_id, record_type, title, description, record_date,
+              created_at, updated_at, is_active, 'prescription',
+              medication_name, dosage, frequency, instructions, prescribing_doctor,
+              pharmacy, start_date, end_date, refills_remaining, is_prescription_active,
+              NULL, NULL, NULL, NULL, NULL,
+              NULL, NULL, NULL, NULL,
+              NULL, 0, NULL
+            FROM prescriptions_backup;
+          ''');
+
+          await customStatement('DROP TABLE prescriptions_backup;');
+
+          debugPrint('Migration to v7 completed successfully');
+        } catch (e) {
+          debugPrint('Migration to v7 failed: $e');
           rethrow;
         }
       }

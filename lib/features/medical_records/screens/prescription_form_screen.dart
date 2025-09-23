@@ -51,9 +51,9 @@ class _PrescriptionFormScreenState
       final prescription = widget.prescription!;
       _titleController.text = prescription.title;
       _descriptionController.text = prescription.description ?? '';
-      _medicationNameController.text = prescription.medicationName;
-      _dosageController.text = prescription.dosage;
-      _frequencyController.text = prescription.frequency;
+      _medicationNameController.text = prescription.medicationName ?? '';
+      _dosageController.text = prescription.dosage ?? '';
+      _frequencyController.text = prescription.frequency ?? '';
       _instructionsController.text = prescription.instructions ?? '';
       _doctorController.text = prescription.prescribingDoctor ?? '';
       _pharmacyController.text = prescription.pharmacy ?? '';

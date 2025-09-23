@@ -62,6 +62,9 @@ class GoogleDriveAuth extends _$GoogleDriveAuth {
       if (success) {
         // Update sync settings
         ref.read(syncSettingsProvider.notifier).updateGoogleDriveConnected(true);
+
+        // Auto-enable backup with Google Drive strategy after successful login
+        await ref.read(backupPreferenceNotifierProvider.notifier).enableBackup(BackupStrategy.googleDrive);
       }
 
       return success;
@@ -82,6 +85,13 @@ class GoogleDriveAuth extends _$GoogleDriveAuth {
     final silentSuccess = await service.signInSilently();
     if (silentSuccess) {
       state = const AsyncValue.data(true);
+
+      // Auto-enable backup with Google Drive strategy after successful silent sign-in
+      await ref.read(backupPreferenceNotifierProvider.notifier).enableBackup(BackupStrategy.googleDrive);
+
+      // Update sync settings
+      ref.read(syncSettingsProvider.notifier).updateGoogleDriveConnected(true);
+
       return true;
     }
 
@@ -96,6 +106,9 @@ class GoogleDriveAuth extends _$GoogleDriveAuth {
 
     // Update sync settings
     ref.read(syncSettingsProvider.notifier).updateGoogleDriveConnected(false);
+
+    // Disable backup when signing out
+    await ref.read(backupPreferenceNotifierProvider.notifier).disableBackup();
   }
 
   String? get userEmail {

@@ -81,7 +81,7 @@ final class GoogleDriveAuthProvider
   GoogleDriveAuth create() => GoogleDriveAuth();
 }
 
-String _$googleDriveAuthHash() => r'061204c0afcaaa4768594dd19f133b5a5f7eaa58';
+String _$googleDriveAuthHash() => r'a2944c12bd2b4845bfbffa435062ca739239f594';
 
 abstract class _$GoogleDriveAuth extends $AsyncNotifier<bool> {
   FutureOr<bool> build();

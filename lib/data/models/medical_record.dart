@@ -20,7 +20,7 @@ class MedicalRecords extends Table {
   @override
   List<String> get customConstraints => [
     // Record type constraint
-    'CHECK (record_type IN (\'prescription\', \'lab_report\', \'medication\', \'vaccination\', \'allergy\', \'chronic_condition\'))',
+    'CHECK (record_type IN (\'prescription\', \'lab_report\', \'medication\', \'vaccination\', \'allergy\', \'chronic_condition\', \'surgical_record\', \'radiology_record\', \'pathology_record\', \'discharge_summary\', \'hospital_admission\', \'dental_record\', \'mental_health_record\', \'general_record\'))',
 
     // Title constraint (non-empty)
     'CHECK (LENGTH(TRIM(title)) > 0)',
@@ -38,6 +38,14 @@ class MedicalRecordType {
   static const String vaccination = 'vaccination';
   static const String allergy = 'allergy';
   static const String chronicCondition = 'chronic_condition';
+  static const String surgicalRecord = 'surgical_record';
+  static const String radiologyRecord = 'radiology_record';
+  static const String pathologyRecord = 'pathology_record';
+  static const String dischargeSummary = 'discharge_summary';
+  static const String hospitalAdmission = 'hospital_admission';
+  static const String dentalRecord = 'dental_record';
+  static const String mentalHealthRecord = 'mental_health_record';
+  static const String generalRecord = 'general_record';
 
   static const List<String> allTypes = [
     prescription,
@@ -46,9 +54,52 @@ class MedicalRecordType {
     vaccination,
     allergy,
     chronicCondition,
+    surgicalRecord,
+    radiologyRecord,
+    pathologyRecord,
+    dischargeSummary,
+    hospitalAdmission,
+    dentalRecord,
+    mentalHealthRecord,
+    generalRecord,
   ];
 
   static bool isValidType(String type) {
     return allTypes.contains(type);
+  }
+
+  static String getDisplayName(String type) {
+    switch (type) {
+      case prescription:
+        return 'Prescription/Appointment';
+      case labReport:
+        return 'Lab Report';
+      case medication:
+        return 'Medication';
+      case vaccination:
+        return 'Vaccination';
+      case allergy:
+        return 'Allergy';
+      case chronicCondition:
+        return 'Chronic Condition';
+      case surgicalRecord:
+        return 'Surgical/Procedure Record';
+      case radiologyRecord:
+        return 'Radiology/Imaging Report';
+      case pathologyRecord:
+        return 'Pathology Report';
+      case dischargeSummary:
+        return 'Discharge Summary';
+      case hospitalAdmission:
+        return 'Hospital Admission';
+      case dentalRecord:
+        return 'Dental Record';
+      case mentalHealthRecord:
+        return 'Mental Health Record';
+      case generalRecord:
+        return 'General Record';
+      default:
+        return type;
+    }
   }
 }
