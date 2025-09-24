@@ -5,6 +5,9 @@ import '../../../data/database/app_database.dart';
 import '../../../shared/providers/profile_providers.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/prescription_service.dart';
+import '../../../shared/widgets/attachment_form_widget.dart';
+import '../../../shared/services/attachment_service.dart';
+import 'dart:developer' as developer;
 
 class PrescriptionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -36,6 +39,11 @@ class _PrescriptionFormScreenState
   String? _selectedProfileId;
   bool _isActive = true;
   bool _isLoading = false;
+  List<AttachmentResult> _attachments = [];
+
+  bool _basicInfoExpanded = true;
+  bool _medicationInfoExpanded = true;
+  bool _prescriptionDetailsExpanded = true;
 
   bool get _isEditing => widget.prescription != null;
 
@@ -112,164 +120,175 @@ class _PrescriptionFormScreenState
             if (!_isEditing) _buildProfileSelection(profilesAsync),
 
             // Basic Information
-            _buildSectionHeader('Basic Information'),
-            const SizedBox(height: 16),
+            _buildExpandableSection(
+              title: 'Basic Information',
+              icon: Icons.info_outline,
+              isExpanded: _basicInfoExpanded,
+              onExpansionChanged: (value) => setState(() => _basicInfoExpanded = value),
+              children: [
+                TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Title *',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.title),
+                  ),
+                  validator: (value) =>
+                      value?.trim().isEmpty == true ? 'Title is required' : null,
+                ),
+                const SizedBox(height: 16),
 
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.title),
-              ),
-              validator: (value) =>
-                  value?.trim().isEmpty == true ? 'Title is required' : null,
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.description),
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+
+                _buildDateField('Record Date *', _recordDate, (date) {
+                  setState(() => _recordDate = date);
+                }),
+              ],
             ),
-            const SizedBox(height: 16),
-
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.description),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-
-            _buildDateField('Record Date *', _recordDate, (date) {
-              setState(() => _recordDate = date);
-            }),
 
             const SizedBox(height: 24),
 
             // Medication Information
-            _buildSectionHeader('Medication Information'),
-            const SizedBox(height: 16),
-
-            TextFormField(
-              controller: _medicationNameController,
-              decoration: const InputDecoration(
-                labelText: 'Medication Name *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medication),
-              ),
-              validator: (value) => value?.trim().isEmpty == true
-                  ? 'Medication name is required'
-                  : null,
-            ),
-            const SizedBox(height: 16),
-
-            Row(
+            _buildExpandableSection(
+              title: 'Medication Information',
+              icon: Icons.medication,
+              isExpanded: _medicationInfoExpanded,
+              onExpansionChanged: (value) => setState(() => _medicationInfoExpanded = value),
               children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _dosageController,
-                    decoration: const InputDecoration(
-                      labelText: 'Dosage *',
-                      hintText: 'e.g., 10mg',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.straighten),
-                    ),
-                    validator: (value) => value?.trim().isEmpty == true
-                        ? 'Dosage is required'
-                        : null,
+                TextFormField(
+                  controller: _medicationNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Medication Name *',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.medication),
                   ),
+                  validator: (value) => value?.trim().isEmpty == true
+                      ? 'Medication name is required'
+                      : null,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _frequencyController,
-                    decoration: const InputDecoration(
-                      labelText: 'Frequency *',
-                      hintText: 'e.g., Twice daily',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.schedule),
+                const SizedBox(height: 16),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _dosageController,
+                        decoration: const InputDecoration(
+                          labelText: 'Dosage *',
+                          hintText: 'e.g., 10mg',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.straighten),
+                        ),
+                        validator: (value) => value?.trim().isEmpty == true
+                            ? 'Dosage is required'
+                            : null,
+                      ),
                     ),
-                    validator: (value) => value?.trim().isEmpty == true
-                        ? 'Frequency is required'
-                        : null,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _frequencyController,
+                        decoration: const InputDecoration(
+                          labelText: 'Frequency *',
+                          hintText: 'e.g., Twice daily',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.schedule),
+                        ),
+                        validator: (value) => value?.trim().isEmpty == true
+                            ? 'Frequency is required'
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _instructionsController,
+                  decoration: const InputDecoration(
+                    labelText: 'Instructions',
+                    hintText: 'Take with food, etc.',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.info),
                   ),
+                  maxLines: 2,
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-
-            TextFormField(
-              controller: _instructionsController,
-              decoration: const InputDecoration(
-                labelText: 'Instructions',
-                hintText: 'Take with food, etc.',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.info),
-              ),
-              maxLines: 2,
             ),
 
             const SizedBox(height: 24),
 
             // Prescription Details
-            _buildSectionHeader('Prescription Details'),
-            const SizedBox(height: 16),
-
-            TextFormField(
-              controller: _doctorController,
-              decoration: const InputDecoration(
-                labelText: 'Prescribing Doctor',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person_pin_circle),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            TextFormField(
-              controller: _pharmacyController,
-              decoration: const InputDecoration(
-                labelText: 'Pharmacy',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_pharmacy),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
+            _buildExpandableSection(
+              title: 'Prescription Details',
+              icon: Icons.receipt_long,
+              isExpanded: _prescriptionDetailsExpanded,
+              onExpansionChanged: (value) => setState(() => _prescriptionDetailsExpanded = value),
               children: [
-                Expanded(
-                  child: _buildDateField('Start Date', _startDate, (date) {
-                    setState(() => _startDate = date);
-                  }),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildDateField('End Date', _endDate, (date) {
-                    setState(() => _endDate = date);
-                  }),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _refillsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Refills Remaining',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.repeat),
-                    ),
-                    keyboardType: TextInputType.number,
+                TextFormField(
+                  controller: _doctorController,
+                  decoration: const InputDecoration(
+                    labelText: 'Prescribing Doctor',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.person_pin_circle),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _pharmacyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Pharmacy',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.local_pharmacy),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDateField('Start Date', _startDate, (date) {
+                        setState(() => _startDate = date);
+                      }),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildDateField('End Date', _endDate, (date) {
+                        setState(() => _endDate = date);
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _refillsController,
+                  decoration: const InputDecoration(
+                    labelText: 'Refills Remaining',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.repeat),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+
+                Card(
                   child: SwitchListTile(
                     title: const Text('Active'),
-                    subtitle: const Text('Is prescription active?'),
+                    subtitle: const Text('Is prescription currently active?'),
                     value: _isActive,
                     onChanged: (value) => setState(() => _isActive = value),
+                    secondary: const Icon(Icons.medication),
                   ),
                 ),
               ],
@@ -337,8 +356,38 @@ class _PrescriptionFormScreenState
             ),
           ),
           const SizedBox(height: 24),
+          _buildAttachmentsSection(),
+          const SizedBox(height: 24),
         ],
       ),
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader('Attachments'),
+        const SizedBox(height: 8),
+        Text(
+          'Add prescription images, doctor notes, or pharmacy receipts',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 8,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 25,
+        ),
+      ],
     );
   }
 
@@ -436,9 +485,15 @@ class _PrescriptionFormScreenState
               ? null
               : _descriptionController.text.trim(),
           recordDate: _startDate ?? DateTime.now(),
-          medicationName: _medicationNameController.text.trim(),
-          dosage: _dosageController.text.trim(),
-          frequency: _frequencyController.text.trim(),
+          medicationName: _medicationNameController.text.trim().isEmpty
+              ? null
+              : _medicationNameController.text.trim(),
+          dosage: _dosageController.text.trim().isEmpty
+              ? null
+              : _dosageController.text.trim(),
+          frequency: _frequencyController.text.trim().isEmpty
+              ? null
+              : _frequencyController.text.trim(),
           instructions: _instructionsController.text.trim().isEmpty
               ? null
               : _instructionsController.text.trim(),
@@ -459,6 +514,15 @@ class _PrescriptionFormScreenState
         await service.createPrescription(request);
       }
 
+      // Log success
+      developer.log(
+        _isEditing
+          ? 'Prescription updated successfully: ${widget.prescription!.id}'
+          : 'Prescription created successfully for profile: $selectedProfileId',
+        name: 'PrescriptionForm',
+        level: 800, // INFO level
+      );
+
       // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
@@ -467,25 +531,91 @@ class _PrescriptionFormScreenState
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              _isEditing
-                  ? 'Prescription updated successfully'
-                  : 'Prescription created successfully',
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    _isEditing
+                        ? 'Prescription updated successfully'
+                        : 'Prescription saved successfully',
+                  ),
+                ),
+              ],
             ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      // Log detailed error to console
+      developer.log(
+        'Failed to save prescription',
+        name: 'PrescriptionForm',
+        level: 1000, // ERROR level
+        error: error,
+        stackTrace: stackTrace,
+      );
+
       if (mounted) {
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${error.toString()}'),
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Failed to save. Please try again.'),
+                ),
+              ],
+            ),
             backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _savePrescription(),
+            ),
           ),
         );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  Widget _buildExpandableSection({
+    required String title,
+    required IconData icon,
+    required bool isExpanded,
+    required ValueChanged<bool> onExpansionChanged,
+    required List<Widget> children,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ExpansionTile(
+        title: Row(
+          children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        initiallyExpanded: isExpanded,
+        onExpansionChanged: onExpansionChanged,
+        childrenPadding: const EdgeInsets.all(16),
+        children: children,
+      ),
+    );
   }
 }

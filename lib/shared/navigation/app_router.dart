@@ -15,6 +15,17 @@ import '../../features/medical_records/screens/medical_record_detail_screen.dart
 import '../../features/medical_records/screens/prescription_form_screen.dart';
 import '../../features/medical_records/screens/medication_form_screen.dart';
 import '../../features/medical_records/screens/lab_report_form_screen.dart';
+import '../../features/medical_records/screens/vaccination_form_screen.dart';
+import '../../features/medical_records/screens/allergy_form_screen.dart';
+import '../../features/medical_records/screens/chronic_condition_form_screen.dart';
+import '../../features/medical_records/screens/surgical_record_form_screen.dart';
+import '../../features/medical_records/screens/radiology_record_form_screen.dart';
+import '../../features/medical_records/screens/pathology_record_form_screen.dart';
+import '../../features/medical_records/screens/discharge_summary_form_screen.dart';
+import '../../features/medical_records/screens/hospital_admission_form_screen.dart';
+import '../../features/medical_records/screens/dental_record_form_screen.dart';
+import '../../features/medical_records/screens/mental_health_record_form_screen.dart';
+import '../../features/medical_records/screens/general_record_form_screen.dart';
 import '../../features/export/screens/export_screen.dart';
 import '../../features/export/screens/import_screen.dart';
 import '../../features/export/screens/emergency_card_screen.dart';
@@ -38,6 +49,17 @@ class AppRoutes {
   static const String prescriptionForm = '/medical-records/prescription/form';
   static const String medicationForm = '/medical-records/medication/form';
   static const String labReportForm = '/medical-records/lab-report/form';
+  static const String vaccinationForm = '/medical-records/vaccination/form';
+  static const String allergyForm = '/medical-records/allergy/form';
+  static const String chronicConditionForm = '/medical-records/chronic-condition/form';
+  static const String surgicalRecordForm = '/medical-records/surgical-record/form';
+  static const String radiologyRecordForm = '/medical-records/radiology-record/form';
+  static const String pathologyRecordForm = '/medical-records/pathology-record/form';
+  static const String dischargeSummaryForm = '/medical-records/discharge-summary/form';
+  static const String hospitalAdmissionForm = '/medical-records/hospital-admission/form';
+  static const String dentalRecordForm = '/medical-records/dental-record/form';
+  static const String mentalHealthRecordForm = '/medical-records/mental-health-record/form';
+  static const String generalRecordForm = '/medical-records/general-record/form';
   static const String reminders = '/reminders';
   static const String settings = '/settings';
   static const String export = '/settings/export';
@@ -164,6 +186,105 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final profileId = state.uri.queryParameters['profileId'];
           return LabReportFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/vaccination/form',
+        name: 'vaccination-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return VaccinationFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/allergy/form',
+        name: 'allergy-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return AllergyFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/chronic-condition/form',
+        name: 'chronic-condition-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return ChronicConditionFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/surgical-record/form',
+        name: 'surgical-record-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return SurgicalRecordFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/radiology-record/form',
+        name: 'radiology-record-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return RadiologyRecordFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/pathology-record/form',
+        name: 'pathology-record-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return PathologyRecordFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/discharge-summary/form',
+        name: 'discharge-summary-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return DischargeSummaryFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/hospital-admission/form',
+        name: 'hospital-admission-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return HospitalAdmissionFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/dental-record/form',
+        name: 'dental-record-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return DentalRecordFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/mental-health-record/form',
+        name: 'mental-health-record-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return MentalHealthRecordFormScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: '${AppRoutes.medicalRecords}/general-record/form',
+        name: 'general-record-form',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return GeneralRecordFormScreen(profileId: profileId);
         },
       ),
 

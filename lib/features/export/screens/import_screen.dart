@@ -225,21 +225,30 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            for (final format in ImportFormat.values)
-              RadioListTile<ImportFormat>(
-                title: Text(_getFormatDisplayName(format)),
-                subtitle: Text(_importService.getFormatDescription(format)),
-                value: format,
-                groupValue: _selectedFormat,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _selectedFormat = value;
-                      _validationResult = null; // Clear previous validation
-                    });
-                  }
-                },
-              ),
+            SegmentedButton<ImportFormat>(
+              segments: ImportFormat.values
+                  .map((format) => ButtonSegment<ImportFormat>(
+                        value: format,
+                        label: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_getFormatDisplayName(format)),
+                            Text(
+                              _importService.getFormatDescription(format),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+              selected: {_selectedFormat},
+              onSelectionChanged: (Set<ImportFormat> selection) {
+                setState(() {
+                  _selectedFormat = selection.first;
+                  _validationResult = null; // Clear previous validation
+                });
+              },
+            ),
           ],
         ),
       ),
@@ -258,18 +267,27 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            for (final mode in ImportMode.values)
-              RadioListTile<ImportMode>(
-                title: Text(_getModeDisplayName(mode)),
-                subtitle: Text(_getModeDescription(mode)),
-                value: mode,
-                groupValue: _selectedMode,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedMode = value);
-                  }
-                },
-              ),
+            SegmentedButton<ImportMode>(
+              segments: ImportMode.values
+                  .map((mode) => ButtonSegment<ImportMode>(
+                        value: mode,
+                        label: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_getModeDisplayName(mode)),
+                            Text(
+                              _getModeDescription(mode),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+              selected: {_selectedMode},
+              onSelectionChanged: (Set<ImportMode> selection) {
+                setState(() => _selectedMode = selection.first);
+              },
+            ),
           ],
         ),
       ),

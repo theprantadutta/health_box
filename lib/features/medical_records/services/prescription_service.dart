@@ -76,10 +76,12 @@ class PrescriptionService {
         createdAt: Value(DateTime.now()),
         updatedAt: Value(DateTime.now()),
         isActive: const Value(true),
+        // Type field - required field
+        prescriptionType: const Value('prescription'),
         // Prescription-specific fields
-        medicationName: Value(request.medicationName.trim()),
-        dosage: Value(request.dosage.trim()),
-        frequency: Value(request.frequency.trim()),
+        medicationName: Value(request.medicationName?.trim()),
+        dosage: Value(request.dosage?.trim()),
+        frequency: Value(request.frequency?.trim()),
         instructions: Value(request.instructions?.trim()),
         prescribingDoctor: Value(request.prescribingDoctor?.trim()),
         pharmacy: Value(request.pharmacy?.trim()),
@@ -600,20 +602,20 @@ class PrescriptionService {
         'Title cannot exceed 200 characters',
       );
     }
-    if (request.medicationName.trim().isEmpty) {
+    if (request.medicationName?.trim().isEmpty ?? true) {
       throw const PrescriptionServiceException(
         'Medication name cannot be empty',
       );
     }
-    if (request.medicationName.length > 100) {
+    if ((request.medicationName?.length ?? 0) > 100) {
       throw const PrescriptionServiceException(
         'Medication name cannot exceed 100 characters',
       );
     }
-    if (request.dosage.trim().isEmpty) {
+    if (request.dosage?.trim().isEmpty ?? true) {
       throw const PrescriptionServiceException('Dosage cannot be empty');
     }
-    if (request.frequency.trim().isEmpty) {
+    if (request.frequency?.trim().isEmpty ?? true) {
       throw const PrescriptionServiceException('Frequency cannot be empty');
     }
     if (request.refillsRemaining != null && request.refillsRemaining! < 0) {
@@ -679,9 +681,9 @@ class CreatePrescriptionRequest {
   final String title;
   final String? description;
   final DateTime recordDate;
-  final String medicationName;
-  final String dosage;
-  final String frequency;
+  final String? medicationName;
+  final String? dosage;
+  final String? frequency;
   final String? instructions;
   final String? prescribingDoctor;
   final String? pharmacy;
@@ -695,9 +697,9 @@ class CreatePrescriptionRequest {
     required this.title,
     this.description,
     required this.recordDate,
-    required this.medicationName,
-    required this.dosage,
-    required this.frequency,
+    this.medicationName,
+    this.dosage,
+    this.frequency,
     this.instructions,
     this.prescribingDoctor,
     this.pharmacy,

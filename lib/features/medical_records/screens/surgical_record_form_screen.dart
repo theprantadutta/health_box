@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/surgical_record_service.dart';
 import '../../../data/models/surgical_record.dart';
-import '../widgets/attachment_picker_widget.dart';
-import 'package:flutter/foundation.dart';
-import 'dart:io';
+import '../../../shared/widgets/attachment_form_widget.dart';
+import '../../../shared/services/attachment_service.dart';
+import 'dart:developer' as developer;
 
 class SurgicalRecordFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -48,7 +48,7 @@ class _SurgicalRecordFormScreenState
   bool _isEmergency = false;
   bool _isLoading = false;
   bool _isEditing = false;
-  List<File> _selectedFiles = [];
+  List<AttachmentResult> _attachments = [];
 
   @override
   void initState() {
@@ -315,7 +315,7 @@ class _SurgicalRecordFormScreenState
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _selectedAnesthesiaType,
+              initialValue: _selectedAnesthesiaType,
               decoration: const InputDecoration(
                 labelText: 'Anesthesia Type',
                 border: OutlineInputBorder(),
@@ -588,21 +588,60 @@ class _SurgicalRecordFormScreenState
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Surgical record saved successfully'),
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Surgical record saved successfully'),
+                ),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to save surgical record: $e');
-      }
+
+      // Log success
+      developer.log(
+        'Surgical record created successfully for profile: $selectedProfileId',
+        name: 'SurgicalRecordForm',
+        level: 800, // INFO level
+      );
+    } catch (error, stackTrace) {
+      // Log detailed error to console
+      developer.log(
+        'Failed to save surgical record',
+        name: 'SurgicalRecordForm',
+        level: 1000, // ERROR level
+        error: error,
+        stackTrace: stackTrace,
+      );
+
       if (mounted) {
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save surgical record: $e'),
-            backgroundColor: Colors.red,
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Failed to save surgical record. Please try again.'),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _saveSurgicalRecord(),
+            ),
           ),
         );
       }
@@ -614,15 +653,38 @@ class _SurgicalRecordFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return AttachmentPickerWidget(
-      onFilesSelected: (files) {
-        setState(() {
-          _selectedFiles = files;
-        });
-      },
-      allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-      maxFiles: 10,
-      maxFileSizeBytes: 50 * 1024 * 1024,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Attachments',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Add surgical reports, operative notes, or post-op instructions',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AttachmentFormWidget(
+              initialAttachments: _attachments,
+              onAttachmentsChanged: (attachments) {
+                setState(() {
+                  _attachments = attachments;
+                });
+              },
+              maxFiles: 10,
+              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+              maxFileSizeMB: 50,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

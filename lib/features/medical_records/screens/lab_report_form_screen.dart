@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:developer' as developer;
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/lab_report_service.dart';
-import '../widgets/attachment_picker_widget.dart';
-import 'dart:io';
+import '../../../shared/widgets/attachment_form_widget.dart';
+import '../../../shared/services/attachment_service.dart';
 
 class LabReportFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -25,7 +26,7 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
   final _orderingPhysicianController = TextEditingController();
   bool _isLoading = false;
   DateTime? _testDate;
-  List<File> _selectedFiles = [];
+  List<AttachmentResult> _attachments = [];
 
   @override
   void initState() {
@@ -75,15 +76,16 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
               maxLines: 5,
             ),
             const SizedBox(height: 24),
-            AttachmentPickerWidget(
-              onFilesSelected: (files) {
+            AttachmentFormWidget(
+              initialAttachments: _attachments,
+              onAttachmentsChanged: (attachments) {
                 setState(() {
-                  _selectedFiles = files;
+                  _attachments = attachments;
                 });
               },
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
               maxFiles: 10,
-              maxFileSizeBytes: 50 * 1024 * 1024,
+              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+              maxFileSizeMB: 50,
             ),
           ],
         ),
@@ -129,6 +131,13 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
 
       await service.createLabReport(request);
 
+      // Log success
+      developer.log(
+        'Lab report created successfully for profile: $selectedProfileId',
+        name: 'LabReportForm',
+        level: 800, // INFO level
+      );
+
       // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
@@ -136,18 +145,53 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Lab report saved successfully'),
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Lab report saved successfully'),
+                ),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      // Log detailed error to console
+      developer.log(
+        'Failed to save lab report',
+        name: 'LabReportForm',
+        level: 1000, // ERROR level
+        error: error,
+        stackTrace: stackTrace,
+      );
+
       if (mounted) {
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save lab report: $e'),
-            backgroundColor: Colors.red,
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Failed to save lab report. Please try again.'),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _saveLabReport(),
+            ),
           ),
         );
       }

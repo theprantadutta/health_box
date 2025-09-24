@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:developer' as developer;
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/chronic_condition_service.dart';
 import '../../../data/models/chronic_condition.dart';
-import 'package:flutter/foundation.dart';
+import '../../../shared/widgets/attachment_form_widget.dart';
+import '../../../shared/services/attachment_service.dart';
 
 class ChronicConditionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -38,6 +40,7 @@ class _ChronicConditionFormScreenState
   String _selectedStatus = ConditionStatus.active;
   bool _isLoading = false;
   bool _isEditing = false;
+  List<AttachmentResult> _attachments = [];
 
   @override
   void initState() {
@@ -79,6 +82,8 @@ class _ChronicConditionFormScreenState
             _buildSeverityAndStatusSection(),
             const SizedBox(height: 24),
             _buildTreatmentSection(),
+            const SizedBox(height: 24),
+            _buildAttachmentsSection(),
             const SizedBox(height: 24),
             _buildManagementSection(),
           ],
@@ -245,18 +250,29 @@ class _ChronicConditionFormScreenState
               ),
             ),
             const SizedBox(height: 8),
-            for (final severity in ConditionSeverity.allSeverities)
-              RadioListTile<String>(
-                title: Text(_getSeverityDisplayName(severity)),
-                subtitle: Text(_getSeverityDescription(severity)),
-                value: severity,
-                groupValue: _selectedSeverity,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedSeverity = value);
-                  }
-                },
-              ),
+            SegmentedButton<String>(
+              segments: ConditionSeverity.allSeverities
+                  .map((severity) => ButtonSegment<String>(
+                        value: severity,
+                        label: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_getSeverityDisplayName(severity)),
+                            Text(
+                              _getSeverityDescription(severity),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+              selected: {_selectedSeverity},
+              onSelectionChanged: (Set<String> selection) {
+                if (selection.isNotEmpty) {
+                  setState(() => _selectedSeverity = selection.first);
+                }
+              },
+            ),
             const SizedBox(height: 16),
             Text(
               'Current Status',
@@ -265,18 +281,29 @@ class _ChronicConditionFormScreenState
               ),
             ),
             const SizedBox(height: 8),
-            for (final status in ConditionStatus.allStatuses)
-              RadioListTile<String>(
-                title: Text(_getStatusDisplayName(status)),
-                subtitle: Text(_getStatusDescription(status)),
-                value: status,
-                groupValue: _selectedStatus,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedStatus = value);
-                  }
-                },
-              ),
+            SegmentedButton<String>(
+              segments: ConditionStatus.allStatuses
+                  .map((status) => ButtonSegment<String>(
+                        value: status,
+                        label: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_getStatusDisplayName(status)),
+                            Text(
+                              _getStatusDescription(status),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+              selected: {_selectedStatus},
+              onSelectionChanged: (Set<String> selection) {
+                if (selection.isNotEmpty) {
+                  setState(() => _selectedStatus = selection.first);
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -315,6 +342,42 @@ class _ChronicConditionFormScreenState
                 prefixIcon: Icon(Icons.local_pharmacy),
               ),
               maxLines: 2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Attachments',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Add medical reports, test results, or care plans',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AttachmentFormWidget(
+              initialAttachments: _attachments,
+              onAttachmentsChanged: (attachments) {
+                setState(() {
+                  _attachments = attachments;
+                });
+              },
+              maxFiles: 5,
+              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+              maxFileSizeMB: 25,
             ),
           ],
         ),
@@ -417,24 +480,63 @@ class _ChronicConditionFormScreenState
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
+      // Log success
+      developer.log(
+        'Chronic condition created successfully for profile: $selectedProfileId',
+        name: 'ChronicConditionForm',
+        level: 800, // INFO level
+      );
+
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Chronic condition saved successfully'),
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Chronic condition saved successfully'),
+                ),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to save chronic condition: $e');
-      }
+    } catch (error, stackTrace) {
+      // Log detailed error to console
+      developer.log(
+        'Failed to save chronic condition',
+        name: 'ChronicConditionForm',
+        level: 1000, // ERROR level
+        error: error,
+        stackTrace: stackTrace,
+      );
+
       if (mounted) {
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save chronic condition: $e'),
-            backgroundColor: Colors.red,
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Failed to save chronic condition. Please try again.'),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _saveChronicCondition(),
+            ),
           ),
         );
       }

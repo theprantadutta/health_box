@@ -171,18 +171,27 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            for (final format in ExportFormat.values)
-              RadioListTile<ExportFormat>(
-                title: Text(_getFormatDisplayName(format)),
-                subtitle: Text(_exportService.getFormatDescription(format)),
-                value: format,
-                groupValue: _selectedFormat,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedFormat = value);
-                  }
-                },
-              ),
+            SegmentedButton<ExportFormat>(
+              segments: ExportFormat.values
+                  .map((format) => ButtonSegment<ExportFormat>(
+                        value: format,
+                        label: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_getFormatDisplayName(format)),
+                            Text(
+                              _exportService.getFormatDescription(format),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+              selected: {_selectedFormat},
+              onSelectionChanged: (Set<ExportFormat> selection) {
+                setState(() => _selectedFormat = selection.first);
+              },
+            ),
           ],
         ),
       ),
@@ -201,18 +210,27 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            for (final scope in ExportScope.values)
-              RadioListTile<ExportScope>(
-                title: Text(_getScopeDisplayName(scope)),
-                subtitle: Text(_getScopeDescription(scope)),
-                value: scope,
-                groupValue: _selectedScope,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedScope = value);
-                  }
-                },
-              ),
+            SegmentedButton<ExportScope>(
+              segments: ExportScope.values
+                  .map((scope) => ButtonSegment<ExportScope>(
+                        value: scope,
+                        label: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_getScopeDisplayName(scope)),
+                            Text(
+                              _getScopeDescription(scope),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+              selected: {_selectedScope},
+              onSelectionChanged: (Set<ExportScope> selection) {
+                setState(() => _selectedScope = selection.first);
+              },
+            ),
           ],
         ),
       ),

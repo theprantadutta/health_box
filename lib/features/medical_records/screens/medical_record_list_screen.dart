@@ -42,6 +42,14 @@ class _MedicalRecordListScreenState
     'Vaccination',
     'Allergy',
     'Chronic Condition',
+    'Surgical Record',
+    'Radiology Record',
+    'Pathology Record',
+    'Discharge Summary',
+    'Hospital Admission',
+    'Dental Record',
+    'Mental Health Record',
+    'General Record',
   ];
 
   @override
@@ -135,6 +143,86 @@ class _MedicalRecordListScreenState
                     Icon(Icons.health_and_safety),
                     SizedBox(width: 8),
                     Text('Add Chronic Condition'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'surgical_record',
+                child: Row(
+                  children: [
+                    Icon(Icons.medical_services),
+                    SizedBox(width: 8),
+                    Text('Add Surgical Record'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'radiology_record',
+                child: Row(
+                  children: [
+                    Icon(Icons.medical_information),
+                    SizedBox(width: 8),
+                    Text('Add Radiology Record'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'pathology_record',
+                child: Row(
+                  children: [
+                    Icon(Icons.biotech),
+                    SizedBox(width: 8),
+                    Text('Add Pathology Record'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'discharge_summary',
+                child: Row(
+                  children: [
+                    Icon(Icons.exit_to_app),
+                    SizedBox(width: 8),
+                    Text('Add Discharge Summary'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'hospital_admission',
+                child: Row(
+                  children: [
+                    Icon(Icons.local_hospital),
+                    SizedBox(width: 8),
+                    Text('Add Hospital Admission'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'dental_record',
+                child: Row(
+                  children: [
+                    Icon(Icons.healing),
+                    SizedBox(width: 8),
+                    Text('Add Dental Record'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'mental_health_record',
+                child: Row(
+                  children: [
+                    Icon(Icons.psychology),
+                    SizedBox(width: 8),
+                    Text('Add Mental Health Record'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'general_record',
+                child: Row(
+                  children: [
+                    Icon(Icons.description),
+                    SizedBox(width: 8),
+                    Text('Add General Record'),
                   ],
                 ),
               ),
@@ -700,6 +788,78 @@ class _MedicalRecordListScreenState
                         _onAddRecordSelected('chronic_condition');
                       },
                     ),
+                    ListTile(
+                      leading: const Icon(Icons.medical_services),
+                      title: const Text('Surgical Record'),
+                      subtitle: const Text('Document surgical procedures'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('surgical_record');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.medical_information),
+                      title: const Text('Radiology Record'),
+                      subtitle: const Text('Add imaging and radiology reports'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('radiology_record');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.biotech),
+                      title: const Text('Pathology Record'),
+                      subtitle: const Text('Document pathology reports'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('pathology_record');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.exit_to_app),
+                      title: const Text('Discharge Summary'),
+                      subtitle: const Text('Hospital discharge documentation'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('discharge_summary');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.local_hospital),
+                      title: const Text('Hospital Admission'),
+                      subtitle: const Text('Record hospital admission details'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('hospital_admission');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.healing),
+                      title: const Text('Dental Record'),
+                      subtitle: const Text('Track dental procedures and checkups'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('dental_record');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.psychology),
+                      title: const Text('Mental Health Record'),
+                      subtitle: const Text('Document therapy and mental health'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('mental_health_record');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.description),
+                      title: const Text('General Record'),
+                      subtitle: const Text('Other medical documentation'),
+                      onTap: () {
+                        context.pop();
+                        _onAddRecordSelected('general_record');
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -734,28 +894,37 @@ class _MedicalRecordListScreenState
         context.push('/medical-records/lab-report/form?profileId=$profileId');
         break;
       case 'vaccination':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Vaccination form will be available soon'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        context.push('/medical-records/vaccination/form?profileId=$profileId');
         break;
       case 'allergy':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Allergy form will be available soon'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        context.push('/medical-records/allergy/form?profileId=$profileId');
         break;
       case 'chronic_condition':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Chronic condition form will be available soon'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        context.push('/medical-records/chronic-condition/form?profileId=$profileId');
+        break;
+      case 'surgical_record':
+        context.push('/medical-records/surgical-record/form?profileId=$profileId');
+        break;
+      case 'radiology_record':
+        context.push('/medical-records/radiology-record/form?profileId=$profileId');
+        break;
+      case 'pathology_record':
+        context.push('/medical-records/pathology-record/form?profileId=$profileId');
+        break;
+      case 'discharge_summary':
+        context.push('/medical-records/discharge-summary/form?profileId=$profileId');
+        break;
+      case 'hospital_admission':
+        context.push('/medical-records/hospital-admission/form?profileId=$profileId');
+        break;
+      case 'dental_record':
+        context.push('/medical-records/dental-record/form?profileId=$profileId');
+        break;
+      case 'mental_health_record':
+        context.push('/medical-records/mental-health-record/form?profileId=$profileId');
+        break;
+      case 'general_record':
+        context.push('/medical-records/general-record/form?profileId=$profileId');
         break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(

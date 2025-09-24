@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/dental_record_service.dart';
-import '../widgets/attachment_picker_widget.dart';
-import 'package:flutter/foundation.dart';
-import 'dart:io';
+import '../../../shared/widgets/attachment_form_widget.dart';
+import '../../../shared/services/attachment_service.dart';
+import 'dart:developer' as developer;
 
 class DentalRecordFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -29,7 +29,7 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
   DateTime _visitDate = DateTime.now();
   String _visitType = 'Routine Checkup';
   bool _isLoading = false;
-  List<File> _selectedFiles = [];
+  List<AttachmentResult> _attachments = [];
 
   final List<String> _visitTypes = [
     'Routine Checkup',
@@ -98,7 +98,7 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      value: _visitType,
+                      initialValue: _visitType,
                       decoration: const InputDecoration(
                         labelText: 'Visit Type',
                         border: OutlineInputBorder(),
@@ -154,16 +154,7 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
               ),
             ),
             const SizedBox(height: 24),
-            AttachmentPickerWidget(
-              onFilesSelected: (files) {
-                setState(() {
-                  _selectedFiles = files;
-                });
-              },
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFiles: 10,
-              maxFileSizeBytes: 50 * 1024 * 1024,
-            ),
+            _buildAttachmentsSection(),
           ],
         ),
       ),
@@ -199,19 +190,102 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dental record saved successfully'), backgroundColor: Colors.green),
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Dental record saved successfully'),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
         );
       }
-    } catch (e) {
-      if (kDebugMode) print('Failed to save dental record: $e');
+
+      // Log success
+      developer.log(
+        'Dental record created successfully for profile: $selectedProfileId',
+        name: 'DentalRecordForm',
+        level: 800, // INFO level
+      );
+    } catch (error, stackTrace) {
+      // Log detailed error to console
+      developer.log(
+        'Failed to save dental record',
+        name: 'DentalRecordForm',
+        level: 1000, // ERROR level
+        error: error,
+        stackTrace: stackTrace,
+      );
+
       if (mounted) {
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save dental record: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Failed to save dental record. Please try again.'),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _saveDentalRecord(),
+            ),
+          ),
         );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  Widget _buildAttachmentsSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Attachments',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Add dental X-rays, treatment notes, or dental reports',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AttachmentFormWidget(
+              initialAttachments: _attachments,
+              onAttachmentsChanged: (attachments) {
+                setState(() {
+                  _attachments = attachments;
+                });
+              },
+              maxFiles: 10,
+              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+              maxFileSizeMB: 50,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override

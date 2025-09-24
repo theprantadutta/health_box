@@ -43,9 +43,23 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -60,45 +74,60 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
                   ),
                 ),
                 const Spacer(),
+                Text(
+                  '${_attachments.length}/${widget.maxFiles} files',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 if (_attachments.length < widget.maxFiles)
-                  PopupMenuButton<String>(
-                    onSelected: _handleAttachmentAction,
-                    itemBuilder: (context) => [
-                      if (widget.allowImages)
-                        const PopupMenuItem(
-                          value: 'camera',
-                          child: Row(
-                            children: [
-                              Icon(Icons.camera_alt),
-                              SizedBox(width: 8),
-                              Text('Take Photo'),
-                            ],
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: PopupMenuButton<String>(
+                      onSelected: _handleAttachmentAction,
+                      icon: Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                      ),
+                      itemBuilder: (context) => [
+                        if (widget.allowImages)
+                          const PopupMenuItem(
+                            value: 'camera',
+                            child: Row(
+                              children: [
+                                Icon(Icons.camera_alt_rounded, size: 20),
+                                SizedBox(width: 12),
+                                Text('Take Photo'),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (widget.allowImages)
-                        const PopupMenuItem(
-                          value: 'gallery',
-                          child: Row(
-                            children: [
-                              Icon(Icons.photo_library),
-                              SizedBox(width: 8),
-                              Text('Choose from Gallery'),
-                            ],
+                        if (widget.allowImages)
+                          const PopupMenuItem(
+                            value: 'gallery',
+                            child: Row(
+                              children: [
+                                Icon(Icons.photo_library_rounded, size: 20),
+                                SizedBox(width: 12),
+                                Text('Choose from Gallery'),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (widget.allowDocuments)
-                        const PopupMenuItem(
-                          value: 'file',
-                          child: Row(
-                            children: [
-                              Icon(Icons.insert_drive_file),
-                              SizedBox(width: 8),
-                              Text('Choose File'),
-                            ],
+                        if (widget.allowDocuments)
+                          const PopupMenuItem(
+                            value: 'file',
+                            child: Row(
+                              children: [
+                                Icon(Icons.insert_drive_file_rounded, size: 20),
+                                SizedBox(width: 12),
+                                Text('Choose File'),
+                              ],
+                            ),
                           ),
-                        ),
-                    ],
-                    child: const Icon(Icons.add_circle),
+                      ],
+                    ),
                   ),
               ],
             ),
@@ -117,22 +146,46 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
 
   Widget _buildEmptyState(ThemeData theme) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+          style: BorderStyle.solid,
+        ),
+      ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.cloud_upload_outlined,
-            size: 48,
-            color: theme.colorScheme.onSurfaceVariant,
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.attach_file_rounded,
+              size: 32,
+              color: theme.colorScheme.primary,
+            ),
           ),
-          const SizedBox(height: 12),
-          Text('No attachments added', style: theme.textTheme.titleSmall),
-          const SizedBox(height: 4),
+          const SizedBox(height: 16),
           Text(
-            'Add photos, documents, or other files to this record',
+            'No attachments yet',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add photos, documents, or files\nto support this medical record',
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
+              height: 1.4,
             ),
           ),
         ],
@@ -156,51 +209,116 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
     int index,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(8),
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            _getFileTypeIcon(attachment.fileType),
-            color: _getFileTypeColor(attachment.fileType),
-            size: 24,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  attachment.fileName,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '${FileUtils.getReadableFileType(attachment.fileName)} • ${FileUtils.formatFileSize(attachment.fileSize)}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            color: theme.colorScheme.error,
-            onPressed: () => _removeAttachment(index),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => _previewAttachment(attachment),
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: _getFileTypeColor(attachment.fileType).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      _getFileTypeIcon(attachment.fileType),
+                      color: _getFileTypeColor(attachment.fileType),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          attachment.fileName,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.surfaceContainer,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                FileUtils.getReadableFileType(attachment.fileName).toUpperCase(),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              FileUtils.formatFileSize(attachment.fileSize),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.close_rounded,
+                        size: 18,
+                        color: theme.colorScheme.error,
+                      ),
+                      onPressed: () => _removeAttachment(index),
+                      tooltip: 'Remove attachment',
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -299,11 +417,39 @@ class _AttachmentFormWidgetState extends State<AttachmentFormWidget> {
     widget.onAttachmentsChanged(_attachments);
   }
 
+  void _previewAttachment(AttachmentResult attachment) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Preview for ${attachment.fileName}'),
+        action: SnackBarAction(
+          label: 'View',
+          onPressed: () {
+            // TODO: Implement file preview functionality
+          },
+        ),
+      ),
+    );
+  }
+
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Row(
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
         backgroundColor: Theme.of(context).colorScheme.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }

@@ -654,41 +654,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            RadioListTile<ThemeMode>(
-              title: const Text('Light'),
-              value: ThemeMode.light,
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
+            SegmentedButton<ThemeMode>(
+              segments: const [
+                ButtonSegment<ThemeMode>(
+                  value: ThemeMode.light,
+                  label: Text('Light'),
+                ),
+                ButtonSegment<ThemeMode>(
+                  value: ThemeMode.dark,
+                  label: Text('Dark'),
+                ),
+                ButtonSegment<ThemeMode>(
+                  value: ThemeMode.system,
+                  label: Text('System'),
+                ),
+              ],
+              selected: {currentTheme},
+              onSelectionChanged: (Set<ThemeMode> selection) {
+                final value = selection.first;
+                if (value == ThemeMode.light) {
                   ref.read(appNotifierProvider.notifier).setDarkMode(false);
-                  context.pop();
-                }
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: const Text('Dark'),
-              value: ThemeMode.dark,
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
+                } else if (value == ThemeMode.dark) {
                   ref.read(appNotifierProvider.notifier).setDarkMode(true);
-                  context.pop();
-                }
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: const Text('System'),
-              value: ThemeMode.system,
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
+                } else if (value == ThemeMode.system) {
                   // For system theme, we'll follow the system brightness
                   final brightness = MediaQuery.of(context).platformBrightness;
                   ref
                       .read(appNotifierProvider.notifier)
                       .setDarkMode(brightness == Brightness.dark);
-                  context.pop();
                 }
+                context.pop();
               },
             ),
           ],

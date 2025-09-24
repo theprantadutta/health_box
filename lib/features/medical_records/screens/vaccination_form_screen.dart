@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:developer' as developer;
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/vaccination_service.dart';
 import '../../../data/models/vaccination.dart';
-import 'package:flutter/foundation.dart';
+import '../../../shared/widgets/attachment_form_widget.dart';
+import '../../../shared/services/attachment_service.dart';
 
 class VaccinationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -39,6 +41,7 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
   bool _isComplete = false;
   bool _isLoading = false;
   bool _isEditing = false;
+  List<AttachmentResult> _attachments = [];
 
   @override
   void initState() {
@@ -78,6 +81,8 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
             _buildAdministrationSection(),
             const SizedBox(height: 24),
             _buildDosageSection(),
+            const SizedBox(height: 24),
+            _buildAttachmentsSection(),
             const SizedBox(height: 24),
             _buildCompletionSection(),
           ],
@@ -165,7 +170,7 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _selectedManufacturer,
+              initialValue: _selectedManufacturer,
               decoration: const InputDecoration(
                 labelText: 'Manufacturer',
                 border: OutlineInputBorder(),
@@ -220,7 +225,7 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _selectedSite,
+              initialValue: _selectedSite,
               decoration: const InputDecoration(
                 labelText: 'Administration Site',
                 border: OutlineInputBorder(),
@@ -410,6 +415,13 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
 
       await service.createVaccination(request);
 
+      // Log success
+      developer.log(
+        'Vaccination created successfully for profile: $selectedProfileId',
+        name: 'VaccinationForm',
+        level: 800, // INFO level
+      );
+
       // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
@@ -417,21 +429,53 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Vaccination saved successfully'),
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Vaccination saved successfully'),
+                ),
+              ],
+            ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to save vaccination: $e');
-      }
+    } catch (error, stackTrace) {
+      // Log detailed error to console
+      developer.log(
+        'Failed to save vaccination',
+        name: 'VaccinationForm',
+        level: 1000, // ERROR level
+        error: error,
+        stackTrace: stackTrace,
+      );
+
       if (mounted) {
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save vaccination: $e'),
-            backgroundColor: Colors.red,
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text('Failed to save vaccination. Please try again.'),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _saveVaccination(),
+            ),
           ),
         );
       }
@@ -440,6 +484,42 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Widget _buildAttachmentsSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Attachments',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Add vaccination cards, certificates, or related documents',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AttachmentFormWidget(
+              initialAttachments: _attachments,
+              onAttachmentsChanged: (attachments) {
+                setState(() {
+                  _attachments = attachments;
+                });
+              },
+              maxFiles: 5,
+              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+              maxFileSizeMB: 25,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   String _formatDate(DateTime date) {
