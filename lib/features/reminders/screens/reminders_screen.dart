@@ -67,6 +67,52 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
         surfaceTintColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (String value) => _onMenuSelected(context, value),
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'history',
+                child: Row(
+                  children: [
+                    Icon(Icons.history),
+                    SizedBox(width: 8),
+                    Text('Reminder History'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'settings',
+                child: Row(
+                  children: [
+                    Icon(Icons.notifications_active),
+                    SizedBox(width: 8),
+                    Text('Notification Settings'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'refills',
+                child: Row(
+                  children: [
+                    Icon(Icons.local_pharmacy),
+                    SizedBox(width: 8),
+                    Text('Refill Reminders'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'interactions',
+                child: Row(
+                  children: [
+                    Icon(Icons.warning),
+                    SizedBox(width: 8),
+                    Text('Drug Interactions'),
+                  ],
+                ),
+              ),
+            ],
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: _showFilterDialog,
@@ -827,6 +873,25 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
       return 'Tomorrow at ${TimeOfDay.fromDateTime(scheduledTime).format(context)}';
     } else {
       return '${scheduledTime.day}/${scheduledTime.month} at ${TimeOfDay.fromDateTime(scheduledTime).format(context)}';
+    }
+  }
+
+  // Navigation Methods
+
+  void _onMenuSelected(BuildContext context, String value) {
+    switch (value) {
+      case 'history':
+        context.push('/reminders/history');
+        break;
+      case 'settings':
+        context.push('/reminders/settings');
+        break;
+      case 'refills':
+        context.push('/reminders/refills');
+        break;
+      case 'interactions':
+        context.push('/medical-records/interactions');
+        break;
     }
   }
 

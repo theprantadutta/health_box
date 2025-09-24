@@ -24622,6 +24622,2293 @@ class SearchHistoryCompanion extends UpdateCompanion<SearchHistoryData> {
   }
 }
 
+class $MedicationAdherenceTable extends MedicationAdherence
+    with TableInfo<$MedicationAdherenceTable, MedicationAdherenceData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MedicationAdherenceTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _reminderIdMeta = const VerificationMeta(
+    'reminderId',
+  );
+  @override
+  late final GeneratedColumn<String> reminderId = GeneratedColumn<String>(
+    'reminder_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _medicationIdMeta = const VerificationMeta(
+    'medicationId',
+  );
+  @override
+  late final GeneratedColumn<String> medicationId = GeneratedColumn<String>(
+    'medication_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _medicationNameMeta = const VerificationMeta(
+    'medicationName',
+  );
+  @override
+  late final GeneratedColumn<String> medicationName = GeneratedColumn<String>(
+    'medication_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dosageMeta = const VerificationMeta('dosage');
+  @override
+  late final GeneratedColumn<String> dosage = GeneratedColumn<String>(
+    'dosage',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _scheduledTimeMeta = const VerificationMeta(
+    'scheduledTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> scheduledTime =
+      GeneratedColumn<DateTime>(
+        'scheduled_time',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _recordedTimeMeta = const VerificationMeta(
+    'recordedTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordedTime = GeneratedColumn<DateTime>(
+    'recorded_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    reminderId,
+    medicationId,
+    profileId,
+    medicationName,
+    dosage,
+    scheduledTime,
+    recordedTime,
+    status,
+    notes,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'medication_adherence';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MedicationAdherenceData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('reminder_id')) {
+      context.handle(
+        _reminderIdMeta,
+        reminderId.isAcceptableOrUnknown(data['reminder_id']!, _reminderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reminderIdMeta);
+    }
+    if (data.containsKey('medication_id')) {
+      context.handle(
+        _medicationIdMeta,
+        medicationId.isAcceptableOrUnknown(
+          data['medication_id']!,
+          _medicationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_medicationIdMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('medication_name')) {
+      context.handle(
+        _medicationNameMeta,
+        medicationName.isAcceptableOrUnknown(
+          data['medication_name']!,
+          _medicationNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_medicationNameMeta);
+    }
+    if (data.containsKey('dosage')) {
+      context.handle(
+        _dosageMeta,
+        dosage.isAcceptableOrUnknown(data['dosage']!, _dosageMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dosageMeta);
+    }
+    if (data.containsKey('scheduled_time')) {
+      context.handle(
+        _scheduledTimeMeta,
+        scheduledTime.isAcceptableOrUnknown(
+          data['scheduled_time']!,
+          _scheduledTimeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_scheduledTimeMeta);
+    }
+    if (data.containsKey('recorded_time')) {
+      context.handle(
+        _recordedTimeMeta,
+        recordedTime.isAcceptableOrUnknown(
+          data['recorded_time']!,
+          _recordedTimeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_recordedTimeMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MedicationAdherenceData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MedicationAdherenceData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      reminderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reminder_id'],
+      )!,
+      medicationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medication_id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      medicationName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medication_name'],
+      )!,
+      dosage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dosage'],
+      )!,
+      scheduledTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}scheduled_time'],
+      )!,
+      recordedTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}recorded_time'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MedicationAdherenceTable createAlias(String alias) {
+    return $MedicationAdherenceTable(attachedDatabase, alias);
+  }
+}
+
+class MedicationAdherenceData extends DataClass
+    implements Insertable<MedicationAdherenceData> {
+  final String id;
+  final String reminderId;
+  final String medicationId;
+  final String profileId;
+  final String medicationName;
+  final String dosage;
+  final DateTime scheduledTime;
+  final DateTime recordedTime;
+  final String status;
+  final String? notes;
+  final DateTime createdAt;
+  const MedicationAdherenceData({
+    required this.id,
+    required this.reminderId,
+    required this.medicationId,
+    required this.profileId,
+    required this.medicationName,
+    required this.dosage,
+    required this.scheduledTime,
+    required this.recordedTime,
+    required this.status,
+    this.notes,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['reminder_id'] = Variable<String>(reminderId);
+    map['medication_id'] = Variable<String>(medicationId);
+    map['profile_id'] = Variable<String>(profileId);
+    map['medication_name'] = Variable<String>(medicationName);
+    map['dosage'] = Variable<String>(dosage);
+    map['scheduled_time'] = Variable<DateTime>(scheduledTime);
+    map['recorded_time'] = Variable<DateTime>(recordedTime);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MedicationAdherenceCompanion toCompanion(bool nullToAbsent) {
+    return MedicationAdherenceCompanion(
+      id: Value(id),
+      reminderId: Value(reminderId),
+      medicationId: Value(medicationId),
+      profileId: Value(profileId),
+      medicationName: Value(medicationName),
+      dosage: Value(dosage),
+      scheduledTime: Value(scheduledTime),
+      recordedTime: Value(recordedTime),
+      status: Value(status),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MedicationAdherenceData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MedicationAdherenceData(
+      id: serializer.fromJson<String>(json['id']),
+      reminderId: serializer.fromJson<String>(json['reminderId']),
+      medicationId: serializer.fromJson<String>(json['medicationId']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      medicationName: serializer.fromJson<String>(json['medicationName']),
+      dosage: serializer.fromJson<String>(json['dosage']),
+      scheduledTime: serializer.fromJson<DateTime>(json['scheduledTime']),
+      recordedTime: serializer.fromJson<DateTime>(json['recordedTime']),
+      status: serializer.fromJson<String>(json['status']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'reminderId': serializer.toJson<String>(reminderId),
+      'medicationId': serializer.toJson<String>(medicationId),
+      'profileId': serializer.toJson<String>(profileId),
+      'medicationName': serializer.toJson<String>(medicationName),
+      'dosage': serializer.toJson<String>(dosage),
+      'scheduledTime': serializer.toJson<DateTime>(scheduledTime),
+      'recordedTime': serializer.toJson<DateTime>(recordedTime),
+      'status': serializer.toJson<String>(status),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MedicationAdherenceData copyWith({
+    String? id,
+    String? reminderId,
+    String? medicationId,
+    String? profileId,
+    String? medicationName,
+    String? dosage,
+    DateTime? scheduledTime,
+    DateTime? recordedTime,
+    String? status,
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+  }) => MedicationAdherenceData(
+    id: id ?? this.id,
+    reminderId: reminderId ?? this.reminderId,
+    medicationId: medicationId ?? this.medicationId,
+    profileId: profileId ?? this.profileId,
+    medicationName: medicationName ?? this.medicationName,
+    dosage: dosage ?? this.dosage,
+    scheduledTime: scheduledTime ?? this.scheduledTime,
+    recordedTime: recordedTime ?? this.recordedTime,
+    status: status ?? this.status,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MedicationAdherenceData copyWithCompanion(MedicationAdherenceCompanion data) {
+    return MedicationAdherenceData(
+      id: data.id.present ? data.id.value : this.id,
+      reminderId: data.reminderId.present
+          ? data.reminderId.value
+          : this.reminderId,
+      medicationId: data.medicationId.present
+          ? data.medicationId.value
+          : this.medicationId,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      medicationName: data.medicationName.present
+          ? data.medicationName.value
+          : this.medicationName,
+      dosage: data.dosage.present ? data.dosage.value : this.dosage,
+      scheduledTime: data.scheduledTime.present
+          ? data.scheduledTime.value
+          : this.scheduledTime,
+      recordedTime: data.recordedTime.present
+          ? data.recordedTime.value
+          : this.recordedTime,
+      status: data.status.present ? data.status.value : this.status,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MedicationAdherenceData(')
+          ..write('id: $id, ')
+          ..write('reminderId: $reminderId, ')
+          ..write('medicationId: $medicationId, ')
+          ..write('profileId: $profileId, ')
+          ..write('medicationName: $medicationName, ')
+          ..write('dosage: $dosage, ')
+          ..write('scheduledTime: $scheduledTime, ')
+          ..write('recordedTime: $recordedTime, ')
+          ..write('status: $status, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    reminderId,
+    medicationId,
+    profileId,
+    medicationName,
+    dosage,
+    scheduledTime,
+    recordedTime,
+    status,
+    notes,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MedicationAdherenceData &&
+          other.id == this.id &&
+          other.reminderId == this.reminderId &&
+          other.medicationId == this.medicationId &&
+          other.profileId == this.profileId &&
+          other.medicationName == this.medicationName &&
+          other.dosage == this.dosage &&
+          other.scheduledTime == this.scheduledTime &&
+          other.recordedTime == this.recordedTime &&
+          other.status == this.status &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt);
+}
+
+class MedicationAdherenceCompanion
+    extends UpdateCompanion<MedicationAdherenceData> {
+  final Value<String> id;
+  final Value<String> reminderId;
+  final Value<String> medicationId;
+  final Value<String> profileId;
+  final Value<String> medicationName;
+  final Value<String> dosage;
+  final Value<DateTime> scheduledTime;
+  final Value<DateTime> recordedTime;
+  final Value<String> status;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const MedicationAdherenceCompanion({
+    this.id = const Value.absent(),
+    this.reminderId = const Value.absent(),
+    this.medicationId = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.medicationName = const Value.absent(),
+    this.dosage = const Value.absent(),
+    this.scheduledTime = const Value.absent(),
+    this.recordedTime = const Value.absent(),
+    this.status = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MedicationAdherenceCompanion.insert({
+    required String id,
+    required String reminderId,
+    required String medicationId,
+    required String profileId,
+    required String medicationName,
+    required String dosage,
+    required DateTime scheduledTime,
+    required DateTime recordedTime,
+    required String status,
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       reminderId = Value(reminderId),
+       medicationId = Value(medicationId),
+       profileId = Value(profileId),
+       medicationName = Value(medicationName),
+       dosage = Value(dosage),
+       scheduledTime = Value(scheduledTime),
+       recordedTime = Value(recordedTime),
+       status = Value(status);
+  static Insertable<MedicationAdherenceData> custom({
+    Expression<String>? id,
+    Expression<String>? reminderId,
+    Expression<String>? medicationId,
+    Expression<String>? profileId,
+    Expression<String>? medicationName,
+    Expression<String>? dosage,
+    Expression<DateTime>? scheduledTime,
+    Expression<DateTime>? recordedTime,
+    Expression<String>? status,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (reminderId != null) 'reminder_id': reminderId,
+      if (medicationId != null) 'medication_id': medicationId,
+      if (profileId != null) 'profile_id': profileId,
+      if (medicationName != null) 'medication_name': medicationName,
+      if (dosage != null) 'dosage': dosage,
+      if (scheduledTime != null) 'scheduled_time': scheduledTime,
+      if (recordedTime != null) 'recorded_time': recordedTime,
+      if (status != null) 'status': status,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MedicationAdherenceCompanion copyWith({
+    Value<String>? id,
+    Value<String>? reminderId,
+    Value<String>? medicationId,
+    Value<String>? profileId,
+    Value<String>? medicationName,
+    Value<String>? dosage,
+    Value<DateTime>? scheduledTime,
+    Value<DateTime>? recordedTime,
+    Value<String>? status,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return MedicationAdherenceCompanion(
+      id: id ?? this.id,
+      reminderId: reminderId ?? this.reminderId,
+      medicationId: medicationId ?? this.medicationId,
+      profileId: profileId ?? this.profileId,
+      medicationName: medicationName ?? this.medicationName,
+      dosage: dosage ?? this.dosage,
+      scheduledTime: scheduledTime ?? this.scheduledTime,
+      recordedTime: recordedTime ?? this.recordedTime,
+      status: status ?? this.status,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (reminderId.present) {
+      map['reminder_id'] = Variable<String>(reminderId.value);
+    }
+    if (medicationId.present) {
+      map['medication_id'] = Variable<String>(medicationId.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (medicationName.present) {
+      map['medication_name'] = Variable<String>(medicationName.value);
+    }
+    if (dosage.present) {
+      map['dosage'] = Variable<String>(dosage.value);
+    }
+    if (scheduledTime.present) {
+      map['scheduled_time'] = Variable<DateTime>(scheduledTime.value);
+    }
+    if (recordedTime.present) {
+      map['recorded_time'] = Variable<DateTime>(recordedTime.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MedicationAdherenceCompanion(')
+          ..write('id: $id, ')
+          ..write('reminderId: $reminderId, ')
+          ..write('medicationId: $medicationId, ')
+          ..write('profileId: $profileId, ')
+          ..write('medicationName: $medicationName, ')
+          ..write('dosage: $dosage, ')
+          ..write('scheduledTime: $scheduledTime, ')
+          ..write('recordedTime: $recordedTime, ')
+          ..write('status: $status, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NotificationSettingsTable extends NotificationSettings
+    with TableInfo<$NotificationSettingsTable, NotificationSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NotificationSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _medicationSoundNameMeta =
+      const VerificationMeta('medicationSoundName');
+  @override
+  late final GeneratedColumn<String> medicationSoundName =
+      GeneratedColumn<String>(
+        'medication_sound_name',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('default'),
+      );
+  static const VerificationMeta _medicationSoundPathMeta =
+      const VerificationMeta('medicationSoundPath');
+  @override
+  late final GeneratedColumn<String> medicationSoundPath =
+      GeneratedColumn<String>(
+        'medication_sound_path',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _medicationSoundVolumeMeta =
+      const VerificationMeta('medicationSoundVolume');
+  @override
+  late final GeneratedColumn<double> medicationSoundVolume =
+      GeneratedColumn<double>(
+        'medication_sound_volume',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.8),
+      );
+  static const VerificationMeta _appointmentSoundNameMeta =
+      const VerificationMeta('appointmentSoundName');
+  @override
+  late final GeneratedColumn<String> appointmentSoundName =
+      GeneratedColumn<String>(
+        'appointment_sound_name',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('default'),
+      );
+  static const VerificationMeta _appointmentSoundPathMeta =
+      const VerificationMeta('appointmentSoundPath');
+  @override
+  late final GeneratedColumn<String> appointmentSoundPath =
+      GeneratedColumn<String>(
+        'appointment_sound_path',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _appointmentSoundVolumeMeta =
+      const VerificationMeta('appointmentSoundVolume');
+  @override
+  late final GeneratedColumn<double> appointmentSoundVolume =
+      GeneratedColumn<double>(
+        'appointment_sound_volume',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.8),
+      );
+  static const VerificationMeta _generalSoundNameMeta = const VerificationMeta(
+    'generalSoundName',
+  );
+  @override
+  late final GeneratedColumn<String> generalSoundName = GeneratedColumn<String>(
+    'general_sound_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _generalSoundPathMeta = const VerificationMeta(
+    'generalSoundPath',
+  );
+  @override
+  late final GeneratedColumn<String> generalSoundPath = GeneratedColumn<String>(
+    'general_sound_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _generalSoundVolumeMeta =
+      const VerificationMeta('generalSoundVolume');
+  @override
+  late final GeneratedColumn<double> generalSoundVolume =
+      GeneratedColumn<double>(
+        'general_sound_volume',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.8),
+      );
+  static const VerificationMeta _enableVibrationMeta = const VerificationMeta(
+    'enableVibration',
+  );
+  @override
+  late final GeneratedColumn<bool> enableVibration = GeneratedColumn<bool>(
+    'enable_vibration',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enable_vibration" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _vibrationPatternMeta = const VerificationMeta(
+    'vibrationPattern',
+  );
+  @override
+  late final GeneratedColumn<String> vibrationPattern = GeneratedColumn<String>(
+    'vibration_pattern',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('default'),
+  );
+  static const VerificationMeta _enablePersistentNotificationsMeta =
+      const VerificationMeta('enablePersistentNotifications');
+  @override
+  late final GeneratedColumn<bool> enablePersistentNotifications =
+      GeneratedColumn<bool>(
+        'enable_persistent_notifications',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("enable_persistent_notifications" IN (0, 1))',
+        ),
+        defaultValue: const Constant(true),
+      );
+  static const VerificationMeta _persistentNotificationTimeoutMeta =
+      const VerificationMeta('persistentNotificationTimeout');
+  @override
+  late final GeneratedColumn<int> persistentNotificationTimeout =
+      GeneratedColumn<int>(
+        'persistent_notification_timeout',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(60),
+      );
+  static const VerificationMeta _respectDoNotDisturbMeta =
+      const VerificationMeta('respectDoNotDisturb');
+  @override
+  late final GeneratedColumn<bool> respectDoNotDisturb = GeneratedColumn<bool>(
+    'respect_do_not_disturb',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("respect_do_not_disturb" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _quietHoursStartMeta = const VerificationMeta(
+    'quietHoursStart',
+  );
+  @override
+  late final GeneratedColumn<String> quietHoursStart = GeneratedColumn<String>(
+    'quiet_hours_start',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _quietHoursEndMeta = const VerificationMeta(
+    'quietHoursEnd',
+  );
+  @override
+  late final GeneratedColumn<String> quietHoursEnd = GeneratedColumn<String>(
+    'quiet_hours_end',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _showOnLockScreenMeta = const VerificationMeta(
+    'showOnLockScreen',
+  );
+  @override
+  late final GeneratedColumn<bool> showOnLockScreen = GeneratedColumn<bool>(
+    'show_on_lock_screen',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("show_on_lock_screen" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _showMedicationNameMeta =
+      const VerificationMeta('showMedicationName');
+  @override
+  late final GeneratedColumn<bool> showMedicationName = GeneratedColumn<bool>(
+    'show_medication_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("show_medication_name" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _showDosageMeta = const VerificationMeta(
+    'showDosage',
+  );
+  @override
+  late final GeneratedColumn<bool> showDosage = GeneratedColumn<bool>(
+    'show_dosage',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("show_dosage" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _enableLedMeta = const VerificationMeta(
+    'enableLed',
+  );
+  @override
+  late final GeneratedColumn<bool> enableLed = GeneratedColumn<bool>(
+    'enable_led',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enable_led" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _ledColorMeta = const VerificationMeta(
+    'ledColor',
+  );
+  @override
+  late final GeneratedColumn<String> ledColor = GeneratedColumn<String>(
+    'led_color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('#2196F3'),
+  );
+  static const VerificationMeta _defaultSnoozeMinutesMeta =
+      const VerificationMeta('defaultSnoozeMinutes');
+  @override
+  late final GeneratedColumn<int> defaultSnoozeMinutes = GeneratedColumn<int>(
+    'default_snooze_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(15),
+  );
+  static const VerificationMeta _availableSnoozeIntervalsMeta =
+      const VerificationMeta('availableSnoozeIntervals');
+  @override
+  late final GeneratedColumn<String> availableSnoozeIntervals =
+      GeneratedColumn<String>(
+        'available_snooze_intervals',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[5,10,15,30,60]'),
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    medicationSoundName,
+    medicationSoundPath,
+    medicationSoundVolume,
+    appointmentSoundName,
+    appointmentSoundPath,
+    appointmentSoundVolume,
+    generalSoundName,
+    generalSoundPath,
+    generalSoundVolume,
+    enableVibration,
+    vibrationPattern,
+    enablePersistentNotifications,
+    persistentNotificationTimeout,
+    respectDoNotDisturb,
+    quietHoursStart,
+    quietHoursEnd,
+    showOnLockScreen,
+    showMedicationName,
+    showDosage,
+    enableLed,
+    ledColor,
+    defaultSnoozeMinutes,
+    availableSnoozeIntervals,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'notification_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NotificationSetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    }
+    if (data.containsKey('medication_sound_name')) {
+      context.handle(
+        _medicationSoundNameMeta,
+        medicationSoundName.isAcceptableOrUnknown(
+          data['medication_sound_name']!,
+          _medicationSoundNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('medication_sound_path')) {
+      context.handle(
+        _medicationSoundPathMeta,
+        medicationSoundPath.isAcceptableOrUnknown(
+          data['medication_sound_path']!,
+          _medicationSoundPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('medication_sound_volume')) {
+      context.handle(
+        _medicationSoundVolumeMeta,
+        medicationSoundVolume.isAcceptableOrUnknown(
+          data['medication_sound_volume']!,
+          _medicationSoundVolumeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_sound_name')) {
+      context.handle(
+        _appointmentSoundNameMeta,
+        appointmentSoundName.isAcceptableOrUnknown(
+          data['appointment_sound_name']!,
+          _appointmentSoundNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_sound_path')) {
+      context.handle(
+        _appointmentSoundPathMeta,
+        appointmentSoundPath.isAcceptableOrUnknown(
+          data['appointment_sound_path']!,
+          _appointmentSoundPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('appointment_sound_volume')) {
+      context.handle(
+        _appointmentSoundVolumeMeta,
+        appointmentSoundVolume.isAcceptableOrUnknown(
+          data['appointment_sound_volume']!,
+          _appointmentSoundVolumeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('general_sound_name')) {
+      context.handle(
+        _generalSoundNameMeta,
+        generalSoundName.isAcceptableOrUnknown(
+          data['general_sound_name']!,
+          _generalSoundNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('general_sound_path')) {
+      context.handle(
+        _generalSoundPathMeta,
+        generalSoundPath.isAcceptableOrUnknown(
+          data['general_sound_path']!,
+          _generalSoundPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('general_sound_volume')) {
+      context.handle(
+        _generalSoundVolumeMeta,
+        generalSoundVolume.isAcceptableOrUnknown(
+          data['general_sound_volume']!,
+          _generalSoundVolumeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('enable_vibration')) {
+      context.handle(
+        _enableVibrationMeta,
+        enableVibration.isAcceptableOrUnknown(
+          data['enable_vibration']!,
+          _enableVibrationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('vibration_pattern')) {
+      context.handle(
+        _vibrationPatternMeta,
+        vibrationPattern.isAcceptableOrUnknown(
+          data['vibration_pattern']!,
+          _vibrationPatternMeta,
+        ),
+      );
+    }
+    if (data.containsKey('enable_persistent_notifications')) {
+      context.handle(
+        _enablePersistentNotificationsMeta,
+        enablePersistentNotifications.isAcceptableOrUnknown(
+          data['enable_persistent_notifications']!,
+          _enablePersistentNotificationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('persistent_notification_timeout')) {
+      context.handle(
+        _persistentNotificationTimeoutMeta,
+        persistentNotificationTimeout.isAcceptableOrUnknown(
+          data['persistent_notification_timeout']!,
+          _persistentNotificationTimeoutMeta,
+        ),
+      );
+    }
+    if (data.containsKey('respect_do_not_disturb')) {
+      context.handle(
+        _respectDoNotDisturbMeta,
+        respectDoNotDisturb.isAcceptableOrUnknown(
+          data['respect_do_not_disturb']!,
+          _respectDoNotDisturbMeta,
+        ),
+      );
+    }
+    if (data.containsKey('quiet_hours_start')) {
+      context.handle(
+        _quietHoursStartMeta,
+        quietHoursStart.isAcceptableOrUnknown(
+          data['quiet_hours_start']!,
+          _quietHoursStartMeta,
+        ),
+      );
+    }
+    if (data.containsKey('quiet_hours_end')) {
+      context.handle(
+        _quietHoursEndMeta,
+        quietHoursEnd.isAcceptableOrUnknown(
+          data['quiet_hours_end']!,
+          _quietHoursEndMeta,
+        ),
+      );
+    }
+    if (data.containsKey('show_on_lock_screen')) {
+      context.handle(
+        _showOnLockScreenMeta,
+        showOnLockScreen.isAcceptableOrUnknown(
+          data['show_on_lock_screen']!,
+          _showOnLockScreenMeta,
+        ),
+      );
+    }
+    if (data.containsKey('show_medication_name')) {
+      context.handle(
+        _showMedicationNameMeta,
+        showMedicationName.isAcceptableOrUnknown(
+          data['show_medication_name']!,
+          _showMedicationNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('show_dosage')) {
+      context.handle(
+        _showDosageMeta,
+        showDosage.isAcceptableOrUnknown(data['show_dosage']!, _showDosageMeta),
+      );
+    }
+    if (data.containsKey('enable_led')) {
+      context.handle(
+        _enableLedMeta,
+        enableLed.isAcceptableOrUnknown(data['enable_led']!, _enableLedMeta),
+      );
+    }
+    if (data.containsKey('led_color')) {
+      context.handle(
+        _ledColorMeta,
+        ledColor.isAcceptableOrUnknown(data['led_color']!, _ledColorMeta),
+      );
+    }
+    if (data.containsKey('default_snooze_minutes')) {
+      context.handle(
+        _defaultSnoozeMinutesMeta,
+        defaultSnoozeMinutes.isAcceptableOrUnknown(
+          data['default_snooze_minutes']!,
+          _defaultSnoozeMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('available_snooze_intervals')) {
+      context.handle(
+        _availableSnoozeIntervalsMeta,
+        availableSnoozeIntervals.isAcceptableOrUnknown(
+          data['available_snooze_intervals']!,
+          _availableSnoozeIntervalsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NotificationSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NotificationSetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      ),
+      medicationSoundName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medication_sound_name'],
+      )!,
+      medicationSoundPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}medication_sound_path'],
+      ),
+      medicationSoundVolume: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}medication_sound_volume'],
+      )!,
+      appointmentSoundName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}appointment_sound_name'],
+      )!,
+      appointmentSoundPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}appointment_sound_path'],
+      ),
+      appointmentSoundVolume: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}appointment_sound_volume'],
+      )!,
+      generalSoundName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}general_sound_name'],
+      )!,
+      generalSoundPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}general_sound_path'],
+      ),
+      generalSoundVolume: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}general_sound_volume'],
+      )!,
+      enableVibration: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enable_vibration'],
+      )!,
+      vibrationPattern: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vibration_pattern'],
+      )!,
+      enablePersistentNotifications: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enable_persistent_notifications'],
+      )!,
+      persistentNotificationTimeout: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}persistent_notification_timeout'],
+      )!,
+      respectDoNotDisturb: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}respect_do_not_disturb'],
+      )!,
+      quietHoursStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}quiet_hours_start'],
+      ),
+      quietHoursEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}quiet_hours_end'],
+      ),
+      showOnLockScreen: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}show_on_lock_screen'],
+      )!,
+      showMedicationName: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}show_medication_name'],
+      )!,
+      showDosage: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}show_dosage'],
+      )!,
+      enableLed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enable_led'],
+      )!,
+      ledColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}led_color'],
+      )!,
+      defaultSnoozeMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}default_snooze_minutes'],
+      )!,
+      availableSnoozeIntervals: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}available_snooze_intervals'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NotificationSettingsTable createAlias(String alias) {
+    return $NotificationSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class NotificationSetting extends DataClass
+    implements Insertable<NotificationSetting> {
+  final String id;
+  final String? profileId;
+  final String medicationSoundName;
+  final String? medicationSoundPath;
+  final double medicationSoundVolume;
+  final String appointmentSoundName;
+  final String? appointmentSoundPath;
+  final double appointmentSoundVolume;
+  final String generalSoundName;
+  final String? generalSoundPath;
+  final double generalSoundVolume;
+  final bool enableVibration;
+  final String vibrationPattern;
+  final bool enablePersistentNotifications;
+  final int persistentNotificationTimeout;
+  final bool respectDoNotDisturb;
+  final String? quietHoursStart;
+  final String? quietHoursEnd;
+  final bool showOnLockScreen;
+  final bool showMedicationName;
+  final bool showDosage;
+  final bool enableLed;
+  final String ledColor;
+  final int defaultSnoozeMinutes;
+  final String availableSnoozeIntervals;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const NotificationSetting({
+    required this.id,
+    this.profileId,
+    required this.medicationSoundName,
+    this.medicationSoundPath,
+    required this.medicationSoundVolume,
+    required this.appointmentSoundName,
+    this.appointmentSoundPath,
+    required this.appointmentSoundVolume,
+    required this.generalSoundName,
+    this.generalSoundPath,
+    required this.generalSoundVolume,
+    required this.enableVibration,
+    required this.vibrationPattern,
+    required this.enablePersistentNotifications,
+    required this.persistentNotificationTimeout,
+    required this.respectDoNotDisturb,
+    this.quietHoursStart,
+    this.quietHoursEnd,
+    required this.showOnLockScreen,
+    required this.showMedicationName,
+    required this.showDosage,
+    required this.enableLed,
+    required this.ledColor,
+    required this.defaultSnoozeMinutes,
+    required this.availableSnoozeIntervals,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || profileId != null) {
+      map['profile_id'] = Variable<String>(profileId);
+    }
+    map['medication_sound_name'] = Variable<String>(medicationSoundName);
+    if (!nullToAbsent || medicationSoundPath != null) {
+      map['medication_sound_path'] = Variable<String>(medicationSoundPath);
+    }
+    map['medication_sound_volume'] = Variable<double>(medicationSoundVolume);
+    map['appointment_sound_name'] = Variable<String>(appointmentSoundName);
+    if (!nullToAbsent || appointmentSoundPath != null) {
+      map['appointment_sound_path'] = Variable<String>(appointmentSoundPath);
+    }
+    map['appointment_sound_volume'] = Variable<double>(appointmentSoundVolume);
+    map['general_sound_name'] = Variable<String>(generalSoundName);
+    if (!nullToAbsent || generalSoundPath != null) {
+      map['general_sound_path'] = Variable<String>(generalSoundPath);
+    }
+    map['general_sound_volume'] = Variable<double>(generalSoundVolume);
+    map['enable_vibration'] = Variable<bool>(enableVibration);
+    map['vibration_pattern'] = Variable<String>(vibrationPattern);
+    map['enable_persistent_notifications'] = Variable<bool>(
+      enablePersistentNotifications,
+    );
+    map['persistent_notification_timeout'] = Variable<int>(
+      persistentNotificationTimeout,
+    );
+    map['respect_do_not_disturb'] = Variable<bool>(respectDoNotDisturb);
+    if (!nullToAbsent || quietHoursStart != null) {
+      map['quiet_hours_start'] = Variable<String>(quietHoursStart);
+    }
+    if (!nullToAbsent || quietHoursEnd != null) {
+      map['quiet_hours_end'] = Variable<String>(quietHoursEnd);
+    }
+    map['show_on_lock_screen'] = Variable<bool>(showOnLockScreen);
+    map['show_medication_name'] = Variable<bool>(showMedicationName);
+    map['show_dosage'] = Variable<bool>(showDosage);
+    map['enable_led'] = Variable<bool>(enableLed);
+    map['led_color'] = Variable<String>(ledColor);
+    map['default_snooze_minutes'] = Variable<int>(defaultSnoozeMinutes);
+    map['available_snooze_intervals'] = Variable<String>(
+      availableSnoozeIntervals,
+    );
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  NotificationSettingsCompanion toCompanion(bool nullToAbsent) {
+    return NotificationSettingsCompanion(
+      id: Value(id),
+      profileId: profileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(profileId),
+      medicationSoundName: Value(medicationSoundName),
+      medicationSoundPath: medicationSoundPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(medicationSoundPath),
+      medicationSoundVolume: Value(medicationSoundVolume),
+      appointmentSoundName: Value(appointmentSoundName),
+      appointmentSoundPath: appointmentSoundPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appointmentSoundPath),
+      appointmentSoundVolume: Value(appointmentSoundVolume),
+      generalSoundName: Value(generalSoundName),
+      generalSoundPath: generalSoundPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(generalSoundPath),
+      generalSoundVolume: Value(generalSoundVolume),
+      enableVibration: Value(enableVibration),
+      vibrationPattern: Value(vibrationPattern),
+      enablePersistentNotifications: Value(enablePersistentNotifications),
+      persistentNotificationTimeout: Value(persistentNotificationTimeout),
+      respectDoNotDisturb: Value(respectDoNotDisturb),
+      quietHoursStart: quietHoursStart == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quietHoursStart),
+      quietHoursEnd: quietHoursEnd == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quietHoursEnd),
+      showOnLockScreen: Value(showOnLockScreen),
+      showMedicationName: Value(showMedicationName),
+      showDosage: Value(showDosage),
+      enableLed: Value(enableLed),
+      ledColor: Value(ledColor),
+      defaultSnoozeMinutes: Value(defaultSnoozeMinutes),
+      availableSnoozeIntervals: Value(availableSnoozeIntervals),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory NotificationSetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NotificationSetting(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String?>(json['profileId']),
+      medicationSoundName: serializer.fromJson<String>(
+        json['medicationSoundName'],
+      ),
+      medicationSoundPath: serializer.fromJson<String?>(
+        json['medicationSoundPath'],
+      ),
+      medicationSoundVolume: serializer.fromJson<double>(
+        json['medicationSoundVolume'],
+      ),
+      appointmentSoundName: serializer.fromJson<String>(
+        json['appointmentSoundName'],
+      ),
+      appointmentSoundPath: serializer.fromJson<String?>(
+        json['appointmentSoundPath'],
+      ),
+      appointmentSoundVolume: serializer.fromJson<double>(
+        json['appointmentSoundVolume'],
+      ),
+      generalSoundName: serializer.fromJson<String>(json['generalSoundName']),
+      generalSoundPath: serializer.fromJson<String?>(json['generalSoundPath']),
+      generalSoundVolume: serializer.fromJson<double>(
+        json['generalSoundVolume'],
+      ),
+      enableVibration: serializer.fromJson<bool>(json['enableVibration']),
+      vibrationPattern: serializer.fromJson<String>(json['vibrationPattern']),
+      enablePersistentNotifications: serializer.fromJson<bool>(
+        json['enablePersistentNotifications'],
+      ),
+      persistentNotificationTimeout: serializer.fromJson<int>(
+        json['persistentNotificationTimeout'],
+      ),
+      respectDoNotDisturb: serializer.fromJson<bool>(
+        json['respectDoNotDisturb'],
+      ),
+      quietHoursStart: serializer.fromJson<String?>(json['quietHoursStart']),
+      quietHoursEnd: serializer.fromJson<String?>(json['quietHoursEnd']),
+      showOnLockScreen: serializer.fromJson<bool>(json['showOnLockScreen']),
+      showMedicationName: serializer.fromJson<bool>(json['showMedicationName']),
+      showDosage: serializer.fromJson<bool>(json['showDosage']),
+      enableLed: serializer.fromJson<bool>(json['enableLed']),
+      ledColor: serializer.fromJson<String>(json['ledColor']),
+      defaultSnoozeMinutes: serializer.fromJson<int>(
+        json['defaultSnoozeMinutes'],
+      ),
+      availableSnoozeIntervals: serializer.fromJson<String>(
+        json['availableSnoozeIntervals'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String?>(profileId),
+      'medicationSoundName': serializer.toJson<String>(medicationSoundName),
+      'medicationSoundPath': serializer.toJson<String?>(medicationSoundPath),
+      'medicationSoundVolume': serializer.toJson<double>(medicationSoundVolume),
+      'appointmentSoundName': serializer.toJson<String>(appointmentSoundName),
+      'appointmentSoundPath': serializer.toJson<String?>(appointmentSoundPath),
+      'appointmentSoundVolume': serializer.toJson<double>(
+        appointmentSoundVolume,
+      ),
+      'generalSoundName': serializer.toJson<String>(generalSoundName),
+      'generalSoundPath': serializer.toJson<String?>(generalSoundPath),
+      'generalSoundVolume': serializer.toJson<double>(generalSoundVolume),
+      'enableVibration': serializer.toJson<bool>(enableVibration),
+      'vibrationPattern': serializer.toJson<String>(vibrationPattern),
+      'enablePersistentNotifications': serializer.toJson<bool>(
+        enablePersistentNotifications,
+      ),
+      'persistentNotificationTimeout': serializer.toJson<int>(
+        persistentNotificationTimeout,
+      ),
+      'respectDoNotDisturb': serializer.toJson<bool>(respectDoNotDisturb),
+      'quietHoursStart': serializer.toJson<String?>(quietHoursStart),
+      'quietHoursEnd': serializer.toJson<String?>(quietHoursEnd),
+      'showOnLockScreen': serializer.toJson<bool>(showOnLockScreen),
+      'showMedicationName': serializer.toJson<bool>(showMedicationName),
+      'showDosage': serializer.toJson<bool>(showDosage),
+      'enableLed': serializer.toJson<bool>(enableLed),
+      'ledColor': serializer.toJson<String>(ledColor),
+      'defaultSnoozeMinutes': serializer.toJson<int>(defaultSnoozeMinutes),
+      'availableSnoozeIntervals': serializer.toJson<String>(
+        availableSnoozeIntervals,
+      ),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  NotificationSetting copyWith({
+    String? id,
+    Value<String?> profileId = const Value.absent(),
+    String? medicationSoundName,
+    Value<String?> medicationSoundPath = const Value.absent(),
+    double? medicationSoundVolume,
+    String? appointmentSoundName,
+    Value<String?> appointmentSoundPath = const Value.absent(),
+    double? appointmentSoundVolume,
+    String? generalSoundName,
+    Value<String?> generalSoundPath = const Value.absent(),
+    double? generalSoundVolume,
+    bool? enableVibration,
+    String? vibrationPattern,
+    bool? enablePersistentNotifications,
+    int? persistentNotificationTimeout,
+    bool? respectDoNotDisturb,
+    Value<String?> quietHoursStart = const Value.absent(),
+    Value<String?> quietHoursEnd = const Value.absent(),
+    bool? showOnLockScreen,
+    bool? showMedicationName,
+    bool? showDosage,
+    bool? enableLed,
+    String? ledColor,
+    int? defaultSnoozeMinutes,
+    String? availableSnoozeIntervals,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => NotificationSetting(
+    id: id ?? this.id,
+    profileId: profileId.present ? profileId.value : this.profileId,
+    medicationSoundName: medicationSoundName ?? this.medicationSoundName,
+    medicationSoundPath: medicationSoundPath.present
+        ? medicationSoundPath.value
+        : this.medicationSoundPath,
+    medicationSoundVolume: medicationSoundVolume ?? this.medicationSoundVolume,
+    appointmentSoundName: appointmentSoundName ?? this.appointmentSoundName,
+    appointmentSoundPath: appointmentSoundPath.present
+        ? appointmentSoundPath.value
+        : this.appointmentSoundPath,
+    appointmentSoundVolume:
+        appointmentSoundVolume ?? this.appointmentSoundVolume,
+    generalSoundName: generalSoundName ?? this.generalSoundName,
+    generalSoundPath: generalSoundPath.present
+        ? generalSoundPath.value
+        : this.generalSoundPath,
+    generalSoundVolume: generalSoundVolume ?? this.generalSoundVolume,
+    enableVibration: enableVibration ?? this.enableVibration,
+    vibrationPattern: vibrationPattern ?? this.vibrationPattern,
+    enablePersistentNotifications:
+        enablePersistentNotifications ?? this.enablePersistentNotifications,
+    persistentNotificationTimeout:
+        persistentNotificationTimeout ?? this.persistentNotificationTimeout,
+    respectDoNotDisturb: respectDoNotDisturb ?? this.respectDoNotDisturb,
+    quietHoursStart: quietHoursStart.present
+        ? quietHoursStart.value
+        : this.quietHoursStart,
+    quietHoursEnd: quietHoursEnd.present
+        ? quietHoursEnd.value
+        : this.quietHoursEnd,
+    showOnLockScreen: showOnLockScreen ?? this.showOnLockScreen,
+    showMedicationName: showMedicationName ?? this.showMedicationName,
+    showDosage: showDosage ?? this.showDosage,
+    enableLed: enableLed ?? this.enableLed,
+    ledColor: ledColor ?? this.ledColor,
+    defaultSnoozeMinutes: defaultSnoozeMinutes ?? this.defaultSnoozeMinutes,
+    availableSnoozeIntervals:
+        availableSnoozeIntervals ?? this.availableSnoozeIntervals,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  NotificationSetting copyWithCompanion(NotificationSettingsCompanion data) {
+    return NotificationSetting(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      medicationSoundName: data.medicationSoundName.present
+          ? data.medicationSoundName.value
+          : this.medicationSoundName,
+      medicationSoundPath: data.medicationSoundPath.present
+          ? data.medicationSoundPath.value
+          : this.medicationSoundPath,
+      medicationSoundVolume: data.medicationSoundVolume.present
+          ? data.medicationSoundVolume.value
+          : this.medicationSoundVolume,
+      appointmentSoundName: data.appointmentSoundName.present
+          ? data.appointmentSoundName.value
+          : this.appointmentSoundName,
+      appointmentSoundPath: data.appointmentSoundPath.present
+          ? data.appointmentSoundPath.value
+          : this.appointmentSoundPath,
+      appointmentSoundVolume: data.appointmentSoundVolume.present
+          ? data.appointmentSoundVolume.value
+          : this.appointmentSoundVolume,
+      generalSoundName: data.generalSoundName.present
+          ? data.generalSoundName.value
+          : this.generalSoundName,
+      generalSoundPath: data.generalSoundPath.present
+          ? data.generalSoundPath.value
+          : this.generalSoundPath,
+      generalSoundVolume: data.generalSoundVolume.present
+          ? data.generalSoundVolume.value
+          : this.generalSoundVolume,
+      enableVibration: data.enableVibration.present
+          ? data.enableVibration.value
+          : this.enableVibration,
+      vibrationPattern: data.vibrationPattern.present
+          ? data.vibrationPattern.value
+          : this.vibrationPattern,
+      enablePersistentNotifications: data.enablePersistentNotifications.present
+          ? data.enablePersistentNotifications.value
+          : this.enablePersistentNotifications,
+      persistentNotificationTimeout: data.persistentNotificationTimeout.present
+          ? data.persistentNotificationTimeout.value
+          : this.persistentNotificationTimeout,
+      respectDoNotDisturb: data.respectDoNotDisturb.present
+          ? data.respectDoNotDisturb.value
+          : this.respectDoNotDisturb,
+      quietHoursStart: data.quietHoursStart.present
+          ? data.quietHoursStart.value
+          : this.quietHoursStart,
+      quietHoursEnd: data.quietHoursEnd.present
+          ? data.quietHoursEnd.value
+          : this.quietHoursEnd,
+      showOnLockScreen: data.showOnLockScreen.present
+          ? data.showOnLockScreen.value
+          : this.showOnLockScreen,
+      showMedicationName: data.showMedicationName.present
+          ? data.showMedicationName.value
+          : this.showMedicationName,
+      showDosage: data.showDosage.present
+          ? data.showDosage.value
+          : this.showDosage,
+      enableLed: data.enableLed.present ? data.enableLed.value : this.enableLed,
+      ledColor: data.ledColor.present ? data.ledColor.value : this.ledColor,
+      defaultSnoozeMinutes: data.defaultSnoozeMinutes.present
+          ? data.defaultSnoozeMinutes.value
+          : this.defaultSnoozeMinutes,
+      availableSnoozeIntervals: data.availableSnoozeIntervals.present
+          ? data.availableSnoozeIntervals.value
+          : this.availableSnoozeIntervals,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotificationSetting(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('medicationSoundName: $medicationSoundName, ')
+          ..write('medicationSoundPath: $medicationSoundPath, ')
+          ..write('medicationSoundVolume: $medicationSoundVolume, ')
+          ..write('appointmentSoundName: $appointmentSoundName, ')
+          ..write('appointmentSoundPath: $appointmentSoundPath, ')
+          ..write('appointmentSoundVolume: $appointmentSoundVolume, ')
+          ..write('generalSoundName: $generalSoundName, ')
+          ..write('generalSoundPath: $generalSoundPath, ')
+          ..write('generalSoundVolume: $generalSoundVolume, ')
+          ..write('enableVibration: $enableVibration, ')
+          ..write('vibrationPattern: $vibrationPattern, ')
+          ..write(
+            'enablePersistentNotifications: $enablePersistentNotifications, ',
+          )
+          ..write(
+            'persistentNotificationTimeout: $persistentNotificationTimeout, ',
+          )
+          ..write('respectDoNotDisturb: $respectDoNotDisturb, ')
+          ..write('quietHoursStart: $quietHoursStart, ')
+          ..write('quietHoursEnd: $quietHoursEnd, ')
+          ..write('showOnLockScreen: $showOnLockScreen, ')
+          ..write('showMedicationName: $showMedicationName, ')
+          ..write('showDosage: $showDosage, ')
+          ..write('enableLed: $enableLed, ')
+          ..write('ledColor: $ledColor, ')
+          ..write('defaultSnoozeMinutes: $defaultSnoozeMinutes, ')
+          ..write('availableSnoozeIntervals: $availableSnoozeIntervals, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    profileId,
+    medicationSoundName,
+    medicationSoundPath,
+    medicationSoundVolume,
+    appointmentSoundName,
+    appointmentSoundPath,
+    appointmentSoundVolume,
+    generalSoundName,
+    generalSoundPath,
+    generalSoundVolume,
+    enableVibration,
+    vibrationPattern,
+    enablePersistentNotifications,
+    persistentNotificationTimeout,
+    respectDoNotDisturb,
+    quietHoursStart,
+    quietHoursEnd,
+    showOnLockScreen,
+    showMedicationName,
+    showDosage,
+    enableLed,
+    ledColor,
+    defaultSnoozeMinutes,
+    availableSnoozeIntervals,
+    createdAt,
+    updatedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NotificationSetting &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.medicationSoundName == this.medicationSoundName &&
+          other.medicationSoundPath == this.medicationSoundPath &&
+          other.medicationSoundVolume == this.medicationSoundVolume &&
+          other.appointmentSoundName == this.appointmentSoundName &&
+          other.appointmentSoundPath == this.appointmentSoundPath &&
+          other.appointmentSoundVolume == this.appointmentSoundVolume &&
+          other.generalSoundName == this.generalSoundName &&
+          other.generalSoundPath == this.generalSoundPath &&
+          other.generalSoundVolume == this.generalSoundVolume &&
+          other.enableVibration == this.enableVibration &&
+          other.vibrationPattern == this.vibrationPattern &&
+          other.enablePersistentNotifications ==
+              this.enablePersistentNotifications &&
+          other.persistentNotificationTimeout ==
+              this.persistentNotificationTimeout &&
+          other.respectDoNotDisturb == this.respectDoNotDisturb &&
+          other.quietHoursStart == this.quietHoursStart &&
+          other.quietHoursEnd == this.quietHoursEnd &&
+          other.showOnLockScreen == this.showOnLockScreen &&
+          other.showMedicationName == this.showMedicationName &&
+          other.showDosage == this.showDosage &&
+          other.enableLed == this.enableLed &&
+          other.ledColor == this.ledColor &&
+          other.defaultSnoozeMinutes == this.defaultSnoozeMinutes &&
+          other.availableSnoozeIntervals == this.availableSnoozeIntervals &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class NotificationSettingsCompanion
+    extends UpdateCompanion<NotificationSetting> {
+  final Value<String> id;
+  final Value<String?> profileId;
+  final Value<String> medicationSoundName;
+  final Value<String?> medicationSoundPath;
+  final Value<double> medicationSoundVolume;
+  final Value<String> appointmentSoundName;
+  final Value<String?> appointmentSoundPath;
+  final Value<double> appointmentSoundVolume;
+  final Value<String> generalSoundName;
+  final Value<String?> generalSoundPath;
+  final Value<double> generalSoundVolume;
+  final Value<bool> enableVibration;
+  final Value<String> vibrationPattern;
+  final Value<bool> enablePersistentNotifications;
+  final Value<int> persistentNotificationTimeout;
+  final Value<bool> respectDoNotDisturb;
+  final Value<String?> quietHoursStart;
+  final Value<String?> quietHoursEnd;
+  final Value<bool> showOnLockScreen;
+  final Value<bool> showMedicationName;
+  final Value<bool> showDosage;
+  final Value<bool> enableLed;
+  final Value<String> ledColor;
+  final Value<int> defaultSnoozeMinutes;
+  final Value<String> availableSnoozeIntervals;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const NotificationSettingsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.medicationSoundName = const Value.absent(),
+    this.medicationSoundPath = const Value.absent(),
+    this.medicationSoundVolume = const Value.absent(),
+    this.appointmentSoundName = const Value.absent(),
+    this.appointmentSoundPath = const Value.absent(),
+    this.appointmentSoundVolume = const Value.absent(),
+    this.generalSoundName = const Value.absent(),
+    this.generalSoundPath = const Value.absent(),
+    this.generalSoundVolume = const Value.absent(),
+    this.enableVibration = const Value.absent(),
+    this.vibrationPattern = const Value.absent(),
+    this.enablePersistentNotifications = const Value.absent(),
+    this.persistentNotificationTimeout = const Value.absent(),
+    this.respectDoNotDisturb = const Value.absent(),
+    this.quietHoursStart = const Value.absent(),
+    this.quietHoursEnd = const Value.absent(),
+    this.showOnLockScreen = const Value.absent(),
+    this.showMedicationName = const Value.absent(),
+    this.showDosage = const Value.absent(),
+    this.enableLed = const Value.absent(),
+    this.ledColor = const Value.absent(),
+    this.defaultSnoozeMinutes = const Value.absent(),
+    this.availableSnoozeIntervals = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NotificationSettingsCompanion.insert({
+    required String id,
+    this.profileId = const Value.absent(),
+    this.medicationSoundName = const Value.absent(),
+    this.medicationSoundPath = const Value.absent(),
+    this.medicationSoundVolume = const Value.absent(),
+    this.appointmentSoundName = const Value.absent(),
+    this.appointmentSoundPath = const Value.absent(),
+    this.appointmentSoundVolume = const Value.absent(),
+    this.generalSoundName = const Value.absent(),
+    this.generalSoundPath = const Value.absent(),
+    this.generalSoundVolume = const Value.absent(),
+    this.enableVibration = const Value.absent(),
+    this.vibrationPattern = const Value.absent(),
+    this.enablePersistentNotifications = const Value.absent(),
+    this.persistentNotificationTimeout = const Value.absent(),
+    this.respectDoNotDisturb = const Value.absent(),
+    this.quietHoursStart = const Value.absent(),
+    this.quietHoursEnd = const Value.absent(),
+    this.showOnLockScreen = const Value.absent(),
+    this.showMedicationName = const Value.absent(),
+    this.showDosage = const Value.absent(),
+    this.enableLed = const Value.absent(),
+    this.ledColor = const Value.absent(),
+    this.defaultSnoozeMinutes = const Value.absent(),
+    this.availableSnoozeIntervals = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id);
+  static Insertable<NotificationSetting> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? medicationSoundName,
+    Expression<String>? medicationSoundPath,
+    Expression<double>? medicationSoundVolume,
+    Expression<String>? appointmentSoundName,
+    Expression<String>? appointmentSoundPath,
+    Expression<double>? appointmentSoundVolume,
+    Expression<String>? generalSoundName,
+    Expression<String>? generalSoundPath,
+    Expression<double>? generalSoundVolume,
+    Expression<bool>? enableVibration,
+    Expression<String>? vibrationPattern,
+    Expression<bool>? enablePersistentNotifications,
+    Expression<int>? persistentNotificationTimeout,
+    Expression<bool>? respectDoNotDisturb,
+    Expression<String>? quietHoursStart,
+    Expression<String>? quietHoursEnd,
+    Expression<bool>? showOnLockScreen,
+    Expression<bool>? showMedicationName,
+    Expression<bool>? showDosage,
+    Expression<bool>? enableLed,
+    Expression<String>? ledColor,
+    Expression<int>? defaultSnoozeMinutes,
+    Expression<String>? availableSnoozeIntervals,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (medicationSoundName != null)
+        'medication_sound_name': medicationSoundName,
+      if (medicationSoundPath != null)
+        'medication_sound_path': medicationSoundPath,
+      if (medicationSoundVolume != null)
+        'medication_sound_volume': medicationSoundVolume,
+      if (appointmentSoundName != null)
+        'appointment_sound_name': appointmentSoundName,
+      if (appointmentSoundPath != null)
+        'appointment_sound_path': appointmentSoundPath,
+      if (appointmentSoundVolume != null)
+        'appointment_sound_volume': appointmentSoundVolume,
+      if (generalSoundName != null) 'general_sound_name': generalSoundName,
+      if (generalSoundPath != null) 'general_sound_path': generalSoundPath,
+      if (generalSoundVolume != null)
+        'general_sound_volume': generalSoundVolume,
+      if (enableVibration != null) 'enable_vibration': enableVibration,
+      if (vibrationPattern != null) 'vibration_pattern': vibrationPattern,
+      if (enablePersistentNotifications != null)
+        'enable_persistent_notifications': enablePersistentNotifications,
+      if (persistentNotificationTimeout != null)
+        'persistent_notification_timeout': persistentNotificationTimeout,
+      if (respectDoNotDisturb != null)
+        'respect_do_not_disturb': respectDoNotDisturb,
+      if (quietHoursStart != null) 'quiet_hours_start': quietHoursStart,
+      if (quietHoursEnd != null) 'quiet_hours_end': quietHoursEnd,
+      if (showOnLockScreen != null) 'show_on_lock_screen': showOnLockScreen,
+      if (showMedicationName != null)
+        'show_medication_name': showMedicationName,
+      if (showDosage != null) 'show_dosage': showDosage,
+      if (enableLed != null) 'enable_led': enableLed,
+      if (ledColor != null) 'led_color': ledColor,
+      if (defaultSnoozeMinutes != null)
+        'default_snooze_minutes': defaultSnoozeMinutes,
+      if (availableSnoozeIntervals != null)
+        'available_snooze_intervals': availableSnoozeIntervals,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NotificationSettingsCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? profileId,
+    Value<String>? medicationSoundName,
+    Value<String?>? medicationSoundPath,
+    Value<double>? medicationSoundVolume,
+    Value<String>? appointmentSoundName,
+    Value<String?>? appointmentSoundPath,
+    Value<double>? appointmentSoundVolume,
+    Value<String>? generalSoundName,
+    Value<String?>? generalSoundPath,
+    Value<double>? generalSoundVolume,
+    Value<bool>? enableVibration,
+    Value<String>? vibrationPattern,
+    Value<bool>? enablePersistentNotifications,
+    Value<int>? persistentNotificationTimeout,
+    Value<bool>? respectDoNotDisturb,
+    Value<String?>? quietHoursStart,
+    Value<String?>? quietHoursEnd,
+    Value<bool>? showOnLockScreen,
+    Value<bool>? showMedicationName,
+    Value<bool>? showDosage,
+    Value<bool>? enableLed,
+    Value<String>? ledColor,
+    Value<int>? defaultSnoozeMinutes,
+    Value<String>? availableSnoozeIntervals,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return NotificationSettingsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      medicationSoundName: medicationSoundName ?? this.medicationSoundName,
+      medicationSoundPath: medicationSoundPath ?? this.medicationSoundPath,
+      medicationSoundVolume:
+          medicationSoundVolume ?? this.medicationSoundVolume,
+      appointmentSoundName: appointmentSoundName ?? this.appointmentSoundName,
+      appointmentSoundPath: appointmentSoundPath ?? this.appointmentSoundPath,
+      appointmentSoundVolume:
+          appointmentSoundVolume ?? this.appointmentSoundVolume,
+      generalSoundName: generalSoundName ?? this.generalSoundName,
+      generalSoundPath: generalSoundPath ?? this.generalSoundPath,
+      generalSoundVolume: generalSoundVolume ?? this.generalSoundVolume,
+      enableVibration: enableVibration ?? this.enableVibration,
+      vibrationPattern: vibrationPattern ?? this.vibrationPattern,
+      enablePersistentNotifications:
+          enablePersistentNotifications ?? this.enablePersistentNotifications,
+      persistentNotificationTimeout:
+          persistentNotificationTimeout ?? this.persistentNotificationTimeout,
+      respectDoNotDisturb: respectDoNotDisturb ?? this.respectDoNotDisturb,
+      quietHoursStart: quietHoursStart ?? this.quietHoursStart,
+      quietHoursEnd: quietHoursEnd ?? this.quietHoursEnd,
+      showOnLockScreen: showOnLockScreen ?? this.showOnLockScreen,
+      showMedicationName: showMedicationName ?? this.showMedicationName,
+      showDosage: showDosage ?? this.showDosage,
+      enableLed: enableLed ?? this.enableLed,
+      ledColor: ledColor ?? this.ledColor,
+      defaultSnoozeMinutes: defaultSnoozeMinutes ?? this.defaultSnoozeMinutes,
+      availableSnoozeIntervals:
+          availableSnoozeIntervals ?? this.availableSnoozeIntervals,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (medicationSoundName.present) {
+      map['medication_sound_name'] = Variable<String>(
+        medicationSoundName.value,
+      );
+    }
+    if (medicationSoundPath.present) {
+      map['medication_sound_path'] = Variable<String>(
+        medicationSoundPath.value,
+      );
+    }
+    if (medicationSoundVolume.present) {
+      map['medication_sound_volume'] = Variable<double>(
+        medicationSoundVolume.value,
+      );
+    }
+    if (appointmentSoundName.present) {
+      map['appointment_sound_name'] = Variable<String>(
+        appointmentSoundName.value,
+      );
+    }
+    if (appointmentSoundPath.present) {
+      map['appointment_sound_path'] = Variable<String>(
+        appointmentSoundPath.value,
+      );
+    }
+    if (appointmentSoundVolume.present) {
+      map['appointment_sound_volume'] = Variable<double>(
+        appointmentSoundVolume.value,
+      );
+    }
+    if (generalSoundName.present) {
+      map['general_sound_name'] = Variable<String>(generalSoundName.value);
+    }
+    if (generalSoundPath.present) {
+      map['general_sound_path'] = Variable<String>(generalSoundPath.value);
+    }
+    if (generalSoundVolume.present) {
+      map['general_sound_volume'] = Variable<double>(generalSoundVolume.value);
+    }
+    if (enableVibration.present) {
+      map['enable_vibration'] = Variable<bool>(enableVibration.value);
+    }
+    if (vibrationPattern.present) {
+      map['vibration_pattern'] = Variable<String>(vibrationPattern.value);
+    }
+    if (enablePersistentNotifications.present) {
+      map['enable_persistent_notifications'] = Variable<bool>(
+        enablePersistentNotifications.value,
+      );
+    }
+    if (persistentNotificationTimeout.present) {
+      map['persistent_notification_timeout'] = Variable<int>(
+        persistentNotificationTimeout.value,
+      );
+    }
+    if (respectDoNotDisturb.present) {
+      map['respect_do_not_disturb'] = Variable<bool>(respectDoNotDisturb.value);
+    }
+    if (quietHoursStart.present) {
+      map['quiet_hours_start'] = Variable<String>(quietHoursStart.value);
+    }
+    if (quietHoursEnd.present) {
+      map['quiet_hours_end'] = Variable<String>(quietHoursEnd.value);
+    }
+    if (showOnLockScreen.present) {
+      map['show_on_lock_screen'] = Variable<bool>(showOnLockScreen.value);
+    }
+    if (showMedicationName.present) {
+      map['show_medication_name'] = Variable<bool>(showMedicationName.value);
+    }
+    if (showDosage.present) {
+      map['show_dosage'] = Variable<bool>(showDosage.value);
+    }
+    if (enableLed.present) {
+      map['enable_led'] = Variable<bool>(enableLed.value);
+    }
+    if (ledColor.present) {
+      map['led_color'] = Variable<String>(ledColor.value);
+    }
+    if (defaultSnoozeMinutes.present) {
+      map['default_snooze_minutes'] = Variable<int>(defaultSnoozeMinutes.value);
+    }
+    if (availableSnoozeIntervals.present) {
+      map['available_snooze_intervals'] = Variable<String>(
+        availableSnoozeIntervals.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotificationSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('medicationSoundName: $medicationSoundName, ')
+          ..write('medicationSoundPath: $medicationSoundPath, ')
+          ..write('medicationSoundVolume: $medicationSoundVolume, ')
+          ..write('appointmentSoundName: $appointmentSoundName, ')
+          ..write('appointmentSoundPath: $appointmentSoundPath, ')
+          ..write('appointmentSoundVolume: $appointmentSoundVolume, ')
+          ..write('generalSoundName: $generalSoundName, ')
+          ..write('generalSoundPath: $generalSoundPath, ')
+          ..write('generalSoundVolume: $generalSoundVolume, ')
+          ..write('enableVibration: $enableVibration, ')
+          ..write('vibrationPattern: $vibrationPattern, ')
+          ..write(
+            'enablePersistentNotifications: $enablePersistentNotifications, ',
+          )
+          ..write(
+            'persistentNotificationTimeout: $persistentNotificationTimeout, ',
+          )
+          ..write('respectDoNotDisturb: $respectDoNotDisturb, ')
+          ..write('quietHoursStart: $quietHoursStart, ')
+          ..write('quietHoursEnd: $quietHoursEnd, ')
+          ..write('showOnLockScreen: $showOnLockScreen, ')
+          ..write('showMedicationName: $showMedicationName, ')
+          ..write('showDosage: $showDosage, ')
+          ..write('enableLed: $enableLed, ')
+          ..write('ledColor: $ledColor, ')
+          ..write('defaultSnoozeMinutes: $defaultSnoozeMinutes, ')
+          ..write('availableSnoozeIntervals: $availableSnoozeIntervals, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -24658,6 +26945,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $EmergencyCardsTable emergencyCards = $EmergencyCardsTable(this);
   late final $RecordTagsTable recordTags = $RecordTagsTable(this);
   late final $SearchHistoryTable searchHistory = $SearchHistoryTable(this);
+  late final $MedicationAdherenceTable medicationAdherence =
+      $MedicationAdherenceTable(this);
+  late final $NotificationSettingsTable notificationSettings =
+      $NotificationSettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -24685,6 +26976,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     emergencyCards,
     recordTags,
     searchHistory,
+    medicationAdherence,
+    notificationSettings,
   ];
 }
 
@@ -35559,6 +37852,1024 @@ typedef $$SearchHistoryTableProcessedTableManager =
       SearchHistoryData,
       PrefetchHooks Function()
     >;
+typedef $$MedicationAdherenceTableCreateCompanionBuilder =
+    MedicationAdherenceCompanion Function({
+      required String id,
+      required String reminderId,
+      required String medicationId,
+      required String profileId,
+      required String medicationName,
+      required String dosage,
+      required DateTime scheduledTime,
+      required DateTime recordedTime,
+      required String status,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$MedicationAdherenceTableUpdateCompanionBuilder =
+    MedicationAdherenceCompanion Function({
+      Value<String> id,
+      Value<String> reminderId,
+      Value<String> medicationId,
+      Value<String> profileId,
+      Value<String> medicationName,
+      Value<String> dosage,
+      Value<DateTime> scheduledTime,
+      Value<DateTime> recordedTime,
+      Value<String> status,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$MedicationAdherenceTableFilterComposer
+    extends Composer<_$AppDatabase, $MedicationAdherenceTable> {
+  $$MedicationAdherenceTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reminderId => $composableBuilder(
+    column: $table.reminderId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicationId => $composableBuilder(
+    column: $table.medicationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicationName => $composableBuilder(
+    column: $table.medicationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dosage => $composableBuilder(
+    column: $table.dosage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get scheduledTime => $composableBuilder(
+    column: $table.scheduledTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordedTime => $composableBuilder(
+    column: $table.recordedTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MedicationAdherenceTableOrderingComposer
+    extends Composer<_$AppDatabase, $MedicationAdherenceTable> {
+  $$MedicationAdherenceTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reminderId => $composableBuilder(
+    column: $table.reminderId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicationId => $composableBuilder(
+    column: $table.medicationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicationName => $composableBuilder(
+    column: $table.medicationName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dosage => $composableBuilder(
+    column: $table.dosage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get scheduledTime => $composableBuilder(
+    column: $table.scheduledTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordedTime => $composableBuilder(
+    column: $table.recordedTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MedicationAdherenceTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MedicationAdherenceTable> {
+  $$MedicationAdherenceTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get reminderId => $composableBuilder(
+    column: $table.reminderId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get medicationId => $composableBuilder(
+    column: $table.medicationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get medicationName => $composableBuilder(
+    column: $table.medicationName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dosage =>
+      $composableBuilder(column: $table.dosage, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get scheduledTime => $composableBuilder(
+    column: $table.scheduledTime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get recordedTime => $composableBuilder(
+    column: $table.recordedTime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$MedicationAdherenceTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MedicationAdherenceTable,
+          MedicationAdherenceData,
+          $$MedicationAdherenceTableFilterComposer,
+          $$MedicationAdherenceTableOrderingComposer,
+          $$MedicationAdherenceTableAnnotationComposer,
+          $$MedicationAdherenceTableCreateCompanionBuilder,
+          $$MedicationAdherenceTableUpdateCompanionBuilder,
+          (
+            MedicationAdherenceData,
+            BaseReferences<
+              _$AppDatabase,
+              $MedicationAdherenceTable,
+              MedicationAdherenceData
+            >,
+          ),
+          MedicationAdherenceData,
+          PrefetchHooks Function()
+        > {
+  $$MedicationAdherenceTableTableManager(
+    _$AppDatabase db,
+    $MedicationAdherenceTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MedicationAdherenceTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MedicationAdherenceTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MedicationAdherenceTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> reminderId = const Value.absent(),
+                Value<String> medicationId = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> medicationName = const Value.absent(),
+                Value<String> dosage = const Value.absent(),
+                Value<DateTime> scheduledTime = const Value.absent(),
+                Value<DateTime> recordedTime = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MedicationAdherenceCompanion(
+                id: id,
+                reminderId: reminderId,
+                medicationId: medicationId,
+                profileId: profileId,
+                medicationName: medicationName,
+                dosage: dosage,
+                scheduledTime: scheduledTime,
+                recordedTime: recordedTime,
+                status: status,
+                notes: notes,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String reminderId,
+                required String medicationId,
+                required String profileId,
+                required String medicationName,
+                required String dosage,
+                required DateTime scheduledTime,
+                required DateTime recordedTime,
+                required String status,
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MedicationAdherenceCompanion.insert(
+                id: id,
+                reminderId: reminderId,
+                medicationId: medicationId,
+                profileId: profileId,
+                medicationName: medicationName,
+                dosage: dosage,
+                scheduledTime: scheduledTime,
+                recordedTime: recordedTime,
+                status: status,
+                notes: notes,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MedicationAdherenceTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MedicationAdherenceTable,
+      MedicationAdherenceData,
+      $$MedicationAdherenceTableFilterComposer,
+      $$MedicationAdherenceTableOrderingComposer,
+      $$MedicationAdherenceTableAnnotationComposer,
+      $$MedicationAdherenceTableCreateCompanionBuilder,
+      $$MedicationAdherenceTableUpdateCompanionBuilder,
+      (
+        MedicationAdherenceData,
+        BaseReferences<
+          _$AppDatabase,
+          $MedicationAdherenceTable,
+          MedicationAdherenceData
+        >,
+      ),
+      MedicationAdherenceData,
+      PrefetchHooks Function()
+    >;
+typedef $$NotificationSettingsTableCreateCompanionBuilder =
+    NotificationSettingsCompanion Function({
+      required String id,
+      Value<String?> profileId,
+      Value<String> medicationSoundName,
+      Value<String?> medicationSoundPath,
+      Value<double> medicationSoundVolume,
+      Value<String> appointmentSoundName,
+      Value<String?> appointmentSoundPath,
+      Value<double> appointmentSoundVolume,
+      Value<String> generalSoundName,
+      Value<String?> generalSoundPath,
+      Value<double> generalSoundVolume,
+      Value<bool> enableVibration,
+      Value<String> vibrationPattern,
+      Value<bool> enablePersistentNotifications,
+      Value<int> persistentNotificationTimeout,
+      Value<bool> respectDoNotDisturb,
+      Value<String?> quietHoursStart,
+      Value<String?> quietHoursEnd,
+      Value<bool> showOnLockScreen,
+      Value<bool> showMedicationName,
+      Value<bool> showDosage,
+      Value<bool> enableLed,
+      Value<String> ledColor,
+      Value<int> defaultSnoozeMinutes,
+      Value<String> availableSnoozeIntervals,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$NotificationSettingsTableUpdateCompanionBuilder =
+    NotificationSettingsCompanion Function({
+      Value<String> id,
+      Value<String?> profileId,
+      Value<String> medicationSoundName,
+      Value<String?> medicationSoundPath,
+      Value<double> medicationSoundVolume,
+      Value<String> appointmentSoundName,
+      Value<String?> appointmentSoundPath,
+      Value<double> appointmentSoundVolume,
+      Value<String> generalSoundName,
+      Value<String?> generalSoundPath,
+      Value<double> generalSoundVolume,
+      Value<bool> enableVibration,
+      Value<String> vibrationPattern,
+      Value<bool> enablePersistentNotifications,
+      Value<int> persistentNotificationTimeout,
+      Value<bool> respectDoNotDisturb,
+      Value<String?> quietHoursStart,
+      Value<String?> quietHoursEnd,
+      Value<bool> showOnLockScreen,
+      Value<bool> showMedicationName,
+      Value<bool> showDosage,
+      Value<bool> enableLed,
+      Value<String> ledColor,
+      Value<int> defaultSnoozeMinutes,
+      Value<String> availableSnoozeIntervals,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$NotificationSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $NotificationSettingsTable> {
+  $$NotificationSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicationSoundName => $composableBuilder(
+    column: $table.medicationSoundName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get medicationSoundPath => $composableBuilder(
+    column: $table.medicationSoundPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get medicationSoundVolume => $composableBuilder(
+    column: $table.medicationSoundVolume,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appointmentSoundName => $composableBuilder(
+    column: $table.appointmentSoundName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appointmentSoundPath => $composableBuilder(
+    column: $table.appointmentSoundPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get appointmentSoundVolume => $composableBuilder(
+    column: $table.appointmentSoundVolume,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get generalSoundName => $composableBuilder(
+    column: $table.generalSoundName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get generalSoundPath => $composableBuilder(
+    column: $table.generalSoundPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get generalSoundVolume => $composableBuilder(
+    column: $table.generalSoundVolume,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enableVibration => $composableBuilder(
+    column: $table.enableVibration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vibrationPattern => $composableBuilder(
+    column: $table.vibrationPattern,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enablePersistentNotifications => $composableBuilder(
+    column: $table.enablePersistentNotifications,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get persistentNotificationTimeout => $composableBuilder(
+    column: $table.persistentNotificationTimeout,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get respectDoNotDisturb => $composableBuilder(
+    column: $table.respectDoNotDisturb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get quietHoursStart => $composableBuilder(
+    column: $table.quietHoursStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get quietHoursEnd => $composableBuilder(
+    column: $table.quietHoursEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get showOnLockScreen => $composableBuilder(
+    column: $table.showOnLockScreen,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get showMedicationName => $composableBuilder(
+    column: $table.showMedicationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get showDosage => $composableBuilder(
+    column: $table.showDosage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enableLed => $composableBuilder(
+    column: $table.enableLed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ledColor => $composableBuilder(
+    column: $table.ledColor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get defaultSnoozeMinutes => $composableBuilder(
+    column: $table.defaultSnoozeMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get availableSnoozeIntervals => $composableBuilder(
+    column: $table.availableSnoozeIntervals,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NotificationSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $NotificationSettingsTable> {
+  $$NotificationSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileId => $composableBuilder(
+    column: $table.profileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicationSoundName => $composableBuilder(
+    column: $table.medicationSoundName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicationSoundPath => $composableBuilder(
+    column: $table.medicationSoundPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get medicationSoundVolume => $composableBuilder(
+    column: $table.medicationSoundVolume,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appointmentSoundName => $composableBuilder(
+    column: $table.appointmentSoundName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appointmentSoundPath => $composableBuilder(
+    column: $table.appointmentSoundPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get appointmentSoundVolume => $composableBuilder(
+    column: $table.appointmentSoundVolume,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get generalSoundName => $composableBuilder(
+    column: $table.generalSoundName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get generalSoundPath => $composableBuilder(
+    column: $table.generalSoundPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get generalSoundVolume => $composableBuilder(
+    column: $table.generalSoundVolume,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enableVibration => $composableBuilder(
+    column: $table.enableVibration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vibrationPattern => $composableBuilder(
+    column: $table.vibrationPattern,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enablePersistentNotifications => $composableBuilder(
+    column: $table.enablePersistentNotifications,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get persistentNotificationTimeout => $composableBuilder(
+    column: $table.persistentNotificationTimeout,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get respectDoNotDisturb => $composableBuilder(
+    column: $table.respectDoNotDisturb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get quietHoursStart => $composableBuilder(
+    column: $table.quietHoursStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get quietHoursEnd => $composableBuilder(
+    column: $table.quietHoursEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get showOnLockScreen => $composableBuilder(
+    column: $table.showOnLockScreen,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get showMedicationName => $composableBuilder(
+    column: $table.showMedicationName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get showDosage => $composableBuilder(
+    column: $table.showDosage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enableLed => $composableBuilder(
+    column: $table.enableLed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ledColor => $composableBuilder(
+    column: $table.ledColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get defaultSnoozeMinutes => $composableBuilder(
+    column: $table.defaultSnoozeMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get availableSnoozeIntervals => $composableBuilder(
+    column: $table.availableSnoozeIntervals,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NotificationSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NotificationSettingsTable> {
+  $$NotificationSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get profileId =>
+      $composableBuilder(column: $table.profileId, builder: (column) => column);
+
+  GeneratedColumn<String> get medicationSoundName => $composableBuilder(
+    column: $table.medicationSoundName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get medicationSoundPath => $composableBuilder(
+    column: $table.medicationSoundPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get medicationSoundVolume => $composableBuilder(
+    column: $table.medicationSoundVolume,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appointmentSoundName => $composableBuilder(
+    column: $table.appointmentSoundName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appointmentSoundPath => $composableBuilder(
+    column: $table.appointmentSoundPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get appointmentSoundVolume => $composableBuilder(
+    column: $table.appointmentSoundVolume,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get generalSoundName => $composableBuilder(
+    column: $table.generalSoundName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get generalSoundPath => $composableBuilder(
+    column: $table.generalSoundPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get generalSoundVolume => $composableBuilder(
+    column: $table.generalSoundVolume,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get enableVibration => $composableBuilder(
+    column: $table.enableVibration,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get vibrationPattern => $composableBuilder(
+    column: $table.vibrationPattern,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get enablePersistentNotifications => $composableBuilder(
+    column: $table.enablePersistentNotifications,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get persistentNotificationTimeout => $composableBuilder(
+    column: $table.persistentNotificationTimeout,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get respectDoNotDisturb => $composableBuilder(
+    column: $table.respectDoNotDisturb,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get quietHoursStart => $composableBuilder(
+    column: $table.quietHoursStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get quietHoursEnd => $composableBuilder(
+    column: $table.quietHoursEnd,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get showOnLockScreen => $composableBuilder(
+    column: $table.showOnLockScreen,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get showMedicationName => $composableBuilder(
+    column: $table.showMedicationName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get showDosage => $composableBuilder(
+    column: $table.showDosage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get enableLed =>
+      $composableBuilder(column: $table.enableLed, builder: (column) => column);
+
+  GeneratedColumn<String> get ledColor =>
+      $composableBuilder(column: $table.ledColor, builder: (column) => column);
+
+  GeneratedColumn<int> get defaultSnoozeMinutes => $composableBuilder(
+    column: $table.defaultSnoozeMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get availableSnoozeIntervals => $composableBuilder(
+    column: $table.availableSnoozeIntervals,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$NotificationSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NotificationSettingsTable,
+          NotificationSetting,
+          $$NotificationSettingsTableFilterComposer,
+          $$NotificationSettingsTableOrderingComposer,
+          $$NotificationSettingsTableAnnotationComposer,
+          $$NotificationSettingsTableCreateCompanionBuilder,
+          $$NotificationSettingsTableUpdateCompanionBuilder,
+          (
+            NotificationSetting,
+            BaseReferences<
+              _$AppDatabase,
+              $NotificationSettingsTable,
+              NotificationSetting
+            >,
+          ),
+          NotificationSetting,
+          PrefetchHooks Function()
+        > {
+  $$NotificationSettingsTableTableManager(
+    _$AppDatabase db,
+    $NotificationSettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NotificationSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NotificationSettingsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$NotificationSettingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> profileId = const Value.absent(),
+                Value<String> medicationSoundName = const Value.absent(),
+                Value<String?> medicationSoundPath = const Value.absent(),
+                Value<double> medicationSoundVolume = const Value.absent(),
+                Value<String> appointmentSoundName = const Value.absent(),
+                Value<String?> appointmentSoundPath = const Value.absent(),
+                Value<double> appointmentSoundVolume = const Value.absent(),
+                Value<String> generalSoundName = const Value.absent(),
+                Value<String?> generalSoundPath = const Value.absent(),
+                Value<double> generalSoundVolume = const Value.absent(),
+                Value<bool> enableVibration = const Value.absent(),
+                Value<String> vibrationPattern = const Value.absent(),
+                Value<bool> enablePersistentNotifications =
+                    const Value.absent(),
+                Value<int> persistentNotificationTimeout = const Value.absent(),
+                Value<bool> respectDoNotDisturb = const Value.absent(),
+                Value<String?> quietHoursStart = const Value.absent(),
+                Value<String?> quietHoursEnd = const Value.absent(),
+                Value<bool> showOnLockScreen = const Value.absent(),
+                Value<bool> showMedicationName = const Value.absent(),
+                Value<bool> showDosage = const Value.absent(),
+                Value<bool> enableLed = const Value.absent(),
+                Value<String> ledColor = const Value.absent(),
+                Value<int> defaultSnoozeMinutes = const Value.absent(),
+                Value<String> availableSnoozeIntervals = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NotificationSettingsCompanion(
+                id: id,
+                profileId: profileId,
+                medicationSoundName: medicationSoundName,
+                medicationSoundPath: medicationSoundPath,
+                medicationSoundVolume: medicationSoundVolume,
+                appointmentSoundName: appointmentSoundName,
+                appointmentSoundPath: appointmentSoundPath,
+                appointmentSoundVolume: appointmentSoundVolume,
+                generalSoundName: generalSoundName,
+                generalSoundPath: generalSoundPath,
+                generalSoundVolume: generalSoundVolume,
+                enableVibration: enableVibration,
+                vibrationPattern: vibrationPattern,
+                enablePersistentNotifications: enablePersistentNotifications,
+                persistentNotificationTimeout: persistentNotificationTimeout,
+                respectDoNotDisturb: respectDoNotDisturb,
+                quietHoursStart: quietHoursStart,
+                quietHoursEnd: quietHoursEnd,
+                showOnLockScreen: showOnLockScreen,
+                showMedicationName: showMedicationName,
+                showDosage: showDosage,
+                enableLed: enableLed,
+                ledColor: ledColor,
+                defaultSnoozeMinutes: defaultSnoozeMinutes,
+                availableSnoozeIntervals: availableSnoozeIntervals,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> profileId = const Value.absent(),
+                Value<String> medicationSoundName = const Value.absent(),
+                Value<String?> medicationSoundPath = const Value.absent(),
+                Value<double> medicationSoundVolume = const Value.absent(),
+                Value<String> appointmentSoundName = const Value.absent(),
+                Value<String?> appointmentSoundPath = const Value.absent(),
+                Value<double> appointmentSoundVolume = const Value.absent(),
+                Value<String> generalSoundName = const Value.absent(),
+                Value<String?> generalSoundPath = const Value.absent(),
+                Value<double> generalSoundVolume = const Value.absent(),
+                Value<bool> enableVibration = const Value.absent(),
+                Value<String> vibrationPattern = const Value.absent(),
+                Value<bool> enablePersistentNotifications =
+                    const Value.absent(),
+                Value<int> persistentNotificationTimeout = const Value.absent(),
+                Value<bool> respectDoNotDisturb = const Value.absent(),
+                Value<String?> quietHoursStart = const Value.absent(),
+                Value<String?> quietHoursEnd = const Value.absent(),
+                Value<bool> showOnLockScreen = const Value.absent(),
+                Value<bool> showMedicationName = const Value.absent(),
+                Value<bool> showDosage = const Value.absent(),
+                Value<bool> enableLed = const Value.absent(),
+                Value<String> ledColor = const Value.absent(),
+                Value<int> defaultSnoozeMinutes = const Value.absent(),
+                Value<String> availableSnoozeIntervals = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NotificationSettingsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                medicationSoundName: medicationSoundName,
+                medicationSoundPath: medicationSoundPath,
+                medicationSoundVolume: medicationSoundVolume,
+                appointmentSoundName: appointmentSoundName,
+                appointmentSoundPath: appointmentSoundPath,
+                appointmentSoundVolume: appointmentSoundVolume,
+                generalSoundName: generalSoundName,
+                generalSoundPath: generalSoundPath,
+                generalSoundVolume: generalSoundVolume,
+                enableVibration: enableVibration,
+                vibrationPattern: vibrationPattern,
+                enablePersistentNotifications: enablePersistentNotifications,
+                persistentNotificationTimeout: persistentNotificationTimeout,
+                respectDoNotDisturb: respectDoNotDisturb,
+                quietHoursStart: quietHoursStart,
+                quietHoursEnd: quietHoursEnd,
+                showOnLockScreen: showOnLockScreen,
+                showMedicationName: showMedicationName,
+                showDosage: showDosage,
+                enableLed: enableLed,
+                ledColor: ledColor,
+                defaultSnoozeMinutes: defaultSnoozeMinutes,
+                availableSnoozeIntervals: availableSnoozeIntervals,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NotificationSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NotificationSettingsTable,
+      NotificationSetting,
+      $$NotificationSettingsTableFilterComposer,
+      $$NotificationSettingsTableOrderingComposer,
+      $$NotificationSettingsTableAnnotationComposer,
+      $$NotificationSettingsTableCreateCompanionBuilder,
+      $$NotificationSettingsTableUpdateCompanionBuilder,
+      (
+        NotificationSetting,
+        BaseReferences<
+          _$AppDatabase,
+          $NotificationSettingsTable,
+          NotificationSetting
+        >,
+      ),
+      NotificationSetting,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -35606,4 +38917,8 @@ class $AppDatabaseManager {
       $$RecordTagsTableTableManager(_db, _db.recordTags);
   $$SearchHistoryTableTableManager get searchHistory =>
       $$SearchHistoryTableTableManager(_db, _db.searchHistory);
+  $$MedicationAdherenceTableTableManager get medicationAdherence =>
+      $$MedicationAdherenceTableTableManager(_db, _db.medicationAdherence);
+  $$NotificationSettingsTableTableManager get notificationSettings =>
+      $$NotificationSettingsTableTableManager(_db, _db.notificationSettings);
 }

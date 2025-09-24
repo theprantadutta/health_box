@@ -29,6 +29,8 @@ import '../models/reminder.dart';
 import '../models/record_tag.dart';
 import '../models/emergency_card.dart';
 import '../models/search_history.dart';
+import '../models/medication_adherence.dart';
+import '../models/notification_settings.dart';
 
 part 'app_database.g.dart';
 
@@ -56,6 +58,8 @@ part 'app_database.g.dart';
     EmergencyCards,
     RecordTags,
     SearchHistory,
+    MedicationAdherence,
+    NotificationSettings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -65,7 +69,7 @@ class AppDatabase extends _$AppDatabase {
   static AppDatabase get instance => _instance;
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -288,6 +292,58 @@ class AppDatabase extends _$AppDatabase {
           debugPrint('Migration to v7 completed successfully');
         } catch (e) {
           debugPrint('Migration to v7 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 7 && to == 8) {
+        // Migration from v7 to v8: Add medication adherence tracking
+        try {
+          debugPrint('Starting migration to v8 - adding medication adherence tracking...');
+
+          // Create medication adherence table
+          await m.createTable(medicationAdherence);
+
+          // Add indexes for better performance
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_adherence_reminder_id ON medication_adherence(reminder_id);'
+          );
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_adherence_medication_id ON medication_adherence(medication_id);'
+          );
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_adherence_profile_id ON medication_adherence(profile_id);'
+          );
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_adherence_scheduled_time ON medication_adherence(scheduled_time);'
+          );
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_adherence_status ON medication_adherence(status);'
+          );
+
+          debugPrint('Migration to v8 completed successfully');
+        } catch (e) {
+          debugPrint('Migration to v8 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 8 && to == 9) {
+        // Migration from v8 to v9: Add notification settings table
+        try {
+          debugPrint('Starting migration to v9 - adding notification settings...');
+
+          // Create notification settings table
+          await m.createTable(notificationSettings);
+
+          // Add indexes for better performance
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_notification_settings_profile_id ON notification_settings(profile_id);'
+          );
+
+          debugPrint('Migration to v9 completed successfully');
+        } catch (e) {
+          debugPrint('Migration to v9 failed: $e');
           rethrow;
         }
       }

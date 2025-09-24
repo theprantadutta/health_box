@@ -34,6 +34,10 @@ import '../../features/analytics/screens/vitals_tracking_screen.dart';
 import '../../features/ocr/screens/ocr_scan_screen.dart';
 import '../../features/ocr/services/ocr_service.dart';
 import '../../features/reminders/screens/reminders_screen.dart';
+import '../../features/reminders/screens/reminder_history_screen.dart';
+import '../../features/reminders/screens/notification_settings_screen.dart';
+import '../../features/reminders/screens/refill_reminders_screen.dart';
+import '../../features/medical_records/screens/drug_interaction_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -68,6 +72,10 @@ class AppRoutes {
   static const String sync = '/settings/sync';
   static const String vitalsTracking = '/analytics/vitals';
   static const String ocrScan = '/ocr/scan';
+  static const String reminderHistory = '/reminders/history';
+  static const String notificationSettings = '/reminders/settings';
+  static const String refillReminders = '/reminders/refills';
+  static const String drugInteractions = '/medical-records/interactions';
 }
 
 class PlaceholderScreen extends StatelessWidget {
@@ -335,6 +343,47 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: 'ocr-scan',
         builder: (context, state) {
           return const OCRScanScreen(ocrType: OCRType.prescription);
+        },
+      ),
+
+      // Phase 3: Medication Reminder System Routes
+      GoRoute(
+        path: AppRoutes.reminderHistory,
+        name: 'reminder-history',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          final medicationId = state.uri.queryParameters['medicationId'];
+          return ReminderHistoryScreen(
+            profileId: profileId,
+            medicationId: medicationId,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: AppRoutes.notificationSettings,
+        name: 'notification-settings',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return NotificationSettingsScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: AppRoutes.refillReminders,
+        name: 'refill-reminders',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return RefillRemindersScreen(profileId: profileId);
+        },
+      ),
+
+      GoRoute(
+        path: AppRoutes.drugInteractions,
+        name: 'drug-interactions',
+        builder: (context, state) {
+          final profileId = state.uri.queryParameters['profileId'];
+          return DrugInteractionScreen(profileId: profileId);
         },
       ),
     ],
