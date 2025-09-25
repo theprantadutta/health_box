@@ -28,6 +28,7 @@ import '../models/attachment.dart';
 import '../models/reminder.dart';
 import '../models/record_tag.dart';
 import '../models/emergency_card.dart';
+import '../models/sync_preferences.dart';
 import '../models/search_history.dart';
 import '../models/medication_adherence.dart';
 import '../models/notification_settings.dart';
@@ -60,6 +61,8 @@ part 'app_database.g.dart';
     SearchHistory,
     MedicationAdherence,
     NotificationSettings,
+    SyncPreferences,
+    UploadQueue,
   ],
 )
 class AppDatabase extends _$AppDatabase {

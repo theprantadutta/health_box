@@ -9,6 +9,7 @@ import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../providers/google_drive_providers.dart';
 import '../widgets/backup_management_bottom_sheet.dart';
+import '../widgets/file_sync_settings_widget.dart';
 
 class SyncSettingsScreen extends ConsumerStatefulWidget {
   const SyncSettingsScreen({super.key});
@@ -156,6 +157,15 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                 error: (error, _) => _buildErrorCard(theme, error.toString()),
                 data: (syncSettings) =>
                     _buildSyncSettingsSection(authAsync, syncSettings, theme),
+              ),
+              const SizedBox(height: 16),
+
+              // File Sync Settings Section
+              FileSyncSettingsWidget(
+                isEnabled: authAsync.maybeWhen(
+                  data: (isSignedIn) => isSignedIn,
+                  orElse: () => false,
+                ),
               ),
               const SizedBox(height: 16),
 

@@ -124,7 +124,13 @@ class MedicationService {
 
       // Create reminders if enabled
       if (request.reminderEnabled && request.reminderTimes.isNotEmpty) {
-        await _createMedicationReminders(medicationId, request);
+        try {
+          await _createMedicationReminders(medicationId, request);
+        } catch (e) {
+          // Log reminder creation error but don't fail medication creation
+          print('Warning: Failed to create reminders for medication $medicationId: $e');
+          // Continue without failing the medication creation
+        }
       }
 
       return medicationId;

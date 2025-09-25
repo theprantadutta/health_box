@@ -26909,6 +26909,1607 @@ class NotificationSettingsCompanion
   }
 }
 
+class $SyncPreferencesTable extends SyncPreferences
+    with TableInfo<$SyncPreferencesTable, SyncPreference> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncPreferencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileUploadEnabledMeta = const VerificationMeta(
+    'fileUploadEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> fileUploadEnabled = GeneratedColumn<bool>(
+    'file_upload_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("file_upload_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _syncImagesMeta = const VerificationMeta(
+    'syncImages',
+  );
+  @override
+  late final GeneratedColumn<bool> syncImages = GeneratedColumn<bool>(
+    'sync_images',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("sync_images" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _syncPdfsMeta = const VerificationMeta(
+    'syncPdfs',
+  );
+  @override
+  late final GeneratedColumn<bool> syncPdfs = GeneratedColumn<bool>(
+    'sync_pdfs',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("sync_pdfs" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _syncDocumentsMeta = const VerificationMeta(
+    'syncDocuments',
+  );
+  @override
+  late final GeneratedColumn<bool> syncDocuments = GeneratedColumn<bool>(
+    'sync_documents',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("sync_documents" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _maxFileSizeMbMeta = const VerificationMeta(
+    'maxFileSizeMb',
+  );
+  @override
+  late final GeneratedColumn<int> maxFileSizeMb = GeneratedColumn<int>(
+    'max_file_size_mb',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(50),
+  );
+  static const VerificationMeta _wifiOnlyUploadMeta = const VerificationMeta(
+    'wifiOnlyUpload',
+  );
+  @override
+  late final GeneratedColumn<bool> wifiOnlyUpload = GeneratedColumn<bool>(
+    'wifi_only_upload',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("wifi_only_upload" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _autoUploadMeta = const VerificationMeta(
+    'autoUpload',
+  );
+  @override
+  late final GeneratedColumn<bool> autoUpload = GeneratedColumn<bool>(
+    'auto_upload',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("auto_upload" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _maxUploadRetriesMeta = const VerificationMeta(
+    'maxUploadRetries',
+  );
+  @override
+  late final GeneratedColumn<int> maxUploadRetries = GeneratedColumn<int>(
+    'max_upload_retries',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(3),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    fileUploadEnabled,
+    syncImages,
+    syncPdfs,
+    syncDocuments,
+    maxFileSizeMb,
+    wifiOnlyUpload,
+    autoUpload,
+    maxUploadRetries,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_preferences';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SyncPreference> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('file_upload_enabled')) {
+      context.handle(
+        _fileUploadEnabledMeta,
+        fileUploadEnabled.isAcceptableOrUnknown(
+          data['file_upload_enabled']!,
+          _fileUploadEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_images')) {
+      context.handle(
+        _syncImagesMeta,
+        syncImages.isAcceptableOrUnknown(data['sync_images']!, _syncImagesMeta),
+      );
+    }
+    if (data.containsKey('sync_pdfs')) {
+      context.handle(
+        _syncPdfsMeta,
+        syncPdfs.isAcceptableOrUnknown(data['sync_pdfs']!, _syncPdfsMeta),
+      );
+    }
+    if (data.containsKey('sync_documents')) {
+      context.handle(
+        _syncDocumentsMeta,
+        syncDocuments.isAcceptableOrUnknown(
+          data['sync_documents']!,
+          _syncDocumentsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_file_size_mb')) {
+      context.handle(
+        _maxFileSizeMbMeta,
+        maxFileSizeMb.isAcceptableOrUnknown(
+          data['max_file_size_mb']!,
+          _maxFileSizeMbMeta,
+        ),
+      );
+    }
+    if (data.containsKey('wifi_only_upload')) {
+      context.handle(
+        _wifiOnlyUploadMeta,
+        wifiOnlyUpload.isAcceptableOrUnknown(
+          data['wifi_only_upload']!,
+          _wifiOnlyUploadMeta,
+        ),
+      );
+    }
+    if (data.containsKey('auto_upload')) {
+      context.handle(
+        _autoUploadMeta,
+        autoUpload.isAcceptableOrUnknown(data['auto_upload']!, _autoUploadMeta),
+      );
+    }
+    if (data.containsKey('max_upload_retries')) {
+      context.handle(
+        _maxUploadRetriesMeta,
+        maxUploadRetries.isAcceptableOrUnknown(
+          data['max_upload_retries']!,
+          _maxUploadRetriesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SyncPreference map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncPreference(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      fileUploadEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}file_upload_enabled'],
+      )!,
+      syncImages: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}sync_images'],
+      )!,
+      syncPdfs: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}sync_pdfs'],
+      )!,
+      syncDocuments: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}sync_documents'],
+      )!,
+      maxFileSizeMb: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_file_size_mb'],
+      )!,
+      wifiOnlyUpload: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}wifi_only_upload'],
+      )!,
+      autoUpload: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}auto_upload'],
+      )!,
+      maxUploadRetries: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_upload_retries'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SyncPreferencesTable createAlias(String alias) {
+    return $SyncPreferencesTable(attachedDatabase, alias);
+  }
+}
+
+class SyncPreference extends DataClass implements Insertable<SyncPreference> {
+  final String id;
+  final bool fileUploadEnabled;
+  final bool syncImages;
+  final bool syncPdfs;
+  final bool syncDocuments;
+  final int maxFileSizeMb;
+  final bool wifiOnlyUpload;
+  final bool autoUpload;
+  final int maxUploadRetries;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const SyncPreference({
+    required this.id,
+    required this.fileUploadEnabled,
+    required this.syncImages,
+    required this.syncPdfs,
+    required this.syncDocuments,
+    required this.maxFileSizeMb,
+    required this.wifiOnlyUpload,
+    required this.autoUpload,
+    required this.maxUploadRetries,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['file_upload_enabled'] = Variable<bool>(fileUploadEnabled);
+    map['sync_images'] = Variable<bool>(syncImages);
+    map['sync_pdfs'] = Variable<bool>(syncPdfs);
+    map['sync_documents'] = Variable<bool>(syncDocuments);
+    map['max_file_size_mb'] = Variable<int>(maxFileSizeMb);
+    map['wifi_only_upload'] = Variable<bool>(wifiOnlyUpload);
+    map['auto_upload'] = Variable<bool>(autoUpload);
+    map['max_upload_retries'] = Variable<int>(maxUploadRetries);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SyncPreferencesCompanion toCompanion(bool nullToAbsent) {
+    return SyncPreferencesCompanion(
+      id: Value(id),
+      fileUploadEnabled: Value(fileUploadEnabled),
+      syncImages: Value(syncImages),
+      syncPdfs: Value(syncPdfs),
+      syncDocuments: Value(syncDocuments),
+      maxFileSizeMb: Value(maxFileSizeMb),
+      wifiOnlyUpload: Value(wifiOnlyUpload),
+      autoUpload: Value(autoUpload),
+      maxUploadRetries: Value(maxUploadRetries),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SyncPreference.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncPreference(
+      id: serializer.fromJson<String>(json['id']),
+      fileUploadEnabled: serializer.fromJson<bool>(json['fileUploadEnabled']),
+      syncImages: serializer.fromJson<bool>(json['syncImages']),
+      syncPdfs: serializer.fromJson<bool>(json['syncPdfs']),
+      syncDocuments: serializer.fromJson<bool>(json['syncDocuments']),
+      maxFileSizeMb: serializer.fromJson<int>(json['maxFileSizeMb']),
+      wifiOnlyUpload: serializer.fromJson<bool>(json['wifiOnlyUpload']),
+      autoUpload: serializer.fromJson<bool>(json['autoUpload']),
+      maxUploadRetries: serializer.fromJson<int>(json['maxUploadRetries']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'fileUploadEnabled': serializer.toJson<bool>(fileUploadEnabled),
+      'syncImages': serializer.toJson<bool>(syncImages),
+      'syncPdfs': serializer.toJson<bool>(syncPdfs),
+      'syncDocuments': serializer.toJson<bool>(syncDocuments),
+      'maxFileSizeMb': serializer.toJson<int>(maxFileSizeMb),
+      'wifiOnlyUpload': serializer.toJson<bool>(wifiOnlyUpload),
+      'autoUpload': serializer.toJson<bool>(autoUpload),
+      'maxUploadRetries': serializer.toJson<int>(maxUploadRetries),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SyncPreference copyWith({
+    String? id,
+    bool? fileUploadEnabled,
+    bool? syncImages,
+    bool? syncPdfs,
+    bool? syncDocuments,
+    int? maxFileSizeMb,
+    bool? wifiOnlyUpload,
+    bool? autoUpload,
+    int? maxUploadRetries,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => SyncPreference(
+    id: id ?? this.id,
+    fileUploadEnabled: fileUploadEnabled ?? this.fileUploadEnabled,
+    syncImages: syncImages ?? this.syncImages,
+    syncPdfs: syncPdfs ?? this.syncPdfs,
+    syncDocuments: syncDocuments ?? this.syncDocuments,
+    maxFileSizeMb: maxFileSizeMb ?? this.maxFileSizeMb,
+    wifiOnlyUpload: wifiOnlyUpload ?? this.wifiOnlyUpload,
+    autoUpload: autoUpload ?? this.autoUpload,
+    maxUploadRetries: maxUploadRetries ?? this.maxUploadRetries,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SyncPreference copyWithCompanion(SyncPreferencesCompanion data) {
+    return SyncPreference(
+      id: data.id.present ? data.id.value : this.id,
+      fileUploadEnabled: data.fileUploadEnabled.present
+          ? data.fileUploadEnabled.value
+          : this.fileUploadEnabled,
+      syncImages: data.syncImages.present
+          ? data.syncImages.value
+          : this.syncImages,
+      syncPdfs: data.syncPdfs.present ? data.syncPdfs.value : this.syncPdfs,
+      syncDocuments: data.syncDocuments.present
+          ? data.syncDocuments.value
+          : this.syncDocuments,
+      maxFileSizeMb: data.maxFileSizeMb.present
+          ? data.maxFileSizeMb.value
+          : this.maxFileSizeMb,
+      wifiOnlyUpload: data.wifiOnlyUpload.present
+          ? data.wifiOnlyUpload.value
+          : this.wifiOnlyUpload,
+      autoUpload: data.autoUpload.present
+          ? data.autoUpload.value
+          : this.autoUpload,
+      maxUploadRetries: data.maxUploadRetries.present
+          ? data.maxUploadRetries.value
+          : this.maxUploadRetries,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncPreference(')
+          ..write('id: $id, ')
+          ..write('fileUploadEnabled: $fileUploadEnabled, ')
+          ..write('syncImages: $syncImages, ')
+          ..write('syncPdfs: $syncPdfs, ')
+          ..write('syncDocuments: $syncDocuments, ')
+          ..write('maxFileSizeMb: $maxFileSizeMb, ')
+          ..write('wifiOnlyUpload: $wifiOnlyUpload, ')
+          ..write('autoUpload: $autoUpload, ')
+          ..write('maxUploadRetries: $maxUploadRetries, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    fileUploadEnabled,
+    syncImages,
+    syncPdfs,
+    syncDocuments,
+    maxFileSizeMb,
+    wifiOnlyUpload,
+    autoUpload,
+    maxUploadRetries,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncPreference &&
+          other.id == this.id &&
+          other.fileUploadEnabled == this.fileUploadEnabled &&
+          other.syncImages == this.syncImages &&
+          other.syncPdfs == this.syncPdfs &&
+          other.syncDocuments == this.syncDocuments &&
+          other.maxFileSizeMb == this.maxFileSizeMb &&
+          other.wifiOnlyUpload == this.wifiOnlyUpload &&
+          other.autoUpload == this.autoUpload &&
+          other.maxUploadRetries == this.maxUploadRetries &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SyncPreferencesCompanion extends UpdateCompanion<SyncPreference> {
+  final Value<String> id;
+  final Value<bool> fileUploadEnabled;
+  final Value<bool> syncImages;
+  final Value<bool> syncPdfs;
+  final Value<bool> syncDocuments;
+  final Value<int> maxFileSizeMb;
+  final Value<bool> wifiOnlyUpload;
+  final Value<bool> autoUpload;
+  final Value<int> maxUploadRetries;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SyncPreferencesCompanion({
+    this.id = const Value.absent(),
+    this.fileUploadEnabled = const Value.absent(),
+    this.syncImages = const Value.absent(),
+    this.syncPdfs = const Value.absent(),
+    this.syncDocuments = const Value.absent(),
+    this.maxFileSizeMb = const Value.absent(),
+    this.wifiOnlyUpload = const Value.absent(),
+    this.autoUpload = const Value.absent(),
+    this.maxUploadRetries = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncPreferencesCompanion.insert({
+    required String id,
+    this.fileUploadEnabled = const Value.absent(),
+    this.syncImages = const Value.absent(),
+    this.syncPdfs = const Value.absent(),
+    this.syncDocuments = const Value.absent(),
+    this.maxFileSizeMb = const Value.absent(),
+    this.wifiOnlyUpload = const Value.absent(),
+    this.autoUpload = const Value.absent(),
+    this.maxUploadRetries = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id);
+  static Insertable<SyncPreference> custom({
+    Expression<String>? id,
+    Expression<bool>? fileUploadEnabled,
+    Expression<bool>? syncImages,
+    Expression<bool>? syncPdfs,
+    Expression<bool>? syncDocuments,
+    Expression<int>? maxFileSizeMb,
+    Expression<bool>? wifiOnlyUpload,
+    Expression<bool>? autoUpload,
+    Expression<int>? maxUploadRetries,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (fileUploadEnabled != null) 'file_upload_enabled': fileUploadEnabled,
+      if (syncImages != null) 'sync_images': syncImages,
+      if (syncPdfs != null) 'sync_pdfs': syncPdfs,
+      if (syncDocuments != null) 'sync_documents': syncDocuments,
+      if (maxFileSizeMb != null) 'max_file_size_mb': maxFileSizeMb,
+      if (wifiOnlyUpload != null) 'wifi_only_upload': wifiOnlyUpload,
+      if (autoUpload != null) 'auto_upload': autoUpload,
+      if (maxUploadRetries != null) 'max_upload_retries': maxUploadRetries,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncPreferencesCompanion copyWith({
+    Value<String>? id,
+    Value<bool>? fileUploadEnabled,
+    Value<bool>? syncImages,
+    Value<bool>? syncPdfs,
+    Value<bool>? syncDocuments,
+    Value<int>? maxFileSizeMb,
+    Value<bool>? wifiOnlyUpload,
+    Value<bool>? autoUpload,
+    Value<int>? maxUploadRetries,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SyncPreferencesCompanion(
+      id: id ?? this.id,
+      fileUploadEnabled: fileUploadEnabled ?? this.fileUploadEnabled,
+      syncImages: syncImages ?? this.syncImages,
+      syncPdfs: syncPdfs ?? this.syncPdfs,
+      syncDocuments: syncDocuments ?? this.syncDocuments,
+      maxFileSizeMb: maxFileSizeMb ?? this.maxFileSizeMb,
+      wifiOnlyUpload: wifiOnlyUpload ?? this.wifiOnlyUpload,
+      autoUpload: autoUpload ?? this.autoUpload,
+      maxUploadRetries: maxUploadRetries ?? this.maxUploadRetries,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (fileUploadEnabled.present) {
+      map['file_upload_enabled'] = Variable<bool>(fileUploadEnabled.value);
+    }
+    if (syncImages.present) {
+      map['sync_images'] = Variable<bool>(syncImages.value);
+    }
+    if (syncPdfs.present) {
+      map['sync_pdfs'] = Variable<bool>(syncPdfs.value);
+    }
+    if (syncDocuments.present) {
+      map['sync_documents'] = Variable<bool>(syncDocuments.value);
+    }
+    if (maxFileSizeMb.present) {
+      map['max_file_size_mb'] = Variable<int>(maxFileSizeMb.value);
+    }
+    if (wifiOnlyUpload.present) {
+      map['wifi_only_upload'] = Variable<bool>(wifiOnlyUpload.value);
+    }
+    if (autoUpload.present) {
+      map['auto_upload'] = Variable<bool>(autoUpload.value);
+    }
+    if (maxUploadRetries.present) {
+      map['max_upload_retries'] = Variable<int>(maxUploadRetries.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncPreferencesCompanion(')
+          ..write('id: $id, ')
+          ..write('fileUploadEnabled: $fileUploadEnabled, ')
+          ..write('syncImages: $syncImages, ')
+          ..write('syncPdfs: $syncPdfs, ')
+          ..write('syncDocuments: $syncDocuments, ')
+          ..write('maxFileSizeMb: $maxFileSizeMb, ')
+          ..write('wifiOnlyUpload: $wifiOnlyUpload, ')
+          ..write('autoUpload: $autoUpload, ')
+          ..write('maxUploadRetries: $maxUploadRetries, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UploadQueueTable extends UploadQueue
+    with TableInfo<$UploadQueueTable, UploadQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UploadQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _attachmentIdMeta = const VerificationMeta(
+    'attachmentId',
+  );
+  @override
+  late final GeneratedColumn<String> attachmentId = GeneratedColumn<String>(
+    'attachment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileNameMeta = const VerificationMeta(
+    'fileName',
+  );
+  @override
+  late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
+    'file_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileSizeMeta = const VerificationMeta(
+    'fileSize',
+  );
+  @override
+  late final GeneratedColumn<int> fileSize = GeneratedColumn<int>(
+    'file_size',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _retryCountMeta = const VerificationMeta(
+    'retryCount',
+  );
+  @override
+  late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
+    'retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _progressPercentMeta = const VerificationMeta(
+    'progressPercent',
+  );
+  @override
+  late final GeneratedColumn<int> progressPercent = GeneratedColumn<int>(
+    'progress_percent',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _errorMessageMeta = const VerificationMeta(
+    'errorMessage',
+  );
+  @override
+  late final GeneratedColumn<String> errorMessage = GeneratedColumn<String>(
+    'error_message',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _driveFileIdMeta = const VerificationMeta(
+    'driveFileId',
+  );
+  @override
+  late final GeneratedColumn<String> driveFileId = GeneratedColumn<String>(
+    'drive_file_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _scheduledAtMeta = const VerificationMeta(
+    'scheduledAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> scheduledAt = GeneratedColumn<DateTime>(
+    'scheduled_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    attachmentId,
+    filePath,
+    fileName,
+    fileSize,
+    mimeType,
+    priority,
+    status,
+    retryCount,
+    progressPercent,
+    errorMessage,
+    driveFileId,
+    createdAt,
+    updatedAt,
+    scheduledAt,
+    completedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'upload_queue';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UploadQueueData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('attachment_id')) {
+      context.handle(
+        _attachmentIdMeta,
+        attachmentId.isAcceptableOrUnknown(
+          data['attachment_id']!,
+          _attachmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_attachmentIdMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('file_name')) {
+      context.handle(
+        _fileNameMeta,
+        fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileNameMeta);
+    }
+    if (data.containsKey('file_size')) {
+      context.handle(
+        _fileSizeMeta,
+        fileSize.isAcceptableOrUnknown(data['file_size']!, _fileSizeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileSizeMeta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mimeTypeMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('retry_count')) {
+      context.handle(
+        _retryCountMeta,
+        retryCount.isAcceptableOrUnknown(data['retry_count']!, _retryCountMeta),
+      );
+    }
+    if (data.containsKey('progress_percent')) {
+      context.handle(
+        _progressPercentMeta,
+        progressPercent.isAcceptableOrUnknown(
+          data['progress_percent']!,
+          _progressPercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('error_message')) {
+      context.handle(
+        _errorMessageMeta,
+        errorMessage.isAcceptableOrUnknown(
+          data['error_message']!,
+          _errorMessageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('drive_file_id')) {
+      context.handle(
+        _driveFileIdMeta,
+        driveFileId.isAcceptableOrUnknown(
+          data['drive_file_id']!,
+          _driveFileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('scheduled_at')) {
+      context.handle(
+        _scheduledAtMeta,
+        scheduledAt.isAcceptableOrUnknown(
+          data['scheduled_at']!,
+          _scheduledAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UploadQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UploadQueueData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      attachmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attachment_id'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      fileName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_name'],
+      )!,
+      fileSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}file_size'],
+      )!,
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      retryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}retry_count'],
+      )!,
+      progressPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}progress_percent'],
+      )!,
+      errorMessage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error_message'],
+      ),
+      driveFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}drive_file_id'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      scheduledAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}scheduled_at'],
+      ),
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+    );
+  }
+
+  @override
+  $UploadQueueTable createAlias(String alias) {
+    return $UploadQueueTable(attachedDatabase, alias);
+  }
+}
+
+class UploadQueueData extends DataClass implements Insertable<UploadQueueData> {
+  final String id;
+  final String attachmentId;
+  final String filePath;
+  final String fileName;
+  final int fileSize;
+  final String mimeType;
+  final int priority;
+  final String status;
+  final int retryCount;
+  final int progressPercent;
+  final String? errorMessage;
+  final String? driveFileId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? scheduledAt;
+  final DateTime? completedAt;
+  const UploadQueueData({
+    required this.id,
+    required this.attachmentId,
+    required this.filePath,
+    required this.fileName,
+    required this.fileSize,
+    required this.mimeType,
+    required this.priority,
+    required this.status,
+    required this.retryCount,
+    required this.progressPercent,
+    this.errorMessage,
+    this.driveFileId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.scheduledAt,
+    this.completedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['attachment_id'] = Variable<String>(attachmentId);
+    map['file_path'] = Variable<String>(filePath);
+    map['file_name'] = Variable<String>(fileName);
+    map['file_size'] = Variable<int>(fileSize);
+    map['mime_type'] = Variable<String>(mimeType);
+    map['priority'] = Variable<int>(priority);
+    map['status'] = Variable<String>(status);
+    map['retry_count'] = Variable<int>(retryCount);
+    map['progress_percent'] = Variable<int>(progressPercent);
+    if (!nullToAbsent || errorMessage != null) {
+      map['error_message'] = Variable<String>(errorMessage);
+    }
+    if (!nullToAbsent || driveFileId != null) {
+      map['drive_file_id'] = Variable<String>(driveFileId);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || scheduledAt != null) {
+      map['scheduled_at'] = Variable<DateTime>(scheduledAt);
+    }
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    return map;
+  }
+
+  UploadQueueCompanion toCompanion(bool nullToAbsent) {
+    return UploadQueueCompanion(
+      id: Value(id),
+      attachmentId: Value(attachmentId),
+      filePath: Value(filePath),
+      fileName: Value(fileName),
+      fileSize: Value(fileSize),
+      mimeType: Value(mimeType),
+      priority: Value(priority),
+      status: Value(status),
+      retryCount: Value(retryCount),
+      progressPercent: Value(progressPercent),
+      errorMessage: errorMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(errorMessage),
+      driveFileId: driveFileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(driveFileId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      scheduledAt: scheduledAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scheduledAt),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+    );
+  }
+
+  factory UploadQueueData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UploadQueueData(
+      id: serializer.fromJson<String>(json['id']),
+      attachmentId: serializer.fromJson<String>(json['attachmentId']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      fileName: serializer.fromJson<String>(json['fileName']),
+      fileSize: serializer.fromJson<int>(json['fileSize']),
+      mimeType: serializer.fromJson<String>(json['mimeType']),
+      priority: serializer.fromJson<int>(json['priority']),
+      status: serializer.fromJson<String>(json['status']),
+      retryCount: serializer.fromJson<int>(json['retryCount']),
+      progressPercent: serializer.fromJson<int>(json['progressPercent']),
+      errorMessage: serializer.fromJson<String?>(json['errorMessage']),
+      driveFileId: serializer.fromJson<String?>(json['driveFileId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      scheduledAt: serializer.fromJson<DateTime?>(json['scheduledAt']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'attachmentId': serializer.toJson<String>(attachmentId),
+      'filePath': serializer.toJson<String>(filePath),
+      'fileName': serializer.toJson<String>(fileName),
+      'fileSize': serializer.toJson<int>(fileSize),
+      'mimeType': serializer.toJson<String>(mimeType),
+      'priority': serializer.toJson<int>(priority),
+      'status': serializer.toJson<String>(status),
+      'retryCount': serializer.toJson<int>(retryCount),
+      'progressPercent': serializer.toJson<int>(progressPercent),
+      'errorMessage': serializer.toJson<String?>(errorMessage),
+      'driveFileId': serializer.toJson<String?>(driveFileId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'scheduledAt': serializer.toJson<DateTime?>(scheduledAt),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+    };
+  }
+
+  UploadQueueData copyWith({
+    String? id,
+    String? attachmentId,
+    String? filePath,
+    String? fileName,
+    int? fileSize,
+    String? mimeType,
+    int? priority,
+    String? status,
+    int? retryCount,
+    int? progressPercent,
+    Value<String?> errorMessage = const Value.absent(),
+    Value<String?> driveFileId = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> scheduledAt = const Value.absent(),
+    Value<DateTime?> completedAt = const Value.absent(),
+  }) => UploadQueueData(
+    id: id ?? this.id,
+    attachmentId: attachmentId ?? this.attachmentId,
+    filePath: filePath ?? this.filePath,
+    fileName: fileName ?? this.fileName,
+    fileSize: fileSize ?? this.fileSize,
+    mimeType: mimeType ?? this.mimeType,
+    priority: priority ?? this.priority,
+    status: status ?? this.status,
+    retryCount: retryCount ?? this.retryCount,
+    progressPercent: progressPercent ?? this.progressPercent,
+    errorMessage: errorMessage.present ? errorMessage.value : this.errorMessage,
+    driveFileId: driveFileId.present ? driveFileId.value : this.driveFileId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    scheduledAt: scheduledAt.present ? scheduledAt.value : this.scheduledAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+  );
+  UploadQueueData copyWithCompanion(UploadQueueCompanion data) {
+    return UploadQueueData(
+      id: data.id.present ? data.id.value : this.id,
+      attachmentId: data.attachmentId.present
+          ? data.attachmentId.value
+          : this.attachmentId,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      fileName: data.fileName.present ? data.fileName.value : this.fileName,
+      fileSize: data.fileSize.present ? data.fileSize.value : this.fileSize,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      status: data.status.present ? data.status.value : this.status,
+      retryCount: data.retryCount.present
+          ? data.retryCount.value
+          : this.retryCount,
+      progressPercent: data.progressPercent.present
+          ? data.progressPercent.value
+          : this.progressPercent,
+      errorMessage: data.errorMessage.present
+          ? data.errorMessage.value
+          : this.errorMessage,
+      driveFileId: data.driveFileId.present
+          ? data.driveFileId.value
+          : this.driveFileId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      scheduledAt: data.scheduledAt.present
+          ? data.scheduledAt.value
+          : this.scheduledAt,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UploadQueueData(')
+          ..write('id: $id, ')
+          ..write('attachmentId: $attachmentId, ')
+          ..write('filePath: $filePath, ')
+          ..write('fileName: $fileName, ')
+          ..write('fileSize: $fileSize, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('priority: $priority, ')
+          ..write('status: $status, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('progressPercent: $progressPercent, ')
+          ..write('errorMessage: $errorMessage, ')
+          ..write('driveFileId: $driveFileId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('scheduledAt: $scheduledAt, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    attachmentId,
+    filePath,
+    fileName,
+    fileSize,
+    mimeType,
+    priority,
+    status,
+    retryCount,
+    progressPercent,
+    errorMessage,
+    driveFileId,
+    createdAt,
+    updatedAt,
+    scheduledAt,
+    completedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UploadQueueData &&
+          other.id == this.id &&
+          other.attachmentId == this.attachmentId &&
+          other.filePath == this.filePath &&
+          other.fileName == this.fileName &&
+          other.fileSize == this.fileSize &&
+          other.mimeType == this.mimeType &&
+          other.priority == this.priority &&
+          other.status == this.status &&
+          other.retryCount == this.retryCount &&
+          other.progressPercent == this.progressPercent &&
+          other.errorMessage == this.errorMessage &&
+          other.driveFileId == this.driveFileId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.scheduledAt == this.scheduledAt &&
+          other.completedAt == this.completedAt);
+}
+
+class UploadQueueCompanion extends UpdateCompanion<UploadQueueData> {
+  final Value<String> id;
+  final Value<String> attachmentId;
+  final Value<String> filePath;
+  final Value<String> fileName;
+  final Value<int> fileSize;
+  final Value<String> mimeType;
+  final Value<int> priority;
+  final Value<String> status;
+  final Value<int> retryCount;
+  final Value<int> progressPercent;
+  final Value<String?> errorMessage;
+  final Value<String?> driveFileId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> scheduledAt;
+  final Value<DateTime?> completedAt;
+  final Value<int> rowid;
+  const UploadQueueCompanion({
+    this.id = const Value.absent(),
+    this.attachmentId = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.fileName = const Value.absent(),
+    this.fileSize = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.status = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.progressPercent = const Value.absent(),
+    this.errorMessage = const Value.absent(),
+    this.driveFileId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.scheduledAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UploadQueueCompanion.insert({
+    required String id,
+    required String attachmentId,
+    required String filePath,
+    required String fileName,
+    required int fileSize,
+    required String mimeType,
+    this.priority = const Value.absent(),
+    this.status = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.progressPercent = const Value.absent(),
+    this.errorMessage = const Value.absent(),
+    this.driveFileId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.scheduledAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       attachmentId = Value(attachmentId),
+       filePath = Value(filePath),
+       fileName = Value(fileName),
+       fileSize = Value(fileSize),
+       mimeType = Value(mimeType);
+  static Insertable<UploadQueueData> custom({
+    Expression<String>? id,
+    Expression<String>? attachmentId,
+    Expression<String>? filePath,
+    Expression<String>? fileName,
+    Expression<int>? fileSize,
+    Expression<String>? mimeType,
+    Expression<int>? priority,
+    Expression<String>? status,
+    Expression<int>? retryCount,
+    Expression<int>? progressPercent,
+    Expression<String>? errorMessage,
+    Expression<String>? driveFileId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? scheduledAt,
+    Expression<DateTime>? completedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (attachmentId != null) 'attachment_id': attachmentId,
+      if (filePath != null) 'file_path': filePath,
+      if (fileName != null) 'file_name': fileName,
+      if (fileSize != null) 'file_size': fileSize,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (priority != null) 'priority': priority,
+      if (status != null) 'status': status,
+      if (retryCount != null) 'retry_count': retryCount,
+      if (progressPercent != null) 'progress_percent': progressPercent,
+      if (errorMessage != null) 'error_message': errorMessage,
+      if (driveFileId != null) 'drive_file_id': driveFileId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (scheduledAt != null) 'scheduled_at': scheduledAt,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UploadQueueCompanion copyWith({
+    Value<String>? id,
+    Value<String>? attachmentId,
+    Value<String>? filePath,
+    Value<String>? fileName,
+    Value<int>? fileSize,
+    Value<String>? mimeType,
+    Value<int>? priority,
+    Value<String>? status,
+    Value<int>? retryCount,
+    Value<int>? progressPercent,
+    Value<String?>? errorMessage,
+    Value<String?>? driveFileId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? scheduledAt,
+    Value<DateTime?>? completedAt,
+    Value<int>? rowid,
+  }) {
+    return UploadQueueCompanion(
+      id: id ?? this.id,
+      attachmentId: attachmentId ?? this.attachmentId,
+      filePath: filePath ?? this.filePath,
+      fileName: fileName ?? this.fileName,
+      fileSize: fileSize ?? this.fileSize,
+      mimeType: mimeType ?? this.mimeType,
+      priority: priority ?? this.priority,
+      status: status ?? this.status,
+      retryCount: retryCount ?? this.retryCount,
+      progressPercent: progressPercent ?? this.progressPercent,
+      errorMessage: errorMessage ?? this.errorMessage,
+      driveFileId: driveFileId ?? this.driveFileId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      scheduledAt: scheduledAt ?? this.scheduledAt,
+      completedAt: completedAt ?? this.completedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (attachmentId.present) {
+      map['attachment_id'] = Variable<String>(attachmentId.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (fileName.present) {
+      map['file_name'] = Variable<String>(fileName.value);
+    }
+    if (fileSize.present) {
+      map['file_size'] = Variable<int>(fileSize.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (retryCount.present) {
+      map['retry_count'] = Variable<int>(retryCount.value);
+    }
+    if (progressPercent.present) {
+      map['progress_percent'] = Variable<int>(progressPercent.value);
+    }
+    if (errorMessage.present) {
+      map['error_message'] = Variable<String>(errorMessage.value);
+    }
+    if (driveFileId.present) {
+      map['drive_file_id'] = Variable<String>(driveFileId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (scheduledAt.present) {
+      map['scheduled_at'] = Variable<DateTime>(scheduledAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UploadQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('attachmentId: $attachmentId, ')
+          ..write('filePath: $filePath, ')
+          ..write('fileName: $fileName, ')
+          ..write('fileSize: $fileSize, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('priority: $priority, ')
+          ..write('status: $status, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('progressPercent: $progressPercent, ')
+          ..write('errorMessage: $errorMessage, ')
+          ..write('driveFileId: $driveFileId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('scheduledAt: $scheduledAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -26949,6 +28550,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $MedicationAdherenceTable(this);
   late final $NotificationSettingsTable notificationSettings =
       $NotificationSettingsTable(this);
+  late final $SyncPreferencesTable syncPreferences = $SyncPreferencesTable(
+    this,
+  );
+  late final $UploadQueueTable uploadQueue = $UploadQueueTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -26978,6 +28583,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     searchHistory,
     medicationAdherence,
     notificationSettings,
+    syncPreferences,
+    uploadQueue,
   ];
 }
 
@@ -38870,6 +40477,763 @@ typedef $$NotificationSettingsTableProcessedTableManager =
       NotificationSetting,
       PrefetchHooks Function()
     >;
+typedef $$SyncPreferencesTableCreateCompanionBuilder =
+    SyncPreferencesCompanion Function({
+      required String id,
+      Value<bool> fileUploadEnabled,
+      Value<bool> syncImages,
+      Value<bool> syncPdfs,
+      Value<bool> syncDocuments,
+      Value<int> maxFileSizeMb,
+      Value<bool> wifiOnlyUpload,
+      Value<bool> autoUpload,
+      Value<int> maxUploadRetries,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SyncPreferencesTableUpdateCompanionBuilder =
+    SyncPreferencesCompanion Function({
+      Value<String> id,
+      Value<bool> fileUploadEnabled,
+      Value<bool> syncImages,
+      Value<bool> syncPdfs,
+      Value<bool> syncDocuments,
+      Value<int> maxFileSizeMb,
+      Value<bool> wifiOnlyUpload,
+      Value<bool> autoUpload,
+      Value<int> maxUploadRetries,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$SyncPreferencesTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncPreferencesTable> {
+  $$SyncPreferencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get fileUploadEnabled => $composableBuilder(
+    column: $table.fileUploadEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get syncImages => $composableBuilder(
+    column: $table.syncImages,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get syncPdfs => $composableBuilder(
+    column: $table.syncPdfs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get syncDocuments => $composableBuilder(
+    column: $table.syncDocuments,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxFileSizeMb => $composableBuilder(
+    column: $table.maxFileSizeMb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get wifiOnlyUpload => $composableBuilder(
+    column: $table.wifiOnlyUpload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get autoUpload => $composableBuilder(
+    column: $table.autoUpload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxUploadRetries => $composableBuilder(
+    column: $table.maxUploadRetries,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncPreferencesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncPreferencesTable> {
+  $$SyncPreferencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get fileUploadEnabled => $composableBuilder(
+    column: $table.fileUploadEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get syncImages => $composableBuilder(
+    column: $table.syncImages,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get syncPdfs => $composableBuilder(
+    column: $table.syncPdfs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get syncDocuments => $composableBuilder(
+    column: $table.syncDocuments,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxFileSizeMb => $composableBuilder(
+    column: $table.maxFileSizeMb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get wifiOnlyUpload => $composableBuilder(
+    column: $table.wifiOnlyUpload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get autoUpload => $composableBuilder(
+    column: $table.autoUpload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxUploadRetries => $composableBuilder(
+    column: $table.maxUploadRetries,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncPreferencesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncPreferencesTable> {
+  $$SyncPreferencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get fileUploadEnabled => $composableBuilder(
+    column: $table.fileUploadEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get syncImages => $composableBuilder(
+    column: $table.syncImages,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get syncPdfs =>
+      $composableBuilder(column: $table.syncPdfs, builder: (column) => column);
+
+  GeneratedColumn<bool> get syncDocuments => $composableBuilder(
+    column: $table.syncDocuments,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxFileSizeMb => $composableBuilder(
+    column: $table.maxFileSizeMb,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get wifiOnlyUpload => $composableBuilder(
+    column: $table.wifiOnlyUpload,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get autoUpload => $composableBuilder(
+    column: $table.autoUpload,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxUploadRetries => $composableBuilder(
+    column: $table.maxUploadRetries,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$SyncPreferencesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncPreferencesTable,
+          SyncPreference,
+          $$SyncPreferencesTableFilterComposer,
+          $$SyncPreferencesTableOrderingComposer,
+          $$SyncPreferencesTableAnnotationComposer,
+          $$SyncPreferencesTableCreateCompanionBuilder,
+          $$SyncPreferencesTableUpdateCompanionBuilder,
+          (
+            SyncPreference,
+            BaseReferences<
+              _$AppDatabase,
+              $SyncPreferencesTable,
+              SyncPreference
+            >,
+          ),
+          SyncPreference,
+          PrefetchHooks Function()
+        > {
+  $$SyncPreferencesTableTableManager(
+    _$AppDatabase db,
+    $SyncPreferencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncPreferencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncPreferencesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncPreferencesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<bool> fileUploadEnabled = const Value.absent(),
+                Value<bool> syncImages = const Value.absent(),
+                Value<bool> syncPdfs = const Value.absent(),
+                Value<bool> syncDocuments = const Value.absent(),
+                Value<int> maxFileSizeMb = const Value.absent(),
+                Value<bool> wifiOnlyUpload = const Value.absent(),
+                Value<bool> autoUpload = const Value.absent(),
+                Value<int> maxUploadRetries = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncPreferencesCompanion(
+                id: id,
+                fileUploadEnabled: fileUploadEnabled,
+                syncImages: syncImages,
+                syncPdfs: syncPdfs,
+                syncDocuments: syncDocuments,
+                maxFileSizeMb: maxFileSizeMb,
+                wifiOnlyUpload: wifiOnlyUpload,
+                autoUpload: autoUpload,
+                maxUploadRetries: maxUploadRetries,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<bool> fileUploadEnabled = const Value.absent(),
+                Value<bool> syncImages = const Value.absent(),
+                Value<bool> syncPdfs = const Value.absent(),
+                Value<bool> syncDocuments = const Value.absent(),
+                Value<int> maxFileSizeMb = const Value.absent(),
+                Value<bool> wifiOnlyUpload = const Value.absent(),
+                Value<bool> autoUpload = const Value.absent(),
+                Value<int> maxUploadRetries = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncPreferencesCompanion.insert(
+                id: id,
+                fileUploadEnabled: fileUploadEnabled,
+                syncImages: syncImages,
+                syncPdfs: syncPdfs,
+                syncDocuments: syncDocuments,
+                maxFileSizeMb: maxFileSizeMb,
+                wifiOnlyUpload: wifiOnlyUpload,
+                autoUpload: autoUpload,
+                maxUploadRetries: maxUploadRetries,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncPreferencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncPreferencesTable,
+      SyncPreference,
+      $$SyncPreferencesTableFilterComposer,
+      $$SyncPreferencesTableOrderingComposer,
+      $$SyncPreferencesTableAnnotationComposer,
+      $$SyncPreferencesTableCreateCompanionBuilder,
+      $$SyncPreferencesTableUpdateCompanionBuilder,
+      (
+        SyncPreference,
+        BaseReferences<_$AppDatabase, $SyncPreferencesTable, SyncPreference>,
+      ),
+      SyncPreference,
+      PrefetchHooks Function()
+    >;
+typedef $$UploadQueueTableCreateCompanionBuilder =
+    UploadQueueCompanion Function({
+      required String id,
+      required String attachmentId,
+      required String filePath,
+      required String fileName,
+      required int fileSize,
+      required String mimeType,
+      Value<int> priority,
+      Value<String> status,
+      Value<int> retryCount,
+      Value<int> progressPercent,
+      Value<String?> errorMessage,
+      Value<String?> driveFileId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> scheduledAt,
+      Value<DateTime?> completedAt,
+      Value<int> rowid,
+    });
+typedef $$UploadQueueTableUpdateCompanionBuilder =
+    UploadQueueCompanion Function({
+      Value<String> id,
+      Value<String> attachmentId,
+      Value<String> filePath,
+      Value<String> fileName,
+      Value<int> fileSize,
+      Value<String> mimeType,
+      Value<int> priority,
+      Value<String> status,
+      Value<int> retryCount,
+      Value<int> progressPercent,
+      Value<String?> errorMessage,
+      Value<String?> driveFileId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> scheduledAt,
+      Value<DateTime?> completedAt,
+      Value<int> rowid,
+    });
+
+class $$UploadQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $UploadQueueTable> {
+  $$UploadQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get attachmentId => $composableBuilder(
+    column: $table.attachmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fileSize => $composableBuilder(
+    column: $table.fileSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get progressPercent => $composableBuilder(
+    column: $table.progressPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get errorMessage => $composableBuilder(
+    column: $table.errorMessage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get driveFileId => $composableBuilder(
+    column: $table.driveFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get scheduledAt => $composableBuilder(
+    column: $table.scheduledAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UploadQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $UploadQueueTable> {
+  $$UploadQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get attachmentId => $composableBuilder(
+    column: $table.attachmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fileSize => $composableBuilder(
+    column: $table.fileSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get progressPercent => $composableBuilder(
+    column: $table.progressPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get errorMessage => $composableBuilder(
+    column: $table.errorMessage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get driveFileId => $composableBuilder(
+    column: $table.driveFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get scheduledAt => $composableBuilder(
+    column: $table.scheduledAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UploadQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UploadQueueTable> {
+  $$UploadQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get attachmentId => $composableBuilder(
+    column: $table.attachmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<String> get fileName =>
+      $composableBuilder(column: $table.fileName, builder: (column) => column);
+
+  GeneratedColumn<int> get fileSize =>
+      $composableBuilder(column: $table.fileSize, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get progressPercent => $composableBuilder(
+    column: $table.progressPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get errorMessage => $composableBuilder(
+    column: $table.errorMessage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get driveFileId => $composableBuilder(
+    column: $table.driveFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get scheduledAt => $composableBuilder(
+    column: $table.scheduledAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$UploadQueueTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UploadQueueTable,
+          UploadQueueData,
+          $$UploadQueueTableFilterComposer,
+          $$UploadQueueTableOrderingComposer,
+          $$UploadQueueTableAnnotationComposer,
+          $$UploadQueueTableCreateCompanionBuilder,
+          $$UploadQueueTableUpdateCompanionBuilder,
+          (
+            UploadQueueData,
+            BaseReferences<_$AppDatabase, $UploadQueueTable, UploadQueueData>,
+          ),
+          UploadQueueData,
+          PrefetchHooks Function()
+        > {
+  $$UploadQueueTableTableManager(_$AppDatabase db, $UploadQueueTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UploadQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UploadQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UploadQueueTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> attachmentId = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<String> fileName = const Value.absent(),
+                Value<int> fileSize = const Value.absent(),
+                Value<String> mimeType = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                Value<int> progressPercent = const Value.absent(),
+                Value<String?> errorMessage = const Value.absent(),
+                Value<String?> driveFileId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> scheduledAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UploadQueueCompanion(
+                id: id,
+                attachmentId: attachmentId,
+                filePath: filePath,
+                fileName: fileName,
+                fileSize: fileSize,
+                mimeType: mimeType,
+                priority: priority,
+                status: status,
+                retryCount: retryCount,
+                progressPercent: progressPercent,
+                errorMessage: errorMessage,
+                driveFileId: driveFileId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                scheduledAt: scheduledAt,
+                completedAt: completedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String attachmentId,
+                required String filePath,
+                required String fileName,
+                required int fileSize,
+                required String mimeType,
+                Value<int> priority = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                Value<int> progressPercent = const Value.absent(),
+                Value<String?> errorMessage = const Value.absent(),
+                Value<String?> driveFileId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> scheduledAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UploadQueueCompanion.insert(
+                id: id,
+                attachmentId: attachmentId,
+                filePath: filePath,
+                fileName: fileName,
+                fileSize: fileSize,
+                mimeType: mimeType,
+                priority: priority,
+                status: status,
+                retryCount: retryCount,
+                progressPercent: progressPercent,
+                errorMessage: errorMessage,
+                driveFileId: driveFileId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                scheduledAt: scheduledAt,
+                completedAt: completedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UploadQueueTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UploadQueueTable,
+      UploadQueueData,
+      $$UploadQueueTableFilterComposer,
+      $$UploadQueueTableOrderingComposer,
+      $$UploadQueueTableAnnotationComposer,
+      $$UploadQueueTableCreateCompanionBuilder,
+      $$UploadQueueTableUpdateCompanionBuilder,
+      (
+        UploadQueueData,
+        BaseReferences<_$AppDatabase, $UploadQueueTable, UploadQueueData>,
+      ),
+      UploadQueueData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -38921,4 +41285,8 @@ class $AppDatabaseManager {
       $$MedicationAdherenceTableTableManager(_db, _db.medicationAdherence);
   $$NotificationSettingsTableTableManager get notificationSettings =>
       $$NotificationSettingsTableTableManager(_db, _db.notificationSettings);
+  $$SyncPreferencesTableTableManager get syncPreferences =>
+      $$SyncPreferencesTableTableManager(_db, _db.syncPreferences);
+  $$UploadQueueTableTableManager get uploadQueue =>
+      $$UploadQueueTableTableManager(_db, _db.uploadQueue);
 }

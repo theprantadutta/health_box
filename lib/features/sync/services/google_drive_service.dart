@@ -22,6 +22,14 @@ class GoogleDriveService {
 
   bool get isSignedIn => _currentUser != null;
   GoogleSignInAccount? get currentUser => _currentUser;
+  drive.DriveApi? get driveApi => _driveApi;
+
+  Future<String> getAppFolderId() async {
+    if (_appFolderId == null) {
+      await _ensureAppFolderExists();
+    }
+    return _appFolderId!;
+  }
 
   Future<bool> signIn() async {
     try {
