@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -57,24 +58,43 @@ class NotificationService {
   Future<bool> requestPermissions() async {
     try {
       if (!_isInitialized) {
-        await initialize();
+        final initialized = await initialize();
+        if (!initialized) {
+          throw const NotificationServiceException('Failed to initialize notification service');
+        }
       }
 
-      // Android permissions
+      bool permissionsGranted = true;
+
+      // Android permissions (Android 13+ requires explicit permission request)
       final androidImplementation = _notificationsPlugin
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >();
 
       if (androidImplementation != null) {
-        final granted = await androidImplementation
-            .requestNotificationsPermission();
-        if (granted != true) {
-          return false;
+        // Check if notifications are already enabled
+        final areNotificationsEnabled = await androidImplementation.areNotificationsEnabled();
+
+        if (areNotificationsEnabled != true) {
+          // Request notification permission for Android 13+
+          final granted = await androidImplementation.requestNotificationsPermission();
+          if (granted != true) {
+            permissionsGranted = false;
+          }
         }
 
         // Request exact alarm permission for Android 12+
-        await androidImplementation.requestExactAlarmsPermission();
+        // This is critical for scheduled notifications to work reliably
+        try {
+          final exactAlarmPermissionGranted = await androidImplementation.requestExactAlarmsPermission();
+          if (exactAlarmPermissionGranted != true) {
+            // Log warning but don't fail completely as some devices may not support this
+            debugPrint('Warning: Exact alarm permission not granted. Scheduled notifications may not work reliably.');
+          }
+        } catch (e) {
+          debugPrint('Warning: Failed to request exact alarm permission: $e');
+        }
       }
 
       // iOS permissions
@@ -84,17 +104,130 @@ class NotificationService {
           >();
 
       if (iosImplementation != null) {
-        await iosImplementation.requestPermissions(
+        final result = await iosImplementation.requestPermissions(
           alert: true,
           badge: true,
           sound: true,
         );
+        if (result != true) {
+          permissionsGranted = false;
+        }
       }
 
-      return true;
+      return permissionsGranted;
     } catch (e) {
       throw NotificationServiceException(
         'Failed to request permissions: ${e.toString()}',
+      );
+    }
+  }
+
+  // Schedule a batch medication reminder notification
+  Future<void> scheduleBatchMedicationReminder({
+    required String reminderId,
+    required String batchName,
+    required List<String> medicationNames,
+    required List<String> dosages,
+    required DateTime scheduledTime,
+    String? instructions,
+    String frequency = 'once',
+  }) async {
+    try {
+      if (!_isInitialized) {
+        throw const NotificationServiceException(
+          'Notification service not initialized',
+        );
+      }
+
+      final id = reminderId.hashCode;
+      const channelKey = 'medication_reminders';
+
+      // Create consolidated title and body for batch
+      String title;
+      String body;
+
+      if (medicationNames.length == 1) {
+        title = 'Medication Reminder';
+        body = 'Time to take ${medicationNames.first}';
+        if (dosages.isNotEmpty) {
+          body += ' (${dosages.first})';
+        }
+      } else {
+        title = batchName.isNotEmpty ? batchName : 'Medication Batch';
+        body = 'Time to take ${medicationNames.length} medications: ${medicationNames.join(', ')}';
+      }
+
+      final payload = json.encode({
+        'type': 'batch_medication_reminder',
+        'reminderId': reminderId,
+        'batchName': batchName,
+        'medicationNames': medicationNames,
+        'dosages': dosages,
+        'instructions': instructions,
+      });
+
+      final androidDetails = AndroidNotificationDetails(
+        channelKey,
+        'Medication Reminders',
+        channelDescription: 'Notifications for medication reminders',
+        importance: Importance.high,
+        priority: Priority.high,
+        showWhen: true,
+        when: scheduledTime.millisecondsSinceEpoch,
+        largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+        actions: [
+          const AndroidNotificationAction(
+            'taken_all',
+            'Mark All Taken',
+            showsUserInterface: false,
+          ),
+          const AndroidNotificationAction(
+            'snooze',
+            'Snooze 15 min',
+            showsUserInterface: false,
+          ),
+          if (medicationNames.length > 1)
+            const AndroidNotificationAction(
+              'individual',
+              'Mark Individual',
+              showsUserInterface: true,
+            ),
+        ],
+      );
+
+      const iosDetails = DarwinNotificationDetails(
+        categoryIdentifier: 'batch_medication_reminder',
+      );
+
+      final notificationDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      if (frequency == 'once') {
+        await _notificationsPlugin.zonedSchedule(
+          id,
+          title,
+          body,
+          _convertToTZDateTime(scheduledTime),
+          notificationDetails,
+          payload: payload,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        );
+      } else {
+        await _scheduleRecurringReminder(
+          id: id,
+          title: title,
+          body: body,
+          scheduledTime: scheduledTime,
+          notificationDetails: notificationDetails,
+          payload: payload,
+          frequency: frequency,
+        );
+      }
+    } catch (e) {
+      throw NotificationServiceException(
+        'Failed to schedule batch medication reminder: ${e.toString()}',
       );
     }
   }
@@ -509,8 +642,20 @@ class NotificationService {
     switch (actionId) {
       case 'taken':
         if (type == 'medication_reminder') {
-          // Handle medication taken action
+          // Handle individual medication taken action
           _onMedicationTaken(data);
+        }
+        break;
+      case 'taken_all':
+        if (type == 'batch_medication_reminder') {
+          // Handle batch medications taken action
+          _onBatchMedicationsTaken(data);
+        }
+        break;
+      case 'individual':
+        if (type == 'batch_medication_reminder') {
+          // Handle individual medication selection in batch
+          _onBatchIndividualSelection(data);
         }
         break;
       case 'snooze':
@@ -527,6 +672,26 @@ class NotificationService {
   void _onMedicationTaken(Map<String, dynamic> data) {
     // This would typically notify other parts of the app
     // that medication was taken via a stream or callback
+    debugPrint('Individual medication taken: ${data['medicationName']}');
+  }
+
+  void _onBatchMedicationsTaken(Map<String, dynamic> data) {
+    // Handle batch medications taken action
+    final batchName = data['batchName'] as String?;
+    final medicationNames = List<String>.from(data['medicationNames'] ?? []);
+
+    debugPrint('Batch medications taken: $batchName (${medicationNames.length} medications)');
+
+    // TODO: Integrate with medication adherence tracking
+    // This would mark all medications in the batch as taken
+  }
+
+  void _onBatchIndividualSelection(Map<String, dynamic> data) {
+    // Handle individual medication selection in batch
+    // This would open the app to a screen where user can select which medications they took
+    debugPrint('Opening individual medication selection for batch: ${data['batchName']}');
+
+    // TODO: Navigate to batch medication selection screen
   }
 
   void _onNotificationSnoozed(Map<String, dynamic> data) {

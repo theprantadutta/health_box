@@ -29,6 +29,7 @@ class Medications extends Table {
       boolean().withDefault(const Constant(true)).named('reminder_enabled')();
   IntColumn get pillCount => integer().nullable().named('pill_count')();
   TextColumn get status => text().named('status')();
+  TextColumn get batchId => text().nullable().named('batch_id')();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -61,6 +62,9 @@ class Medications extends Table {
 
     // Start date constraint (Unix timestamp between 2020-01-01 and 2030-01-01)
     'CHECK (start_date >= 1577836800 AND start_date <= 1893456000)',
+
+    // Batch ID foreign key constraint (when not null, must reference existing batch)
+    'FOREIGN KEY (batch_id) REFERENCES medication_batches(id) ON DELETE SET NULL',
   ];
 }
 

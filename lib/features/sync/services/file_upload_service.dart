@@ -10,7 +10,7 @@ import '../../../data/database/app_database.dart';
 import '../../../data/models/sync_preferences.dart';
 import '../../../data/repositories/attachment_dao.dart';
 import 'file_sync_preferences_service.dart';
-import 'google_drive_service.dart';
+import '../../../services/google_drive_service.dart';
 
 class FileUploadService {
 
@@ -412,15 +412,16 @@ class FileUploadService {
         throw FileUploadException('File not found: ${task.filePath}');
       }
 
-      // Create upload folder if needed
-      final folderId = await _ensureUploadFolderExists();
+      // Get the record type for proper folder organization
+      final recordType = await _attachmentDao.getRecordTypeForAttachment(task.attachmentId)
+          ?? 'general_record';
 
       // Upload file to Google Drive
       final driveFileId = await _uploadToGoogleDrive(
         file: file,
         fileName: task.fileName,
         mimeType: task.mimeType,
-        folderId: folderId,
+        recordType: recordType,
         onProgress: (progress) => _updateUploadProgress(task.id, progress),
       );
 
@@ -439,7 +440,7 @@ class FileUploadService {
       await _attachmentDao.markAsSynced(task.attachmentId, true);
 
       _updateUploadProgress(task.id, 100);
-      _logger.d('Upload completed: ${task.fileName}');
+      _logger.d('Upload completed: ${task.fileName} to ${recordType} folder');
 
     } catch (e) {
       await _markUploadFailed(task.id, e.toString());
@@ -447,34 +448,27 @@ class FileUploadService {
     }
   }
 
-  Future<String> _ensureUploadFolderExists() async {
-    try {
-      // This would integrate with the existing GoogleDriveService
-      // For now, return a placeholder - would need to implement folder creation
-      return 'upload_folder_id';
-    } catch (e) {
-      throw FileUploadException('Failed to create upload folder: ${e.toString()}');
-    }
-  }
 
   Future<String> _uploadToGoogleDrive({
     required File file,
     required String fileName,
     required String mimeType,
-    required String folderId,
+    required String recordType,
     required Function(int progress) onProgress,
   }) async {
     try {
-      // This would integrate with GoogleDriveService to upload the file
-      // Implementation would depend on the existing drive service structure
-
-      // Simulate progress updates for now
-      for (int i = 0; i <= 100; i += 10) {
-        onProgress(i);
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
-
-      return 'drive_file_id_${DateTime.now().millisecondsSinceEpoch}';
+      // Use the real GoogleDriveService to upload the file
+      return await _driveService.uploadAttachment(
+        filePath: file.path,
+        fileName: fileName,
+        mimeType: mimeType,
+        recordType: recordType,
+        onProgress: (progressPercent) {
+          // Convert from 0.0-1.0 to 0-100
+          final progressInt = (progressPercent * 100).round();
+          onProgress(progressInt);
+        },
+      );
     } catch (e) {
       throw FileUploadException('Failed to upload to Google Drive: ${e.toString()}');
     }

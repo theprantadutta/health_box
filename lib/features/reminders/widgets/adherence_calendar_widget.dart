@@ -96,11 +96,11 @@ class _AdherenceCalendarWidgetState extends State<AdherenceCalendarWidget> {
               shape: BoxShape.circle,
             ),
             selectedDecoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
               shape: BoxShape.circle,
             ),
             todayDecoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+              color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.8),
               shape: BoxShape.circle,
             ),
           ),
@@ -308,7 +308,7 @@ class _AdherenceCalendarWidgetState extends State<AdherenceCalendarWidget> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: statusColor.withOpacity(0.2),
+        backgroundColor: statusColor.withValues(alpha: 0.2),
         child: Icon(
           statusIcon,
           color: statusColor,
@@ -347,8 +347,8 @@ class _AdherenceCalendarWidgetState extends State<AdherenceCalendarWidget> {
             fontSize: 12,
           ),
         ),
-        backgroundColor: statusColor.withOpacity(0.1),
-        side: BorderSide(color: statusColor.withOpacity(0.3)),
+        backgroundColor: statusColor.withValues(alpha: 0.1),
+        side: BorderSide(color: statusColor.withValues(alpha: 0.3)),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );

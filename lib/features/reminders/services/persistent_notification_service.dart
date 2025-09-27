@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import './notification_service.dart';
 import './reminder_service.dart';
@@ -35,64 +32,9 @@ class PersistentNotificationService {
     String? instructions,
   }) async {
     try {
-      final id = _generatePersistentNotificationId(reminderId);
-      const channelKey = 'missed_medications';
-
       final title = '⚠️ Missed Medication';
       final body = 'You missed taking $medicationName ($dosage) at ${_formatTime(scheduledTime)}';
 
-      final payload = json.encode({
-        'type': 'missed_medication',
-        'reminderId': reminderId,
-        'medicationName': medicationName,
-        'dosage': dosage,
-        'scheduledTime': scheduledTime.toIso8601String(),
-        'instructions': instructions,
-      });
-
-      final androidDetails = AndroidNotificationDetails(
-        channelKey,
-        'Missed Medications',
-        channelDescription: 'Persistent notifications for missed medication doses',
-        importance: Importance.high,
-        priority: Priority.high,
-        ongoing: true, // Makes notification persistent
-        autoCancel: false, // Prevents auto-dismissal
-        showWhen: true,
-        when: scheduledTime.millisecondsSinceEpoch,
-        color: const Color(0xFFFF6B6B), // Red color for missed doses
-        icon: '@drawable/ic_medication_missed',
-        actions: [
-          const AndroidNotificationAction(
-            'mark_taken_late',
-            'Mark as Taken',
-            showsUserInterface: false,
-          ),
-          const AndroidNotificationAction(
-            'mark_missed',
-            'Mark as Missed',
-            showsUserInterface: false,
-          ),
-          const AndroidNotificationAction(
-            'reschedule',
-            'Reschedule',
-            showsUserInterface: true,
-          ),
-        ],
-      );
-
-      const iosDetails = DarwinNotificationDetails(
-        categoryIdentifier: 'missed_medication',
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-        interruptionLevel: InterruptionLevel.critical, // Critical for missed doses
-      );
-
-      final notificationDetails = NotificationDetails(
-        android: androidDetails,
-        iOS: iosDetails,
-      );
 
       await _notificationService.showImmediateNotification(
         title: title,
@@ -102,7 +44,7 @@ class PersistentNotificationService {
       // Track the persistent notification
       _activeNotifications[reminderId] = PersistentNotificationData(
         reminderId: reminderId,
-        notificationId: id,
+        notificationId: _generatePersistentNotificationId(reminderId),
         medicationName: medicationName,
         dosage: dosage,
         scheduledTime: scheduledTime,

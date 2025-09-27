@@ -594,4 +594,71 @@ class AttachmentDao {
       return '${(sizeInBytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
     }
   }
+
+  /// Get the medical record type for an attachment based on its record ID
+  Future<String?> getRecordTypeForAttachment(String attachmentId) async {
+    try {
+      final query = _database.selectOnly(_database.attachments)
+        ..addColumns([_database.attachments.recordId])
+        ..where(_database.attachments.id.equals(attachmentId));
+
+      final result = await query.getSingleOrNull();
+      if (result == null) return null;
+
+      final recordId = result.read(_database.attachments.recordId);
+      if (recordId == null) return null;
+
+      // Try to find the record in medical_records table first
+      final medicalRecordQuery = _database.selectOnly(_database.medicalRecords)
+        ..addColumns([_database.medicalRecords.recordType])
+        ..where(_database.medicalRecords.id.equals(recordId));
+
+      final medicalRecordResult = await medicalRecordQuery.getSingleOrNull();
+      if (medicalRecordResult != null) {
+        return medicalRecordResult.read(_database.medicalRecords.recordType);
+      }
+
+      // If not found in medical_records, check individual record type tables
+      // Check prescriptions
+      final prescriptionExists = await (_database.selectOnly(_database.prescriptions)
+        ..addColumns([_database.prescriptions.id])
+        ..where(_database.prescriptions.id.equals(recordId))).getSingleOrNull();
+      if (prescriptionExists != null) return 'prescription';
+
+      // Check lab reports
+      final labReportExists = await (_database.selectOnly(_database.labReports)
+        ..addColumns([_database.labReports.id])
+        ..where(_database.labReports.id.equals(recordId))).getSingleOrNull();
+      if (labReportExists != null) return 'lab_report';
+
+      // Check medications
+      final medicationExists = await (_database.selectOnly(_database.medications)
+        ..addColumns([_database.medications.id])
+        ..where(_database.medications.id.equals(recordId))).getSingleOrNull();
+      if (medicationExists != null) return 'medication';
+
+      // Check vaccinations
+      final vaccinationExists = await (_database.selectOnly(_database.vaccinations)
+        ..addColumns([_database.vaccinations.id])
+        ..where(_database.vaccinations.id.equals(recordId))).getSingleOrNull();
+      if (vaccinationExists != null) return 'vaccination';
+
+      // Check allergies
+      final allergyExists = await (_database.selectOnly(_database.allergies)
+        ..addColumns([_database.allergies.id])
+        ..where(_database.allergies.id.equals(recordId))).getSingleOrNull();
+      if (allergyExists != null) return 'allergy';
+
+      // Check chronic conditions
+      final chronicExists = await (_database.selectOnly(_database.chronicConditions)
+        ..addColumns([_database.chronicConditions.id])
+        ..where(_database.chronicConditions.id.equals(recordId))).getSingleOrNull();
+      if (chronicExists != null) return 'chronic_condition';
+
+      // For the rest, return 'general_record' as fallback
+      return 'general_record';
+    } catch (e) {
+      return 'general_record'; // Fallback
+    }
+  }
 }

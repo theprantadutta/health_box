@@ -38,6 +38,7 @@ import '../../features/reminders/screens/reminder_history_screen.dart';
 import '../../features/reminders/screens/notification_settings_screen.dart';
 import '../../features/reminders/screens/refill_reminders_screen.dart';
 import '../../features/medical_records/screens/drug_interaction_screen.dart';
+import '../../features/medical_records/screens/medication_batch_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -76,6 +77,7 @@ class AppRoutes {
   static const String notificationSettings = '/reminders/settings';
   static const String refillReminders = '/reminders/refills';
   static const String drugInteractions = '/medical-records/interactions';
+  static const String medicationBatches = '/medical-records/medication-batches';
 }
 
 class PlaceholderScreen extends StatelessWidget {
@@ -385,6 +387,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           final profileId = state.uri.queryParameters['profileId'];
           return DrugInteractionScreen(profileId: profileId);
         },
+      ),
+
+      GoRoute(
+        path: AppRoutes.medicationBatches,
+        name: 'medication-batches',
+        builder: (context, state) => const MedicationBatchScreen(),
       ),
     ],
 

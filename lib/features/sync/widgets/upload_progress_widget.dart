@@ -78,9 +78,9 @@ class UploadProgressWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -122,7 +122,7 @@ class UploadProgressWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.errorColor.withOpacity(0.1),
+        color: AppTheme.errorColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -181,13 +181,13 @@ class UploadProgressWidget extends ConsumerWidget {
           Icon(
             Icons.cloud_done,
             size: 48,
-            color: theme.colorScheme.onSurface.withOpacity(0.3),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 12),
           Text(
             'No uploads in progress',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -219,7 +219,7 @@ class UploadTaskTile extends ConsumerWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -245,7 +245,7 @@ class UploadTaskTile extends ConsumerWidget {
                     Text(
                       _formatFileSize(task.fileSize),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -296,7 +296,7 @@ class UploadTaskTile extends ConsumerWidget {
         break;
       default:
         icon = Icons.attach_file;
-        color = theme.colorScheme.onSurface.withOpacity(0.6);
+        color = theme.colorScheme.onSurface.withValues(alpha: 0.6);
     }
 
     return Icon(icon, size: 20, color: color);
@@ -328,7 +328,7 @@ class UploadTaskTile extends ConsumerWidget {
         icon = Icons.pause_circle;
         break;
       case FileSyncStatus.notSynced:
-        color = theme.colorScheme.onSurface.withOpacity(0.4);
+        color = theme.colorScheme.onSurface.withValues(alpha: 0.4);
         icon = Icons.cloud_off;
         break;
     }
@@ -408,7 +408,7 @@ class UploadTaskTile extends ConsumerWidget {
             Expanded(
               child: LinearProgressIndicator(
                 value: task.isCompleted ? 1.0 : (progress / 100),
-                backgroundColor: theme.colorScheme.outline.withOpacity(0.2),
+                backgroundColor: theme.colorScheme.outline.withValues(alpha: 0.2),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   task.isFailed
                     ? AppTheme.errorColor
@@ -431,7 +431,7 @@ class UploadTaskTile extends ConsumerWidget {
         Text(
           _getStatusText(),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.6),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
       ],
@@ -442,7 +442,7 @@ class UploadTaskTile extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppTheme.errorColor.withOpacity(0.1),
+        color: AppTheme.errorColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(

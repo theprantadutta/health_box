@@ -88,7 +88,22 @@ Future<void> _initializeNotificationServices() async {
     // Initialize only the notification service at startup
     // Alarm service will be lazily initialized when needed to prevent crashes
     final notificationAlarmService = NotificationAlarmService();
-    await notificationAlarmService.initialize();
+    final initialized = await notificationAlarmService.initialize();
+
+    if (initialized) {
+      // Request notification permissions for Android 13+
+      try {
+        final permissionsGranted = await notificationAlarmService.requestPermissions();
+        if (permissionsGranted) {
+          debugPrint('Notification permissions granted');
+        } else {
+          debugPrint('Warning: Some notification permissions were not granted');
+        }
+      } catch (e) {
+        debugPrint('Warning: Failed to request notification permissions: $e');
+        // Don't block startup, permissions can be requested later
+      }
+    }
 
     debugPrint('Notification services initialized successfully');
   } catch (e) {

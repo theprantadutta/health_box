@@ -79,6 +79,11 @@ class _MedicalRecordListScreenState
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
+            icon: const Icon(Icons.group_work, color: Colors.white),
+            onPressed: () => context.push('/medical-records/medication-batches'),
+            tooltip: 'Medication Batches',
+          ),
+          IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: _showFilterDialog,
             tooltip: 'Filter Records',

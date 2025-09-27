@@ -86,7 +86,12 @@ class BackgroundSyncService {
     } catch (e) {
       // If database backup fails, try data export as fallback
       debugPrint('Database backup failed, trying data export: $e');
-      await ref.read(backupOperationsProvider.notifier).createDataExport();
+      try {
+        await ref.read(backupOperationsProvider.notifier).createDataExport();
+      } catch (exportError) {
+        // Re-throw the original error since fallback also failed
+        throw Exception('Both database backup and data export failed. Original error: $e, Export error: $exportError');
+      }
     }
   }
 

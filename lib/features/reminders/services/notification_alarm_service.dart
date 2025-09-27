@@ -339,7 +339,11 @@ class NotificationAlarmService {
 
   Future<bool> _scheduleNotification(Reminder reminder) async {
     try {
-      if (reminder.type == 'medication' && reminder.medicationId != null) {
+      if (reminder.type == 'medication' && reminder.recordId != null && reminder.medicationId == null) {
+        // This is a batch reminder (recordId points to batch, no medicationId)
+        await _scheduleBatchNotification(reminder);
+      } else if (reminder.type == 'medication' && reminder.medicationId != null) {
+        // This is an individual medication reminder
         await _notificationService.scheduleMedicationReminder(
           reminderId: reminder.id,
           medicationName: reminder.title,
@@ -348,6 +352,7 @@ class NotificationAlarmService {
           frequency: reminder.frequency,
         );
       } else {
+        // This is a general reminder
         await _notificationService.scheduleGeneralReminder(
           reminderId: reminder.id,
           title: reminder.title,
@@ -360,6 +365,38 @@ class NotificationAlarmService {
     } catch (e) {
       debugPrint('Error scheduling notification: $e');
       return false;
+    }
+  }
+
+  Future<void> _scheduleBatchNotification(Reminder reminder) async {
+    try {
+      // Parse medication information from reminder description
+      // Format: "Time to take: med1, med2, med3"
+      final description = reminder.description ?? '';
+      final medicationNames = <String>[];
+      final dosages = <String>[];
+
+      if (description.startsWith('Time to take: ')) {
+        final medString = description.substring('Time to take: '.length);
+        medicationNames.addAll(medString.split(', '));
+      }
+
+      // Extract batch name from reminder title
+      final batchName = reminder.title.contains('(')
+          ? reminder.title.split('(').first.trim()
+          : reminder.title;
+
+      await _notificationService.scheduleBatchMedicationReminder(
+        reminderId: reminder.id,
+        batchName: batchName,
+        medicationNames: medicationNames,
+        dosages: dosages,
+        scheduledTime: reminder.scheduledTime,
+        frequency: reminder.frequency,
+      );
+    } catch (e) {
+      debugPrint('Error scheduling batch notification: $e');
+      throw NotificationAlarmServiceException('Failed to schedule batch notification: $e');
     }
   }
 

@@ -101,6 +101,7 @@ class MedicationService {
         reminderEnabled: Value(request.reminderEnabled),
         pillCount: Value(request.pillCount),
         status: Value(request.status),
+        batchId: Value(request.batchId),
       );
 
       // Create general medical record entry
@@ -197,6 +198,9 @@ class MedicationService {
             : const Value.absent(),
         status: request.status != null
             ? Value(request.status!)
+            : const Value.absent(),
+        batchId: request.batchId != null
+            ? Value(request.batchId)
             : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       );
@@ -644,6 +648,7 @@ class CreateMedicationRequest {
   final int? pillCount;
   final String status;
   final List<MedicationTime> reminderTimes;
+  final String? batchId;
 
   const CreateMedicationRequest({
     required this.profileId,
@@ -661,6 +666,7 @@ class CreateMedicationRequest {
     this.pillCount,
     this.status = MedicationStatus.active,
     this.reminderTimes = const [],
+    this.batchId,
   });
 }
 
@@ -679,6 +685,7 @@ class UpdateMedicationRequest {
   final int? pillCount;
   final String? status;
   final List<MedicationTime>? reminderTimes;
+  final String? batchId;
 
   const UpdateMedicationRequest({
     this.title,
@@ -695,6 +702,7 @@ class UpdateMedicationRequest {
     this.pillCount,
     this.status,
     this.reminderTimes,
+    this.batchId,
   });
 }
 

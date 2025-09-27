@@ -12,6 +12,7 @@ import '../models/medical_record.dart';
 import '../models/prescription.dart';
 import '../models/lab_report.dart';
 import '../models/medication.dart';
+import '../models/medication_batch.dart';
 import '../models/vaccination.dart';
 import '../models/allergy.dart';
 import '../models/chronic_condition.dart';
@@ -42,6 +43,7 @@ part 'app_database.g.dart';
     Prescriptions,
     LabReports,
     Medications,
+    MedicationBatches,
     Vaccinations,
     Allergies,
     ChronicConditions,
@@ -72,7 +74,7 @@ class AppDatabase extends _$AppDatabase {
   static AppDatabase get instance => _instance;
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -347,6 +349,39 @@ class AppDatabase extends _$AppDatabase {
           debugPrint('Migration to v9 completed successfully');
         } catch (e) {
           debugPrint('Migration to v9 failed: $e');
+          rethrow;
+        }
+      }
+
+      if (from == 9 && to == 10) {
+        // Migration from v9 to v10: Add medication batches system
+        try {
+          debugPrint('Starting migration to v10 - adding medication batches...');
+
+          // Create medication batches table
+          await m.createTable(medicationBatches);
+
+          // Add batch_id column to medications table
+          await customStatement('ALTER TABLE medications ADD COLUMN batch_id TEXT;');
+
+          // Add foreign key constraint (will be enforced in new inserts/updates)
+          // Note: SQLite doesn't support adding FK constraints to existing tables,
+          // but we have the constraint defined in the table schema for new operations
+
+          // Add indexes for better performance
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_batches_timing_type ON medication_batches(timing_type);'
+          );
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medication_batches_is_active ON medication_batches(is_active);'
+          );
+          await customStatement(
+            'CREATE INDEX IF NOT EXISTS idx_medications_batch_id ON medications(batch_id);'
+          );
+
+          debugPrint('Migration to v10 completed successfully');
+        } catch (e) {
+          debugPrint('Migration to v10 failed: $e');
           rethrow;
         }
       }

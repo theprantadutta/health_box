@@ -199,7 +199,7 @@ final class BackupOperationsProvider
         argument: null,
         retry: null,
         name: r'backupOperationsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -212,7 +212,7 @@ final class BackupOperationsProvider
   BackupOperations create() => BackupOperations();
 }
 
-String _$backupOperationsHash() => r'df74319181343a11c1ccf13bf36cad817d12d22c';
+String _$backupOperationsHash() => r'664c8e78eabdf54f26f4e1fe1d0a7b1efce593c8';
 
 abstract class _$BackupOperations extends $AsyncNotifier<BackupProgress> {
   FutureOr<BackupProgress> build();

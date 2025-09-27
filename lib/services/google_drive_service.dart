@@ -525,6 +525,185 @@ class GoogleDriveService {
       return false;
     }
   }
+
+  // Attachment upload functionality
+  String? _attachmentsFolderId;
+
+  Future<String> uploadAttachment({
+    required String filePath,
+    required String fileName,
+    required String mimeType,
+    required String recordType,
+    Function(double)? onProgress,
+  }) async {
+    if (_driveApi == null) {
+      throw Exception('Drive API not initialized');
+    }
+
+    try {
+      final file = File(filePath);
+      if (!await file.exists()) {
+        throw Exception('Attachment file not found at: $filePath');
+      }
+
+      // Get file size for progress tracking
+      final fileSize = await file.length();
+      _logger.i('Uploading attachment: $fileName (${_formatBytes(fileSize)})');
+
+      onProgress?.call(0.1); // Starting upload
+
+      final fileBytes = await file.readAsBytes();
+      onProgress?.call(0.3); // File read complete
+
+      // Ensure attachments folder structure exists
+      final recordFolderId = await _ensureAttachmentFolderStructure(recordType);
+      onProgress?.call(0.4); // Folder structure ready
+
+      // Create file metadata
+      final fileMetadata = drive.File()
+        ..name = fileName
+        ..parents = [recordFolderId]
+        ..description = 'HealthBox attachment uploaded on ${DateTime.now().toIso8601String()}';
+
+      // Create progress-tracking media stream
+      final media = drive.Media(
+        _createProgressStream(fileBytes, onProgress),
+        fileBytes.length,
+        contentType: mimeType,
+      );
+
+      onProgress?.call(0.5); // Starting upload
+
+      final uploadedFile = await _driveApi!.files.create(
+        fileMetadata,
+        uploadMedia: media,
+      );
+
+      onProgress?.call(1.0); // Upload complete
+
+      _logger.i('Successfully uploaded attachment: ${uploadedFile.id} (${_formatBytes(fileSize)})');
+      return uploadedFile.id!;
+    } catch (e) {
+      _logger.e('Error uploading attachment: $e');
+      throw Exception('Failed to upload attachment: $e');
+    }
+  }
+
+  Future<String> _ensureAttachmentFolderStructure(String recordType) async {
+    try {
+      // Create main Attachments folder if it doesn't exist
+      _attachmentsFolderId ??= await _createOrFindFolder('Attachments', _backupFolderId);
+      _logger.i('Attachments folder: $_attachmentsFolderId');
+
+      // Create record type subfolder
+      final recordTypeFolderId = await _createOrFindFolder(
+        _getRecordTypeFolderName(recordType),
+        _attachmentsFolderId,
+      );
+      _logger.i('Record type folder ($recordType): $recordTypeFolderId');
+
+      return recordTypeFolderId;
+    } catch (e) {
+      _logger.e('Error ensuring attachment folder structure: $e');
+      throw Exception('Failed to create/find attachment folder structure: $e');
+    }
+  }
+
+  String _getRecordTypeFolderName(String recordType) {
+    switch (recordType.toLowerCase()) {
+      case 'vaccination':
+        return 'Vaccinations';
+      case 'allergy':
+        return 'Allergies';
+      case 'chronic_condition':
+        return 'Chronic Conditions';
+      case 'surgical_record':
+        return 'Surgical Records';
+      case 'radiology_record':
+        return 'Radiology & Imaging';
+      case 'pathology_record':
+        return 'Pathology Reports';
+      case 'discharge_summary':
+        return 'Discharge Summaries';
+      case 'hospital_admission':
+        return 'Hospital Admissions';
+      case 'dental_record':
+        return 'Dental Records';
+      case 'mental_health_record':
+        return 'Mental Health Records';
+      case 'general_record':
+        return 'General Records';
+      case 'prescription':
+        return 'Prescriptions & Appointments';
+      case 'lab_report':
+        return 'Lab Reports';
+      case 'medical_record':
+        return 'Medical Records';
+      default:
+        return 'Other Attachments';
+    }
+  }
+
+  Future<void> deleteAttachment(String fileId) async {
+    if (_driveApi == null) {
+      throw Exception('Drive API not initialized');
+    }
+
+    try {
+      await _driveApi!.files.delete(fileId);
+      _logger.i('Successfully deleted attachment: $fileId');
+    } catch (e) {
+      _logger.e('Error deleting attachment: $e');
+      throw Exception('Failed to delete attachment: $e');
+    }
+  }
+
+  Future<List<AttachmentFile>> listAttachments({String? recordType}) async {
+    if (_driveApi == null || _attachmentsFolderId == null) {
+      await _ensureAttachmentFolderStructure(recordType ?? 'general_record');
+    }
+
+    try {
+      String folderId = _attachmentsFolderId!;
+      if (recordType != null) {
+        folderId = await _ensureAttachmentFolderStructure(recordType);
+      }
+
+      final query = "'$folderId' in parents and trashed=false";
+      final fileList = await _driveApi!.files.list(
+        q: query,
+        orderBy: 'createdTime desc',
+        spaces: 'drive',
+      );
+
+      final attachments = <AttachmentFile>[];
+      for (final file in fileList.files ?? []) {
+        if (file.id != null && file.name != null) {
+          int size = 0;
+          if (file.size != null) {
+            size = int.tryParse(file.size!) ?? 0;
+          }
+
+          attachments.add(
+            AttachmentFile(
+              id: file.id!,
+              name: file.name!,
+              createdTime: file.createdTime ?? DateTime.now(),
+              size: size,
+              description: file.description,
+              mimeType: file.mimeType ?? 'application/octet-stream',
+            ),
+          );
+        }
+      }
+
+      _logger.i('Found ${attachments.length} attachments');
+      return attachments;
+    } catch (e) {
+      _logger.e('Error listing attachments: $e');
+      throw Exception('Failed to list attachments: $e');
+    }
+  }
 }
 
 enum BackupType {
@@ -533,6 +712,37 @@ enum BackupType {
 
   const BackupType(this.displayName);
   final String displayName;
+}
+
+class AttachmentFile {
+  final String id;
+  final String name;
+  final DateTime createdTime;
+  final int size;
+  final String? description;
+  final String mimeType;
+
+  AttachmentFile({
+    required this.id,
+    required this.name,
+    required this.createdTime,
+    required this.size,
+    this.description,
+    required this.mimeType,
+  });
+
+  String get sizeFormatted {
+    if (size < 1024) return '${size}B';
+    if (size < 1024 * 1024) return '${(size / 1024).toStringAsFixed(1)}KB';
+    return '${(size / (1024 * 1024)).toStringAsFixed(1)}MB';
+  }
+
+  String get typeIcon {
+    if (mimeType.startsWith('image/')) return '🖼️';
+    if (mimeType == 'application/pdf') return '📄';
+    if (mimeType.contains('document') || mimeType.contains('word')) return '📝';
+    return '📎';
+  }
 }
 
 class BackupFile {

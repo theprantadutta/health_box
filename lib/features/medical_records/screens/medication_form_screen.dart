@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../services/medication_service.dart';
+import '../services/medication_batch_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../data/database/app_database.dart';
+import '../../../data/models/medication_batch.dart';
 import 'dart:developer' as developer;
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
@@ -22,8 +25,13 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
   final _nameController = TextEditingController();
   final _dosageController = TextEditingController();
   final _frequencyController = TextEditingController();
+  final MedicationBatchService _batchService = MedicationBatchService();
   bool _isLoading = false;
   List<AttachmentResult> _attachments = [];
+
+  // Batch selection
+  List<MedicationBatche> _availableBatches = [];
+  String? _selectedBatchId;
 
   bool _medicationInfoExpanded = true;
   bool _attachmentsExpanded = true;
@@ -38,6 +46,62 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
   @override
   void initState() {
     super.initState();
+    _loadBatches();
+  }
+
+  Future<void> _loadBatches() async {
+    try {
+      final batches = await _batchService.getActiveBatches();
+      setState(() {
+        _availableBatches = batches;
+      });
+    } catch (e) {
+      developer.log('Error loading batches: $e');
+    }
+  }
+
+  String _getBatchDescription(MedicationBatche batch) {
+    final timingDetails = _batchService.parseTimingDetails(
+      batch.timingType,
+      batch.timingDetails,
+    );
+
+    switch (batch.timingType) {
+      case 'after_meal':
+        if (timingDetails != null) {
+          final mealTiming = MealTimingDetails.fromJson(timingDetails);
+          final mealName = mealTiming.mealType == 'breakfast' ? 'breakfast' :
+                          mealTiming.mealType == 'lunch' ? 'lunch' :
+                          mealTiming.mealType == 'dinner' ? 'dinner' : mealTiming.mealType;
+          return '${mealTiming.minutesAfterBefore} min after $mealName';
+        }
+        return 'After meal';
+      case 'before_meal':
+        if (timingDetails != null) {
+          final mealTiming = MealTimingDetails.fromJson(timingDetails);
+          final mealName = mealTiming.mealType == 'breakfast' ? 'breakfast' :
+                          mealTiming.mealType == 'lunch' ? 'lunch' :
+                          mealTiming.mealType == 'dinner' ? 'dinner' : mealTiming.mealType;
+          return '${mealTiming.minutesAfterBefore} min before $mealName';
+        }
+        return 'Before meal';
+      case 'fixed_time':
+        if (timingDetails != null) {
+          final fixedTiming = FixedTimeDetails.fromJson(timingDetails);
+          return 'At ${fixedTiming.times.join(', ')}';
+        }
+        return 'Fixed time';
+      case 'interval':
+        if (timingDetails != null) {
+          final intervalTiming = IntervalTimingDetails.fromJson(timingDetails);
+          return 'Every ${intervalTiming.intervalHours} hours';
+        }
+        return 'Interval';
+      case 'as_needed':
+        return 'As needed';
+      default:
+        return batch.timingType;
+    }
   }
 
   @override
@@ -107,6 +171,83 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 16),
+
+                // Batch Selection
+                DropdownButtonFormField<String>(
+                  initialValue: _selectedBatchId,
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Medication Batch (Optional)',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.group_work),
+                    hintText: 'Select a batch for this medication',
+                  ),
+                  items: [
+                    const DropdownMenuItem<String>(
+                      value: null,
+                      child: Text(
+                        'No batch (individual medication)',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    ..._availableBatches.map((batch) {
+                      return DropdownMenuItem<String>(
+                        value: batch.id,
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                batch.name,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                _getBatchDescription(batch),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                  onChanged: (value) {
+                    setState(() => _selectedBatchId = value);
+                  },
+                ),
+                if (_selectedBatchId != null) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info, color: Colors.blue, size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'This medication will be included in batch reminders. Individual reminder settings will be ignored.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 16),
@@ -341,6 +482,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
         startDate: DateTime.now(),
         reminderEnabled: _remindersEnabled,
         status: 'active',
+        batchId: _selectedBatchId,
         reminderTimes: _remindersEnabled
             ? _reminderTimes.map((timeOfDay) => MedicationTime(
                 hour: timeOfDay.hour,

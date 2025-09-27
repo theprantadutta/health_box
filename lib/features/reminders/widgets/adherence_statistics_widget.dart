@@ -126,7 +126,7 @@ class AdherenceStatisticsWidget extends StatelessWidget {
           child: CircularProgressIndicator(
             value: value,
             strokeWidth: 8,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
@@ -229,7 +229,7 @@ class AdherenceStatisticsWidget extends StatelessWidget {
             height: 6,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(3),
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,

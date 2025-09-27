@@ -38,7 +38,7 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
                 Icons.cloud_upload_outlined,
                 color: widget.isEnabled
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface.withOpacity(0.5),
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.5),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -75,14 +75,14 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
         ? AppTheme.successColor
         : stats.hasPendingUploads
           ? AppTheme.warningColor
-          : theme.colorScheme.onSurface.withOpacity(0.6);
+          : theme.colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -113,7 +113,7 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -150,7 +150,7 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.errorColor.withOpacity(0.1),
+        color: AppTheme.errorColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -234,7 +234,7 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           title: Row(
             children: [
-              Icon(Icons.image, size: 18, color: theme.colorScheme.onSurface.withOpacity(0.7)),
+              Icon(Icons.image, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.7)),
               const SizedBox(width: 8),
               const Text('Images'),
             ],
@@ -253,7 +253,7 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           title: Row(
             children: [
-              Icon(Icons.picture_as_pdf, size: 18, color: theme.colorScheme.onSurface.withOpacity(0.7)),
+              Icon(Icons.picture_as_pdf, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.7)),
               const SizedBox(width: 8),
               const Text('PDFs'),
             ],
@@ -272,7 +272,7 @@ class _FileSyncSettingsWidgetState extends ConsumerState<FileSyncSettingsWidget>
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           title: Row(
             children: [
-              Icon(Icons.description, size: 18, color: theme.colorScheme.onSurface.withOpacity(0.7)),
+              Icon(Icons.description, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.7)),
               const SizedBox(width: 8),
               const Text('Documents'),
             ],

@@ -217,7 +217,7 @@ Future<List<BackupFile>> googleDriveBackups(Ref ref) async {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class BackupOperations extends _$BackupOperations {
   @override
   Future<BackupProgress> build() async {
@@ -229,6 +229,11 @@ class BackupOperations extends _$BackupOperations {
     String? backupPath;
 
     try {
+      // Check if ref is still mounted
+      if (!ref.mounted) {
+        throw Exception('Provider has been disposed, cannot perform database backup');
+      }
+
       // Step 1: Preparing
       state = const AsyncValue.data(BackupProgress(
         status: BackupStatus.preparing,
@@ -253,6 +258,7 @@ class BackupOperations extends _$BackupOperations {
       final service = ref.read(googleDriveServiceProvider);
 
       // Step 2: Creating local backup with retry logic
+
       state = const AsyncValue.data(BackupProgress(
         status: BackupStatus.creating,
         progress: 0.1,
@@ -291,6 +297,7 @@ class BackupOperations extends _$BackupOperations {
       final fileSizeFormatted = _formatBytes(fileSize);
 
       // Step 3: Uploading to Google Drive with progress tracking
+
       state = AsyncValue.data(BackupProgress(
         status: BackupStatus.uploading,
         progress: 0.2,
@@ -307,6 +314,8 @@ class BackupOperations extends _$BackupOperations {
             fileName,
             onProgress: (progress) {
               // Update progress during upload (20% to 80%)
+              if (!ref.mounted) return; // Skip progress updates if disposed
+
               final adjustedProgress = 0.2 + (progress * 0.6);
               state = AsyncValue.data(BackupProgress(
                 status: BackupStatus.uploading,
@@ -339,6 +348,7 @@ class BackupOperations extends _$BackupOperations {
       }
 
       // Step 4: Finalizing
+
       state = AsyncValue.data(BackupProgress(
         status: BackupStatus.finalizing,
         progress: 0.9,
@@ -361,6 +371,11 @@ class BackupOperations extends _$BackupOperations {
       ref.invalidate(googleDriveBackupsProvider);
 
       // Step 5: Completed
+      if (!ref.mounted) return; // Don't update if disposed, backup was successful anyway
+
+      // Update last sync time to respect frequency settings
+      await ref.read(syncSettingsProvider.notifier).updateLastSyncTime(DateTime.now());
+
       state = AsyncValue.data(BackupProgress(
         status: BackupStatus.completed,
         progress: 1.0,
@@ -382,11 +397,14 @@ class BackupOperations extends _$BackupOperations {
         }
       }
 
-      state = AsyncValue.data(BackupProgress(
-        status: BackupStatus.idle,
-        progress: 0.0,
-        errorMessage: _formatErrorMessage(e.toString()),
-      ));
+      // Only update state if ref is still mounted
+      if (ref.mounted) {
+        state = AsyncValue.data(BackupProgress(
+          status: BackupStatus.idle,
+          progress: 0.0,
+          errorMessage: _formatErrorMessage(e.toString()),
+        ));
+      }
     }
   }
 
@@ -420,6 +438,11 @@ class BackupOperations extends _$BackupOperations {
 
   Future<void> createDataExport() async {
     try {
+      // Check if ref is still mounted
+      if (!ref.mounted) {
+        throw Exception('Provider has been disposed, cannot perform data export');
+      }
+
       // Step 1: Preparing
       state = const AsyncValue.data(BackupProgress(
         status: BackupStatus.preparing,
@@ -444,6 +467,8 @@ class BackupOperations extends _$BackupOperations {
       final service = ref.read(googleDriveServiceProvider);
 
       // Step 2: Exporting data
+      if (!ref.mounted) throw Exception('Provider disposed during export preparation');
+
       state = const AsyncValue.data(BackupProgress(
         status: BackupStatus.creating,
         progress: 0.2,
@@ -456,6 +481,8 @@ class BackupOperations extends _$BackupOperations {
       final dataSize = _formatBytes(utf8.encode(jsonString).length);
 
       // Step 3: Uploading
+      if (!ref.mounted) throw Exception('Provider disposed during data export');
+
       state = AsyncValue.data(BackupProgress(
         status: BackupStatus.uploading,
         progress: 0.5,
@@ -466,6 +493,8 @@ class BackupOperations extends _$BackupOperations {
       await service.uploadDataExport(jsonString, fileName);
 
       // Step 4: Finalizing
+      if (!ref.mounted) throw Exception('Provider disposed during export upload');
+
       state = AsyncValue.data(BackupProgress(
         status: BackupStatus.finalizing,
         progress: 0.9,
@@ -483,6 +512,11 @@ class BackupOperations extends _$BackupOperations {
       ref.invalidate(googleDriveBackupsProvider);
 
       // Step 5: Completed
+      if (!ref.mounted) return; // Don't update if disposed, export was successful anyway
+
+      // Update last sync time to respect frequency settings
+      await ref.read(syncSettingsProvider.notifier).updateLastSyncTime(DateTime.now());
+
       state = AsyncValue.data(BackupProgress(
         status: BackupStatus.completed,
         progress: 1.0,
@@ -491,11 +525,15 @@ class BackupOperations extends _$BackupOperations {
       ));
     } catch (e) {
       debugPrint('Data export failed: $e');
-      state = AsyncValue.data(BackupProgress(
-        status: BackupStatus.idle,
-        progress: 0.0,
-        errorMessage: e.toString(),
-      ));
+
+      // Only update state if ref is still mounted
+      if (ref.mounted) {
+        state = AsyncValue.data(BackupProgress(
+          status: BackupStatus.idle,
+          progress: 0.0,
+          errorMessage: e.toString(),
+        ));
+      }
     }
   }
 

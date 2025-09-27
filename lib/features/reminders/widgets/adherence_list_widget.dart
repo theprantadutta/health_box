@@ -53,7 +53,7 @@ class _AdherenceListWidgetState extends State<AdherenceListWidget> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _groupBy,
+                    initialValue: _groupBy,
                     decoration: const InputDecoration(
                       labelText: 'Group by',
                       border: OutlineInputBorder(),
@@ -153,7 +153,7 @@ class _AdherenceListWidgetState extends State<AdherenceListWidget> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(12),
               ),
@@ -176,7 +176,7 @@ class _AdherenceListWidgetState extends State<AdherenceListWidget> {
                 ),
                 Chip(
                   label: Text('${group.records.length}'),
-                  backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+                  backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
                 ),
               ],
             ),
@@ -228,7 +228,7 @@ class _AdherenceListWidgetState extends State<AdherenceListWidget> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: statusColor.withOpacity(0.2),
+        backgroundColor: statusColor.withValues(alpha: 0.2),
         child: Icon(
           statusIcon,
           color: statusColor,
@@ -286,7 +286,7 @@ class _AdherenceListWidgetState extends State<AdherenceListWidget> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -306,9 +306,9 @@ class _AdherenceListWidgetState extends State<AdherenceListWidget> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
+              color: statusColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: statusColor.withOpacity(0.3)),
+              border: Border.all(color: statusColor.withValues(alpha: 0.3)),
             ),
             child: Text(
               statusText,

@@ -37,7 +37,7 @@ dependencies:
   csv: ^6.0.0
 
   # Notifications and Reminders
-  flutter_local_notifications: ^19.4.1
+  flutter_local_notifications: ^19.4.2
   timezone: ^0.10.1
   # alarm: ^3.1.7  # Temporarily disabled to fix foreground service crashes
 
@@ -76,6 +76,7 @@ dependencies:
   connectivity_plus: ^7.0.0
   shared_preferences: ^2.3.2
 
+  google_mlkit_text_recognition: any
 dev_dependencies:
   # flutter_test:
   #   sdk: flutter
