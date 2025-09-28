@@ -16,7 +16,9 @@
       "WebSearch",
       "Read(//g/MyProjects/plot_twist/**)",
       "Read(//f/Personal/MyProjects/plot_twist/**)",
-      "Bash(dart tools/migrate_radio.dart:*)"
+      "Bash(dart tools/migrate_radio.dart:*)",
+      "Read(//g/MyProjects/remind_me/**)",
+      "Read(//g/MyProjects/BetterClock/better_clock_flutter_app/**)"
     ],
     "deny": [],
     "ask": []
