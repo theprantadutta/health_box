@@ -39,7 +39,8 @@ dependencies:
   # Notifications and Reminders
   flutter_local_notifications: ^19.4.2
   timezone: ^0.10.1
-  # alarm: ^3.1.7  # Temporarily disabled to fix foreground service crashes
+  alarm: ^5.1.2
+  audioplayers: ^6.1.0
 
   # PDF and QR Code Generation
   pdf: ^3.11.1

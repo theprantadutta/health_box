@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:alarm/alarm.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:alarm/alarm.dart';  // Temporarily disabled
 
 import 'notification_service.dart';
 import 'alarm_service.dart';
@@ -9,7 +9,8 @@ import '../../../shared/providers/settings_providers.dart';
 import '../../../data/database/app_database.dart';
 
 class NotificationAlarmService {
-  static final NotificationAlarmService _instance = NotificationAlarmService._internal();
+  static final NotificationAlarmService _instance =
+      NotificationAlarmService._internal();
   factory NotificationAlarmService() => _instance;
   NotificationAlarmService._internal();
 
@@ -31,13 +32,16 @@ class NotificationAlarmService {
         debugPrint('Warning: Notification service failed to initialize');
       }
 
-      _triggerStreamController = StreamController<ReminderTriggerEvent>.broadcast();
+      _triggerStreamController =
+          StreamController<ReminderTriggerEvent>.broadcast();
 
       // Note: AlarmService is NOT initialized here to prevent foreground service crashes
       // It will be initialized lazily when an alarm is actually needed
 
       _isInitialized = true;
-      debugPrint('NotificationAlarmService initialized successfully (notifications ready, alarms on-demand)');
+      debugPrint(
+        'NotificationAlarmService initialized successfully (notifications ready, alarms on-demand)',
+      );
       return true;
     } catch (e) {
       debugPrint('Failed to initialize NotificationAlarmService: $e');
@@ -63,12 +67,14 @@ class NotificationAlarmService {
         // Extract reminder ID from alarm ID
         final reminderId = 'reminder_${alarmSettings.id}';
 
-        _triggerStreamController?.add(ReminderTriggerEvent(
-          reminderId: reminderId,
-          triggerType: TriggerType.alarm,
-          timestamp: DateTime.now(),
-          alarmSettings: alarmSettings,
-        ));
+        _triggerStreamController?.add(
+          ReminderTriggerEvent(
+            reminderId: reminderId,
+            triggerType: TriggerType.alarm,
+            timestamp: DateTime.now(),
+            alarmSettings: alarmSettings,
+          ),
+        );
       });
 
       debugPrint('Alarm stream listener established');
@@ -89,7 +95,9 @@ class NotificationAlarmService {
         // Try to initialize if not already done
         final initialized = await initialize();
         if (!initialized) {
-          debugPrint('Failed to initialize notification alarm service, falling back to notifications only');
+          debugPrint(
+            'Failed to initialize notification alarm service, falling back to notifications only',
+          );
           return await _scheduleNotification(reminder);
         }
       }
@@ -114,7 +122,9 @@ class NotificationAlarmService {
               enableVibration: enableVibration ?? true,
             );
           } catch (e) {
-            debugPrint('Alarm scheduling failed, falling back to notification: $e');
+            debugPrint(
+              'Alarm scheduling failed, falling back to notification: $e',
+            );
             alarmSuccess = false;
             notificationSuccess = await _scheduleNotification(reminder);
           }
@@ -142,8 +152,9 @@ class NotificationAlarmService {
       final success = reminderType == ReminderType.notification
           ? notificationSuccess
           : reminderType == ReminderType.alarm
-              ? (alarmSuccess || notificationSuccess) // Fallback to notification if alarm fails
-              : (notificationSuccess || alarmSuccess);
+          ? (alarmSuccess ||
+                notificationSuccess) // Fallback to notification if alarm fails
+          : (notificationSuccess || alarmSuccess);
 
       if (success) {
         debugPrint('Reminder scheduled successfully: ${reminder.id}');
@@ -162,7 +173,9 @@ class NotificationAlarmService {
   Future<bool> cancelReminder(String reminderId) async {
     try {
       if (!_isInitialized) {
-        throw const NotificationAlarmServiceException('Service not initialized');
+        throw const NotificationAlarmServiceException(
+          'Service not initialized',
+        );
       }
 
       bool notificationCancelled = false;
@@ -206,7 +219,9 @@ class NotificationAlarmService {
   }) async {
     try {
       if (!_isInitialized) {
-        throw const NotificationAlarmServiceException('Service not initialized');
+        throw const NotificationAlarmServiceException(
+          'Service not initialized',
+        );
       }
 
       final actualSnoozeMinutes = snoozeMinutes ?? 15;
@@ -214,7 +229,8 @@ class NotificationAlarmService {
 
       await cancelReminder(reminderId);
 
-      final snoozeReminderId = '${reminderId}_snooze_${DateTime.now().millisecondsSinceEpoch}';
+      final snoozeReminderId =
+          '${reminderId}_snooze_${DateTime.now().millisecondsSinceEpoch}';
 
       switch (actualReminderType) {
         case ReminderType.notification:
@@ -325,7 +341,9 @@ class NotificationAlarmService {
       debugPrint('All reminders cancelled');
     } catch (e) {
       debugPrint('Error cancelling all reminders: $e');
-      throw NotificationAlarmServiceException('Failed to cancel all reminders: $e');
+      throw NotificationAlarmServiceException(
+        'Failed to cancel all reminders: $e',
+      );
     }
   }
 
@@ -339,10 +357,13 @@ class NotificationAlarmService {
 
   Future<bool> _scheduleNotification(Reminder reminder) async {
     try {
-      if (reminder.type == 'medication' && reminder.recordId != null && reminder.medicationId == null) {
+      if (reminder.type == 'medication' &&
+          reminder.recordId != null &&
+          reminder.medicationId == null) {
         // This is a batch reminder (recordId points to batch, no medicationId)
         await _scheduleBatchNotification(reminder);
-      } else if (reminder.type == 'medication' && reminder.medicationId != null) {
+      } else if (reminder.type == 'medication' &&
+          reminder.medicationId != null) {
         // This is an individual medication reminder
         await _notificationService.scheduleMedicationReminder(
           reminderId: reminder.id,
@@ -396,7 +417,9 @@ class NotificationAlarmService {
       );
     } catch (e) {
       debugPrint('Error scheduling batch notification: $e');
-      throw NotificationAlarmServiceException('Failed to schedule batch notification: $e');
+      throw NotificationAlarmServiceException(
+        'Failed to schedule batch notification: $e',
+      );
     }
   }
 
@@ -424,15 +447,17 @@ class NotificationAlarmService {
 
   Future<bool> _hasScheduledNotification(String reminderId) async {
     try {
-      final pendingNotifications = await _notificationService.getPendingNotifications();
+      final pendingNotifications = await _notificationService
+          .getPendingNotifications();
       final notificationId = reminderId.hashCode;
-      return pendingNotifications.any((notification) => notification.id == notificationId);
+      return pendingNotifications.any(
+        (notification) => notification.id == notificationId,
+      );
     } catch (e) {
       debugPrint('Error checking scheduled notification: $e');
       return false;
     }
   }
-
 
   Future<void> dispose() async {
     try {
@@ -463,10 +488,7 @@ class ReminderTriggerEvent {
   });
 }
 
-enum TriggerType {
-  notification,
-  alarm,
-}
+enum TriggerType { notification, alarm }
 
 class ReminderStatus {
   final String reminderId;
@@ -494,6 +516,8 @@ class NotificationAlarmServiceException implements Exception {
   String toString() => 'NotificationAlarmServiceException: $message';
 }
 
-final notificationAlarmServiceProvider = Provider<NotificationAlarmService>((ref) {
+final notificationAlarmServiceProvider = Provider<NotificationAlarmService>((
+  ref,
+) {
   return NotificationAlarmService();
 });

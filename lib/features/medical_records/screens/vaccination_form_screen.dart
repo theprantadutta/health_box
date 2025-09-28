@@ -7,6 +7,10 @@ import '../services/vaccination_service.dart';
 import '../../../data/models/vaccination.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/widgets/reminder_type_selector.dart';
+import '../../../shared/widgets/alarm_sound_picker.dart';
+import '../../../shared/widgets/alarm_volume_slider.dart';
+import '../../../shared/widgets/reminder_preview.dart';
 
 class VaccinationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -42,6 +46,12 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
   bool _isLoading = false;
   bool _isEditing = false;
   List<AttachmentResult> _attachments = [];
+
+  // Reminder-related state
+  bool _enableReminder = false;
+  ReminderType _reminderType = ReminderType.notification;
+  String _alarmSound = 'gentle';
+  double _alarmVolume = 0.7;
 
   @override
   void initState() {
@@ -516,6 +526,8 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
               allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
               maxFileSizeMB: 25,
             ),
+            const SizedBox(height: 24),
+            _buildReminderSection(),
           ],
         ),
       ),
@@ -524,6 +536,97 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Widget _buildReminderSection() {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Enable Reminder Toggle
+        Row(
+          children: [
+            Icon(
+              Icons.schedule_outlined,
+              color: theme.colorScheme.primary,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Vaccination Reminders',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            const Spacer(),
+            Switch(
+              value: _enableReminder,
+              onChanged: (value) {
+                setState(() {
+                  _enableReminder = value;
+                });
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Set up reminders for vaccination boosters or follow-up appointments',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        if (_enableReminder) ...[
+          const SizedBox(height: 16),
+          ReminderTypeSelector(
+            selectedType: _reminderType,
+            onChanged: (type) {
+              setState(() {
+                _reminderType = type;
+              });
+            },
+            helpText: 'Choose how you want to be reminded about this vaccination',
+          ),
+          if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
+            const SizedBox(height: 16),
+            AlarmSoundPicker(
+              selectedSound: _alarmSound,
+              onSoundChanged: (sound) {
+                setState(() {
+                  _alarmSound = sound;
+                });
+              },
+              previewVolume: _alarmVolume,
+            ),
+            const SizedBox(height: 16),
+            AlarmVolumeSlider(
+              volume: _alarmVolume,
+              onVolumeChanged: (volume) {
+                setState(() {
+                  _alarmVolume = volume;
+                });
+              },
+              previewSound: _alarmSound,
+            ),
+          ],
+          const SizedBox(height: 16),
+          ReminderPreview(
+            title: _titleController.text.isNotEmpty
+              ? 'Vaccination Reminder: ${_titleController.text}'
+              : 'Vaccination Reminder',
+            description: _nextDueDate != null
+              ? 'Next dose due for ${_vaccineNameController.text.isNotEmpty ? _vaccineNameController.text : "vaccination"}'
+              : 'Follow-up reminder for vaccination',
+            scheduledTime: _nextDueDate ?? DateTime.now().add(const Duration(days: 30)),
+            reminderType: _reminderType,
+            alarmSound: _alarmSound,
+            alarmVolume: _alarmVolume,
+          ),
+        ],
+      ],
+    );
   }
 
   @override

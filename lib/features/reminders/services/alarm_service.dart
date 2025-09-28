@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-
-// Temporary stub implementation of AlarmService without alarm package
-// This prevents foreground service crashes while we implement notifications-only approach
+import 'package:alarm/alarm.dart';
+import '../../../shared/widgets/alarm_sound_picker.dart';
 
 class AlarmService {
   static final AlarmService _instance = AlarmService._internal();
@@ -12,22 +11,33 @@ class AlarmService {
   bool _isInitialized = false;
   StreamController<AlarmSettings>? _alarmStreamController;
 
-  static const Map<String, String> _alarmSounds = {
-    'gentle': 'assets/sounds/gentle_alarm.mp3',
-    'urgent': 'assets/sounds/urgent_alarm.mp3',
-    'chime': 'assets/sounds/chime_alarm.mp3',
-  };
+  // Use the alarm sounds from the AlarmSoundPicker extension
+  static Map<String, AlarmSoundInfo> get _alarmSounds {
+    final Map<String, AlarmSoundInfo> sounds = {};
+    for (final sound in AlarmSoundExtension.allSounds) {
+      sounds[sound.key] = sound;
+    }
+    return sounds;
+  }
 
   Future<bool> initialize() async {
     try {
       if (_isInitialized) return true;
 
-      debugPrint('AlarmService: Initializing stub alarm service (notifications only)...');
+      debugPrint('AlarmService: Initializing alarm service...');
+
+      // Initialize the alarm package
+      await Alarm.init();
 
       _isInitialized = true;
       _alarmStreamController = StreamController<AlarmSettings>.broadcast();
 
-      debugPrint('AlarmService stub initialized successfully');
+      // Set up alarm stream listener to bridge alarm package events
+      // Note: Alarm streams are handled automatically by the alarm package in v5.1.2
+      // We'll listen for ring events through the notification callbacks instead
+      debugPrint('Alarm stream listener setup (handled by alarm package)');
+
+      debugPrint('AlarmService initialized successfully');
       return true;
     } catch (e) {
       debugPrint('Failed to initialize AlarmService: $e');
@@ -57,33 +67,126 @@ class AlarmService {
     int fadeInDuration = 0,
     bool enableNotificationOnKill = true,
   }) async {
-    debugPrint('AlarmService stub: Alarm functionality disabled, returning false for fallback to notifications');
-    return false; // Always return false to fallback to notifications
+    try {
+      if (!_isInitialized) {
+        final initialized = await initialize();
+        if (!initialized) {
+          debugPrint('AlarmService: Failed to initialize, falling back to notifications');
+          return false;
+        }
+      }
+
+      final soundInfo = _alarmSounds[alarmSound];
+      if (soundInfo == null) {
+        debugPrint('AlarmService: Invalid alarm sound: $alarmSound, using default');
+        return false;
+      }
+
+      final alarmId = reminderId.hashCode;
+
+      final alarmSettings = AlarmSettings(
+        id: alarmId,
+        dateTime: scheduledTime,
+        assetAudioPath: soundInfo.assetPath,
+        loopAudio: loopAudio,
+        vibrate: vibrate,
+        volumeSettings: VolumeSettings.fade(
+          fadeDuration: Duration(seconds: fadeInDuration),
+          volume: volume.clamp(0.0, 1.0),
+        ),
+        notificationSettings: NotificationSettings(
+          title: title,
+          body: body,
+          stopButton: 'Stop Alarm',
+        ),
+        warningNotificationOnKill: enableNotificationOnKill,
+      );
+
+      final success = await Alarm.set(alarmSettings: alarmSettings);
+
+      if (success) {
+        debugPrint('AlarmService: Successfully set alarm for $reminderId at $scheduledTime');
+      } else {
+        debugPrint('AlarmService: Failed to set alarm for $reminderId');
+      }
+
+      return success;
+    } catch (e) {
+      debugPrint('AlarmService: Error setting alarm: $e');
+      return false;
+    }
   }
 
   Future<bool> stopAlarm(String reminderId) async {
-    debugPrint('AlarmService stub: No alarm to stop for reminder: $reminderId');
-    return false;
+    try {
+      final alarmId = reminderId.hashCode;
+      final success = await Alarm.stop(alarmId);
+
+      if (success) {
+        debugPrint('AlarmService: Successfully stopped alarm for $reminderId');
+      } else {
+        debugPrint('AlarmService: No alarm found to stop for $reminderId');
+      }
+
+      return success;
+    } catch (e) {
+      debugPrint('AlarmService: Error stopping alarm: $e');
+      return false;
+    }
   }
 
   Future<bool> isAlarmRinging(String reminderId) async {
-    return false; // No alarms can be ringing in stub mode
+    try {
+      final alarmId = reminderId.hashCode;
+      return Alarm.isRinging(alarmId);
+    } catch (e) {
+      debugPrint('AlarmService: Error checking if alarm is ringing: $e');
+      return false;
+    }
   }
 
   Future<bool> hasAlarm(String reminderId) async {
-    return false; // No alarms exist in stub mode
+    try {
+      final alarmId = reminderId.hashCode;
+      final alarms = await getActiveAlarms();
+      return alarms.any((alarm) => alarm.id == alarmId);
+    } catch (e) {
+      debugPrint('AlarmService: Error checking if alarm exists: $e');
+      return false;
+    }
   }
 
   Future<List<AlarmSettings>> getActiveAlarms() async {
-    return []; // No active alarms in stub mode
+    try {
+      return Alarm.getAlarms();
+    } catch (e) {
+      debugPrint('AlarmService: Error getting active alarms: $e');
+      return [];
+    }
   }
 
   Future<AlarmSettings?> getAlarm(String reminderId) async {
-    return null; // No alarms exist in stub mode
+    try {
+      final alarmId = reminderId.hashCode;
+      final alarms = await getActiveAlarms();
+      for (final alarm in alarms) {
+        if (alarm.id == alarmId) {
+          return alarm;
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> stopAllAlarms() async {
-    debugPrint('AlarmService stub: No alarms to stop');
+    try {
+      await Alarm.stopAll();
+      debugPrint('AlarmService: Stopped all alarms');
+    } catch (e) {
+      debugPrint('AlarmService: Error stopping all alarms: $e');
+    }
   }
 
   Future<bool> snoozeAlarm({
@@ -93,33 +196,51 @@ class AlarmService {
     int snoozeMinutes = 15,
     String alarmSound = 'gentle',
   }) async {
-    debugPrint('AlarmService stub: Alarm snooze not available, returning false');
-    return false;
+    try {
+      // Stop the current alarm
+      await stopAlarm(reminderId);
+
+      // Schedule a new alarm for the snooze time
+      final snoozeTime = DateTime.now().add(Duration(minutes: snoozeMinutes));
+      final snoozedReminderId = '${reminderId}_snoozed_${DateTime.now().millisecondsSinceEpoch}';
+
+      return await setAlarm(
+        reminderId: snoozedReminderId,
+        scheduledTime: snoozeTime,
+        title: '$title (Snoozed)',
+        body: body,
+        alarmSound: alarmSound,
+      );
+    } catch (e) {
+      debugPrint('AlarmService: Error snoozing alarm: $e');
+      return false;
+    }
   }
 
   List<String> getAvailableAlarmSounds() {
     return _alarmSounds.keys.toList();
   }
 
+  List<AlarmSoundInfo> getAlarmSoundInfoList() {
+    return _alarmSounds.values.toList();
+  }
+
+  AlarmSoundInfo? getAlarmSoundInfo(String soundKey) {
+    return _alarmSounds[soundKey];
+  }
+
   String getAlarmSoundDisplayName(String soundKey) {
-    switch (soundKey) {
-      case 'gentle':
-        return 'Gentle Chime';
-      case 'urgent':
-        return 'Urgent Alert';
-      case 'chime':
-        return 'Peaceful Chime';
-      default:
-        return 'Unknown Sound';
-    }
+    final soundInfo = _alarmSounds[soundKey];
+    return soundInfo?.displayName ?? 'Unknown Sound';
   }
 
   Future<void> dispose() async {
     try {
+      await stopAllAlarms();
       await _alarmStreamController?.close();
       _alarmStreamController = null;
       _isInitialized = false;
-      debugPrint('AlarmService stub disposed');
+      debugPrint('AlarmService disposed');
     } catch (e) {
       debugPrint('Error disposing AlarmService: $e');
     }
@@ -135,32 +256,7 @@ class AlarmServiceException implements Exception {
   String toString() => 'AlarmServiceException: $message';
 }
 
-// Stub AlarmSettings class to replace the one from alarm package
-class AlarmSettings {
-  final int id;
-  final DateTime dateTime;
-  final String assetAudioPath;
-  final bool loopAudio;
-  final bool vibrate;
-  final double volume;
-  final double fadeDuration;
-  final String notificationTitle;
-  final String notificationBody;
-  final bool enableNotificationOnKill;
-
-  const AlarmSettings({
-    required this.id,
-    required this.dateTime,
-    required this.assetAudioPath,
-    required this.loopAudio,
-    required this.vibrate,
-    required this.volume,
-    required this.fadeDuration,
-    required this.notificationTitle,
-    required this.notificationBody,
-    required this.enableNotificationOnKill,
-  });
-}
+// AlarmSoundInfo is imported from alarm_sound_picker.dart
 
 enum AlarmSoundType {
   gentle,

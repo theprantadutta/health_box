@@ -8,6 +8,10 @@ import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/models/medication_batch.dart';
+import '../../../shared/widgets/reminder_type_selector.dart';
+import '../../../shared/widgets/alarm_sound_picker.dart';
+import '../../../shared/widgets/alarm_volume_slider.dart';
+import '../../../shared/widgets/reminder_preview.dart';
 import 'dart:developer' as developer;
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
@@ -42,6 +46,11 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
   List<TimeOfDay> _reminderTimes = [];
   String _reminderFrequency = 'daily';
   int _snoozeMinutes = 15;
+
+  // New reminder UI state
+  ReminderType _reminderType = ReminderType.notification;
+  String _alarmSound = 'gentle';
+  double _alarmVolume = 0.7;
 
   @override
   void initState() {
@@ -327,6 +336,46 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
 
         if (_remindersEnabled) ...[
           const SizedBox(height: 16),
+
+          // Reminder Type Selector
+          ReminderTypeSelector(
+            selectedType: _reminderType,
+            onChanged: (type) {
+              setState(() {
+                _reminderType = type;
+              });
+            },
+            helpText: 'Choose how you want to be reminded about your medication',
+          ),
+
+          const SizedBox(height: 16),
+
+          // Alarm Sound Picker (only show if alarm is selected)
+          if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
+            AlarmSoundPicker(
+              selectedSound: _alarmSound,
+              onSoundChanged: (sound) {
+                setState(() {
+                  _alarmSound = sound;
+                });
+              },
+              showPreview: true,
+            ),
+            const SizedBox(height: 16),
+
+            AlarmVolumeSlider(
+              volume: _alarmVolume,
+              onVolumeChanged: (volume) {
+                setState(() {
+                  _alarmVolume = volume;
+                });
+              },
+              previewSound: _alarmSound,
+              label: 'Alarm Volume',
+            ),
+            const SizedBox(height: 16),
+          ],
+
           const Divider(),
           const SizedBox(height: 16),
 
@@ -414,6 +463,27 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
               }
             },
           ),
+
+          const SizedBox(height: 24),
+
+          // Reminder Preview
+          if (_reminderTimes.isNotEmpty)
+            ReminderPreview(
+              title: _nameController.text.isNotEmpty
+                ? 'Take ${_nameController.text}'
+                : 'Medication Reminder',
+              description: _dosageController.text.isNotEmpty
+                ? 'Dosage: ${_dosageController.text}'
+                : 'Time to take your medication',
+              scheduledTime: DateTime.now().copyWith(
+                hour: _reminderTimes.first.hour,
+                minute: _reminderTimes.first.minute,
+              ),
+              reminderType: _reminderType,
+              alarmSound: _alarmSound,
+              alarmVolume: _alarmVolume,
+              showTestButtons: true,
+            ),
         ],
       ],
     );

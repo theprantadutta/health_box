@@ -7,6 +7,10 @@ import '../services/chronic_condition_service.dart';
 import '../../../data/models/chronic_condition.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/widgets/reminder_type_selector.dart';
+import '../../../shared/widgets/alarm_sound_picker.dart';
+import '../../../shared/widgets/alarm_volume_slider.dart';
+import '../../../shared/widgets/reminder_preview.dart';
 
 class ChronicConditionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -41,6 +45,12 @@ class _ChronicConditionFormScreenState
   bool _isLoading = false;
   bool _isEditing = false;
   List<AttachmentResult> _attachments = [];
+
+  // Reminder settings
+  bool _enableReminder = false;
+  ReminderType _reminderType = ReminderType.notification;
+  String _alarmSound = 'gentle';
+  double _alarmVolume = 0.7;
 
   @override
   void initState() {
@@ -86,6 +96,8 @@ class _ChronicConditionFormScreenState
             _buildAttachmentsSection(),
             const SizedBox(height: 24),
             _buildManagementSection(),
+            const SizedBox(height: 24),
+            _buildReminderSection(),
           ],
         ),
       ),
@@ -407,6 +419,92 @@ class _ChronicConditionFormScreenState
               ),
               maxLines: 4,
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReminderSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Reminder Settings',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              title: const Text('Enable Reminders'),
+              subtitle: const Text('Get reminded about check-ups, medication, or monitoring'),
+              value: _enableReminder,
+              onChanged: (value) {
+                setState(() {
+                  _enableReminder = value;
+                });
+              },
+            ),
+
+            if (_enableReminder) ...[
+              const SizedBox(height: 16),
+
+              // Reminder Type Selector
+              ReminderTypeSelector(
+                selectedType: _reminderType,
+                onChanged: (type) {
+                  setState(() {
+                    _reminderType = type;
+                  });
+                },
+                helpText: 'Choose how you want to be reminded about this condition',
+              ),
+
+              const SizedBox(height: 16),
+
+              // Alarm Sound Picker (only show if alarm is selected)
+              if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
+                AlarmSoundPicker(
+                  selectedSound: _alarmSound,
+                  onSoundChanged: (sound) {
+                    setState(() {
+                      _alarmSound = sound;
+                    });
+                  },
+                  showPreview: true,
+                ),
+                const SizedBox(height: 16),
+
+                AlarmVolumeSlider(
+                  volume: _alarmVolume,
+                  onVolumeChanged: (volume) {
+                    setState(() {
+                      _alarmVolume = volume;
+                    });
+                  },
+                  previewSound: _alarmSound,
+                  label: 'Condition Reminder Volume',
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // Reminder Preview
+              ReminderPreview(
+                title: _conditionNameController.text.isNotEmpty
+                  ? '${_conditionNameController.text} Check-up'
+                  : 'Chronic Condition Reminder',
+                description: _managementPlanController.text.isNotEmpty
+                  ? 'Management: ${_managementPlanController.text.substring(0, _managementPlanController.text.length > 50 ? 50 : _managementPlanController.text.length)}...'
+                  : 'Time for your condition check-up or medication',
+                scheduledTime: DateTime.now().add(const Duration(days: 7)),
+                reminderType: _reminderType,
+                alarmSound: _alarmSound,
+                alarmVolume: _alarmVolume,
+                showTestButtons: true,
+              ),
+            ],
           ],
         ),
       ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:alarm/alarm.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'data/database/app_database.dart';
 import 'features/reminders/services/notification_alarm_service.dart';
@@ -20,6 +22,12 @@ import 'shared/theme/design_system.dart';
 void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize timezone data (critical for scheduling)
+  tz.initializeTimeZones();
+
+  // Initialize alarm service (critical for alarms to work)
+  await Alarm.init();
 
   // Initialize SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
