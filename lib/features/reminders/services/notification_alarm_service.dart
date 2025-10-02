@@ -18,8 +18,6 @@ class NotificationAlarmService {
   final AlarmService _alarmService = AlarmService();
 
   bool _isInitialized = false;
-  StreamController<ReminderTriggerEvent>? _triggerStreamController;
-  StreamSubscription<AlarmSettings>? _alarmSubscription;
 
   Future<bool> initialize() async {
     try {
@@ -32,11 +30,9 @@ class NotificationAlarmService {
         debugPrint('Warning: Notification service failed to initialize');
       }
 
-      _triggerStreamController =
-          StreamController<ReminderTriggerEvent>.broadcast();
-
       // Note: AlarmService is NOT initialized here to prevent foreground service crashes
       // It will be initialized lazily when an alarm is actually needed
+      // AlarmListener widget handles the global ringStream listener
 
       _isInitialized = true;
       debugPrint(
@@ -46,40 +42,6 @@ class NotificationAlarmService {
     } catch (e) {
       debugPrint('Failed to initialize NotificationAlarmService: $e');
       return false;
-    }
-  }
-
-  Stream<ReminderTriggerEvent> get triggerStream {
-    if (_triggerStreamController == null) {
-      throw const NotificationAlarmServiceException('Service not initialized');
-    }
-    return _triggerStreamController!.stream;
-  }
-
-  Future<void> _ensureAlarmStreamListener() async {
-    if (_alarmSubscription != null) return; // Already listening
-
-    try {
-      // Subscribe to alarm stream when first needed
-      _alarmSubscription = _alarmService.alarmStream.listen((alarmSettings) {
-        debugPrint('Alarm triggered for ID: ${alarmSettings.id}');
-
-        // Extract reminder ID from alarm ID
-        final reminderId = 'reminder_${alarmSettings.id}';
-
-        _triggerStreamController?.add(
-          ReminderTriggerEvent(
-            reminderId: reminderId,
-            triggerType: TriggerType.alarm,
-            timestamp: DateTime.now(),
-            alarmSettings: alarmSettings,
-          ),
-        );
-      });
-
-      debugPrint('Alarm stream listener established');
-    } catch (e) {
-      debugPrint('Failed to set up alarm stream listener: $e');
     }
   }
 
@@ -112,9 +74,6 @@ class NotificationAlarmService {
 
         case ReminderType.alarm:
           try {
-            // Ensure alarm stream listener is set up before scheduling alarms
-            await _ensureAlarmStreamListener();
-
             alarmSuccess = await _scheduleAlarm(
               reminder,
               alarmSound: alarmSound ?? 'gentle',
@@ -133,9 +92,6 @@ class NotificationAlarmService {
         case ReminderType.both:
           notificationSuccess = await _scheduleNotification(reminder);
           try {
-            // Ensure alarm stream listener is set up before scheduling alarms
-            await _ensureAlarmStreamListener();
-
             alarmSuccess = await _scheduleAlarm(
               reminder,
               alarmSound: alarmSound ?? 'gentle',
@@ -461,11 +417,7 @@ class NotificationAlarmService {
 
   Future<void> dispose() async {
     try {
-      await _alarmSubscription?.cancel();
-      await _triggerStreamController?.close();
       await _alarmService.dispose();
-      _triggerStreamController = null;
-      _alarmSubscription = null;
       _isInitialized = false;
       debugPrint('NotificationAlarmService disposed');
     } catch (e) {

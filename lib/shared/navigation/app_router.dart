@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:alarm/alarm.dart';
 import '../../data/database/app_database.dart';
 
 import '../../screens/main_app_screen.dart';
 import '../../screens/onboarding_screen.dart';
+import '../../screens/splash_screen.dart';
 import '../../screens/settings_screen.dart' as settings;
 import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/profiles/screens/profile_list_screen.dart';
@@ -37,14 +39,16 @@ import '../../features/reminders/screens/reminders_screen.dart';
 import '../../features/reminders/screens/reminder_history_screen.dart';
 import '../../features/reminders/screens/notification_settings_screen.dart';
 import '../../features/reminders/screens/refill_reminders_screen.dart';
+import '../../features/reminders/screens/alarm_screen.dart';
 import '../../features/medical_records/screens/drug_interaction_screen.dart';
 import '../../features/medical_records/screens/medication_batch_screen.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>();
 
 class AppRoutes {
+  static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String dashboard = '/dashboard';
   static const String profiles = '/profiles';
@@ -76,6 +80,7 @@ class AppRoutes {
   static const String reminderHistory = '/reminders/history';
   static const String notificationSettings = '/reminders/settings';
   static const String refillReminders = '/reminders/refills';
+  static const String alarmScreen = '/alarm';
   static const String drugInteractions = '/medical-records/interactions';
   static const String medicationBatches = '/medical-records/medication-batches';
 }
@@ -108,9 +113,16 @@ class PlaceholderScreen extends StatelessWidget {
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.dashboard,
+    navigatorKey: rootNavigatorKey,
+    initialLocation: AppRoutes.splash,
     routes: [
+      // Splash Screen - First screen shown
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+
       GoRoute(
         path: AppRoutes.onboarding,
         name: 'onboarding',
@@ -394,6 +406,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: 'medication-batches',
         builder: (context, state) => const MedicationBatchScreen(),
       ),
+
+      // Alarm Screen - Full screen overlay when alarm rings
+      GoRoute(
+        path: '/alarm',
+        name: 'alarm',
+        builder: (context, state) {
+          final alarmSettings = state.extra as AlarmSettings;
+          return AlarmScreen(alarmSettings: alarmSettings);
+        },
+      ),
     ],
 
     errorBuilder: (context, state) => Scaffold(
@@ -420,6 +442,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
     redirect: (context, state) async {
       final currentPath = state.uri.toString();
+
+      // Always allow splash screen
+      if (currentPath == AppRoutes.splash) {
+        return null;
+      }
 
       // Always allow access to onboarding
       if (currentPath == AppRoutes.onboarding) {

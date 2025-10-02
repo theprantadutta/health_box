@@ -8,10 +8,8 @@ import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/models/medication_batch.dart';
-import '../../../shared/widgets/reminder_type_selector.dart';
-import '../../../shared/widgets/alarm_sound_picker.dart';
-import '../../../shared/widgets/alarm_volume_slider.dart';
-import '../../../shared/widgets/reminder_preview.dart';
+import '../../../shared/widgets/reminder_settings_widget.dart';
+import '../../../shared/widgets/reminder_type_selector.dart'; // Import for ReminderType enum
 import 'dart:developer' as developer;
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
@@ -314,178 +312,26 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
   }
 
   Widget _buildReminderSettingsContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SwitchListTile(
-          title: const Text('Enable Reminders'),
-          subtitle: const Text('Get notifications when it\'s time to take your medication'),
-          value: _remindersEnabled,
-          onChanged: (value) {
-            setState(() {
-              _remindersEnabled = value;
-              if (!value) {
-                _reminderTimes.clear();
-              } else if (_reminderTimes.isEmpty) {
-                // Add default reminder time
-                _reminderTimes.add(TimeOfDay.now());
-              }
-            });
-          },
-        ),
-
-        if (_remindersEnabled) ...[
-          const SizedBox(height: 16),
-
-          // Reminder Type Selector
-          ReminderTypeSelector(
-            selectedType: _reminderType,
-            onChanged: (type) {
-              setState(() {
-                _reminderType = type;
-              });
-            },
-            helpText: 'Choose how you want to be reminded about your medication',
-          ),
-
-          const SizedBox(height: 16),
-
-          // Alarm Sound Picker (only show if alarm is selected)
-          if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
-            AlarmSoundPicker(
-              selectedSound: _alarmSound,
-              onSoundChanged: (sound) {
-                setState(() {
-                  _alarmSound = sound;
-                });
-              },
-              showPreview: true,
-            ),
-            const SizedBox(height: 16),
-
-            AlarmVolumeSlider(
-              volume: _alarmVolume,
-              onVolumeChanged: (volume) {
-                setState(() {
-                  _alarmVolume = volume;
-                });
-              },
-              previewSound: _alarmSound,
-              label: 'Alarm Volume',
-            ),
-            const SizedBox(height: 16),
-          ],
-
-          const Divider(),
-          const SizedBox(height: 16),
-
-          Text(
-            'Reminder Times',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const SizedBox(height: 8),
-
-          // Display reminder times
-          ..._reminderTimes.asMap().entries.map((entry) {
-            final index = entry.key;
-            final timeOfDay = entry.value;
-            return ListTile(
-              leading: const Icon(Icons.schedule),
-              title: Text(timeOfDay.format(context)),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => _editReminderTime(index),
-                  ),
-                  if (_reminderTimes.length > 1)
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _removeReminderTime(index),
-                    ),
-                ],
-              ),
-            );
-          }).toList(),
-
-          const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: _addReminderTime,
-            icon: const Icon(Icons.add),
-            label: const Text('Add Reminder Time'),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Frequency selection
-          DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: 'Reminder Frequency',
-              border: OutlineInputBorder(),
-            ),
-            initialValue: _reminderFrequency,
-            items: const [
-              DropdownMenuItem(value: 'daily', child: Text('Daily')),
-              DropdownMenuItem(value: 'weekly', child: Text('Weekly')),
-              DropdownMenuItem(value: 'monthly', child: Text('Monthly')),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  _reminderFrequency = value;
-                });
-              }
-            },
-          ),
-
-          const SizedBox(height: 16),
-
-          // Snooze duration
-          DropdownButtonFormField<int>(
-            decoration: const InputDecoration(
-              labelText: 'Snooze Duration (minutes)',
-              border: OutlineInputBorder(),
-            ),
-            initialValue: _snoozeMinutes,
-            items: const [
-              DropdownMenuItem(value: 5, child: Text('5 minutes')),
-              DropdownMenuItem(value: 10, child: Text('10 minutes')),
-              DropdownMenuItem(value: 15, child: Text('15 minutes')),
-              DropdownMenuItem(value: 30, child: Text('30 minutes')),
-              DropdownMenuItem(value: 60, child: Text('1 hour')),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  _snoozeMinutes = value;
-                });
-              }
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          // Reminder Preview
-          if (_reminderTimes.isNotEmpty)
-            ReminderPreview(
-              title: _nameController.text.isNotEmpty
-                ? 'Take ${_nameController.text}'
-                : 'Medication Reminder',
-              description: _dosageController.text.isNotEmpty
-                ? 'Dosage: ${_dosageController.text}'
-                : 'Time to take your medication',
-              scheduledTime: DateTime.now().copyWith(
-                hour: _reminderTimes.first.hour,
-                minute: _reminderTimes.first.minute,
-              ),
-              reminderType: _reminderType,
-              alarmSound: _alarmSound,
-              alarmVolume: _alarmVolume,
-              showTestButtons: true,
-            ),
-        ],
-      ],
+    return ReminderSettingsWidget(
+      enabled: _remindersEnabled,
+      onEnabledChanged: (value) => setState(() => _remindersEnabled = value),
+      reminderTimes: _reminderTimes,
+      onReminderTimesChanged: (times) => setState(() => _reminderTimes = times),
+      reminderType: _reminderType,
+      onReminderTypeChanged: (type) => setState(() => _reminderType = type),
+      alarmSound: _alarmSound,
+      onAlarmSoundChanged: (sound) => setState(() => _alarmSound = sound),
+      alarmVolume: _alarmVolume,
+      onAlarmVolumeChanged: (volume) => setState(() => _alarmVolume = volume),
+      frequency: _reminderFrequency,
+      onFrequencyChanged: (freq) => setState(() => _reminderFrequency = freq),
+      snoozeMinutes: _snoozeMinutes,
+      onSnoozeMinutesChanged: (mins) => setState(() => _snoozeMinutes = mins),
+      medicationName: _nameController.text,
+      dosage: _dosageController.text,
+      showPreview: true,
+      showFrequency: true,
+      showSnooze: true,
     );
   }
 
@@ -559,6 +405,12 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                 minute: timeOfDay.minute,
               )).toList()
             : [],
+        // NEW: Add reminder settings for proper alarm/notification scheduling
+        reminderType: _reminderType.value, // Convert enum to string
+        alarmSound: _alarmSound,
+        alarmVolume: _alarmVolume,
+        snoozeMinutes: _snoozeMinutes,
+        reminderFrequency: _reminderFrequency, // CRITICAL: Pass reminder frequency (once/daily/weekly/monthly), not medication frequency!
       );
 
       developer.log('Calling service.createMedication with request', name: 'MedicationForm', level: 800);
@@ -639,38 +491,6 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
         setState(() => _isLoading = false);
       }
     }
-  }
-
-  Future<void> _addReminderTime() async {
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-
-    if (time != null) {
-      setState(() {
-        _reminderTimes.add(time);
-      });
-    }
-  }
-
-  Future<void> _editReminderTime(int index) async {
-    final time = await showTimePicker(
-      context: context,
-      initialTime: _reminderTimes[index],
-    );
-
-    if (time != null) {
-      setState(() {
-        _reminderTimes[index] = time;
-      });
-    }
-  }
-
-  void _removeReminderTime(int index) {
-    setState(() {
-      _reminderTimes.removeAt(index);
-    });
   }
 
   Widget _buildExpandableSection({

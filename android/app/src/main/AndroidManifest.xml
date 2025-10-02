@@ -64,7 +64,12 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- Alarm service temporarily disabled to prevent foreground service crashes -->
+        <!-- Alarm Service for medication reminders -->
+        <service
+            android:name="com.gdelataillade.alarm.alarm.AlarmService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
+            android:stopWithTask="false" />
 
         <!-- Notification receiver -->
         <receiver

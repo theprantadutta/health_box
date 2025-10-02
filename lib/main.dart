@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:alarm/alarm.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
-import 'data/database/app_database.dart';
-import 'features/reminders/services/notification_alarm_service.dart';
+import 'features/reminders/widgets/alarm_listener.dart';
 import 'features/sync/providers/google_drive_providers.dart';
 import 'features/sync/services/background_sync_service.dart';
 import 'features/sync/services/new_user_onboarding_service.dart';
@@ -14,8 +11,8 @@ import 'features/sync/widgets/background_backup_indicator.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/navigation/app_router.dart';
 import 'shared/providers/app_providers.dart';
-import 'shared/providers/onboarding_providers.dart';
 import 'shared/providers/backup_preference_providers.dart';
+import 'shared/providers/onboarding_providers.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/design_system.dart';
 
@@ -23,23 +20,11 @@ void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize timezone data (critical for scheduling)
-  tz.initializeTimeZones();
-
-  // Initialize alarm service (critical for alarms to work)
-  await Alarm.init();
-
-  // Initialize SharedPreferences
+  // Initialize SharedPreferences (needed immediately)
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  // Initialize and test database connection
-  await _initializeDatabase();
-
-  // Initialize notification services (alarms will be initialized when needed)
-  await _initializeNotificationServices();
-
-  // Google Drive authentication is now conditional - it will be initialized
-  // only if the user has enabled Google Drive backup in their preferences
+  // All other initialization moved to SplashScreen
+  // This makes app startup instant with a beautiful loading screen
 
   runApp(
     ProviderScope(
@@ -50,79 +35,6 @@ void main() async {
     ),
   );
 }
-
-Future<void> _initializeDatabase() async {
-  try {
-    // Test database connection
-    final database = AppDatabase.instance;
-
-    // First check if we can even get the database instance
-    debugPrint('Got database instance successfully');
-
-    final canConnect = await database.testConnection();
-
-    debugPrint(
-      'Database connection test: ${canConnect ? "SUCCESS" : "FAILED"}',
-    );
-
-    if (canConnect) {
-      debugPrint('HealthBox database is ready!');
-
-      // Test a simple table creation/query to make sure everything works
-      try {
-        await database.customStatement(
-          'CREATE TABLE IF NOT EXISTS test_table (id INTEGER PRIMARY KEY)',
-        );
-        await database.customStatement('DROP TABLE IF EXISTS test_table');
-        debugPrint('Database table operations test: SUCCESS');
-      } catch (tableError) {
-        debugPrint('Database table operations test: FAILED - $tableError');
-      }
-    } else {
-      debugPrint('Warning: Database connection failed, app will use fallback');
-    }
-  } catch (e) {
-    debugPrint('Database initialization error: $e');
-    debugPrint('Error type: ${e.runtimeType}');
-    debugPrint('Stack trace: ${StackTrace.current}');
-    // Don't block app startup, the database will handle fallbacks
-  }
-}
-
-Future<void> _initializeNotificationServices() async {
-  try {
-    debugPrint('Initializing notification services...');
-
-    // Initialize only the notification service at startup
-    // Alarm service will be lazily initialized when needed to prevent crashes
-    final notificationAlarmService = NotificationAlarmService();
-    final initialized = await notificationAlarmService.initialize();
-
-    if (initialized) {
-      // Request notification permissions for Android 13+
-      try {
-        final permissionsGranted = await notificationAlarmService.requestPermissions();
-        if (permissionsGranted) {
-          debugPrint('Notification permissions granted');
-        } else {
-          debugPrint('Warning: Some notification permissions were not granted');
-        }
-      } catch (e) {
-        debugPrint('Warning: Failed to request notification permissions: $e');
-        // Don't block startup, permissions can be requested later
-      }
-    }
-
-    debugPrint('Notification services initialized successfully');
-  } catch (e) {
-    debugPrint('Error initializing notification services: $e');
-    debugPrint('Error type: ${e.runtimeType}');
-    // Don't block app startup, but log the error
-  }
-}
-
-// Google Drive authentication is now conditional and handled by providers
-// No startup initialization needed
 
 class HealthBoxApp extends ConsumerWidget {
   const HealthBoxApp({super.key});
@@ -135,8 +47,11 @@ class HealthBoxApp extends ConsumerWidget {
     // Automatic login and backup management
     ref.listen(backupPreferenceNotifierProvider, (previous, next) {
       next.whenData((backupPreference) async {
-        if (backupPreference.enabled && backupPreference.strategy == BackupStrategy.googleDrive) {
-          debugPrint('Google Drive backup enabled, checking auto sync settings...');
+        if (backupPreference.enabled &&
+            backupPreference.strategy == BackupStrategy.googleDrive) {
+          debugPrint(
+            'Google Drive backup enabled, checking auto sync settings...',
+          );
 
           try {
             // Get sync settings to check if auto sync is enabled
@@ -146,7 +61,9 @@ class HealthBoxApp extends ConsumerWidget {
               debugPrint('Auto sync enabled, performing automatic login...');
 
               // Automatically sign in to Google Drive
-              final authSuccess = await ref.read(googleDriveAuthProvider.notifier).ensureSignedIn();
+              final authSuccess = await ref
+                  .read(googleDriveAuthProvider.notifier)
+                  .ensureSignedIn();
 
               if (authSuccess) {
                 debugPrint('Automatic Google Drive authentication successful');
@@ -154,7 +71,9 @@ class HealthBoxApp extends ConsumerWidget {
                 // Check if first-time sign-in for onboarding
                 final wasAlreadyConnected = syncSettings.isGoogleDriveConnected;
                 if (!wasAlreadyConnected) {
-                  debugPrint('First-time authentication detected, checking for existing backups');
+                  debugPrint(
+                    'First-time authentication detected, checking for existing backups',
+                  );
                   Future.microtask(() async {
                     try {
                       await _handleNewUserOnboarding(context, ref);
@@ -167,7 +86,9 @@ class HealthBoxApp extends ConsumerWidget {
                 // Perform frequency-based backup if needed
                 Future.microtask(() async {
                   try {
-                    final backgroundSyncService = ref.read(backgroundSyncServiceProvider);
+                    final backgroundSyncService = ref.read(
+                      backgroundSyncServiceProvider,
+                    );
                     await backgroundSyncService.performBackgroundBackup(ref);
                   } catch (e) {
                     debugPrint('Failed to start background backup: $e');
@@ -183,7 +104,9 @@ class HealthBoxApp extends ConsumerWidget {
             debugPrint('Error during automatic login process: $e');
           }
         } else {
-          debugPrint('Google Drive backup not enabled, skipping automatic login');
+          debugPrint(
+            'Google Drive backup not enabled, skipping automatic login',
+          );
         }
       });
     });
@@ -218,18 +141,23 @@ class HealthBoxApp extends ConsumerWidget {
               MediaQuery.of(context).textScaler.scale(1.0).clamp(0.8, 1.3),
             ),
           ),
-          child: Stack(
-            children: [
-              child ?? const SizedBox.shrink(),
-              const BackgroundBackupIndicator(),
-            ],
+          child: AlarmListener(
+            child: Stack(
+              children: [
+                child ?? const SizedBox.shrink(),
+                const BackgroundBackupIndicator(),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  Future<void> _handleNewUserOnboarding(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleNewUserOnboarding(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     try {
       final onboardingService = ref.read(newUserOnboardingServiceProvider);
 
@@ -244,7 +172,10 @@ class HealthBoxApp extends ConsumerWidget {
       debugPrint('Found ${result.totalBackups} existing backups');
 
       // Show onboarding dialog to user
-      final choice = await onboardingService.showOnboardingDialog(context, result);
+      final choice = await onboardingService.showOnboardingDialog(
+        context,
+        result,
+      );
 
       if (choice == null) return;
 
@@ -252,11 +183,16 @@ class HealthBoxApp extends ConsumerWidget {
         case UserChoice.importBackups:
           debugPrint('User chose to import backups');
           if (result.latestBackup != null) {
-            await onboardingService.importLatestBackup(ref, result.latestBackup!);
+            await onboardingService.importLatestBackup(
+              ref,
+              result.latestBackup!,
+            );
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('✅ Your previous data has been imported successfully'),
+                  content: Text(
+                    '✅ Your previous data has been imported successfully',
+                  ),
                   backgroundColor: Colors.green,
                   duration: Duration(seconds: 4),
                 ),

@@ -1,24 +1,29 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/medical_record_dao.dart';
 import '../../../data/repositories/reminder_dao.dart';
 import '../../../data/models/medication.dart';
+import '../../reminders/services/reminder_scheduler.dart';
 
 class MedicationService {
   final MedicalRecordDao _medicalRecordDao;
   final ReminderDao _reminderDao;
   final AppDatabase _database;
+  final ReminderScheduler? _reminderScheduler;
 
   MedicationService({
     MedicalRecordDao? medicalRecordDao,
     ReminderDao? reminderDao,
     AppDatabase? database,
+    ReminderScheduler? reminderScheduler,
   }) : _database = database ?? AppDatabase.instance,
        _medicalRecordDao =
            medicalRecordDao ??
            MedicalRecordDao(database ?? AppDatabase.instance),
        _reminderDao =
-           reminderDao ?? ReminderDao(database ?? AppDatabase.instance);
+           reminderDao ?? ReminderDao(database ?? AppDatabase.instance),
+       _reminderScheduler = reminderScheduler;
 
   // CRUD Operations
 
@@ -504,8 +509,8 @@ class MedicationService {
     CreateMedicationRequest request,
   ) async {
     for (final reminderTime in request.reminderTimes) {
-      final reminderId =
-          'reminder_${DateTime.now().millisecondsSinceEpoch}_${reminderTime.hour}_${reminderTime.minute}';
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final reminderId = 'reminder_${timestamp}_${reminderTime.hour}_${reminderTime.minute}';
 
       final scheduledTime = DateTime(
         request.startDate.year,
@@ -515,21 +520,58 @@ class MedicationService {
         reminderTime.minute,
       );
 
+      // Adjust to future if time has passed today
+      final adjustedTime = scheduledTime.isBefore(DateTime.now())
+          ? scheduledTime.add(const Duration(days: 1))
+          : scheduledTime;
+
       final reminderCompanion = RemindersCompanion(
         id: Value(reminderId),
         medicationId: Value(medicationId),
+        type: const Value('medication'),
         title: Value('${request.medicationName} - ${request.dosage}'),
         description: Value(
           'Take ${request.dosage} of ${request.medicationName}',
         ),
-        scheduledTime: Value(scheduledTime),
-        frequency: Value('daily'),
+        scheduledTime: Value(adjustedTime),
+        frequency: Value(request.reminderFrequency), // Use REMINDER frequency (once/daily/weekly/monthly), not medication frequency!
         isActive: const Value(true),
-        nextScheduled: Value(scheduledTime),
-        snoozeMinutes: const Value(15),
+        nextScheduled: Value(adjustedTime),
+        snoozeMinutes: Value(request.snoozeMinutes),
       );
 
       await _reminderDao.createReminder(reminderCompanion);
+
+      // CRITICAL: Schedule the actual alarm/notification using unified scheduler
+      if (_reminderScheduler != null) {
+        try {
+          final reminder = await _reminderDao.getReminderById(reminderId);
+          if (reminder != null) {
+            // The ReminderScheduler will read the customData to determine
+            // whether to use notification, alarm, or both
+            await _reminderScheduler.scheduleReminder(
+              reminder,
+              reminderType: request.reminderType,
+              alarmSound: request.alarmSound ?? 'gentle',
+              volume: request.alarmVolume ?? 0.7,
+            );
+
+            if (kDebugMode) {
+              print('✅ Medication reminder scheduled: $reminderId at $adjustedTime');
+              print('   Type: ${request.reminderType}, Sound: ${request.alarmSound}, Volume: ${request.alarmVolume}');
+            }
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print('⚠️ Failed to schedule medication reminder: $e');
+          }
+          // Don't throw - let medication creation succeed even if scheduling fails
+        }
+      } else {
+        if (kDebugMode) {
+          print('⚠️ ReminderScheduler not initialized - reminder saved to DB but not scheduled');
+        }
+      }
     }
   }
 
@@ -650,6 +692,13 @@ class CreateMedicationRequest {
   final List<MedicationTime> reminderTimes;
   final String? batchId;
 
+  // New reminder settings fields
+  final String reminderType; // 'notification', 'alarm', or 'both'
+  final String? alarmSound; // 'gentle', 'chime', 'urgent'
+  final double? alarmVolume; // 0.0 to 1.0
+  final int snoozeMinutes; // Snooze duration
+  final String reminderFrequency; // 'once', 'daily', 'weekly', 'monthly' for reminder frequency
+
   const CreateMedicationRequest({
     required this.profileId,
     required this.title,
@@ -667,6 +716,11 @@ class CreateMedicationRequest {
     this.status = MedicationStatus.active,
     this.reminderTimes = const [],
     this.batchId,
+    this.reminderType = 'both', // Default to both for maximum reliability
+    this.alarmSound = 'gentle',
+    this.alarmVolume = 0.7,
+    this.snoozeMinutes = 15,
+    this.reminderFrequency = 'daily', // Default reminder frequency
   });
 }
 
@@ -687,6 +741,12 @@ class UpdateMedicationRequest {
   final List<MedicationTime>? reminderTimes;
   final String? batchId;
 
+  // New reminder settings fields
+  final String? reminderType; // 'notification', 'alarm', or 'both'
+  final String? alarmSound;
+  final double? alarmVolume;
+  final int? snoozeMinutes;
+
   const UpdateMedicationRequest({
     this.title,
     this.description,
@@ -703,6 +763,10 @@ class UpdateMedicationRequest {
     this.status,
     this.reminderTimes,
     this.batchId,
+    this.reminderType,
+    this.alarmSound,
+    this.alarmVolume,
+    this.snoozeMinutes,
   });
 }
 

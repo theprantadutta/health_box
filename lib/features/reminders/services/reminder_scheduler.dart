@@ -27,7 +27,6 @@ class ReminderScheduler {
         .initialize();
 
     if (serviceInitialized) {
-      _initializeNotificationHandling();
       // Reschedule all active reminders on app start
       await rescheduleAllActiveReminders();
     }
@@ -36,21 +35,50 @@ class ReminderScheduler {
   }
 
   /// Schedule a notification for a specific reminder
-  Future<bool> scheduleReminder(Reminder reminder) async {
+  ///
+  /// Optional parameters allow overriding default settings from preferences
+  /// This is useful when creating reminders with specific settings (e.g., from medication forms)
+  Future<bool> scheduleReminder(
+    Reminder reminder, {
+    String? reminderType, // 'notification', 'alarm', or 'both'
+    String? alarmSound,
+    double? volume,
+    bool? enableVibration,
+  }) async {
     try {
       if (!reminder.isActive) {
         return false;
       }
 
-      final reminderType = _getReminderType();
-      final alarmSettings = _getAlarmSettings();
+      // Use provided parameters or fall back to user preferences
+      final defaultAlarmSettings = _getAlarmSettings();
+
+      // Convert string reminderType to ReminderType enum
+      ReminderType effectiveReminderType;
+      if (reminderType != null) {
+        switch (reminderType.toLowerCase()) {
+          case 'notification':
+            effectiveReminderType = ReminderType.notification;
+            break;
+          case 'alarm':
+            effectiveReminderType = ReminderType.alarm;
+            break;
+          case 'both':
+            effectiveReminderType = ReminderType.both;
+            break;
+          default:
+            effectiveReminderType = _getReminderType();
+        }
+      } else {
+        effectiveReminderType = _getReminderType();
+      }
 
       return await _notificationAlarmService.scheduleReminder(
         reminder: reminder,
-        reminderType: reminderType,
-        alarmSound: alarmSettings.alarmSound,
-        alarmVolume: alarmSettings.alarmVolume,
-        enableVibration: alarmSettings.enableVibration,
+        reminderType: effectiveReminderType,
+        alarmSound: alarmSound ?? defaultAlarmSettings.alarmSound,
+        alarmVolume: volume ?? defaultAlarmSettings.alarmVolume,
+        enableVibration: enableVibration ?? defaultAlarmSettings.enableVibration,
       );
     } catch (e) {
       throw ReminderSchedulerException(
@@ -151,49 +179,6 @@ class ReminderScheduler {
     }
   }
 
-  /// Initialize notification response listening
-  void _initializeNotificationHandling() {
-    _notificationAlarmService.triggerStream.listen((event) {
-      _handleReminderTrigger(event);
-    });
-  }
-
-  /// Handle reminder trigger events from the unified service
-  Future<void> _handleReminderTrigger(ReminderTriggerEvent event) async {
-    try {
-      switch (event.triggerType) {
-        case TriggerType.notification:
-          await _handleNotificationTrigger(event);
-          break;
-        case TriggerType.alarm:
-          await _handleAlarmTrigger(event);
-          break;
-      }
-    } catch (e) {
-      print('Error handling reminder trigger: $e');
-    }
-  }
-
-  Future<void> _handleNotificationTrigger(ReminderTriggerEvent event) async {
-    // Handle notification tap
-    print('Notification triggered for reminder: ${event.reminderId}');
-  }
-
-  Future<void> _handleAlarmTrigger(ReminderTriggerEvent event) async {
-    // Handle alarm trigger
-    print('Alarm triggered for reminder: ${event.reminderId}');
-
-    // Mark reminder as sent and schedule next occurrence if recurring
-    final reminder = await _reminderService.getReminderById(event.reminderId);
-    if (reminder != null) {
-      await _reminderService.markReminderSent(event.reminderId);
-
-      if (reminder.frequency != 'once') {
-        // Schedule next occurrence for recurring reminders
-        await scheduleReminder(reminder);
-      }
-    }
-  }
 
   /// Check if notifications are enabled
   Future<bool> areNotificationsEnabled() async {

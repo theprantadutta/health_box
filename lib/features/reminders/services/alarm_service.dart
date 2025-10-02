@@ -9,7 +9,6 @@ class AlarmService {
   AlarmService._internal();
 
   bool _isInitialized = false;
-  StreamController<AlarmSettings>? _alarmStreamController;
 
   // Use the alarm sounds from the AlarmSoundPicker extension
   static Map<String, AlarmSoundInfo> get _alarmSounds {
@@ -26,16 +25,13 @@ class AlarmService {
 
       debugPrint('AlarmService: Initializing alarm service...');
 
-      // Initialize the alarm package
+      // Initialize the alarm package (only once)
       await Alarm.init();
 
       _isInitialized = true;
-      _alarmStreamController = StreamController<AlarmSettings>.broadcast();
 
-      // Set up alarm stream listener to bridge alarm package events
-      // Note: Alarm streams are handled automatically by the alarm package in v5.1.2
-      // We'll listen for ring events through the notification callbacks instead
-      debugPrint('Alarm stream listener setup (handled by alarm package)');
+      // DON'T listen to ringStream here - AlarmListener widget handles it globally
+      // Listening in multiple places causes "Stream has already been listened to" error
 
       debugPrint('AlarmService initialized successfully');
       return true;
@@ -44,13 +40,6 @@ class AlarmService {
       _isInitialized = false;
       return false;
     }
-  }
-
-  Stream<AlarmSettings> get alarmStream {
-    if (_alarmStreamController == null) {
-      throw const AlarmServiceException('AlarmService not initialized');
-    }
-    return _alarmStreamController!.stream;
   }
 
   Future<bool> setAlarm({
@@ -71,14 +60,18 @@ class AlarmService {
       if (!_isInitialized) {
         final initialized = await initialize();
         if (!initialized) {
-          debugPrint('AlarmService: Failed to initialize, falling back to notifications');
+          debugPrint(
+            'AlarmService: Failed to initialize, falling back to notifications',
+          );
           return false;
         }
       }
 
       final soundInfo = _alarmSounds[alarmSound];
       if (soundInfo == null) {
-        debugPrint('AlarmService: Invalid alarm sound: $alarmSound, using default');
+        debugPrint(
+          'AlarmService: Invalid alarm sound: $alarmSound, using default',
+        );
         return false;
       }
 
@@ -90,22 +83,29 @@ class AlarmService {
         assetAudioPath: soundInfo.assetPath,
         loopAudio: loopAudio,
         vibrate: vibrate,
+        // VolumeSettings controls alarm volume when it rings
+        // Use 1ms fade for near-instant sound (null would use system volume)
         volumeSettings: VolumeSettings.fade(
-          fadeDuration: Duration(seconds: fadeInDuration),
+          fadeDuration: const Duration(seconds: 3),
           volume: volume.clamp(0.0, 1.0),
+          volumeEnforced: true,
         ),
         notificationSettings: NotificationSettings(
           title: title,
           body: body,
           stopButton: 'Stop Alarm',
         ),
+        androidFullScreenIntent:
+            false, // We handle our own alarm screen via AlarmListener
         warningNotificationOnKill: enableNotificationOnKill,
       );
 
       final success = await Alarm.set(alarmSettings: alarmSettings);
 
       if (success) {
-        debugPrint('AlarmService: Successfully set alarm for $reminderId at $scheduledTime');
+        debugPrint(
+          'AlarmService: Successfully set alarm for $reminderId at $scheduledTime',
+        );
       } else {
         debugPrint('AlarmService: Failed to set alarm for $reminderId');
       }
@@ -202,7 +202,8 @@ class AlarmService {
 
       // Schedule a new alarm for the snooze time
       final snoozeTime = DateTime.now().add(Duration(minutes: snoozeMinutes));
-      final snoozedReminderId = '${reminderId}_snoozed_${DateTime.now().millisecondsSinceEpoch}';
+      final snoozedReminderId =
+          '${reminderId}_snoozed_${DateTime.now().millisecondsSinceEpoch}';
 
       return await setAlarm(
         reminderId: snoozedReminderId,
@@ -237,8 +238,6 @@ class AlarmService {
   Future<void> dispose() async {
     try {
       await stopAllAlarms();
-      await _alarmStreamController?.close();
-      _alarmStreamController = null;
       _isInitialized = false;
       debugPrint('AlarmService disposed');
     } catch (e) {
@@ -258,11 +257,7 @@ class AlarmServiceException implements Exception {
 
 // AlarmSoundInfo is imported from alarm_sound_picker.dart
 
-enum AlarmSoundType {
-  gentle,
-  urgent,
-  chime,
-}
+enum AlarmSoundType { gentle, urgent, chime }
 
 extension AlarmSoundTypeExtension on AlarmSoundType {
   String get key {

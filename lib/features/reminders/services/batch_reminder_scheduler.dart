@@ -28,9 +28,6 @@ class BatchReminderScheduler {
       final serviceInitialized = await _notificationAlarmService.initialize();
 
       if (serviceInitialized) {
-        // Initialize notification handling for batch reminders
-        _initializeBatchNotificationHandling();
-
         // Reschedule all active batch reminders
         await rescheduleAllActiveBatchReminders();
       }
@@ -403,39 +400,6 @@ class BatchReminderScheduler {
     } else {
       // Handle overnight window (e.g., 22:00 to 06:00)
       return timeMinutes >= startMinutes || timeMinutes <= endMinutes;
-    }
-  }
-
-  /// Initialize batch notification handling
-  void _initializeBatchNotificationHandling() {
-    _notificationAlarmService.triggerStream.listen((event) {
-      _handleBatchReminderTrigger(event);
-    });
-  }
-
-  /// Handle batch reminder trigger events
-  Future<void> _handleBatchReminderTrigger(ReminderTriggerEvent event) async {
-    try {
-      // Check if this is a batch reminder
-      if (event.reminderId.contains('_')) {
-        final parts = event.reminderId.split('_');
-        if (parts.length >= 2) {
-          final batchId = parts[0];
-
-          // Mark batch reminder as sent
-          // TODO: Implement batch adherence tracking
-          developer.log('Batch reminder triggered for batch: $batchId', name: 'BatchReminderScheduler');
-
-          // Schedule next occurrence if this is a recurring batch
-          final batch = await _batchService.getBatchById(batchId);
-          if (batch != null && batch.isActive) {
-            // Reschedule for tomorrow (or next interval)
-            await scheduleBatchReminder(batchId);
-          }
-        }
-      }
-    } catch (e) {
-      developer.log('Error handling batch reminder trigger: $e', name: 'BatchReminderScheduler');
     }
   }
 }

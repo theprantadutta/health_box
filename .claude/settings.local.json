@@ -18,7 +18,8 @@
       "Read(//f/Personal/MyProjects/plot_twist/**)",
       "Bash(dart tools/migrate_radio.dart:*)",
       "Read(//g/MyProjects/remind_me/**)",
-      "Read(//g/MyProjects/BetterClock/better_clock_flutter_app/**)"
+      "Read(//g/MyProjects/BetterClock/better_clock_flutter_app/**)",
+      "Bash(dart pub:*)"
     ],
     "deny": [],
     "ask": []

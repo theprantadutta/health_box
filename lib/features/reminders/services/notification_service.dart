@@ -71,27 +71,44 @@ class NotificationService {
           >();
 
       if (androidImplementation != null) {
-        // Check if notifications are already enabled
+        // 1. Request POST_NOTIFICATIONS permission (Android 13+)
         final areNotificationsEnabled = await androidImplementation.areNotificationsEnabled();
 
         if (areNotificationsEnabled != true) {
-          // Request notification permission for Android 13+
+          debugPrint('Requesting notification permission...');
           final granted = await androidImplementation.requestNotificationsPermission();
           if (granted != true) {
+            debugPrint('Notification permission denied');
             permissionsGranted = false;
+          } else {
+            debugPrint('Notification permission granted');
           }
+        } else {
+          debugPrint('Notifications already enabled');
         }
 
-        // Request exact alarm permission for Android 12+
-        // This is critical for scheduled notifications to work reliably
+        // 2. Request exact alarm permission (Android 12+)
+        // This is CRITICAL for scheduled notifications to fire at exact times
         try {
-          final exactAlarmPermissionGranted = await androidImplementation.requestExactAlarmsPermission();
-          if (exactAlarmPermissionGranted != true) {
-            // Log warning but don't fail completely as some devices may not support this
-            debugPrint('Warning: Exact alarm permission not granted. Scheduled notifications may not work reliably.');
+          // Check if we can schedule exact alarms
+          final canScheduleExactAlarms = await androidImplementation.canScheduleExactNotifications();
+
+          if (canScheduleExactAlarms != true) {
+            debugPrint('Exact alarm permission not granted, requesting...');
+            final exactAlarmGranted = await androidImplementation.requestExactAlarmsPermission();
+
+            if (exactAlarmGranted == true) {
+              debugPrint('Exact alarm permission granted');
+            } else {
+              debugPrint('⚠️ WARNING: Exact alarm permission denied. Scheduled notifications may not work reliably.');
+              // Don't fail completely - notifications will still work but may be delayed
+            }
+          } else {
+            debugPrint('Exact alarms already permitted');
           }
         } catch (e) {
-          debugPrint('Warning: Failed to request exact alarm permission: $e');
+          debugPrint('Warning: Failed to check/request exact alarm permission: $e');
+          // Continue anyway - this permission may not be available on all devices
         }
       }
 

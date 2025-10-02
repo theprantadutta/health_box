@@ -5,6 +5,7 @@ import '../../features/medical_records/services/medical_records_service.dart';
 import '../../features/medical_records/services/prescription_service.dart';
 import '../../features/medical_records/services/medication_service.dart';
 import '../../features/medical_records/services/lab_report_service.dart';
+import './reminder_providers.dart'; // Import for reminderSchedulerProvider
 
 // Service providers
 final medicalRecordsServiceProvider = Provider<MedicalRecordsService>((ref) {
@@ -16,7 +17,8 @@ final prescriptionServiceProvider = Provider<PrescriptionService>((ref) {
 });
 
 final medicationServiceProvider = Provider<MedicationService>((ref) {
-  return MedicationService();
+  final reminderScheduler = ref.watch(reminderSchedulerProvider);
+  return MedicationService(reminderScheduler: reminderScheduler);
 });
 
 final labReportServiceProvider = Provider<LabReportService>((ref) {

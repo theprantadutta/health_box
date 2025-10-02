@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/reminder_providers.dart';
+import '../../../shared/widgets/reminder_settings_widget.dart';
+import '../../../shared/widgets/reminder_type_selector.dart';
 import '../services/reminder_service.dart';
 
 /// Form widget for creating and editing reminders
@@ -41,6 +43,12 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
   bool _isActive = true;
   int _snoozeMinutes = 15;
   bool _isLoading = false;
+
+  // Reminder settings for alarm/notification
+  bool _remindersEnabled = true;
+  ReminderType _reminderType = ReminderType.both;
+  String _alarmSound = 'gentle';
+  double _alarmVolume = 0.7;
 
   final List<String> _reminderTypes = [
     'medication',
@@ -153,13 +161,49 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
                 const SizedBox(height: 16),
                 _buildDaysOfWeekSelector(),
               ],
-              if (_selectedFrequency == 'daily' &&
-                  _selectedType == 'medication') ...[
-                const SizedBox(height: 16),
-                _buildTimeSlotsEditor(),
-              ],
               const SizedBox(height: 16),
-              _buildSnoozeSelector(),
+              const Divider(),
+              const SizedBox(height: 8),
+              Text(
+                'Notification & Alarm Settings',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 16),
+              ReminderSettingsWidget(
+                enabled: _remindersEnabled,
+                onEnabledChanged: (value) => setState(() => _remindersEnabled = value),
+                reminderTimes: _timeSlots.isEmpty ? [_selectedTime] : _timeSlots,
+                onReminderTimesChanged: (times) => setState(() {
+                  _timeSlots = times;
+                  if (times.isNotEmpty) {
+                    _selectedTime = times.first;
+                    _selectedDateTime = DateTime(
+                      _selectedDateTime.year,
+                      _selectedDateTime.month,
+                      _selectedDateTime.day,
+                      _selectedTime.hour,
+                      _selectedTime.minute,
+                    );
+                  }
+                }),
+                reminderType: _reminderType,
+                onReminderTypeChanged: (type) => setState(() => _reminderType = type),
+                alarmSound: _alarmSound,
+                onAlarmSoundChanged: (sound) => setState(() => _alarmSound = sound),
+                alarmVolume: _alarmVolume,
+                onAlarmVolumeChanged: (volume) => setState(() => _alarmVolume = volume),
+                frequency: _selectedFrequency,
+                onFrequencyChanged: (freq) => setState(() => _selectedFrequency = freq),
+                snoozeMinutes: _snoozeMinutes,
+                onSnoozeMinutesChanged: (mins) => setState(() => _snoozeMinutes = mins),
+                medicationName: _titleController.text.isNotEmpty ? _titleController.text : null,
+                dosage: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+                showPreview: true,
+                showFrequency: false, // Already have frequency selector above
+                showSnooze: true,
+              ),
               const SizedBox(height: 16),
               _buildActiveSwitch(),
               const SizedBox(height: 24),
@@ -318,70 +362,6 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
     );
   }
 
-  Widget _buildTimeSlotsEditor() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Time Slots', style: Theme.of(context).textTheme.titleSmall),
-            IconButton(
-              onPressed: _addTimeSlot,
-              icon: const Icon(Icons.add),
-              tooltip: 'Add time slot',
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ..._timeSlots.asMap().entries.map((entry) {
-          final index = entry.key;
-          final timeSlot = entry.value;
-          return ListTile(
-            leading: const Icon(Icons.schedule),
-            title: Text(timeSlot.format(context)),
-            trailing: _timeSlots.length > 1
-                ? IconButton(
-                    onPressed: () => _removeTimeSlot(index),
-                    icon: const Icon(Icons.delete),
-                  )
-                : null,
-            onTap: () => _editTimeSlot(index),
-          );
-        }).toList(),
-      ],
-    );
-  }
-
-  Widget _buildSnoozeSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Snooze Duration (minutes)',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<int>(
-          initialValue: _snoozeMinutes,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          items: [5, 10, 15, 30, 60, 120].map((minutes) {
-            return DropdownMenuItem(
-              value: minutes,
-              child: Text('$minutes minutes'),
-            );
-          }).toList(),
-          onChanged: (value) {
-            if (value != null) {
-              setState(() {
-                _snoozeMinutes = value;
-              });
-            }
-          },
-        ),
-      ],
-    );
-  }
 
   Widget _buildActiveSwitch() {
     return SwitchListTile(
@@ -469,37 +449,6 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
     }
   }
 
-  void _addTimeSlot() async {
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-
-    if (time != null) {
-      setState(() {
-        _timeSlots.add(time);
-      });
-    }
-  }
-
-  void _removeTimeSlot(int index) {
-    setState(() {
-      _timeSlots.removeAt(index);
-    });
-  }
-
-  void _editTimeSlot(int index) async {
-    final time = await showTimePicker(
-      context: context,
-      initialTime: _timeSlots[index],
-    );
-
-    if (time != null) {
-      setState(() {
-        _timeSlots[index] = time;
-      });
-    }
-  }
 
   Future<void> _saveReminder() async {
     if (!_formKey.currentState!.validate()) {
@@ -512,6 +461,7 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
 
     try {
       final reminderService = ref.read(reminderServiceProvider);
+      final reminderScheduler = ref.read(reminderSchedulerProvider);
 
       if (widget.reminder == null) {
         // Create new reminder
@@ -535,6 +485,24 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         );
 
         final reminderId = await reminderService.createReminder(request);
+
+        // CRITICAL: Schedule the alarm/notification for the newly created reminder
+        if (_isActive && _remindersEnabled) {
+          final reminder = await reminderService.getReminderById(reminderId);
+          if (reminder != null) {
+            await reminderScheduler.scheduleReminder(
+              reminder,
+              reminderType: _reminderType.value,
+              alarmSound: _alarmSound,
+              volume: _alarmVolume,
+            );
+            if (kDebugMode) {
+              print('✅ Reminder scheduled: $reminderId at ${_selectedDateTime}');
+              print('   Type: ${_reminderType.value}, Sound: $_alarmSound, Volume: $_alarmVolume');
+            }
+          }
+        }
+
         widget.onReminderCreated?.call(reminderId);
       } else {
         // Update existing reminder
@@ -556,6 +524,27 @@ class _ReminderFormWidgetState extends ConsumerState<ReminderFormWidget> {
         );
 
         await reminderService.updateReminder(widget.reminder!.id, request);
+
+        // CRITICAL: Reschedule the alarm/notification for the updated reminder
+        final updatedReminder = await reminderService.getReminderById(widget.reminder!.id);
+        if (updatedReminder != null) {
+          // Cancel old alarm first
+          await reminderScheduler.cancelReminder(widget.reminder!.id);
+          // Schedule new one if active
+          if (_isActive && _remindersEnabled) {
+            await reminderScheduler.scheduleReminder(
+              updatedReminder,
+              reminderType: _reminderType.value,
+              alarmSound: _alarmSound,
+              volume: _alarmVolume,
+            );
+            if (kDebugMode) {
+              print('✅ Reminder rescheduled: ${widget.reminder!.id} at ${_selectedDateTime}');
+              print('   Type: ${_reminderType.value}, Sound: $_alarmSound, Volume: $_alarmVolume');
+            }
+          }
+        }
+
         widget.onReminderUpdated?.call();
       }
 

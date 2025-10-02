@@ -1,16 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/stagger_animations.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
-import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/gradient_button.dart';
 import '../../../shared/widgets/modern_card.dart';
+import '../../../test_alarm_notification.dart';
 import '../widgets/recent_activity_widget.dart';
 import '../widgets/upcoming_reminders_widget.dart';
 
@@ -572,6 +572,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           _handleQuickVitalsNavigation(context);
         },
       ),
+      if (kDebugMode)
+        _QuickAction(
+          title: 'Test Alarms 🧪',
+          icon: Icons.bug_report_rounded,
+          color: const Color(0xFFEF4444), // Red
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const TestAlarmNotificationScreen(),
+              ),
+            );
+          },
+        ),
     ];
 
     return Column(
@@ -584,12 +598,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        StaggerAnimations.staggeredGrid(
-          children: actions.map((action) => _buildActionCard(action)).toList(),
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          staggerDelay: AppTheme.microDuration,
+        CommonTransitions.fadeSlideIn(
+          child: Column(
+            children: [
+              // First row with 2 items
+              Row(
+                children: [
+                  Expanded(child: _buildActionCard(actions[0])),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildActionCard(actions[1])),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Second row with 2 items
+              Row(
+                children: [
+                  Expanded(child: _buildActionCard(actions[2])),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildActionCard(actions[3])),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Third row with Test Alarm button
+              Row(children: [Expanded(child: _buildActionCard(actions[4]))]),
+            ],
+          ),
         ),
       ],
     );
@@ -598,34 +631,37 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildActionCard(_QuickAction action) {
     final theme = Theme.of(context);
 
-    return ModernCard(
-      elevation: CardElevation.low,
-      enableHoverEffect: true,
-      hoverElevation: CardElevation.medium,
-      padding: const EdgeInsets.all(14),
+    return GestureDetector(
       onTap: action.onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: action.color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+      child: ModernCard(
+        elevation: CardElevation.low,
+        enableHoverEffect: true,
+        hoverElevation: CardElevation.medium,
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: action.color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(action.icon, color: action.color, size: 22),
             ),
-            child: Icon(action.icon, color: action.color, size: 22),
-          ),
-          Text(
-            action.title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
+            const SizedBox(height: 8),
+            Text(
+              action.title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -856,7 +892,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             builder: (context, scrollController) => Container(
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: isDark
@@ -880,7 +918,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           width: 40,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.outline.withValues(alpha: 0.4),
+                            color: theme.colorScheme.outline.withValues(
+                              alpha: 0.4,
+                            ),
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -908,10 +948,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 children: [
                                   Text(
                                     'Select Profile',
-                                    style: theme.textTheme.headlineSmall?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
@@ -935,12 +976,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       controller: scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       itemCount: profiles.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) => _buildEnhancedProfileOption(
-                        context,
-                        profiles[index],
-                        isDark,
-                      ),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 8),
+                      itemBuilder: (context, index) =>
+                          _buildEnhancedProfileOption(
+                            context,
+                            profiles[index],
+                            isDark,
+                          ),
                     ),
                   ),
                   // Bottom Padding
@@ -967,15 +1010,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
     final age = DateTime.now().year - profile.dateOfBirth.year;
     final genderColor = _getGenderColor(profile.gender, isDark);
-    final initials = '${profile.firstName[0]}${profile.lastName[0]}'.toUpperCase();
+    final initials = '${profile.firstName[0]}${profile.lastName[0]}'
+        .toUpperCase();
 
     return Container(
       decoration: BoxDecoration(
         color: isSelected
-            ? theme.colorScheme.primaryContainer.withValues(alpha: isDark ? 0.3 : 0.15)
+            ? theme.colorScheme.primaryContainer.withValues(
+                alpha: isDark ? 0.3 : 0.15,
+              )
             : (isDark
-                ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
-                : theme.colorScheme.surfaceContainerHigh),
+                  ? theme.colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.5,
+                    )
+                  : theme.colorScheme.surfaceContainerHigh),
         borderRadius: BorderRadius.circular(20),
         border: isSelected
             ? Border.all(color: theme.colorScheme.primary, width: 2)
@@ -1026,10 +1074,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        genderColor,
-                        genderColor.withValues(alpha: 0.8),
-                      ],
+                      colors: [genderColor, genderColor.withValues(alpha: 0.8)],
                     ),
                     shape: BoxShape.circle,
                     boxShadow: [
@@ -1108,7 +1153,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: genderColor.withValues(alpha: isDark ? 0.2 : 0.1),
+                              color: genderColor.withValues(
+                                alpha: isDark ? 0.2 : 0.1,
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(

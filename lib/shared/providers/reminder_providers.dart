@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../../data/database/app_database.dart';
 import '../../features/reminders/services/reminder_service.dart';
 import '../../features/reminders/services/notification_service.dart';
+import '../../features/reminders/services/reminder_scheduler.dart';
 
 // Service providers
 final reminderServiceProvider = Provider<ReminderService>((ref) {
@@ -11,6 +12,10 @@ final reminderServiceProvider = Provider<ReminderService>((ref) {
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {
   return NotificationService();
+});
+
+final reminderSchedulerProvider = Provider<ReminderScheduler>((ref) {
+  return ReminderScheduler(container: ref.container);
 });
 
 // Basic reminder providers
