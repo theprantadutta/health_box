@@ -11,6 +11,7 @@ import '../../../shared/widgets/reminder_type_selector.dart';
 import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
+import '../../../shared/theme/design_system.dart';
 import 'dart:developer' as developer;
 
 class PrescriptionFormScreen extends ConsumerStatefulWidget {
@@ -105,7 +106,28 @@ class _PrescriptionFormScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Prescription' : 'New Prescription'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.prescriptionGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.prescriptionGradient.colors.first.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+        ),
+        title: Text(
+          _isEditing ? 'Edit Prescription' : 'New Prescription',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           if (_isLoading)
             const Center(
@@ -114,12 +136,24 @@ class _PrescriptionFormScreenState
                 child: SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
                 ),
               ),
             )
           else
-            TextButton(onPressed: _savePrescription, child: const Text('SAVE')),
+            TextButton(
+              onPressed: _savePrescription,
+              child: const Text(
+                'SAVE',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
         ],
       ),
       body: Form(

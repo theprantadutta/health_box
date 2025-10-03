@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
+import '../../../shared/theme/design_system.dart';
 import '../services/pathology_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
@@ -72,6 +73,11 @@ class _PathologyRecordFormScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: HealthBoxDesignSystem.pathologyGradient,
+          ),
+        ),
         title: Text(_isEditing ? 'Edit Pathology Report' : 'New Pathology Report'),
         actions: [
           TextButton(

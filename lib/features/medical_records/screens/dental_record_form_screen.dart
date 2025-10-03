@@ -5,6 +5,7 @@ import '../../../shared/providers/medical_records_providers.dart';
 import '../services/dental_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/theme/design_system.dart';
 import 'dart:developer' as developer;
 
 class DentalRecordFormScreen extends ConsumerStatefulWidget {
@@ -48,9 +49,32 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dental Record'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.dentalGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.dentalGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveDentalRecord,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],

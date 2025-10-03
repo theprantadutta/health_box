@@ -10,6 +10,7 @@ import '../../../data/database/app_database.dart';
 import '../../../data/models/medication_batch.dart';
 import '../../../shared/widgets/reminder_settings_widget.dart';
 import '../../../shared/widgets/reminder_type_selector.dart'; // Import for ReminderType enum
+import '../../../shared/theme/design_system.dart';
 import 'dart:developer' as developer;
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
@@ -115,10 +116,31 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Medication'),
+        title: const Text(
+          'New Medication',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicationGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicationGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveMedication,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: const Text('SAVE'),
           ),
         ],

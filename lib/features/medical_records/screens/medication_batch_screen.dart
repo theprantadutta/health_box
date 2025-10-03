@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../../../shared/theme/design_system.dart';
 import '../services/medication_batch_service.dart';
 import '../widgets/batch_card_widget.dart';
 import '../widgets/batch_form_widget.dart';
@@ -110,10 +111,25 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medication Batches'),
+        title: const Text('Medication Batches', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicationGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicationGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add, color: Colors.white),
             onPressed: _showCreateBatchDialog,
             tooltip: 'Create New Batch',
           ),

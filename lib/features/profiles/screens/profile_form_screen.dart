@@ -9,7 +9,7 @@ import 'dart:io';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/theme/app_theme.dart';
+import '../../../shared/theme/design_system.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../services/profile_service.dart';
 
@@ -221,11 +221,20 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
           iconTheme: const IconThemeData(color: Colors.white),
           automaticallyImplyLeading: !_isMandatoryFirstProfile,
           flexibleSpace: Container(
             decoration: BoxDecoration(
-              color: AppTheme.getPrimaryColor(isDarkMode),
+              gradient: HealthBoxDesignSystem.medicalGreen,
+              boxShadow: [
+                BoxShadow(
+                  color: HealthBoxDesignSystem.medicalGreen.colors.first
+                      .withValues(alpha: 0.3),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12,
+                ),
+              ],
             ),
           ),
           actions: [

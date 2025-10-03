@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../shared/theme/design_system.dart';
 import '../services/analytics_service.dart';
 import '../widgets/vitals_chart_widget.dart';
 
@@ -99,9 +100,27 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vitals Tracking'),
+        title: const Text('Vitals Tracking', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.vitalsGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.vitalsGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(icon: Icon(Icons.timeline), text: 'Charts'),
             Tab(icon: Icon(Icons.analytics), text: 'Statistics'),
@@ -109,7 +128,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
           ],
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
+          IconButton(icon: const Icon(Icons.refresh, color: Colors.white), onPressed: _loadData),
         ],
       ),
       body: _isLoading

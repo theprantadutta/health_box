@@ -7,6 +7,7 @@ import '../services/allergy_service.dart';
 import '../../../data/models/allergy.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/theme/design_system.dart';
 
 class AllergyFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -59,9 +60,25 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Allergy' : 'New Allergy'),
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.allergyGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.allergyGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveAllergy,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],

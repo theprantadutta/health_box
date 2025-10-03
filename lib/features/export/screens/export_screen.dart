@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/profile_dao.dart';
+import '../../../shared/theme/design_system.dart';
 import '../services/export_service.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
@@ -81,7 +82,22 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Export Data'),
+        title: const Text('Export Data', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalOrange,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalOrange.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           if (_isExporting)
             const Padding(

@@ -6,6 +6,7 @@ import '../../../shared/providers/medical_records_providers.dart';
 import '../services/lab_report_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/theme/design_system.dart';
 
 class LabReportFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -38,6 +39,13 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Lab Report'),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.labReportGradient,
+          ),
+        ),
+        elevation: 0,
+        shadowColor: HealthBoxDesignSystem.labReportGradient.colors.last.withOpacity(0.3),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveLabReport,

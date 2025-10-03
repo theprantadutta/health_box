@@ -6,6 +6,7 @@ import '../../../services/google_drive_service.dart';
 import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../../../shared/theme/app_theme.dart';
+import '../../../shared/theme/design_system.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../providers/google_drive_providers.dart';
 import '../widgets/backup_management_bottom_sheet.dart';
@@ -122,8 +123,20 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
           ),
         ),
         elevation: 0,
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalBlue,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           if (authAsync.isLoading ||

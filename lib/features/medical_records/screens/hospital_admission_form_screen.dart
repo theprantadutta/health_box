@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
+import '../../../shared/theme/design_system.dart';
 import '../services/hospital_admission_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
@@ -36,10 +37,26 @@ class _HospitalAdmissionFormScreenState extends ConsumerState<HospitalAdmissionF
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hospital Admission'),
+        title: const Text('Hospital Admission', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalBlue,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveAdmission,
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
             child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],

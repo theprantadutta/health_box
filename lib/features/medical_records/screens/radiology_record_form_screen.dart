@@ -6,6 +6,7 @@ import '../services/radiology_record_service.dart';
 import '../../../data/models/radiology_record.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/theme/design_system.dart';
 import 'dart:developer' as developer;
 
 class RadiologyRecordFormScreen extends ConsumerStatefulWidget {
@@ -67,9 +68,25 @@ class _RadiologyRecordFormScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Radiology Report' : 'New Radiology Report'),
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.radiologyGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.radiologyGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveRadiologyRecord,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],

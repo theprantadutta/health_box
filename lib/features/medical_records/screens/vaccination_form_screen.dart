@@ -11,6 +11,7 @@ import '../../../shared/widgets/reminder_type_selector.dart';
 import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
+import '../../../shared/theme/design_system.dart';
 
 class VaccinationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -72,10 +73,33 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Vaccination' : 'New Vaccination'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.vaccinationGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.vaccinationGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveVaccination,
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),

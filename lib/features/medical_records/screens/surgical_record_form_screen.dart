@@ -6,6 +6,7 @@ import '../services/surgical_record_service.dart';
 import '../../../data/models/surgical_record.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/theme/design_system.dart';
 import 'dart:developer' as developer;
 
 class SurgicalRecordFormScreen extends ConsumerStatefulWidget {
@@ -68,10 +69,24 @@ class _SurgicalRecordFormScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Surgical Record' : 'New Surgical Record'),
+        title: Text(
+          _isEditing ? 'Edit Surgical Record' : 'New Surgical Record',
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: HealthBoxDesignSystem.surgicalGradient,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveSurgicalRecord,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],

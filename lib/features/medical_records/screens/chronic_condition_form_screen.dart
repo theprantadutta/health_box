@@ -11,6 +11,7 @@ import '../../../shared/widgets/reminder_type_selector.dart';
 import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
+import '../../../shared/theme/design_system.dart';
 
 class ChronicConditionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -70,10 +71,31 @@ class _ChronicConditionFormScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Chronic Condition' : 'New Chronic Condition'),
+        title: Text(
+          _isEditing ? 'Edit Chronic Condition' : 'New Chronic Condition',
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.chronicConditionGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.chronicConditionGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveChronicCondition,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],
