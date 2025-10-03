@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/theme/design_system.dart';
 
 class MedicalRecordDetailScreen extends ConsumerWidget {
   final String recordId;
@@ -22,10 +23,32 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
         ? AsyncValue.data(record!)
         : ref.watch(medicalRecordByIdProvider(recordId));
 
+    final recordGradient = recordAsync.value != null
+        ? HealthBoxDesignSystem.getRecordTypeGradient(
+            recordAsync.value!.recordType)
+        : HealthBoxDesignSystem.medicalBlue;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medical Record'),
+        title: const Text(
+          'Medical Record',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
         elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: recordGradient,
+            boxShadow: [
+              BoxShadow(
+                color: recordGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -153,8 +176,9 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
         children: [
           // Header Card
           Card(
+            elevation: 2,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -162,10 +186,17 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                     children: [
                       _buildRecordTypeChip(context, record.recordType),
                       const Spacer(),
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 4),
                       Text(
-                        _formatDate(record.recordDate),
+                        _formatDateTime(record.recordDate),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -173,13 +204,27 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   Text(
                     record.title,
-                    style: theme.textTheme.headlineSmall?.copyWith(
+                    style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   if (record.description?.isNotEmpty == true) ...[
-                    const SizedBox(height: 8),
-                    Text(record.description!, style: theme.textTheme.bodyLarge),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        record.description!,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -191,6 +236,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
           // Profile Information
           profileAsync.when(
             loading: () => const Card(
+              elevation: 2,
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Row(
@@ -203,6 +249,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
               ),
             ),
             error: (error, stack) => Card(
+              elevation: 2,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -221,17 +268,19 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
               ),
             ),
             data: (profile) => Card(
+              elevation: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 24,
+                      radius: 30,
                       backgroundColor: theme.colorScheme.primary.withValues(
-                        alpha: 0.1,
+                        alpha: 0.15,
                       ),
                       child: Icon(
                         Icons.person,
+                        size: 32,
                         color: theme.colorScheme.primary,
                       ),
                     ),
@@ -241,18 +290,26 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
+                            'Patient Information',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
                             profile != null
                                 ? '${profile.firstName} ${profile.lastName}'
                                 : 'Unknown Profile',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           if (profile != null) ...[
                             const SizedBox(height: 4),
                             Text(
                               '${_calculateAge(profile.dateOfBirth)} years • ${profile.gender}',
-                              style: theme.textTheme.bodySmall?.copyWith(
+                              style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
@@ -270,46 +327,54 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
 
           // Record Metadata
           Card(
+            elevation: 2,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Record Information',
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    'Record Details',
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   _buildInfoRow(
                     context,
                     'Record Type',
-                    record.recordType,
+                    _formatRecordType(record.recordType),
                     Icons.category,
                   ),
-                  const SizedBox(height: 12),
+                  const Divider(height: 24),
                   _buildInfoRow(
                     context,
-                    'Record Date',
-                    _formatDate(record.recordDate),
+                    'Record Date & Time',
+                    _formatDateTime(record.recordDate),
                     Icons.calendar_today,
                   ),
-                  const SizedBox(height: 12),
+                  const Divider(height: 24),
                   _buildInfoRow(
                     context,
                     'Created',
                     _formatDateTime(record.createdAt),
-                    Icons.add_circle,
+                    Icons.add_circle_outline,
                   ),
-                  const SizedBox(height: 12),
+                  const Divider(height: 24),
                   _buildInfoRow(
                     context,
                     'Last Modified',
                     _formatDateTime(record.updatedAt),
-                    Icons.edit,
+                    Icons.edit_calendar,
                   ),
-                  const SizedBox(height: 12),
+                  const Divider(height: 24),
+                  _buildInfoRow(
+                    context,
+                    'Record ID',
+                    record.id,
+                    Icons.fingerprint,
+                  ),
+                  const Divider(height: 24),
                   _buildInfoRow(
                     context,
                     'Status',
@@ -318,66 +383,6 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                     valueColor: record.isActive
                         ? Colors.green
                         : theme.colorScheme.onSurfaceVariant,
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Type-Specific Information
-          _buildTypeSpecificInfo(context, record),
-
-          const SizedBox(height: 16),
-
-          // Attachments Section (Placeholder)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.attach_file,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Attachments',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.folder_open,
-                          size: 48,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'No attachments',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'File attachments will be available in Phase 3.7',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -452,52 +457,10 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTypeSpecificInfo(BuildContext context, MedicalRecord record) {
-    final theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${record.recordType} Details',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.construction,
-                    size: 48,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Type-specific details coming soon',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Detailed ${record.recordType.toLowerCase()} information will be available with specialized form screens',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  String _formatRecordType(String recordType) {
+    return recordType.split('_').map((word) =>
+      word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1)
+    ).join(' ');
   }
 
   Color _getRecordTypeColor(String recordType) {
@@ -538,12 +501,14 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     }
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
-
   String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    final months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year} at ${hour}:${minute}';
   }
 
   int _calculateAge(DateTime dateOfBirth) {

@@ -8,6 +8,7 @@ import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
+import '../../../shared/theme/design_system.dart';
 import '../../../shared/widgets/gradient_button.dart';
 import '../../../shared/widgets/modern_card.dart';
 import '../../../test_alarm_notification.dart';
@@ -43,8 +44,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               floating: true,
               snap: true,
               elevation: 0,
-              backgroundColor: theme.colorScheme.primary,
+              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: HealthBoxDesignSystem.medicalBlue,
+                  boxShadow: [
+                    BoxShadow(
+                      color: HealthBoxDesignSystem.medicalBlue.colors.first
+                          .withValues(alpha: 0.3),
+                      offset: const Offset(0, 4),
+                      blurRadius: 12,
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+              ),
               title: Text(
                 'HealthBox',
                 style: theme.textTheme.headlineSmall?.copyWith(
@@ -163,7 +178,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
       data: (selectedProfile) => CommonTransitions.fadeSlideIn(
         child: ModernCard(
-          medicalTheme: MedicalCardTheme.primary,
+          gradient: HealthBoxDesignSystem.medicalBlue,
+          useGradientShadow: true,
           elevation: CardElevation.medium,
           enableHoverEffect: true,
           padding: const EdgeInsets.all(24),
@@ -487,21 +503,36 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final theme = Theme.of(context);
 
     return ModernCard(
-      elevation: CardElevation.low,
+      elevation: CardElevation.medium,
       enableHoverEffect: true,
-      hoverElevation: CardElevation.medium,
-      padding: const EdgeInsets.all(12),
+      hoverElevation: CardElevation.high,
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: stat.color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  stat.color,
+                  stat.color.withValues(alpha: 0.7),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: stat.color.withValues(alpha: 0.4),
+                  offset: const Offset(0, 4),
+                  blurRadius: 8,
+                  spreadRadius: 0,
+                ),
+              ],
             ),
-            child: Icon(stat.icon, color: stat.color, size: 16),
+            child: Icon(stat.icon, color: Colors.white, size: 20),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,16 +540,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               children: [
                 Text(
                   stat.value,
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
-                    color: theme.colorScheme.onSurface,
+                    color: stat.color,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   stat.label,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    fontWeight: FontWeight.w500,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w600,
                     fontSize: 11,
                   ),
                   maxLines: 1,

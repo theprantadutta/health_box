@@ -13,6 +13,7 @@ class ModernCard extends StatefulWidget {
     this.padding,
     this.margin,
     this.color,
+    this.gradient,
     this.borderRadius,
     this.elevation = CardElevation.low,
     this.onTap,
@@ -34,12 +35,16 @@ class ModernCard extends StatefulWidget {
     this.shimmerEffect = false,
     this.pulseEffect = false,
     this.medicalTheme,
+    this.useGradientShadow = false,
+    this.enableGlassmorphism = false,
+    this.gradientBorder = false,
   });
 
   final Widget? child;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final Color? color;
+  final Gradient? gradient;
   final BorderRadius? borderRadius;
   final CardElevation elevation;
   final VoidCallback? onTap;
@@ -65,6 +70,9 @@ class ModernCard extends StatefulWidget {
   final bool shimmerEffect;
   final bool pulseEffect;
   final MedicalCardTheme? medicalTheme;
+  final bool useGradientShadow;
+  final bool enableGlassmorphism;
+  final bool gradientBorder;
 
   @override
   State<ModernCard> createState() => _ModernCardState();
@@ -131,10 +139,23 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
         ? widget.pressScale
         : (_isHovered && widget.enableHoverEffect ? widget.hoverScale : 1.0);
 
-    // Get effective color based on medical theme
+    // Get effective color or gradient based on medical theme
     final effectiveColor =
-        widget.color ??
-        (_getMedicalThemeColor(context) ?? theme.colorScheme.surface);
+        widget.gradient == null
+            ? (widget.color ??
+                (_getMedicalThemeColor(context) ?? theme.colorScheme.surface))
+            : null;
+
+    final effectiveGradient =
+        widget.gradient ?? _getMedicalThemeGradient(context);
+
+    // Get gradient-based shadows if enabled
+    final gradientShadows = widget.useGradientShadow && effectiveGradient != null
+        ? HealthBoxDesignSystem.coloredShadow(
+            effectiveGradient.colors.first,
+            opacity: 0.3,
+          )
+        : shadows;
 
     // Build the card content
     Widget cardContent = _buildCardContent(context, effectiveBorderRadius);
@@ -149,21 +170,70 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
       cardContent = _buildPulseEffect(cardContent);
     }
 
-    // Main card container
-    Widget card = AnimatedContainer(
-      duration: widget.animationDuration,
-      curve: AppTheme.easeOutCubic,
-      width: widget.width,
-      height: widget.height,
-      margin: widget.margin,
-      decoration: BoxDecoration(
-        color: effectiveColor,
+    // Build gradient border if enabled
+    Widget card;
+    if (widget.gradientBorder && effectiveGradient != null) {
+      card = AnimatedContainer(
+        duration: widget.animationDuration,
+        curve: AppTheme.easeOutCubic,
+        width: widget.width,
+        height: widget.height,
+        margin: widget.margin,
+        decoration: BoxDecoration(
+          gradient: effectiveGradient,
+          borderRadius: effectiveBorderRadius,
+          boxShadow: gradientShadows,
+        ),
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(
+              effectiveBorderRadius.topLeft.x - 2,
+            ),
+          ),
+          child: cardContent,
+        ),
+      );
+    } else {
+      // Main card container with gradient or color
+      card = AnimatedContainer(
+        duration: widget.animationDuration,
+        curve: AppTheme.easeOutCubic,
+        width: widget.width,
+        height: widget.height,
+        margin: widget.margin,
+        decoration: BoxDecoration(
+          color: effectiveColor,
+          gradient: effectiveGradient,
+          borderRadius: effectiveBorderRadius,
+          boxShadow: gradientShadows,
+          border: widget.border,
+        ),
+        child: cardContent,
+      );
+    }
+
+    // Apply glassmorphism if enabled
+    if (widget.enableGlassmorphism) {
+      card = ClipRRect(
         borderRadius: effectiveBorderRadius,
-        boxShadow: shadows,
-        border: widget.border,
-      ),
-      child: cardContent,
-    );
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface.withValues(alpha: 0.7),
+              borderRadius: effectiveBorderRadius,
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 1.5,
+              ),
+            ),
+            child: cardContent,
+          ),
+        ),
+      );
+    }
 
     // Apply scale animation
     card = AnimatedScale(
@@ -324,6 +394,36 @@ class _ModernCardState extends State<ModernCard> with TickerProviderStateMixin {
           return HealthBoxDesignSystem.accentPurple;
         case MedicalCardTheme.tertiary:
           return HealthBoxDesignSystem.accentPink;
+      }
+    }
+    return null;
+  }
+
+  /// Gets medical theme gradient if specified using design system
+  LinearGradient? _getMedicalThemeGradient(BuildContext context) {
+    if (widget.medicalTheme != null) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      switch (widget.medicalTheme!) {
+        case MedicalCardTheme.primary:
+          return isDark
+              ? HealthBoxDesignSystem.darkMedicalBlue
+              : HealthBoxDesignSystem.medicalBlue;
+        case MedicalCardTheme.success:
+          return HealthBoxDesignSystem.successGradient;
+        case MedicalCardTheme.warning:
+          return HealthBoxDesignSystem.warningGradient;
+        case MedicalCardTheme.error:
+          return HealthBoxDesignSystem.errorGradient;
+        case MedicalCardTheme.neutral:
+          return null; // Keep neutral as solid color
+        case MedicalCardTheme.info:
+          return HealthBoxDesignSystem.infoGradient;
+        case MedicalCardTheme.secondary:
+          return isDark
+              ? HealthBoxDesignSystem.darkMedicalPurple
+              : HealthBoxDesignSystem.medicalPurple;
+        case MedicalCardTheme.tertiary:
+          return HealthBoxDesignSystem.vitalsGradient;
       }
     }
     return null;

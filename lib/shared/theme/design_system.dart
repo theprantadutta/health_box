@@ -240,6 +240,373 @@ class HealthBoxDesignSystem {
   static const int zIndexPopover = 1060;
   static const int zIndexTooltip = 1070;
   static const int zIndexToast = 1080;
+
+  // ============ GRADIENT SYSTEM ============
+
+  /// Medical-themed gradients for various UI elements
+
+  // Primary Medical Gradients
+  static const LinearGradient medicalBlue = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3B82F6), Color(0xFF06B6D4)], // Blue to Cyan
+  );
+
+  static const LinearGradient medicalPurple = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)], // Purple to Pink
+  );
+
+  static const LinearGradient medicalGreen = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF10B981), Color(0xFF06B6D4)], // Green to Cyan
+  );
+
+  static const LinearGradient medicalOrange = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFF97316), Color(0xFFFBBF24)], // Orange to Yellow
+  );
+
+  static const LinearGradient medicalRed = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFEF4444), Color(0xFFF87171)], // Red to Light Red
+  );
+
+  // Category-specific gradients
+  static const LinearGradient medicationGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3B82F6), Color(0xFF06B6D4)], // Blue → Cyan
+  );
+
+  static const LinearGradient prescriptionGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)], // Purple → Light Purple
+  );
+
+  static const LinearGradient labReportGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFF97316), Color(0xFFFBBF24)], // Orange → Yellow
+  );
+
+  static const LinearGradient vaccinationGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF10B981), Color(0xFF34D399)], // Green → Light Green
+  );
+
+  static const LinearGradient allergyGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFEF4444), Color(0xFFF87171)], // Red → Light Red
+  );
+
+  static const LinearGradient vitalsGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFEC4899), Color(0xFFF472B6)], // Pink → Light Pink
+  );
+
+  static const LinearGradient chronicConditionGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)], // Indigo → Purple
+  );
+
+  static const LinearGradient surgicalGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF06B6D4), Color(0xFF0891B2)], // Cyan → Dark Cyan
+  );
+
+  static const LinearGradient radiologyGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF8B5CF6), Color(0xFF6366F1)], // Purple → Indigo
+  );
+
+  static const LinearGradient pathologyGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFF59E0B), Color(0xFFF97316)], // Amber → Orange
+  );
+
+  static const LinearGradient dentalGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF06B6D4), Color(0xFF3B82F6)], // Cyan → Blue
+  );
+
+  static const LinearGradient mentalHealthGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFA78BFA), Color(0xFFC084FC)], // Light Purple → Purple
+  );
+
+  // Status gradients
+  static const LinearGradient successGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF10B981), Color(0xFF059669)], // Emerald
+  );
+
+  static const LinearGradient warningGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFF59E0B), Color(0xFFD97706)], // Amber
+  );
+
+  static const LinearGradient errorGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFEF4444), Color(0xFFDC2626)], // Red
+  );
+
+  static const LinearGradient infoGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3B82F6), Color(0xFF2563EB)], // Blue
+  );
+
+  // Background gradients
+  static const LinearGradient subtleBackgroundGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFF8FAFC), Color(0xFFF1F5F9)], // Very subtle
+  );
+
+  static const LinearGradient boldBackgroundGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6), Color(0xFFEC4899)],
+    stops: [0.0, 0.5, 1.0],
+  );
+
+  static const LinearGradient meshBackgroundGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF3B82F6),
+      Color(0xFF8B5CF6),
+      Color(0xFFEC4899),
+      Color(0xFFF59E0B),
+    ],
+    stops: [0.0, 0.33, 0.66, 1.0],
+  );
+
+  // Specialty gradients
+  static const LinearGradient cardiologyGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFEF4444), Color(0xFFF87171)], // Red heart theme
+  );
+
+  static const LinearGradient neurologyGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)], // Purple brain theme
+  );
+
+  static const LinearGradient pediatricsGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFBBF24), Color(0xFFFCD34D)], // Yellow cheerful
+  );
+
+  static const LinearGradient geriatricsGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF6B7280), Color(0xFF9CA3AF)], // Gray wisdom
+  );
+
+  // Shimmer gradient for loading states
+  static const LinearGradient shimmerGradient = LinearGradient(
+    begin: Alignment(-1.0, 0.0),
+    end: Alignment(1.0, 0.0),
+    colors: [
+      Color(0xFFE5E7EB),
+      Color(0xFFF9FAFB),
+      Color(0xFFE5E7EB),
+    ],
+    stops: [0.0, 0.5, 1.0],
+  );
+
+  // Dark mode gradients
+  static const LinearGradient darkMedicalBlue = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF1E40AF), Color(0xFF0E7490)], // Darker blue to cyan
+  );
+
+  static const LinearGradient darkMedicalPurple = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF6D28D9), Color(0xFF9333EA)], // Darker purple
+  );
+
+  static const LinearGradient darkBackgroundGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF0F172A), Color(0xFF1E293B)], // Dark slate
+  );
+
+  // ============ ENHANCED SHADOW SYSTEM ============
+
+  /// Colored shadows for depth and emphasis
+  static List<BoxShadow> coloredShadow(Color color, {double opacity = 0.3}) {
+    return [
+      BoxShadow(
+        color: color.withValues(alpha: opacity),
+        offset: const Offset(0, 4),
+        blurRadius: 12,
+        spreadRadius: 0,
+      ),
+      BoxShadow(
+        color: color.withValues(alpha: opacity * 0.5),
+        offset: const Offset(0, 2),
+        blurRadius: 6,
+        spreadRadius: 0,
+      ),
+    ];
+  }
+
+  /// Glow effects for emphasis
+  static List<BoxShadow> glowEffect(Color color, {double intensity = 0.5}) {
+    return [
+      BoxShadow(
+        color: color.withValues(alpha: intensity * 0.6),
+        offset: const Offset(0, 0),
+        blurRadius: 20,
+        spreadRadius: 5,
+      ),
+      BoxShadow(
+        color: color.withValues(alpha: intensity * 0.4),
+        offset: const Offset(0, 0),
+        blurRadius: 40,
+        spreadRadius: 10,
+      ),
+    ];
+  }
+
+  /// Soft glow for subtle emphasis
+  static List<BoxShadow> softGlow(Color color) {
+    return [
+      BoxShadow(
+        color: color.withValues(alpha: 0.2),
+        offset: const Offset(0, 0),
+        blurRadius: 15,
+        spreadRadius: 3,
+      ),
+    ];
+  }
+
+  /// Strong glow for high emphasis
+  static List<BoxShadow> strongGlow(Color color) {
+    return [
+      BoxShadow(
+        color: color.withValues(alpha: 0.8),
+        offset: const Offset(0, 0),
+        blurRadius: 30,
+        spreadRadius: 8,
+      ),
+      BoxShadow(
+        color: color.withValues(alpha: 0.4),
+        offset: const Offset(0, 0),
+        blurRadius: 60,
+        spreadRadius: 15,
+      ),
+    ];
+  }
+
+  /// Layered shadows for maximum depth
+  static List<BoxShadow> layeredShadow = [
+    const BoxShadow(
+      color: Color(0x1A000000),
+      offset: Offset(0, 1),
+      blurRadius: 3,
+      spreadRadius: 0,
+    ),
+    const BoxShadow(
+      color: Color(0x16000000),
+      offset: Offset(0, 4),
+      blurRadius: 8,
+      spreadRadius: -1,
+    ),
+    const BoxShadow(
+      color: Color(0x0F000000),
+      offset: Offset(0, 10),
+      blurRadius: 15,
+      spreadRadius: -3,
+    ),
+  ];
+
+  /// Inner shadow effect (using borders + shadow trick)
+  static BoxDecoration innerShadowDecoration(Color shadowColor) {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(radiusMd),
+      boxShadow: [
+        BoxShadow(
+          color: shadowColor.withValues(alpha: 0.1),
+          offset: const Offset(0, 2),
+          blurRadius: 4,
+          spreadRadius: -2,
+        ),
+      ],
+    );
+  }
+
+  // ============ GRADIENT HELPER METHODS ============
+
+  /// Get gradient for medical record type
+  static LinearGradient getRecordTypeGradient(String recordType) {
+    switch (recordType.toLowerCase()) {
+      case 'medication':
+        return medicationGradient;
+      case 'prescription':
+        return prescriptionGradient;
+      case 'lab_report':
+      case 'lab report':
+        return labReportGradient;
+      case 'vaccination':
+        return vaccinationGradient;
+      case 'allergy':
+        return allergyGradient;
+      case 'chronic_condition':
+      case 'chronic condition':
+        return chronicConditionGradient;
+      case 'surgical_record':
+      case 'surgical record':
+        return surgicalGradient;
+      case 'radiology_record':
+      case 'radiology record':
+        return radiologyGradient;
+      case 'pathology_record':
+      case 'pathology record':
+        return pathologyGradient;
+      case 'dental_record':
+      case 'dental record':
+        return dentalGradient;
+      case 'mental_health_record':
+      case 'mental health record':
+        return mentalHealthGradient;
+      default:
+        return medicalBlue;
+    }
+  }
+
+  /// Get colored shadow for record type
+  static List<BoxShadow> getRecordTypeShadow(String recordType) {
+    final gradient = getRecordTypeGradient(recordType);
+    final color = gradient.colors.first;
+    return coloredShadow(color);
+  }
 }
 
 // ============ THEME EXTENSIONS ============

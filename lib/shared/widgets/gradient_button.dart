@@ -11,6 +11,7 @@ class HealthButton extends StatefulWidget {
     required this.onPressed,
     required this.child,
     this.color,
+    this.gradient,
     this.style = HealthButtonStyle.primary,
     this.size = HealthButtonSize.medium,
     this.isLoading = false,
@@ -37,11 +38,13 @@ class HealthButton extends StatefulWidget {
     this.pulseEffect = false,
     this.glowEffect = false,
     this.medicalTheme,
+    this.useGradientShadow = true,
   });
 
   final VoidCallback? onPressed;
   final Widget child;
   final Color? color;
+  final Gradient? gradient;
   final HealthButtonStyle style;
   final HealthButtonSize size;
   final bool isLoading;
@@ -68,6 +71,7 @@ class HealthButton extends StatefulWidget {
   final bool pulseEffect;
   final bool glowEffect;
   final MedicalButtonTheme? medicalTheme;
+  final bool useGradientShadow;
 
   @override
   State<HealthButton> createState() => _HealthButtonState();
@@ -159,8 +163,22 @@ class _HealthButtonState extends State<HealthButton>
         ? widget.pressScale
         : (_isHovered && widget.enableHoverEffect ? widget.hoverScale : 1.0);
 
-    // Get effective color based on medical theme
-    final effectiveColor = _getEffectiveColor(context);
+    // Get effective color or gradient based on medical theme
+    final effectiveColor = widget.gradient == null
+        ? _getEffectiveColor(context)
+        : null;
+
+    final effectiveGradient =
+        widget.gradient ?? _getEffectiveGradient(context);
+
+    // Get gradient-based shadows if enabled
+    final gradientShadows =
+        widget.useGradientShadow && effectiveGradient != null
+            ? HealthBoxDesignSystem.coloredShadow(
+                effectiveGradient.colors.first,
+                opacity: 0.4,
+              )
+            : shadows;
 
     // Get text color based on style and state
     final textColor = _getTextColor();
@@ -191,7 +209,7 @@ class _HealthButtonState extends State<HealthButton>
       buttonContent = _buildGlowEffect(buttonContent, effectiveBorderRadius);
     }
 
-    // Main button container
+    // Main button container with gradient or color
     Widget button = AnimatedContainer(
       duration: widget.animationDuration,
       curve: AppTheme.easeOutCubic,
@@ -199,8 +217,9 @@ class _HealthButtonState extends State<HealthButton>
       height: effectiveHeight,
       decoration: BoxDecoration(
         color: isActive ? effectiveColor : _getDisabledColor(theme),
+        gradient: isActive ? effectiveGradient : null,
         borderRadius: effectiveBorderRadius,
-        boxShadow: shadows,
+        boxShadow: isActive ? gradientShadows : shadows,
       ),
       child: buttonContent,
     );
@@ -455,21 +474,6 @@ class _HealthButtonState extends State<HealthButton>
       }
     }
 
-    if (widget.medicalTheme != null) {
-      switch (widget.medicalTheme!) {
-        case MedicalButtonTheme.primary:
-          return HealthBoxDesignSystem.primaryBlue;
-        case MedicalButtonTheme.success:
-          return HealthBoxDesignSystem.successColor;
-        case MedicalButtonTheme.warning:
-          return HealthBoxDesignSystem.warningColor;
-        case MedicalButtonTheme.error:
-          return HealthBoxDesignSystem.errorColor;
-        case MedicalButtonTheme.neutral:
-          return HealthBoxDesignSystem.neutral400;
-      }
-    }
-
     switch (widget.style) {
       case HealthButtonStyle.primary:
         return HealthBoxDesignSystem.primaryBlue;
@@ -479,6 +483,41 @@ class _HealthButtonState extends State<HealthButton>
         return HealthBoxDesignSystem.warningColor;
       case HealthButtonStyle.error:
         return HealthBoxDesignSystem.errorColor;
+    }
+  }
+
+  /// Gets effective gradient based on medical theme
+  LinearGradient? _getEffectiveGradient(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (widget.medicalTheme != null) {
+      switch (widget.medicalTheme!) {
+        case MedicalButtonTheme.primary:
+          return isDark
+              ? HealthBoxDesignSystem.darkMedicalBlue
+              : HealthBoxDesignSystem.medicalBlue;
+        case MedicalButtonTheme.success:
+          return HealthBoxDesignSystem.successGradient;
+        case MedicalButtonTheme.warning:
+          return HealthBoxDesignSystem.warningGradient;
+        case MedicalButtonTheme.error:
+          return HealthBoxDesignSystem.errorGradient;
+        case MedicalButtonTheme.neutral:
+          return null; // Neutral stays solid
+      }
+    }
+
+    switch (widget.style) {
+      case HealthButtonStyle.primary:
+        return isDark
+            ? HealthBoxDesignSystem.darkMedicalBlue
+            : HealthBoxDesignSystem.medicalBlue;
+      case HealthButtonStyle.success:
+        return HealthBoxDesignSystem.successGradient;
+      case HealthButtonStyle.warning:
+        return HealthBoxDesignSystem.warningGradient;
+      case HealthButtonStyle.error:
+        return HealthBoxDesignSystem.errorGradient;
     }
   }
 

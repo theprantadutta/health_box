@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../shared/widgets/modern_card.dart';
 import '../shared/theme/app_theme.dart';
+import '../shared/theme/design_system.dart';
 import '../shared/animations/stagger_animations.dart';
 import '../shared/providers/app_providers.dart';
 import '../shared/providers/simple_profile_providers.dart';
@@ -34,8 +35,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
         elevation: 0,
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalOrange,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalOrange.colors.first
+                    .withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(

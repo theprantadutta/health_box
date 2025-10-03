@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../shared/animations/common_transitions.dart';
+import '../../../shared/theme/design_system.dart';
 import '../../../shared/widgets/modern_card.dart';
 
 class MedicalRecordCard extends StatelessWidget {
@@ -24,24 +25,38 @@ class MedicalRecordCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final medicalTheme = _getMedicalThemeForRecordType(record.recordType);
     final themeColor = _getMedicalThemeColor(medicalTheme, context);
+    final recordGradient = _getRecordTypeGradient(record.recordType, isDark);
 
     return Hero(
       tag: 'medical_record_${record.id}',
       child: CommonTransitions.fadeSlideIn(
         child: Container(
-          margin: const EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                recordGradient.colors.first.withValues(alpha: 0.15),
+                recordGradient.colors.last.withValues(alpha: 0.05),
+              ],
+            ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: theme.colorScheme.outline.withValues(alpha: 0.2),
-              width: 1,
+              color: recordGradient.colors.first.withValues(alpha: 0.3),
+              width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
+                color: recordGradient.colors.first.withValues(alpha: 0.2),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+                spreadRadius: 0,
+              ),
+              BoxShadow(
                 color: isDark
                     ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.15),
+                    : Colors.grey.withValues(alpha: 0.1),
                 offset: const Offset(0, 2),
                 blurRadius: 8,
                 spreadRadius: 0,
@@ -62,10 +77,15 @@ class MedicalRecordCard extends StatelessWidget {
                     // Header Row with Type Badge and Actions
                     Row(
                       children: [
-                        _buildTypeChip(theme, themeColor, isDark),
-                        const Spacer(),
-                        _buildDateChip(theme, isDark),
-                        const SizedBox(width: 12),
+                        Flexible(
+                          child: _buildTypeChip(theme, themeColor, isDark),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          flex: 2,
+                          child: _buildDateChip(theme, isDark),
+                        ),
+                        const SizedBox(width: 8),
                         _buildActionsMenu(context, theme, isDark),
                       ],
                     ),
@@ -106,13 +126,17 @@ class MedicalRecordCard extends StatelessWidget {
             size: 16,
             color: themeColor,
           ),
-          const SizedBox(width: 8),
-          Text(
-            _getDisplayName(record.recordType),
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: themeColor,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              _getDisplayName(record.recordType),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: themeColor,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ),
         ],
@@ -131,26 +155,42 @@ class MedicalRecordCard extends StatelessWidget {
       ),
       child: Text(
         _formatDate(record.recordDate),
-        style: theme.textTheme.labelMedium?.copyWith(
+        style: theme.textTheme.labelSmall?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.w500,
         ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       ),
     );
   }
 
   Widget _buildIconContainer(Color themeColor, bool isDark) {
+    final gradient = _getRecordTypeGradient(record.recordType, isDark);
+
     return Container(
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: themeColor.withValues(alpha: isDark ? 0.2 : 0.12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradient.colors,
+        ),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: gradient.colors.first.withValues(alpha: 0.4),
+            offset: const Offset(0, 4),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Icon(
         _getRecordTypeIcon(record.recordType),
         size: 24,
-        color: themeColor,
+        color: Colors.white,
       ),
     );
   }
@@ -287,7 +327,9 @@ class MedicalRecordCard extends StatelessWidget {
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '${months[date.month - 1]} ${date.day}, ${date.year} ${hour}:${minute}';
   }
 
   String _getDisplayName(String recordType) {
@@ -356,5 +398,10 @@ class MedicalRecordCard extends StatelessWidget {
       case MedicalCardTheme.tertiary:
         return colorScheme.tertiary;
     }
+  }
+
+  /// Get gradient for record type using design system
+  LinearGradient _getRecordTypeGradient(String recordType, bool isDark) {
+    return HealthBoxDesignSystem.getRecordTypeGradient(recordType);
   }
 }
