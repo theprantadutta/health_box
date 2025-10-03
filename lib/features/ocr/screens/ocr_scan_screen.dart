@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../shared/theme/design_system.dart';
 import '../services/ocr_service.dart';
 
 class OCRScanScreen extends ConsumerStatefulWidget {
@@ -69,10 +70,31 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getScreenTitle()),
+        title: Text(
+          _getScreenTitle(),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalPurple,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalPurple.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           if (_scanResult != null)
-            IconButton(icon: const Icon(Icons.share), onPressed: _shareResult),
+            IconButton(
+              icon: const Icon(Icons.share, color: Colors.white),
+              onPressed: _shareResult,
+            ),
         ],
       ),
       body: _buildBody(),
