@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/design_system.dart';
 import 'gradient_button.dart';
 
 class ErrorStateWidget extends StatefulWidget {
@@ -71,13 +72,17 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: theme.colorScheme.errorContainer,
+                gradient: HealthBoxDesignSystem.errorGradient,
                 shape: BoxShape.circle,
+                boxShadow: HealthBoxDesignSystem.coloredShadow(
+                  HealthBoxDesignSystem.errorGradient.colors.first,
+                  opacity: 0.4,
+                ),
               ),
               child: Icon(
                 widget.icon,
                 size: 40,
-                color: theme.colorScheme.error,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 24),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_card.dart';
 import '../services/refill_reminder_service.dart';
 import './refill_urgency_indicator_widget.dart';
 
@@ -22,33 +24,55 @@ class RefillInfoCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      elevation: refillInfo.urgency == RefillUrgency.critical ? 4 : 1,
-      child: InkWell(
-        onTap: onViewMedication,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(theme),
-              const SizedBox(height: 12),
-              _buildMedicationInfo(theme),
-              const SizedBox(height: 12),
-              _buildRefillInfo(theme),
-              const SizedBox(height: 16),
-              _buildActionButtons(theme),
-            ],
-          ),
-        ),
+    // Get gradient based on urgency
+    final urgencyGradient = refillInfo.urgency == RefillUrgency.critical
+        ? HealthBoxDesignSystem.errorGradient
+        : refillInfo.urgency == RefillUrgency.high
+            ? HealthBoxDesignSystem.warningGradient
+            : HealthBoxDesignSystem.medicationGradient;
+
+    return ModernCard(
+      elevation: refillInfo.urgency == RefillUrgency.critical
+          ? CardElevation.medium
+          : CardElevation.low,
+      gradientBorder: refillInfo.urgency == RefillUrgency.critical,
+      gradient: refillInfo.urgency == RefillUrgency.critical ? urgencyGradient : null,
+      onTap: onViewMedication,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
+      enablePressEffect: true,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(theme, urgencyGradient),
+          const SizedBox(height: 12),
+          _buildMedicationInfo(theme),
+          const SizedBox(height: 12),
+          _buildRefillInfo(theme, urgencyGradient),
+          const SizedBox(height: 16),
+          _buildActionButtons(theme),
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(ThemeData theme) {
+  Widget _buildHeader(ThemeData theme, LinearGradient urgencyGradient) {
     return Row(
       children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: urgencyGradient,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: HealthBoxDesignSystem.coloredShadow(
+              urgencyGradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: const Icon(Icons.medication, color: Colors.white, size: 20),
+        ),
+        const SizedBox(width: 12),
         Expanded(
           child: Text(
             refillInfo.medicationName,
@@ -89,12 +113,23 @@ class RefillInfoCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildRefillInfo(ThemeData theme) {
+  Widget _buildRefillInfo(ThemeData theme, LinearGradient urgencyGradient) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            urgencyGradient.colors.first.withValues(alpha: 0.1),
+            urgencyGradient.colors.last.withValues(alpha: 0.05),
+          ],
+        ),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: urgencyGradient.colors.first.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
