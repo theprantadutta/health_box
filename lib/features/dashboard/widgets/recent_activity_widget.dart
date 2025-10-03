@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
+import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 // Provider for recent medical records based on selected profile
 final recentMedicalRecordsProvider = FutureProvider<List<MedicalRecord>>((
@@ -339,128 +341,125 @@ class RecentActivityWidget extends ConsumerWidget {
       DateTime.now().subtract(const Duration(hours: 24)),
     );
 
-    return InkWell(
-      onTap: () {
-        context.push('${AppRoutes.medicalRecordDetail}/${record.id}');
-      },
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isRecent
-              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.1)
-              : theme.colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.3,
-                ),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
-        ),
-        child: Row(
-          children: [
-            // Activity Type Icon
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: _getRecordTypeColor(record.recordType),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Icon(
-                _getRecordTypeIcon(record.recordType),
-                color: Colors.white,
-                size: 20,
+    // Get gradient for record type
+    final recordGradient = HealthBoxDesignSystem.getRecordTypeGradient(record.recordType);
+
+    return ModernCard(
+      elevation: CardElevation.low,
+      onTap: () => context.push('${AppRoutes.medicalRecordDetail}/${record.id}'),
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
+      enablePressEffect: true,
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          // Activity Type Icon
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              gradient: recordGradient,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: HealthBoxDesignSystem.coloredShadow(
+                recordGradient.colors.first,
+                opacity: 0.3,
               ),
             ),
-            const SizedBox(width: 12),
-
-            // Activity Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          record.title,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (isRecent)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            'NEW',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onPrimary,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Text(
-                        record.recordType,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: _getRecordTypeColor(record.recordType),
+            child: Icon(
+              _getRecordTypeIcon(record.recordType),
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Activity Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        record.title,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Text(
-                        ' • ',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    if (isRecent)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: HealthBoxDesignSystem.successGradient,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: HealthBoxDesignSystem.coloredShadow(
+                            HealthBoxDesignSystem.successGradient.colors.first,
+                            opacity: 0.3,
+                          ),
+                        ),
+                        child: Text(
+                          'NEW',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      Text(
-                        _formatActivityTime(record.createdAt),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (record.description?.isNotEmpty == true) ...[
-                    const SizedBox(height: 2),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
                     Text(
-                      record.description!,
+                      record.recordType,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: _getRecordTypeColor(record.recordType),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      ' • ',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      _formatActivityTime(record.createdAt),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
+                ),
+                if (record.description?.isNotEmpty == true) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    record.description!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
-              ),
+              ],
             ),
-
-            // Arrow Icon
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
+          ),
+          // Arrow Icon
+          Icon(
+            Icons.arrow_forward_ios,
+            size: 16,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ],
       ),
     );
   }

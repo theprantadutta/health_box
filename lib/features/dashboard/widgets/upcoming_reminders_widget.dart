@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/providers/reminder_providers.dart';
 import '../../../data/database/app_database.dart';
+import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 class UpcomingRemindersWidget extends ConsumerWidget {
   const UpcomingRemindersWidget({super.key});
@@ -13,62 +15,70 @@ class UpcomingRemindersWidget extends ConsumerWidget {
       upcomingRemindersProvider(const Duration(days: 7)),
     );
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.upcoming,
-                  color: theme.colorScheme.primary,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Upcoming Reminders',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+    return ModernCard(
+      elevation: CardElevation.low,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: HealthBoxDesignSystem.chronicConditionGradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: HealthBoxDesignSystem.coloredShadow(
+                    HealthBoxDesignSystem.chronicConditionGradient.colors.first,
+                    opacity: 0.3,
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'All reminders view - Coming in Phase 3.9',
-                        ),
-                      ),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(0, 32),
+                child: const Icon(Icons.upcoming, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Upcoming Reminders',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: const Text('View All', style: TextStyle(fontSize: 12)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            upcomingRemindersAsync.when(
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
                 ),
               ),
-              error: (error, stack) => _buildErrorState(context, error),
-              data: (reminders) => _buildRemindersList(context, reminders),
+              TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'All reminders view - Coming in Phase 3.9',
+                      ),
+                    ),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  minimumSize: const Size(0, 32),
+                ),
+                child: const Text('View All', style: TextStyle(fontSize: 12)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          upcomingRemindersAsync.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),
+              ),
             ),
-          ],
-        ),
+            error: (error, stack) => _buildErrorState(context, error),
+            data: (reminders) => _buildRemindersList(context, reminders),
+          ),
+        ],
       ),
     );
   }
@@ -169,24 +179,21 @@ class UpcomingRemindersWidget extends ConsumerWidget {
         scheduledTime.month == now.month &&
         scheduledTime.day == now.day;
 
-    return Container(
+    // Get gradient based on status
+    final statusGradient = isOverdue
+        ? HealthBoxDesignSystem.errorGradient
+        : isToday
+        ? HealthBoxDesignSystem.medicalBlue
+        : HealthBoxDesignSystem.medicalPurple;
+
+    return ModernCard(
+      elevation: CardElevation.low,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isOverdue
-            ? theme.colorScheme.errorContainer.withValues(alpha: 0.3)
-            : isToday
-            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isOverdue
-              ? theme.colorScheme.error
-              : isToday
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline.withValues(alpha: 0.2),
-        ),
-      ),
+      gradientBorder: true,
+      gradient: statusGradient,
       child: Row(
         children: [
           // Status Icon
@@ -194,12 +201,12 @@ class UpcomingRemindersWidget extends ConsumerWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isOverdue
-                  ? theme.colorScheme.error
-                  : isToday
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.secondary,
+              gradient: statusGradient,
               borderRadius: BorderRadius.circular(16),
+              boxShadow: HealthBoxDesignSystem.coloredShadow(
+                statusGradient.colors.first,
+                opacity: 0.3,
+              ),
             ),
             child: Icon(
               _getReminderIcon(reminder.type),
@@ -251,13 +258,17 @@ class UpcomingRemindersWidget extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: theme.colorScheme.error,
+                gradient: HealthBoxDesignSystem.errorGradient,
                 borderRadius: BorderRadius.circular(10),
+                boxShadow: HealthBoxDesignSystem.coloredShadow(
+                  HealthBoxDesignSystem.errorGradient.colors.first,
+                  opacity: 0.4,
+                ),
               ),
               child: Text(
                 'OVERDUE',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onError,
+                  color: Colors.white,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
@@ -267,13 +278,17 @@ class UpcomingRemindersWidget extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
+                gradient: HealthBoxDesignSystem.medicalBlue,
                 borderRadius: BorderRadius.circular(10),
+                boxShadow: HealthBoxDesignSystem.coloredShadow(
+                  HealthBoxDesignSystem.medicalBlue.colors.first,
+                  opacity: 0.4,
+                ),
               ),
               child: Text(
                 'TODAY',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onPrimary,
+                  color: Colors.white,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),

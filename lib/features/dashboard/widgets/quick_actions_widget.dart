@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/navigation/app_router.dart';
+import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 class QuickActionsWidget extends ConsumerWidget {
   const QuickActionsWidget({super.key});
@@ -10,28 +12,40 @@ class QuickActionsWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.flash_on, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  'Quick Actions',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+    return ModernCard(
+      elevation: CardElevation.low,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: HealthBoxDesignSystem.medicalOrange,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: HealthBoxDesignSystem.coloredShadow(
+                    HealthBoxDesignSystem.medicalOrange.colors.first,
+                    opacity: 0.3,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // First row of actions
-            Row(
+                child: const Icon(Icons.flash_on, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Quick Actions',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // First row of actions
+          Row(
               children: [
                 Expanded(
                   child: _buildQuickActionButton(
@@ -54,11 +68,9 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-
-            const SizedBox(height: 12),
-
-            // Second row of actions
-            Row(
+          const SizedBox(height: 12),
+          // Second row of actions
+          Row(
               children: [
                 Expanded(
                   child: _buildQuickActionButton(
@@ -81,11 +93,9 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-
-            const SizedBox(height: 12),
-
-            // Third row of actions
-            Row(
+          const SizedBox(height: 12),
+          // Third row of actions
+          Row(
               children: [
                 Expanded(
                   child: _buildQuickActionButton(
@@ -108,11 +118,9 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-
-            const SizedBox(height: 12),
-
-            // Fourth row of actions
-            Row(
+          const SizedBox(height: 12),
+          // Fourth row of actions
+          Row(
               children: [
                 Expanded(
                   child: _buildQuickActionButton(
@@ -135,8 +143,7 @@ class QuickActionsWidget extends ConsumerWidget {
                 ),
               ],
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -150,41 +157,46 @@ class QuickActionsWidget extends ConsumerWidget {
   }) {
     final theme = Theme.of(context);
 
-    return InkWell(
+    // Create gradient from the base color
+    final gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [color, color.withValues(alpha: 0.7)],
+    );
+
+    return ModernCard(
+      elevation: CardElevation.low,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(icon, color: Colors.white, size: 22),
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
+      enablePressEffect: true,
+      enableHaptics: true,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              gradient: gradient,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: HealthBoxDesignSystem.coloredShadow(color, opacity: 0.4),
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.onSurface,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            child: Icon(icon, color: Colors.white, size: 22),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurface,
             ),
-          ],
-        ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

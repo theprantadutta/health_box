@@ -45,7 +45,7 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
           ),
         ),
         elevation: 0,
-        shadowColor: HealthBoxDesignSystem.labReportGradient.colors.last.withOpacity(0.3),
+        shadowColor: HealthBoxDesignSystem.labReportGradient.colors.last.withValues(alpha: 0.3),
         actions: [
           TextButton(
             onPressed: _isLoading ? null : _saveLabReport,
