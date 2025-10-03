@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_card.dart';
 
 class ProfileCard extends StatelessWidget {
   final FamilyMemberProfile profile;
@@ -30,134 +31,107 @@ class ProfileCard extends StatelessWidget {
 
     return Hero(
       tag: 'profile_${profile.id}',
-      child: Container(
+      child: ModernCard(
         margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected
-                ? theme.colorScheme.primary
-                : theme.colorScheme.outline.withValues(alpha: 0.1),
-            width: isSelected ? 2 : 0.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isSelected
-                  ? theme.colorScheme.primary.withValues(alpha: 0.15)
-                  : (isDark
-                      ? Colors.black.withValues(alpha: 0.2)
-                      : Colors.grey.withValues(alpha: 0.08)),
-              offset: const Offset(0, 1),
-              blurRadius: isSelected ? 8 : 4,
-              spreadRadius: 0,
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
+        elevation: isSelected ? CardElevation.medium : CardElevation.low,
+        enableHoverEffect: true,
+        hoverElevation: CardElevation.medium,
+        enablePressEffect: true,
+        gradientBorder: isSelected,
+        gradient: isSelected ? HealthBoxDesignSystem.medicalGreen : null,
+        onTap: onTap,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // Compact Avatar
+            _buildCompactAvatar(theme, initials, genderColor),
+            const SizedBox(width: 12),
+            // Main Info Column
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Compact Avatar
-                  _buildCompactAvatar(theme, initials, genderColor),
-                  const SizedBox(width: 12),
-
-                  // Main Info Column
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Name
-                        Text(
-                          '${profile.firstName} ${profile.lastName}',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onSurface,
-                            height: 1.1,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-
-                        // Age and Gender Row
-                        Row(
-                          children: [
-                            Text(
-                              '$age years',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              width: 3,
-                              height: 3,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              profile.gender,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Optional Info Tags
-                        if (_hasImportantInfo()) ...[
-                          const SizedBox(height: 6),
-                          _buildInfoTags(theme, isDark),
-                        ],
-                      ],
+                  // Name
+                  Text(
+                    '${profile.firstName} ${profile.lastName}',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                      height: 1.1,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-
-                  // Right Side - Status and Actions
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  const SizedBox(height: 2),
+                  // Age and Gender Row
+                  Row(
                     children: [
-                      // Selection/Status Indicator
-                      if (isSelected)
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        )
-                      else if (_hasStatusIndicators())
-                        _buildStatusDot(theme, isDark),
-
-                      const SizedBox(height: 8),
-
-                      // Actions
-                      if (showActions) _buildCompactActionMenu(theme, isDark),
+                      Text(
+                        '$age years',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 3,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        profile.gender,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
+                  // Optional Info Tags
+                  if (_hasImportantInfo()) ...[
+                    const SizedBox(height: 6),
+                    _buildInfoTags(theme, isDark),
+                  ],
                 ],
               ),
             ),
-          ),
+            // Right Side - Status and Actions
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Selection/Status Indicator
+                if (isSelected)
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      gradient: HealthBoxDesignSystem.successGradient,
+                      shape: BoxShape.circle,
+                      boxShadow: HealthBoxDesignSystem.coloredShadow(
+                        HealthBoxDesignSystem.successGradient.colors.first,
+                        opacity: 0.3,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  )
+                else if (_hasStatusIndicators())
+                  _buildStatusDot(theme, isDark),
+                const SizedBox(height: 8),
+                // Actions
+                if (showActions) _buildCompactActionMenu(theme, isDark),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -177,6 +151,7 @@ class ProfileCard extends StatelessWidget {
           ],
         ),
         shape: BoxShape.circle,
+        boxShadow: HealthBoxDesignSystem.coloredShadow(genderColor, opacity: 0.3),
       ),
       child: Center(
         child: Text(
