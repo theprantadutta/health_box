@@ -11,6 +11,7 @@ import '../../../shared/widgets/reminder_type_selector.dart';
 import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import '../../../shared/theme/design_system.dart';
 import 'dart:developer' as developer;
 
@@ -171,25 +172,21 @@ class _PrescriptionFormScreenState
               isExpanded: _basicInfoExpanded,
               onExpansionChanged: (value) => setState(() => _basicInfoExpanded = value),
               children: [
-                TextFormField(
+                ModernTextField(
                   controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Title *',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.title),
-                  ),
+                  labelText: 'Title *',
+                  prefixIcon: const Icon(Icons.title),
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
                   validator: (value) =>
                       value?.trim().isEmpty == true ? 'Title is required' : null,
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                ModernTextField(
                   controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.description),
-                  ),
+                  labelText: 'Description',
+                  prefixIcon: const Icon(Icons.description),
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
                   maxLines: 3,
                 ),
                 const SizedBox(height: 16),
@@ -209,13 +206,11 @@ class _PrescriptionFormScreenState
               isExpanded: _medicationInfoExpanded,
               onExpansionChanged: (value) => setState(() => _medicationInfoExpanded = value),
               children: [
-                TextFormField(
+                ModernTextField(
                   controller: _medicationNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Medication Name *',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.medication),
-                  ),
+                  labelText: 'Medication Name *',
+                  prefixIcon: const Icon(Icons.medication),
+                  focusGradient: HealthBoxDesignSystem.medicationGradient,
                   validator: (value) => value?.trim().isEmpty == true
                       ? 'Medication name is required'
                       : null,
@@ -225,14 +220,12 @@ class _PrescriptionFormScreenState
                 Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: ModernTextField(
                         controller: _dosageController,
-                        decoration: const InputDecoration(
-                          labelText: 'Dosage *',
-                          hintText: 'e.g., 10mg',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.straighten),
-                        ),
+                        labelText: 'Dosage *',
+                        hintText: 'e.g., 10mg',
+                        prefixIcon: const Icon(Icons.straighten),
+                        focusGradient: HealthBoxDesignSystem.medicationGradient,
                         validator: (value) => value?.trim().isEmpty == true
                             ? 'Dosage is required'
                             : null,
@@ -240,14 +233,12 @@ class _PrescriptionFormScreenState
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: TextFormField(
+                      child: ModernTextField(
                         controller: _frequencyController,
-                        decoration: const InputDecoration(
-                          labelText: 'Frequency *',
-                          hintText: 'e.g., Twice daily',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.schedule),
-                        ),
+                        labelText: 'Frequency *',
+                        hintText: 'e.g., Twice daily',
+                        prefixIcon: const Icon(Icons.schedule),
+                        focusGradient: HealthBoxDesignSystem.medicationGradient,
                         validator: (value) => value?.trim().isEmpty == true
                             ? 'Frequency is required'
                             : null,
@@ -257,14 +248,12 @@ class _PrescriptionFormScreenState
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                ModernTextField(
                   controller: _instructionsController,
-                  decoration: const InputDecoration(
-                    labelText: 'Instructions',
-                    hintText: 'Take with food, etc.',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.info),
-                  ),
+                  labelText: 'Instructions',
+                  hintText: 'Take with food, etc.',
+                  prefixIcon: const Icon(Icons.info),
+                  focusGradient: HealthBoxDesignSystem.medicationGradient,
                   maxLines: 2,
                 ),
               ],
@@ -279,23 +268,19 @@ class _PrescriptionFormScreenState
               isExpanded: _prescriptionDetailsExpanded,
               onExpansionChanged: (value) => setState(() => _prescriptionDetailsExpanded = value),
               children: [
-                TextFormField(
+                ModernTextField(
                   controller: _doctorController,
-                  decoration: const InputDecoration(
-                    labelText: 'Prescribing Doctor',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person_pin_circle),
-                  ),
+                  labelText: 'Prescribing Doctor',
+                  prefixIcon: const Icon(Icons.person_pin_circle),
+                  focusGradient: HealthBoxDesignSystem.medicalGreen,
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                ModernTextField(
                   controller: _pharmacyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Pharmacy',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.local_pharmacy),
-                  ),
+                  labelText: 'Pharmacy',
+                  prefixIcon: const Icon(Icons.local_pharmacy),
+                  focusGradient: HealthBoxDesignSystem.medicalGreen,
                 ),
                 const SizedBox(height: 16),
 
@@ -316,13 +301,11 @@ class _PrescriptionFormScreenState
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                ModernTextField(
                   controller: _refillsController,
-                  decoration: const InputDecoration(
-                    labelText: 'Refills Remaining',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.repeat),
-                  ),
+                  labelText: 'Refills Remaining',
+                  prefixIcon: const Icon(Icons.repeat),
+                  focusGradient: HealthBoxDesignSystem.medicalGreen,
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 16),

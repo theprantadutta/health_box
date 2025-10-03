@@ -3,6 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/tag_service.dart';
 import '../../data/database/app_database.dart';
+import '../theme/design_system.dart';
+import 'modern_card.dart';
+import 'modern_text_field.dart';
+import 'gradient_chip.dart';
 
 class TagSelectorWidget extends ConsumerStatefulWidget {
   final List<String> selectedTagIds;
@@ -42,21 +46,22 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(theme),
-            const SizedBox(height: 16),
-            _buildSearchBar(theme),
-            const SizedBox(height: 16),
-            _buildSelectedTags(theme),
-            const SizedBox(height: 16),
-            _buildAvailableTags(theme),
-          ],
-        ),
+    return ModernCard(
+      elevation: CardElevation.low,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(theme),
+          const SizedBox(height: 16),
+          _buildSearchBar(theme),
+          const SizedBox(height: 16),
+          _buildSelectedTags(theme),
+          const SizedBox(height: 16),
+          _buildAvailableTags(theme),
+        ],
       ),
     );
   }
@@ -64,8 +69,19 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
   Widget _buildHeader(ThemeData theme) {
     return Row(
       children: [
-        Icon(Icons.local_offer, color: theme.colorScheme.primary),
-        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalGreen,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: HealthBoxDesignSystem.coloredShadow(
+              HealthBoxDesignSystem.medicalGreen.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: const Icon(Icons.local_offer, color: Colors.white, size: 20),
+        ),
+        const SizedBox(width: 12),
         Text(
           'Tags',
           style: theme.textTheme.titleMedium?.copyWith(
@@ -74,10 +90,22 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
         ),
         const Spacer(),
         if (widget.selectedTagIds.isNotEmpty)
-          Text(
-            '${widget.selectedTagIds.length}/${widget.maxTags}',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              gradient: HealthBoxDesignSystem.medicalGreen,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: HealthBoxDesignSystem.coloredShadow(
+                HealthBoxDesignSystem.medicalGreen.colors.first,
+                opacity: 0.3,
+              ),
+            ),
+            child: Text(
+              '${widget.selectedTagIds.length}/${widget.maxTags}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
       ],
@@ -88,27 +116,22 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
     return Row(
       children: [
         Expanded(
-          child: TextField(
+          child: ModernTextField(
             controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search tags...',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _searchQuery = '';
-                        });
-                      },
-                    )
-                  : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              isDense: true,
-            ),
+            hintText: 'Search tags...',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: _searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() {
+                        _searchQuery = '';
+                      });
+                    },
+                  )
+                : null,
+            focusGradient: HealthBoxDesignSystem.medicalGreen,
             onChanged: (value) {
               setState(() {
                 _searchQuery = value;
@@ -189,17 +212,22 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
   }
 
   Widget _buildSelectedTagChip(ThemeData theme, Tag tag) {
-    return Chip(
-      avatar: CircleAvatar(backgroundColor: _parseColor(tag.color), radius: 8),
-      label: Text(tag.name),
-      deleteIcon: const Icon(Icons.close, size: 18),
+    final tagColor = _parseColor(tag.color);
+    final gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [tagColor, tagColor.withValues(alpha: 0.7)],
+    );
+
+    return TagChip(
+      label: tag.name,
+      gradient: gradient,
+      icon: Icons.local_offer,
       onDeleted: () {
         final updatedSelection = List<String>.from(widget.selectedTagIds)
           ..remove(tag.id);
         widget.onSelectionChanged(updatedSelection);
       },
-      backgroundColor: theme.colorScheme.primaryContainer,
-      labelStyle: TextStyle(color: theme.colorScheme.onPrimaryContainer),
     );
   }
 
@@ -260,53 +288,34 @@ class _TagSelectorWidgetState extends ConsumerState<TagSelectorWidget> {
     final atMaxLimit =
         widget.selectedTagIds.length >= widget.maxTags && !isSelected;
 
-    return FilterChip(
-      avatar: CircleAvatar(backgroundColor: _parseColor(tag.color), radius: 8),
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(tag.name),
-          if (tag.usageCount > 0) ...[
-            const SizedBox(width: 4),
-            Text(
-              '(${tag.usageCount})',
-              style: TextStyle(
-                fontSize: 10,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ],
-      ),
+    final tagColor = _parseColor(tag.color);
+    final gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [tagColor, tagColor.withValues(alpha: 0.7)],
+    );
+
+    return GradientFilterChip(
+      label: tag.usageCount > 0 ? '${tag.name} (${tag.usageCount})' : tag.name,
       selected: isSelected,
+      selectedGradient: gradient,
+      icon: Icons.local_offer,
       onSelected: (canSelect && !atMaxLimit)
-          ? (selected) {
+          ? () {
               List<String> updatedSelection;
               if (widget.allowMultiSelect) {
                 updatedSelection = List<String>.from(widget.selectedTagIds);
-                if (selected) {
-                  updatedSelection.add(tag.id);
-                } else {
+                if (isSelected) {
                   updatedSelection.remove(tag.id);
+                } else {
+                  updatedSelection.add(tag.id);
                 }
               } else {
-                updatedSelection = selected ? [tag.id] : [];
+                updatedSelection = isSelected ? [] : [tag.id];
               }
               widget.onSelectionChanged(updatedSelection);
             }
-          : null,
-      backgroundColor: isSelected
-          ? theme.colorScheme.primaryContainer
-          : theme.colorScheme.surfaceContainerHighest,
-      selectedColor: theme.colorScheme.primaryContainer,
-      checkmarkColor: theme.colorScheme.onPrimaryContainer,
-      labelStyle: TextStyle(
-        color: isSelected
-            ? theme.colorScheme.onPrimaryContainer
-            : (canSelect && !atMaxLimit)
-            ? theme.colorScheme.onSurface
-            : theme.colorScheme.onSurface.withValues(alpha: 0.5),
-      ),
+          : () {},
     );
   }
 

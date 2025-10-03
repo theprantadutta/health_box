@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/tag_service.dart';
 import '../theme/design_system.dart';
+import '../widgets/modern_card.dart';
+import '../widgets/modern_text_field.dart';
+import '../widgets/gradient_chip.dart';
 import '../../data/database/app_database.dart';
 
 class TagManagementScreen extends ConsumerStatefulWidget {
@@ -86,61 +89,74 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateTagDialog,
-        child: const Icon(Icons.add),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          gradient: HealthBoxDesignSystem.medicalGreen,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: HealthBoxDesignSystem.coloredShadow(
+            HealthBoxDesignSystem.medicalGreen.colors.first,
+            opacity: 0.4,
+          ),
+        ),
+        child: FloatingActionButton(
+          onPressed: _showCreateTagDialog,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }
 
   Widget _buildSearchAndFilters(ThemeData theme) {
-    return Card(
+    return ModernCard(
       margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search tags...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: CheckboxListTile(
-                    title: const Text('User tags only'),
-                    value: _showOnlyUserTags,
-                    onChanged: (value) {
+      elevation: CardElevation.medium,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.high,
+      child: Column(
+        children: [
+          ModernTextField(
+            controller: _searchController,
+            hintText: 'Search tags...',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: _searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
                       setState(() {
-                        _showOnlyUserTags = value ?? false;
+                        _searchQuery = '';
                       });
                     },
-                    dense: true,
+                  )
+                : null,
+            focusGradient: HealthBoxDesignSystem.medicalGreen,
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GradientFilterChip(
+                    label: 'User tags only',
+                    selected: _showOnlyUserTags,
+                    selectedGradient: HealthBoxDesignSystem.medicalOrange,
+                    icon: Icons.person,
+                    onSelected: () {
+                      setState(() {
+                        _showOnlyUserTags = !_showOnlyUserTags;
+                      });
+                    },
                   ),
                 ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: PopupMenuButton<String?>(
                     child: Container(
@@ -149,17 +165,40 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: theme.colorScheme.outline),
-                        borderRadius: BorderRadius.circular(8),
+                        gradient: _selectedCategory != null
+                            ? HealthBoxDesignSystem.medicalBlue
+                            : null,
+                        color: _selectedCategory == null
+                            ? theme.colorScheme.surfaceContainerHighest
+                            : null,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: _selectedCategory != null
+                            ? HealthBoxDesignSystem.coloredShadow(
+                                HealthBoxDesignSystem.medicalBlue.colors.first,
+                                opacity: 0.3,
+                              )
+                            : null,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            _selectedCategory ?? 'All categories',
-                            style: theme.textTheme.bodyMedium,
+                          Expanded(
+                            child: Text(
+                              _selectedCategory ?? 'All categories',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: _selectedCategory != null
+                                    ? Colors.white
+                                    : theme.colorScheme.onSurface,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                          const Icon(Icons.arrow_drop_down),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: _selectedCategory != null
+                                ? Colors.white
+                                : theme.colorScheme.onSurface,
+                          ),
                         ],
                       ),
                     ),
@@ -194,8 +233,9 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
@@ -205,12 +245,23 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.local_offer_outlined,
-            size: 64,
-            color: theme.colorScheme.onSurfaceVariant,
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: HealthBoxDesignSystem.medicalOrange,
+              shape: BoxShape.circle,
+              boxShadow: HealthBoxDesignSystem.coloredShadow(
+                HealthBoxDesignSystem.medicalOrange.colors.first,
+                opacity: 0.3,
+              ),
+            ),
+            child: const Icon(
+              Icons.local_offer_outlined,
+              size: 64,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Text('No tags found', style: theme.textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text(
@@ -238,76 +289,85 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
   }
 
   Widget _buildTagItem(ThemeData theme, Tag tag) {
-    return Card(
+    final tagColor = _parseColor(tag.color);
+    final gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [tagColor, tagColor.withValues(alpha: 0.7)],
+    );
+
+    return ModernCard(
       margin: const EdgeInsets.only(bottom: 8),
+      elevation: CardElevation.low,
+      enableHoverEffect: true,
+      hoverElevation: CardElevation.medium,
       child: ListTile(
         leading: Container(
-          width: 20,
-          height: 20,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
-            color: _parseColor(tag.color),
+            gradient: gradient,
             shape: BoxShape.circle,
+            boxShadow: HealthBoxDesignSystem.coloredShadow(
+              tagColor,
+              opacity: 0.3,
+            ),
           ),
+          child: const Icon(Icons.local_offer, color: Colors.white, size: 20),
         ),
         title: Text(
           tag.name,
           style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (tag.description?.isNotEmpty == true) ...[
-              Text(tag.description!),
               const SizedBox(height: 4),
+              Text(tag.description!),
+              const SizedBox(height: 8),
             ],
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
               children: [
-                if (tag.category != null) ...[
-                  Container(
+                if (tag.category != null)
+                  GradientChip(
+                    label: tag.category!,
+                    gradient: HealthBoxDesignSystem.medicalBlue,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      tag.category!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
+                      horizontal: 8,
+                      vertical: 4,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                ],
-                Text(
-                  'Used ${tag.usageCount} times',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${tag.usageCount} uses',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-                if (tag.isSystem) ...[
-                  const SizedBox(width: 8),
-                  Container(
+                if (tag.isSystem)
+                  GradientChip(
+                    label: 'System',
+                    gradient: HealthBoxDesignSystem.errorGradient,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'System',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onErrorContainer,
-                      ),
+                      horizontal: 8,
+                      vertical: 4,
                     ),
                   ),
-                ],
               ],
             ),
           ],
