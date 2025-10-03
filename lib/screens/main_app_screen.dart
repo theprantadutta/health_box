@@ -101,9 +101,26 @@ class MainAppScreen extends ConsumerWidget {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.surface,
+              theme.colorScheme.surfaceContainerHigh,
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
+            width: 1,
+          ),
           boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withValues(alpha: 0.15),
+              offset: const Offset(0, -4),
+              blurRadius: 12,
+              spreadRadius: 0,
+            ),
             BoxShadow(
               color: theme.brightness == Brightness.dark
                   ? Colors.black.withValues(alpha: 0.3)
