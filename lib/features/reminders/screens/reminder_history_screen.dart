@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/medication_adherence_dao.dart';
+import '../../../shared/theme/design_system.dart';
 import '../services/medication_adherence_service.dart';
 import '../widgets/adherence_statistics_widget.dart';
 import '../widgets/adherence_calendar_widget.dart';
@@ -50,21 +51,42 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medication History'),
+        title: const Text(
+          'Medication History',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.chronicConditionGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.chronicConditionGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: _showFilterDialog,
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list, color: Colors.white),
             tooltip: 'Filter records',
           ),
           IconButton(
             onPressed: _showDateRangePicker,
-            icon: const Icon(Icons.date_range),
+            icon: const Icon(Icons.date_range, color: Colors.white),
             tooltip: 'Select date range',
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Overview', icon: Icon(Icons.dashboard)),
             Tab(text: 'Calendar', icon: Icon(Icons.calendar_today)),

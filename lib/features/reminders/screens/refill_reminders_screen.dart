@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../shared/theme/design_system.dart';
 import '../services/refill_reminder_service.dart';
 import '../widgets/refill_info_card_widget.dart';
 
@@ -41,14 +42,33 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medication Refills'),
+        title: const Text(
+          'Medication Refills',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicationGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicationGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: _scheduleAllRefillReminders,
-            icon: const Icon(Icons.schedule),
+            icon: const Icon(Icons.schedule, color: Colors.white),
             tooltip: 'Schedule all refill reminders',
           ),
           PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
             onSelected: _onMenuSelected,
             itemBuilder: (context) => [
               const PopupMenuItem(
@@ -72,6 +92,9 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Urgent', icon: Icon(Icons.warning)),
             Tab(text: 'All Medications', icon: Icon(Icons.medication)),

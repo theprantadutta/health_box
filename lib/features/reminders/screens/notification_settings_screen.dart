@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/models/notification_settings.dart';
+import '../../../shared/theme/design_system.dart';
 import '../services/notification_settings_service.dart';
 import '../widgets/sound_picker_widget.dart';
 import '../widgets/volume_slider_widget.dart';
@@ -44,9 +45,28 @@ class _NotificationSettingsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notification Settings'),
+        title: const Text(
+          'Notification Settings',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.infoGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.infoGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
             onSelected: _onMenuSelected,
             itemBuilder: (context) => [
               const PopupMenuItem(
@@ -71,6 +91,9 @@ class _NotificationSettingsScreenState
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Sounds', icon: Icon(Icons.volume_up)),
             Tab(text: 'Vibration', icon: Icon(Icons.vibration)),

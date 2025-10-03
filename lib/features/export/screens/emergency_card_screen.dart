@@ -6,6 +6,7 @@ import '../services/emergency_card_service.dart';
 import '../widgets/emergency_card_preview_widget.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/profile_providers.dart';
+import '../../../shared/theme/design_system.dart';
 import '../../medical_records/services/medical_records_service.dart';
 
 /// Screen for configuring and generating emergency cards
@@ -134,9 +135,27 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Emergency Card'),
+        title: const Text('Emergency Card', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.errorGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.errorGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Configure', icon: Icon(Icons.settings)),
             Tab(text: 'Preview', icon: Icon(Icons.preview)),
@@ -152,7 +171,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
                     height: 16,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Icon(Icons.save),
+                : const Icon(Icons.save, color: Colors.white),
             tooltip: 'Save Configuration',
           ),
         ],

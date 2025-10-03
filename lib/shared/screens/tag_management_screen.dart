@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/tag_service.dart';
+import '../theme/design_system.dart';
 import '../../data/database/app_database.dart';
 
 class TagManagementScreen extends ConsumerStatefulWidget {
@@ -31,10 +32,28 @@ class _TagManagementScreenState extends ConsumerState<TagManagementScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tag Management'),
+        title: const Text(
+          'Tag Management',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.medicalGreen,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalGreen.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const Icon(Icons.info_outline, color: Colors.white),
             onPressed: _showStatistics,
           ),
         ],

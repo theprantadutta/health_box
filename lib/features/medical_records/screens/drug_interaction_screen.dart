@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../shared/theme/design_system.dart';
 import '../services/medication_interaction_service.dart';
 import '../widgets/interaction_warning_widget.dart';
 
@@ -46,16 +47,37 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Drug Interactions'),
+        title: const Text(
+          'Drug Interactions',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: HealthBoxDesignSystem.warningGradient,
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.warningGradient.colors.first.withValues(alpha: 0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: _showInteractionDatabaseInfo,
-            icon: const Icon(Icons.info_outline),
+            icon: const Icon(Icons.info_outline, color: Colors.white),
             tooltip: 'About interaction database',
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Current Medications', icon: Icon(Icons.medication)),
             Tab(text: 'Check New Drug', icon: Icon(Icons.search)),
