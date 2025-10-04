@@ -8,7 +8,6 @@ import '../../../shared/widgets/modern_card.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/theme/design_system.dart';
 import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/stagger_animations.dart';
 import '../../../shared/animations/micro_interactions.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../widgets/profile_card.dart';
@@ -39,177 +38,124 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceContainerLowest,
-      appBar: AppBar(
-        title: Text(
-          'Family Profiles',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicalGreen,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalGreen.colors.first
-                    .withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
+      body: CustomScrollView(
+        slivers: [
+          // Dashboard-style app bar
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: HealthBoxDesignSystem.medicalBlue,
+                boxShadow: [
+                  BoxShadow(
+                    color: HealthBoxDesignSystem.medicalBlue.colors.first
+                        .withValues(alpha: 0.3),
+                    offset: const Offset(0, 4),
+                    blurRadius: 12,
+                    spreadRadius: 0,
+                  ),
+                ],
               ),
+            ),
+            title: Text(
+              'Family Profiles',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.tune_rounded,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+                onPressed: _showFilterBottomSheet,
+                tooltip: 'Filter Profiles',
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.add_rounded,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+                onPressed: () => _navigateToAddProfile(context),
+                tooltip: 'Add New Profile',
+              ),
+              const SizedBox(width: 8),
             ],
           ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add_rounded,
-              color: Colors.white.withValues(alpha: 0.9),
+
+          // Profile List
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+                    offset: const Offset(0, 2),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search profiles...',
+                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: theme.colorScheme.primary,
+                    size: 22,
+                  ),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: theme.colorScheme.onSurfaceVariant,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                        )
+                      : null,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              ),
             ),
-            onPressed: () => _navigateToAddProfile(context),
-            tooltip: 'Add New Profile',
+          ),
+
+          _buildProfileList(
+            profilesAsync,
+            selectedProfileAsync,
+            theme,
           ),
         ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(simpleProfilesProvider);
-          ref.invalidate(simpleSelectedProfileProvider);
-        },
-        child: Column(
-          children: [
-            // Search and Filter Section with premium design
-            CommonTransitions.fadeSlideIn(
-              child: ModernCard(
-                elevation: CardElevation.low,
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    // Premium Search Bar
-                    TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Search Profiles',
-                        hintText: 'Search by name...',
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear_rounded),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() {
-                                    _searchQuery = '';
-                                  });
-                                },
-                              )
-                            : null,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: AppTheme.primaryColorLight,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _searchQuery = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    // Premium Gender Filter
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.filter_list_rounded,
-                          color: theme.colorScheme.primary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Filter by gender:',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.surface,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: theme.colorScheme.outline.withValues(
-                                  alpha: 0.3,
-                                ),
-                              ),
-                            ),
-                            child: DropdownButton<String>(
-                              value: _selectedGenderFilter,
-                              isExpanded: true,
-                              underline: const SizedBox.shrink(),
-                              items:
-                                  [
-                                        'All',
-                                        'Male',
-                                        'Female',
-                                        'Other',
-                                        'Unspecified',
-                                      ]
-                                      .map(
-                                        (gender) => DropdownMenuItem(
-                                          value: gender,
-                                          child: Text(
-                                            gender,
-                                            style: theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: theme
-                                                      .colorScheme
-                                                      .onSurface,
-                                                ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedGenderFilter = value!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // Profile List Section
-            Expanded(
-              child: _buildProfileList(
-                profilesAsync,
-                selectedProfileAsync,
-                theme,
-              ),
-            ),
-          ],
-        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _navigateToAddProfile(context),
@@ -229,63 +175,68 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
     ThemeData theme,
   ) {
     return profilesAsync.when(
-      loading: () => Center(
-        child: CommonTransitions.fadeSlideIn(
+      loading: () => SliverFillRemaining(
+        child: Center(
+          child: CommonTransitions.fadeSlideIn(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MicroInteractions.breathingDots(
+                  color: AppTheme.primaryColorLight,
+                  dotCount: 3,
+                  dotSize: 12.0,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Loading profiles...',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      error: (error, stack) => SliverFillRemaining(
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MicroInteractions.breathingDots(
-                color: AppTheme.primaryColorLight,
-                dotCount: 3,
-                dotSize: 12.0,
-              ),
-              const SizedBox(height: 24),
+              Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
+              const SizedBox(height: 16),
               Text(
-                'Loading profiles...',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
+                'Error loading profiles',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: theme.colorScheme.onSurface,
                 ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () {
+                  ref.invalidate(simpleProfilesProvider);
+                  ref.invalidate(simpleSelectedProfileProvider);
+                },
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
               ),
             ],
           ),
         ),
       ),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
-            const SizedBox(height: 16),
-            Text(
-              'Error loading profiles',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              error.toString(),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {
-                ref.invalidate(simpleProfilesProvider);
-                ref.invalidate(simpleSelectedProfileProvider);
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
-            ),
-          ],
-        ),
-      ),
       data: (profiles) {
         if (profiles.isEmpty) {
-          return Center(
+          return SliverFillRemaining(
+            child: Center(
             child: CommonTransitions.fadeSlideIn(
               child: ModernCard(
                 medicalTheme: MedicalCardTheme.success,
@@ -351,45 +302,50 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                 ),
               ),
             ),
+            ),
           );
         }
 
         final filteredProfiles = _filterProfiles(profiles);
 
         if (filteredProfiles.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.search_off,
-                  size: 64,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No profiles found',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Try adjusting your search or filters',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium?.copyWith(
+          return SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.search_off,
+                    size: 64,
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  Text(
+                    'No profiles found',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Try adjusting your search or filters',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: StaggerAnimations.staggeredList(
-            children: filteredProfiles.map((profile) {
+        return SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final profile = filteredProfiles[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: selectedProfileAsync.when(
@@ -416,13 +372,201 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                   ),
                 ),
               );
-            }).toList(),
-            staggerDelay: AppTheme.microDuration,
-            direction: StaggerDirection.bottomToTop,
-            animationType: StaggerAnimationType.fadeSlide,
+              },
+              childCount: filteredProfiles.length,
+            ),
           ),
         );
       },
+    );
+  }
+
+  void _showFilterBottomSheet() {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          minChildSize: 0.3,
+          maxChildSize: 0.8,
+          expand: false,
+          builder: (context, scrollController) => Column(
+            children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: HealthBoxDesignSystem.medicalPurple,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: HealthBoxDesignSystem.coloredShadow(
+                          HealthBoxDesignSystem.medicalPurple.colors.first,
+                          opacity: 0.3,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.tune_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Filter Profiles',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          ),
+                          Text(
+                            'Customize your view',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedGenderFilter = 'All';
+                        });
+                        context.pop();
+                      },
+                      child: Text(
+                        'Reset',
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Divider(height: 1),
+
+              // Filters content
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(24),
+                  children: [
+                    // Gender Filter
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.people_rounded,
+                          size: 20,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Gender',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: ['All', 'Male', 'Female', 'Other', 'Unspecified']
+                          .map((gender) {
+                        final isSelected = _selectedGenderFilter == gender;
+                        return FilterChip(
+                          label: Text(gender),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedGenderFilter = gender;
+                            });
+                          },
+                          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                          selectedColor: theme.colorScheme.primaryContainer,
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.onSurface,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          ),
+                          checkmarkColor: theme.colorScheme.primary,
+                          side: BorderSide(
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outlineVariant,
+                            width: 1,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Apply button
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => context.pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        'Apply Filters',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

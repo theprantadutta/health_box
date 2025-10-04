@@ -7,6 +7,7 @@ import '../../../data/models/radiology_record.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import 'dart:developer' as developer;
 
 class RadiologyRecordFormScreen extends ConsumerStatefulWidget {
@@ -97,15 +98,15 @@ class _RadiologyRecordFormScreenState
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildStudyDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildClinicalInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildFindingsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildTechnicalDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -114,295 +115,223 @@ class _RadiologyRecordFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Chest X-Ray Report',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.assessment),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Additional details about this study',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: true),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Chest X-Ray Report',
+          prefixIcon: const Icon(Icons.assessment),
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          hintText: 'Additional details about this study',
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: true),
+        ),
+      ],
     );
   }
 
   Widget _buildStudyDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Study Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedStudyType,
-              decoration: const InputDecoration(
-                labelText: 'Study Type *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_services),
-              ),
-              items: RadiologyStudyTypes.allTypes
-                  .map((type) => DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _selectedStudyType = value);
-                }
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Study type is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedBodyPart,
-              decoration: const InputDecoration(
-                labelText: 'Body Part',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.accessibility),
-              ),
-              items: RadiologyBodyParts.allParts
-                  .map((part) => DropdownMenuItem(
-                        value: part,
-                        child: Text(part),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() => _selectedBodyPart = value);
-              },
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Study Date'),
-              subtitle: Text(_formatDate(_studyDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: false),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedUrgency,
-              decoration: const InputDecoration(
-                labelText: 'Urgency Level',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.priority_high),
-              ),
-              items: RadiologyUrgency.allLevels
-                  .map((urgency) => DropdownMenuItem(
-                        value: urgency,
-                        child: Text(_getUrgencyDisplayName(urgency)),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _selectedUrgency = value);
-                }
-              },
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Study Details',
+      children: [
+        DropdownButtonFormField<String>(
+          initialValue: _selectedStudyType,
+          decoration: const InputDecoration(
+            labelText: 'Study Type *',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.medical_services),
+          ),
+          items: RadiologyStudyTypes.allTypes
+              .map((type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(type),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            if (value != null) {
+              setState(() => _selectedStudyType = value);
+            }
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Study type is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedBodyPart,
+          decoration: const InputDecoration(
+            labelText: 'Body Part',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.accessibility),
+          ),
+          items: RadiologyBodyParts.allParts
+              .map((part) => DropdownMenuItem(
+                    value: part,
+                    child: Text(part),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            setState(() => _selectedBodyPart = value);
+          },
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Study Date'),
+          subtitle: Text(_formatDate(_studyDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: false),
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedUrgency,
+          decoration: const InputDecoration(
+            labelText: 'Urgency Level',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.priority_high),
+          ),
+          items: RadiologyUrgency.allLevels
+              .map((urgency) => DropdownMenuItem(
+                    value: urgency,
+                    child: Text(_getUrgencyDisplayName(urgency)),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            if (value != null) {
+              setState(() => _selectedUrgency = value);
+            }
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildClinicalInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Clinical Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _radiologistController,
-              decoration: const InputDecoration(
-                labelText: 'Radiologist',
-                hintText: 'Interpreting radiologist name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _facilityController,
-              decoration: const InputDecoration(
-                labelText: 'Facility',
-                hintText: 'Where the study was performed',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_hospital),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _referringPhysicianController,
-              decoration: const InputDecoration(
-                labelText: 'Referring Physician',
-                hintText: 'Doctor who ordered the study',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person_outline),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Clinical Information',
+      children: [
+        ModernTextField(
+          controller: _radiologistController,
+          labelText: 'Radiologist',
+          hintText: 'Interpreting radiologist name',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _facilityController,
+          labelText: 'Facility',
+          hintText: 'Where the study was performed',
+          prefixIcon: const Icon(Icons.local_hospital),
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _referringPhysicianController,
+          labelText: 'Referring Physician',
+          hintText: 'Doctor who ordered the study',
+          prefixIcon: const Icon(Icons.person_outline),
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildFindingsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Findings & Interpretation',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Normal Study'),
-              subtitle: const Text('Check if findings are within normal limits'),
-              value: _isNormal,
-              onChanged: (value) {
-                setState(() => _isNormal = value);
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _findingsController,
-              decoration: const InputDecoration(
-                labelText: 'Findings',
-                hintText: 'Detailed radiological findings',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
-              ),
-              maxLines: 4,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _impressionController,
-              decoration: const InputDecoration(
-                labelText: 'Impression',
-                hintText: 'Radiologist\'s diagnostic impression',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.psychology),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _recommendationController,
-              decoration: const InputDecoration(
-                labelText: 'Recommendations',
-                hintText: 'Follow-up recommendations',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.recommend),
-              ),
-              maxLines: 3,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Findings & Interpretation',
+      children: [
+        SwitchListTile(
+          title: const Text('Normal Study'),
+          subtitle: const Text('Check if findings are within normal limits'),
+          value: _isNormal,
+          onChanged: (value) {
+            setState(() => _isNormal = value);
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _findingsController,
+          labelText: 'Findings',
+          hintText: 'Detailed radiological findings',
+          prefixIcon: const Icon(Icons.search),
+          maxLines: 4,
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _impressionController,
+          labelText: 'Impression',
+          hintText: 'Radiologist\'s diagnostic impression',
+          prefixIcon: const Icon(Icons.psychology),
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _recommendationController,
+          labelText: 'Recommendations',
+          hintText: 'Follow-up recommendations',
+          prefixIcon: const Icon(Icons.recommend),
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildTechnicalDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Technical Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _techniqueController,
-              decoration: const InputDecoration(
-                labelText: 'Technique',
-                hintText: 'Imaging technique used',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.settings),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _contrastController,
-              decoration: const InputDecoration(
-                labelText: 'Contrast Agent',
-                hintText: 'Contrast used (if any)',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.colorize),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _protocolUsedController,
-              decoration: const InputDecoration(
-                labelText: 'Protocol Used',
-                hintText: 'Imaging protocol or sequence',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.list),
-              ),
-              maxLines: 2,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Technical Details',
+      children: [
+        ModernTextField(
+          controller: _techniqueController,
+          labelText: 'Technique',
+          hintText: 'Imaging technique used',
+          prefixIcon: const Icon(Icons.settings),
+          maxLines: 2,
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _contrastController,
+          labelText: 'Contrast Agent',
+          hintText: 'Contrast used (if any)',
+          prefixIcon: const Icon(Icons.colorize),
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _protocolUsedController,
+          labelText: 'Protocol Used',
+          hintText: 'Imaging protocol or sequence',
+          prefixIcon: const Icon(Icons.list),
+          maxLines: 2,
+          focusGradient: HealthBoxDesignSystem.radiologyGradient,
+        ),
+      ],
     );
   }
 
@@ -572,35 +501,90 @@ class _RadiologyRecordFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
+    return _buildModernSection(
+      title: 'Attachments',
+      subtitle: 'Add imaging results, radiologist reports, or scan images',
+      children: [
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 10,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'dicom'],
+          maxFileSizeMB: 50,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    String? subtitle,
+    required List<Widget> children,
+    Gradient? gradient,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            (gradient ?? HealthBoxDesignSystem.radiologyGradient)
+                .colors
+                .first
+                .withValues(alpha: 0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: (gradient ?? HealthBoxDesignSystem.radiologyGradient)
+              .colors
+              .first
+              .withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: (gradient ?? HealthBoxDesignSystem.radiologyGradient)
+                .colors
+                .first
+                .withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add imaging results, radiologist reports, or scan images',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ShaderMask(
+              shaderCallback: (bounds) => (gradient ?? HealthBoxDesignSystem.radiologyGradient)
+                  .createShader(bounds),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
               ),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
             const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 10,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'dicom'],
-              maxFileSizeMB: 50,
-            ),
+            ...children,
           ],
         ),
       ),

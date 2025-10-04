@@ -194,7 +194,6 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
     return PopScope(
       canPop: !_isMandatoryFirstProfile && !_hasUnsavedChanges,
@@ -913,13 +912,15 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: _isLoading ? null : () {
-              print('=== ADD PROFILE BUTTON PRESSED ===');
-              print('Loading state: $_isLoading');
-              print('Form valid: ${_formKey.currentState?.validate()}');
-              print('Date of birth: $_selectedDateOfBirth');
-              _saveProfile();
-            },
+            onPressed: _isLoading
+                ? null
+                : () {
+                    print('=== ADD PROFILE BUTTON PRESSED ===');
+                    print('Loading state: $_isLoading');
+                    print('Form valid: ${_formKey.currentState?.validate()}');
+                    print('Date of birth: $_selectedDateOfBirth');
+                    _saveProfile();
+                  },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               backgroundColor: Theme.of(context).colorScheme.primary,
@@ -934,7 +935,9 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                         height: 16,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       ),
                       SizedBox(width: 8),

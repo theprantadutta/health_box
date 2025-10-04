@@ -521,26 +521,89 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
     required bool isExpanded,
     required ValueChanged<bool> onExpansionChanged,
     required List<Widget> children,
+    LinearGradient? gradient,
   }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ExpansionTile(
-        title: Row(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.medicalBlue;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(icon, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            // Expandable Content
+            Theme(
+              data: theme.copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                title: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        gradient: sectionGradient,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                            offset: const Offset(0, 2),
+                            blurRadius: 6,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Icon(icon, size: 18, color: Colors.white),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+                initiallyExpanded: isExpanded,
+                onExpansionChanged: onExpansionChanged,
+                childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                children: children,
               ),
             ),
           ],
         ),
-        initiallyExpanded: isExpanded,
-        onExpansionChanged: onExpansionChanged,
-        childrenPadding: const EdgeInsets.all(16),
-        children: children,
       ),
     );
   }

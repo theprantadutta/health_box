@@ -177,249 +177,265 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       ),
       data: (selectedProfile) => CommonTransitions.fadeSlideIn(
-        child: ModernCard(
-          gradient: HealthBoxDesignSystem.medicalBlue,
-          useGradientShadow: true,
-          elevation: CardElevation.medium,
-          enableHoverEffect: true,
-          padding: const EdgeInsets.all(24),
-          enablePressEffect: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          selectedProfile != null
-                              ? 'Welcome back,'
-                              : 'Welcome to',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          selectedProfile != null
-                              ? selectedProfile.firstName
-                              : 'HealthBox',
-                          style: theme.textTheme.headlineLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            height: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          selectedProfile != null
-                              ? 'Managing health for ${selectedProfile.firstName} ${selectedProfile.lastName}'
-                              : 'Your family\'s health management hub',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.8),
-                          ),
-                        ),
-                      ],
-                    ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.15),
+                offset: const Offset(0, 8),
+                blurRadius: 24,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(23),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Gradient Header Strip
+                Container(
+                  height: 6,
+                  decoration: BoxDecoration(
+                    gradient: HealthBoxDesignSystem.medicalBlue,
                   ),
-                  if (selectedProfile != null)
-                    Row(
-                      children: [
+                ),
+                // Card Content
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Row(
+                    children: [
+                      // Avatar
+                      if (selectedProfile != null)
                         Container(
-                          width: 50,
-                          height: 50,
+                          width: 56,
+                          height: 56,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.onPrimary,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: theme.colorScheme.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                            gradient: HealthBoxDesignSystem.medicalBlue,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: HealthBoxDesignSystem.coloredShadow(
+                              HealthBoxDesignSystem.medicalBlue.colors.first,
+                              opacity: 0.35,
+                            ),
                           ),
                           child: Center(
                             child: Text(
-                              '${selectedProfile.firstName[0]}${selectedProfile.lastName[0]}',
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                              '${selectedProfile.firstName[0]}${selectedProfile.lastName[0]}'.toUpperCase(),
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 22,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        InkWell(
-                          onTap: () =>
-                              _showProfileSelector(context, profilesAsync),
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Icon(
-                              Icons.swap_horiz_rounded,
-                              color: theme.colorScheme.onPrimaryContainer,
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-
-              if (selectedProfile == null) ...[
-                const SizedBox(height: 24),
-                profilesAsync.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, _) => Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: theme.colorScheme.error,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Error loading profiles',
-                            style: TextStyle(
-                              color: theme.colorScheme.onErrorContainer,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  data: (profiles) => profiles.isEmpty
-                      ? Column(
+                      if (selectedProfile != null) const SizedBox(width: 14),
+                      // Text Content
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Get started by adding your first family member',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.8,
+                              selectedProfile != null ? 'Welcome back,' : 'Welcome to',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              selectedProfile != null
+                                  ? selectedProfile.firstName
+                                  : 'HealthBox',
+                              style: theme.textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: theme.colorScheme.onSurface,
+                                height: 1.1,
+                              ),
+                            ),
+                            if (selectedProfile != null) ...[
+                              const SizedBox(height: 6),
+                              Text(
+                                '${selectedProfile.firstName} ${selectedProfile.lastName}',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            HealthButton(
-                              onPressed: () => context.push(AppRoutes.profiles),
-                              medicalTheme: MedicalButtonTheme.primary,
-                              size: HealthButtonSize.medium,
-                              enableHoverEffect: true,
-                              enablePressEffect: true,
-                              enableHaptics: true,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.person_add_rounded,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text(
-                                    'Add Family Member',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            ],
                           ],
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Select a family member:',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.8,
-                                ),
+                        ),
+                      ),
+                      // Switch Profile Button
+                      if (selectedProfile != null)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            onPressed: () => _showProfileSelector(context, profilesAsync),
+                            padding: const EdgeInsets.all(10),
+                            constraints: const BoxConstraints(),
+                            icon: Icon(
+                              Icons.swap_horiz_rounded,
+                              color: theme.colorScheme.onSurfaceVariant,
+                              size: 22,
+                            ),
+                            tooltip: 'Switch Profile',
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // No Profile Selected Section
+                if (selectedProfile == null) ...[
+                  const SizedBox(height: 16),
+                  profilesAsync.when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (error, _) => Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: theme.colorScheme.error,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Error loading profiles',
+                              style: TextStyle(
+                                color: theme.colorScheme.onErrorContainer,
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: profiles.map((profile) {
-                                return InkWell(
-                                  onTap: () {
-                                    ref
-                                        .read(setSelectedProfileProvider)
-                                        .call(profile.id);
-                                  },
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    data: (profiles) => profiles.isEmpty
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Get started by adding your first family member',
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.8,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              HealthButton(
+                                onPressed: () => context.push(AppRoutes.profiles),
+                                medicalTheme: MedicalButtonTheme.primary,
+                                size: HealthButtonSize.medium,
+                                enableHoverEffect: true,
+                                enablePressEffect: true,
+                                enableHaptics: true,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.person_add_rounded,
+                                      size: 20,
+                                      color: Colors.white,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.surface,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: theme.colorScheme.outline
-                                            .withValues(alpha: 0.2),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Add Family Member',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: theme
-                                              .colorScheme
-                                              .primary
-                                              .withValues(alpha: 0.1),
-                                          child: Text(
-                                            profile.firstName[0],
-                                            style: TextStyle(
-                                              color: theme.colorScheme.primary,
-                                              fontWeight: FontWeight.w600,
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Select a family member:',
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.8,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Wrap(
+                                spacing: 12,
+                                runSpacing: 12,
+                                children: profiles.map((profile) {
+                                  return InkWell(
+                                    onTap: () {
+                                      ref
+                                          .read(setSelectedProfileProvider)
+                                          .call(profile.id);
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.surface,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: theme.colorScheme.outline
+                                              .withValues(alpha: 0.2),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 18,
+                                            backgroundColor: theme
+                                                .colorScheme
+                                                .primary
+                                                .withValues(alpha: 0.1),
+                                            child: Text(
+                                              profile.firstName[0],
+                                              style: TextStyle(
+                                                color: theme.colorScheme.primary,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          '${profile.firstName} ${profile.lastName}',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            '${profile.firstName} ${profile.lastName}',
+                                            style: theme.textTheme.bodyMedium
+                                                ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -501,65 +517,108 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildStatCard(_StatItem stat) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    return ModernCard(
-      elevation: CardElevation.medium,
-      enableHoverEffect: true,
-      hoverElevation: CardElevation.high,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  stat.color,
-                  stat.color.withValues(alpha: 0.7),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: stat.color.withValues(alpha: 0.4),
-                  offset: const Offset(0, 4),
-                  blurRadius: 8,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Icon(stat.icon, color: Colors.white, size: 20),
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: stat.color.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: stat.color.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  stat.value,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: stat.color,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  stat.label,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [stat.color, stat.color.withValues(alpha: 0.7)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          stat.color,
+                          stat.color.withValues(alpha: 0.7),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: stat.color.withValues(alpha: 0.3),
+                          offset: const Offset(0, 3),
+                          blurRadius: 8,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Icon(stat.icon, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          stat.value,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: theme.colorScheme.onSurface,
+                            fontSize: 22,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          stat.label,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -662,37 +721,94 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildActionCard(_QuickAction action) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: action.onTap,
-      child: ModernCard(
-        elevation: CardElevation.low,
-        enableHoverEffect: true,
-        hoverElevation: CardElevation.medium,
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: action.color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(action.icon, color: action.color, size: 22),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: action.color.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: action.color.withValues(alpha: 0.1),
+              offset: const Offset(0, 4),
+              blurRadius: 12,
+              spreadRadius: 0,
             ),
-            const SizedBox(height: 8),
-            Text(
-              action.title,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            BoxShadow(
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.2)
+                  : Colors.grey.withValues(alpha: 0.05),
+              offset: const Offset(0, 2),
+              blurRadius: 8,
+              spreadRadius: 0,
             ),
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(19),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Gradient Header Strip
+              Container(
+                height: 4,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [action.color, action.color.withValues(alpha: 0.7)],
+                  ),
+                ),
+              ),
+              // Card Content
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            action.color,
+                            action.color.withValues(alpha: 0.7),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: action.color.withValues(alpha: 0.3),
+                            offset: const Offset(0, 3),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Icon(action.icon, color: Colors.white, size: 22),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      action.title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -700,6 +816,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildActivitySection() {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -711,26 +828,109 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        // Reminders and Recent Activity with consistent design
+        // Reminders with modern card design
         CommonTransitions.fadeSlideIn(
           direction: const Offset(0, 40),
-          child: ModernCard(
-            elevation: CardElevation.low,
-            enableHoverEffect: true,
-            hoverElevation: CardElevation.medium,
-            padding: const EdgeInsets.all(20),
-            child: const UpcomingRemindersWidget(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12,
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.2)
+                      : Colors.grey.withValues(alpha: 0.05),
+                  offset: const Offset(0, 2),
+                  blurRadius: 8,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(19),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Gradient Header Strip
+                  Container(
+                    height: 4,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                      ),
+                    ),
+                  ),
+                  // Card Content
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: UpcomingRemindersWidget(),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 16),
+        // Recent Activity with modern card design
         CommonTransitions.fadeSlideIn(
           direction: const Offset(0, 40),
-          child: ModernCard(
-            elevation: CardElevation.low,
-            enableHoverEffect: true,
-            hoverElevation: CardElevation.medium,
-            padding: const EdgeInsets.all(20),
-            child: const RecentActivityWidget(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFF059669).withValues(alpha: 0.2),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF059669).withValues(alpha: 0.1),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12,
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.2)
+                      : Colors.grey.withValues(alpha: 0.05),
+                  offset: const Offset(0, 2),
+                  blurRadius: 8,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(19),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Gradient Header Strip
+                  Container(
+                    height: 4,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF059669), Color(0xFF047857)],
+                      ),
+                    ),
+                  ),
+                  // Card Content
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: RecentActivityWidget(),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ],

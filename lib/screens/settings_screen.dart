@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../shared/widgets/modern_card.dart';
-import '../shared/theme/app_theme.dart';
 import '../shared/theme/design_system.dart';
-import '../shared/animations/stagger_animations.dart';
 import '../shared/providers/app_providers.dart';
 import '../shared/providers/simple_profile_providers.dart';
 import '../shared/providers/settings_providers.dart';
@@ -26,181 +23,240 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceContainerLowest,
-      appBar: AppBar(
-        title: Text(
-          'Settings',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicalOrange,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalOrange.colors.first
-                    .withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
+      body: CustomScrollView(
+        slivers: [
+          // Dashboard-style app bar
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: HealthBoxDesignSystem.medicalBlue,
+                boxShadow: [
+                  BoxShadow(
+                    color: HealthBoxDesignSystem.medicalBlue.colors.first
+                        .withValues(alpha: 0.3),
+                    offset: const Offset(0, 4),
+                    blurRadius: 12,
+                    spreadRadius: 0,
+                  ),
+                ],
               ),
+            ),
+            title: Text(
+              'Settings',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            actions: const [
+              SizedBox(width: 8),
             ],
           ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: StaggerAnimations.staggeredList(
-          children: [
-            // User Profile Section
-            _buildProfileSection(theme),
-            const SizedBox(height: 16),
 
-            // App Preferences
-            _buildAppPreferencesSection(theme),
-            const SizedBox(height: 16),
+          SliverPadding(
+            padding: const EdgeInsets.all(16.0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // User Profile Section
+                _buildProfileSection(theme),
+                const SizedBox(height: 16),
 
-            // Data Management
-            _buildDataManagementSection(theme),
-            const SizedBox(height: 16),
+                // App Preferences
+                _buildAppPreferencesSection(theme),
+                const SizedBox(height: 16),
 
-            // Privacy & Security
-            _buildPrivacySection(theme),
-            const SizedBox(height: 16),
+                // Data Management
+                _buildDataManagementSection(theme),
+                const SizedBox(height: 16),
 
-            // Backup & Sync
-            _buildBackupSyncSection(theme),
-            const SizedBox(height: 16),
+                // Privacy & Security
+                _buildPrivacySection(theme),
+                const SizedBox(height: 16),
 
-            // Support & About
-            _buildSupportSection(theme),
-          ],
-          staggerDelay: AppTheme.microDuration,
-          direction: StaggerDirection.bottomToTop,
-          animationType: StaggerAnimationType.fadeSlide,
-        ),
+                // Backup & Sync
+                _buildBackupSyncSection(theme),
+                const SizedBox(height: 16),
+
+                // Support & About
+                _buildSupportSection(theme),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildProfileSection(ThemeData theme) {
-    return ModernCard(
-      medicalTheme: MedicalCardTheme.primary,
-      elevation: CardElevation.medium,
-      enableHoverEffect: true,
-      hoverElevation: CardElevation.high,
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryColorLight,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.person_rounded,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Profile',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+    final isDark = theme.brightness == Brightness.dark;
+    const sectionColor = Color(0xFF6366F1); // Indigo
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionColor.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-          const SizedBox(height: 16),
-
-          Consumer(
-            builder: (context, ref, child) {
-              final selectedProfileAsync = ref.watch(
-                simpleSelectedProfileProvider,
-              );
-
-              return selectedProfileAsync.when(
-                loading: () => _buildProfileCard(
-                  context,
-                  name: 'Health Box User',
-                  subtitle: 'Loading profile...',
-                  initials: 'HB',
-                  trailing: const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-                  onTap: null,
-                ),
-                error: (error, stack) => _buildProfileCard(
-                  context,
-                  name: 'Health Box User',
-                  subtitle: 'Error loading profile',
-                  initials: 'HB',
-                  trailing: const Icon(
-                    Icons.error_outline,
-                    color: Colors.white70,
-                  ),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Error loading profile data'),
-                      ),
-                    );
-                  },
-                ),
-                data: (selectedProfile) {
-                  final displayName = selectedProfile != null
-                      ? '${selectedProfile.firstName} ${selectedProfile.lastName}'
-                      : 'Health Box User';
-
-                  final initials = selectedProfile != null
-                      ? '${selectedProfile.firstName.isNotEmpty ? selectedProfile.firstName[0] : ''}${selectedProfile.lastName.isNotEmpty ? selectedProfile.lastName[0] : ''}'
-                      : 'HB';
-
-                  final age = selectedProfile != null
-                      ? _calculateAge(selectedProfile.dateOfBirth)
-                      : null;
-
-                  final subtitle = selectedProfile != null
-                      ? 'Age $age • ${selectedProfile.gender}${selectedProfile.bloodType != null ? ' • ${selectedProfile.bloodType}' : ''}'
-                      : 'Tap to create your first profile';
-
-                  return _buildProfileCard(
-                    context,
-                    name: displayName,
-                    subtitle: subtitle,
-                    initials: initials,
-                    profile: selectedProfile,
-                    onTap: () {
-                      if (selectedProfile != null) {
-                        context.push(
-                          AppRoutes.profileForm,
-                          extra: selectedProfile,
-                        );
-                      } else {
-                        context.push(AppRoutes.profiles);
-                      }
-                    },
-                  );
-                },
-              );
-            },
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionColor.withValues(alpha: 0.3),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.person_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Profile',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final selectedProfileAsync = ref.watch(
+                        simpleSelectedProfileProvider,
+                      );
+
+                      return selectedProfileAsync.when(
+                        loading: () => _buildProfileCard(
+                          context,
+                          name: 'Health Box User',
+                          subtitle: 'Loading profile...',
+                          initials: 'HB',
+                          trailing: const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ),
+                          onTap: null,
+                        ),
+                        error: (error, stack) => _buildProfileCard(
+                          context,
+                          name: 'Health Box User',
+                          subtitle: 'Error loading profile',
+                          initials: 'HB',
+                          trailing: Icon(
+                            Icons.error_outline,
+                            color: theme.colorScheme.error,
+                          ),
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Error loading profile data'),
+                              ),
+                            );
+                          },
+                        ),
+                        data: (selectedProfile) {
+                          final displayName = selectedProfile != null
+                              ? '${selectedProfile.firstName} ${selectedProfile.lastName}'
+                              : 'Health Box User';
+
+                          final initials = selectedProfile != null
+                              ? '${selectedProfile.firstName.isNotEmpty ? selectedProfile.firstName[0] : ''}${selectedProfile.lastName.isNotEmpty ? selectedProfile.lastName[0] : ''}'
+                              : 'HB';
+
+                          final age = selectedProfile != null
+                              ? _calculateAge(selectedProfile.dateOfBirth)
+                              : null;
+
+                          final subtitle = selectedProfile != null
+                              ? 'Age $age • ${selectedProfile.gender}${selectedProfile.bloodType != null ? ' • ${selectedProfile.bloodType}' : ''}'
+                              : 'Tap to create your first profile';
+
+                          return _buildProfileCard(
+                            context,
+                            name: displayName,
+                            subtitle: subtitle,
+                            initials: initials,
+                            profile: selectedProfile,
+                            onTap: () {
+                              if (selectedProfile != null) {
+                                context.push(
+                                  AppRoutes.profileForm,
+                                  extra: selectedProfile,
+                                );
+                              } else {
+                                context.push(AppRoutes.profiles);
+                              }
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -215,13 +271,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     VoidCallback? onTap,
   }) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+            : theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -229,29 +288,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                // Profile Avatar with improved styling
+                // Profile Avatar
                 Container(
-                  width: 56,
-                  height: 56,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.9),
-                        Colors.white.withValues(alpha: 0.7),
-                      ],
+                      colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.15),
-                        offset: const Offset(0, 4),
+                        color: const Color(0xFF6366F1).withValues(alpha: 0.3),
+                        offset: const Offset(0, 3),
                         blurRadius: 8,
                         spreadRadius: 0,
                       ),
@@ -261,14 +317,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     child: Text(
                       initials,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
                         fontSize: 18,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
 
                 // Profile Info
                 Expanded(
@@ -278,7 +334,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Text(
                         name,
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
+                          color: theme.colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -286,9 +342,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: 13,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 12,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -301,12 +357,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.edit_rounded,
-                        color: Colors.white,
+                        color: theme.colorScheme.primary,
                         size: 18,
                       ),
                     ),
@@ -328,319 +384,947 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return age;
   }
 
-  Widget _buildAppPreferencesSection(ThemeData theme) {
-    final themeMode = ref.watch(themeModeProvider);
+  Widget _buildModernListTile({
+    required BuildContext context,
+    required Widget leading,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.settings, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'App Preferences',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
+            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: (leading as Icon).color?.withValues(alpha: 0.15) ??
+                        theme.colorScheme.primary.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: leading,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Theme Settings
-          ListTile(
-            leading: Icon(
-              themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
-            ),
-            title: const Text('Theme'),
-            subtitle: Text(_getThemeModeText(themeMode)),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showThemeSelector(),
-          ),
-
-          // Language Settings
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('Language'),
-            subtitle: const Text('English'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              _showLanguageSelection();
-            },
-          ),
-
-          // Notifications
-          SwitchListTile(
-            secondary: const Icon(Icons.notifications),
-            title: const Text('Notifications'),
-            subtitle: const Text('Receive reminders and alerts'),
-            value: ref.watch(notificationsEnabledProvider),
-            onChanged: (value) {
-              ref
-                  .read(settingsNotifierProvider.notifier)
-                  .toggleNotifications(value);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    value ? 'Notifications enabled' : 'Notifications disabled',
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
 
-          // Reminders
-          ListTile(
-            leading: const Icon(Icons.alarm),
-            title: const Text('Reminders'),
-            subtitle: const Text('Manage your medication and health reminders'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.reminders),
+  Widget _buildModernSwitchTile({
+    required BuildContext context,
+    required Widget leading,
+    required String title,
+    required String subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
+            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: (leading as Icon).color?.withValues(alpha: 0.15) ??
+                    theme.colorScheme.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: leading,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernInfoTile({
+    required BuildContext context,
+    required Widget leading,
+    required String title,
+    required String subtitle,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
+            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: (leading as Icon).color?.withValues(alpha: 0.15) ??
+                    theme.colorScheme.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: leading,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernSecurityTile({
+    required BuildContext context,
+    required Widget leading,
+    required String title,
+    required String subtitle,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
+            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: (leading as Icon).color?.withValues(alpha: 0.15) ??
+                    theme.colorScheme.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: leading,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF059669), Color(0xFF047857)],
+                ),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF059669).withValues(alpha: 0.3),
+                    offset: const Offset(0, 2),
+                    blurRadius: 6,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              child: const Text(
+                'Secure',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppPreferencesSection(ThemeData theme) {
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = theme.brightness == Brightness.dark;
+    const sectionColor = Color(0xFF8B5CF6); // Purple
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionColor.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionColor.withValues(alpha: 0.3),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.settings,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'App Preferences',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Theme Settings
+                  _buildModernListTile(
+                    context: context,
+                    leading: Icon(
+                      themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+                      color: const Color(0xFF8B5CF6),
+                    ),
+                    title: 'Theme',
+                    subtitle: _getThemeModeText(themeMode),
+                    onTap: () => _showThemeSelector(),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Language Settings
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.language, color: Color(0xFF8B5CF6)),
+                    title: 'Language',
+                    subtitle: 'English',
+                    onTap: () => _showLanguageSelection(),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Notifications
+                  _buildModernSwitchTile(
+                    context: context,
+                    leading: const Icon(Icons.notifications, color: Color(0xFF8B5CF6)),
+                    title: 'Notifications',
+                    subtitle: 'Receive reminders and alerts',
+                    value: ref.watch(notificationsEnabledProvider),
+                    onChanged: (value) {
+                      ref
+                          .read(settingsNotifierProvider.notifier)
+                          .toggleNotifications(value);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            value ? 'Notifications enabled' : 'Notifications disabled',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Reminders
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.alarm, color: Color(0xFF8B5CF6)),
+                    title: 'Reminders',
+                    subtitle: 'Manage your medication and health reminders',
+                    onTap: () => context.push(AppRoutes.reminders),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
 
   Widget _buildDataManagementSection(ThemeData theme) {
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.storage, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'Data Management',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
+    final isDark = theme.brightness == Brightness.dark;
+    const sectionColor = Color(0xFF059669); // Emerald
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionColor.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-          const SizedBox(height: 16),
-
-          ListTile(
-            leading: const Icon(Icons.file_download),
-            title: const Text('Export Data'),
-            subtitle: const Text('Export your medical data'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.export),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.file_upload),
-            title: const Text('Import Data'),
-            subtitle: const Text('Import medical data from backup'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.import),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.medical_information),
-            title: const Text('Emergency Card'),
-            subtitle: const Text('Manage emergency medical information'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.emergencyCard),
-          ),
-
-          FutureBuilder<int>(
-            future: AppDatabase.instance.getDatabaseSize(),
-            builder: (context, snapshot) {
-              final sizeText = snapshot.hasData
-                  ? '${(snapshot.data! / 1024 / 1024).toStringAsFixed(2)} MB'
-                  : 'Calculating...';
-
-              return ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('Database Size'),
-                subtitle: Text('Current storage: $sizeText'),
-              );
-            },
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF059669), Color(0xFF047857)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF059669), Color(0xFF047857)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionColor.withValues(alpha: 0.3),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.storage,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Data Management',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.file_download, color: Color(0xFF059669)),
+                    title: 'Export Data',
+                    subtitle: 'Export your medical data',
+                    onTap: () => context.push(AppRoutes.export),
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.file_upload, color: Color(0xFF059669)),
+                    title: 'Import Data',
+                    subtitle: 'Import medical data from backup',
+                    onTap: () => context.push(AppRoutes.import),
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.medical_information, color: Color(0xFF059669)),
+                    title: 'Emergency Card',
+                    subtitle: 'Manage emergency medical information',
+                    onTap: () => context.push(AppRoutes.emergencyCard),
+                  ),
+                  const SizedBox(height: 8),
+
+                  FutureBuilder<int>(
+                    future: AppDatabase.instance.getDatabaseSize(),
+                    builder: (context, snapshot) {
+                      final sizeText = snapshot.hasData
+                          ? '${(snapshot.data! / 1024 / 1024).toStringAsFixed(2)} MB'
+                          : 'Calculating...';
+
+                      return _buildModernInfoTile(
+                        context: context,
+                        leading: const Icon(Icons.info_outline, color: Color(0xFF059669)),
+                        title: 'Database Size',
+                        subtitle: 'Current storage: $sizeText',
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildPrivacySection(ThemeData theme) {
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.security, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'Privacy & Security',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+    final isDark = theme.brightness == Brightness.dark;
+    const sectionColor = Color(0xFFEF4444); // Red
 
-          ListTile(
-            leading: Icon(
-              Icons.verified_user,
-              color: theme.colorScheme.primary,
-            ),
-            title: const Text('Database Security'),
-            subtitle: const Text('Your data is secured with SQLCipher encryption'),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Secure',
-                style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionColor.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-
-          ListTile(
-            leading: const Icon(Icons.privacy_tip),
-            title: const Text('Privacy Policy'),
-            subtitle: const Text('View our comprehensive privacy policy'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/privacy-policy'),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.article),
-            title: const Text('Terms of Service'),
-            subtitle: const Text('View terms and conditions'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/terms-of-service'),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionColor.withValues(alpha: 0.3),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.security,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Privacy & Security',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  _buildModernSecurityTile(
+                    context: context,
+                    leading: const Icon(Icons.verified_user, color: Color(0xFFEF4444)),
+                    title: 'Database Security',
+                    subtitle: 'Your data is secured with SQLCipher encryption',
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.privacy_tip, color: Color(0xFFEF4444)),
+                    title: 'Privacy Policy',
+                    subtitle: 'View our comprehensive privacy policy',
+                    onTap: () => context.push('/privacy-policy'),
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.article, color: Color(0xFFEF4444)),
+                    title: 'Terms of Service',
+                    subtitle: 'View terms and conditions',
+                    onTap: () => context.push('/terms-of-service'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildBackupSyncSection(ThemeData theme) {
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.cloud_sync, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'Backup & Sync',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+    final isDark = theme.brightness == Brightness.dark;
+    const sectionColor = Color(0xFF06B6D4); // Cyan
 
-          ListTile(
-            leading: const Icon(Icons.cloud),
-            title: const Text('Google Drive Sync'),
-            subtitle: const Text('Sync with Google Drive (Optional)'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.sync),
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionColor.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-
-          ListTile(
-            leading: const Icon(Icons.backup),
-            title: const Text('Create Backup'),
-            subtitle: const Text('Create a local backup file'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: _createBackup,
-          ),
-
-          SwitchListTile(
-            secondary: const Icon(Icons.schedule),
-            title: const Text('Auto Backup'),
-            subtitle: const Text('Automatically backup daily'),
-            value: ref.watch(autoBackupEnabledProvider),
-            onChanged: (value) {
-              ref
-                  .read(settingsNotifierProvider.notifier)
-                  .toggleAutoBackup(value);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    value ? 'Auto backup enabled' : 'Auto backup disabled',
-                  ),
-                ),
-              );
-            },
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF06B6D4), Color(0xFF0891B2)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF06B6D4), Color(0xFF0891B2)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionColor.withValues(alpha: 0.3),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.cloud_sync,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Backup & Sync',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.cloud, color: Color(0xFF06B6D4)),
+                    title: 'Google Drive Sync',
+                    subtitle: 'Sync with Google Drive (Optional)',
+                    onTap: () => context.push(AppRoutes.sync),
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.backup, color: Color(0xFF06B6D4)),
+                    title: 'Create Backup',
+                    subtitle: 'Create a local backup file',
+                    onTap: _createBackup,
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernSwitchTile(
+                    context: context,
+                    leading: const Icon(Icons.schedule, color: Color(0xFF06B6D4)),
+                    title: 'Auto Backup',
+                    subtitle: 'Automatically backup daily',
+                    value: ref.watch(autoBackupEnabledProvider),
+                    onChanged: (value) {
+                      ref
+                          .read(settingsNotifierProvider.notifier)
+                          .toggleAutoBackup(value);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            value ? 'Auto backup enabled' : 'Auto backup disabled',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildSupportSection(ThemeData theme) {
-    return ModernCard(
-      elevation: CardElevation.medium,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.help, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                'Support & About',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+    final isDark = theme.brightness == Brightness.dark;
+    const sectionColor = Color(0xFFF59E0B); // Amber
 
-          ListTile(
-            leading: const Icon(Icons.help_center),
-            title: const Text('Help Center'),
-            subtitle: const Text('Get help and tutorials'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showHelpCenter(),
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionColor.withValues(alpha: 0.1),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-
-          ListTile(
-            leading: const Icon(Icons.feedback),
-            title: const Text('Send Feedback'),
-            subtitle: const Text('Help us improve the app'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _sendFeedback(),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About Health Box'),
-            subtitle: const Text('Version 1.0.0'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showAboutDialog(),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Gradient Header Strip
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                ),
+              ),
+            ),
+            // Card Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionColor.withValues(alpha: 0.3),
+                              offset: const Offset(0, 3),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.help,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Support & About',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.help_center, color: Color(0xFFF59E0B)),
+                    title: 'Help Center',
+                    subtitle: 'Get help and tutorials',
+                    onTap: () => _showHelpCenter(),
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.feedback, color: Color(0xFFF59E0B)),
+                    title: 'Send Feedback',
+                    subtitle: 'Help us improve the app',
+                    onTap: () => _sendFeedback(),
+                  ),
+                  const SizedBox(height: 8),
+
+                  _buildModernListTile(
+                    context: context,
+                    leading: const Icon(Icons.info, color: Color(0xFFF59E0B)),
+                    title: 'About Health Box',
+                    subtitle: 'Version 1.0.0',
+                    onTap: () => _showAboutDialog(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

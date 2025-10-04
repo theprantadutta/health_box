@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import '../services/general_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
@@ -109,17 +110,17 @@ class _GeneralRecordFormScreenState
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildCategorySection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildProviderInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildDocumentDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildNotesAndTagsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildSettingsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -128,296 +129,220 @@ class _GeneralRecordFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Insurance Card, Referral Letter',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.description),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Additional details about this record',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'record'),
-            ),
-          ],
+    return _buildModernSection(
+      context: context,
+      title: 'Basic Information',
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Insurance Card, Referral Letter',
+          prefixIcon: const Icon(Icons.description),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          hintText: 'Additional details about this record',
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'record'),
+        ),
+      ],
     );
   }
 
   Widget _buildCategorySection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Category',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Category *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.category),
-              ),
-              items: _categories
-                  .map((category) => DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() => _categoryController.text = value ?? '');
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Category is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _subcategoryController,
-              decoration: const InputDecoration(
-                labelText: 'Subcategory',
-                hintText: 'More specific classification',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.subdirectory_arrow_right),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      context: context,
+      title: 'Category',
+      children: [
+        DropdownButtonFormField<String>(
+          decoration: const InputDecoration(
+            labelText: 'Category *',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.category),
+          ),
+          items: _categories
+              .map((category) => DropdownMenuItem(
+                    value: category,
+                    child: Text(category),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            setState(() => _categoryController.text = value ?? '');
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Category is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _subcategoryController,
+          labelText: 'Subcategory',
+          hintText: 'More specific classification',
+          prefixIcon: const Icon(Icons.subdirectory_arrow_right),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+        ),
+      ],
     );
   }
 
   Widget _buildProviderInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Provider Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _providerNameController,
-              decoration: const InputDecoration(
-                labelText: 'Provider Name',
-                hintText: 'Healthcare provider or contact person',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _institutionController,
-              decoration: const InputDecoration(
-                labelText: 'Institution',
-                hintText: 'Hospital, clinic, or organization',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.business),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      context: context,
+      title: 'Provider Information',
+      children: [
+        ModernTextField(
+          controller: _providerNameController,
+          labelText: 'Provider Name',
+          hintText: 'Healthcare provider or contact person',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _institutionController,
+          labelText: 'Institution',
+          hintText: 'Hospital, clinic, or organization',
+          prefixIcon: const Icon(Icons.business),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+        ),
+      ],
     );
   }
 
   Widget _buildDocumentDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Document Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _documentTypeController,
-              decoration: const InputDecoration(
-                labelText: 'Document Type',
-                hintText: 'e.g., PDF, Image, Form',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.insert_drive_file),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _referenceNumberController,
-              decoration: const InputDecoration(
-                labelText: 'Reference Number',
-                hintText: 'ID, case number, or reference',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.confirmation_number),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Document Date'),
-              subtitle: Text(_documentDate != null
-                  ? _formatDate(_documentDate!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'document'),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Expiration Date'),
-              subtitle: Text(_expirationDate != null
-                  ? _formatDate(_expirationDate!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.event_busy),
-              onTap: () => _selectDate(context, 'expiration'),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Reminder Date'),
-              subtitle: Text(_reminderDate != null
-                  ? _formatDate(_reminderDate!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.alarm),
-              onTap: () => _selectDate(context, 'reminder'),
-            ),
-          ],
+    return _buildModernSection(
+      context: context,
+      title: 'Document Details',
+      children: [
+        ModernTextField(
+          controller: _documentTypeController,
+          labelText: 'Document Type',
+          hintText: 'e.g., PDF, Image, Form',
+          prefixIcon: const Icon(Icons.insert_drive_file),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _referenceNumberController,
+          labelText: 'Reference Number',
+          hintText: 'ID, case number, or reference',
+          prefixIcon: const Icon(Icons.confirmation_number),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Document Date'),
+          subtitle: Text(_documentDate != null
+              ? _formatDate(_documentDate!)
+              : 'Not set'),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'document'),
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Expiration Date'),
+          subtitle: Text(_expirationDate != null
+              ? _formatDate(_expirationDate!)
+              : 'Not set'),
+          trailing: const Icon(Icons.event_busy),
+          onTap: () => _selectDate(context, 'expiration'),
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Reminder Date'),
+          subtitle: Text(_reminderDate != null
+              ? _formatDate(_reminderDate!)
+              : 'Not set'),
+          trailing: const Icon(Icons.alarm),
+          onTap: () => _selectDate(context, 'reminder'),
+        ),
+      ],
     );
   }
 
   Widget _buildNotesAndTagsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Additional Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _relatedConditionController,
-              decoration: const InputDecoration(
-                labelText: 'Related Condition',
-                hintText: 'Associated medical condition',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.link),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'Notes',
-                hintText: 'Additional notes or comments',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.note),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _followUpRequiredController,
-              decoration: const InputDecoration(
-                labelText: 'Follow-up Required',
-                hintText: 'What follow-up actions are needed',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.follow_the_signs),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _tagsController,
-              decoration: const InputDecoration(
-                labelText: 'Tags',
-                hintText: 'Comma-separated tags for organization',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.tag),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      context: context,
+      title: 'Additional Information',
+      children: [
+        ModernTextField(
+          controller: _relatedConditionController,
+          labelText: 'Related Condition',
+          hintText: 'Associated medical condition',
+          prefixIcon: const Icon(Icons.link),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _notesController,
+          labelText: 'Notes',
+          hintText: 'Additional notes or comments',
+          prefixIcon: const Icon(Icons.note),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _followUpRequiredController,
+          labelText: 'Follow-up Required',
+          hintText: 'What follow-up actions are needed',
+          prefixIcon: const Icon(Icons.follow_the_signs),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+          maxLines: 2,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _tagsController,
+          labelText: 'Tags',
+          hintText: 'Comma-separated tags for organization',
+          prefixIcon: const Icon(Icons.tag),
+          focusGradient: HealthBoxDesignSystem.medicalGreen,
+        ),
+      ],
     );
   }
 
   Widget _buildSettingsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Settings',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Confidential'),
-              subtitle: const Text('Mark as sensitive information'),
-              value: _isConfidential,
-              onChanged: (value) {
-                setState(() => _isConfidential = value);
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Requires Action'),
-              subtitle: const Text('Mark if follow-up action is needed'),
-              value: _requiresAction,
-              onChanged: (value) {
-                setState(() => _requiresAction = value);
-              },
-            ),
-          ],
+    return _buildModernSection(
+      context: context,
+      title: 'Settings',
+      children: [
+        SwitchListTile(
+          title: const Text('Confidential'),
+          subtitle: const Text('Mark as sensitive information'),
+          value: _isConfidential,
+          onChanged: (value) {
+            setState(() => _isConfidential = value);
+          },
         ),
-      ),
+        SwitchListTile(
+          title: const Text('Requires Action'),
+          subtitle: const Text('Mark if follow-up action is needed'),
+          value: _requiresAction,
+          onChanged: (value) {
+            setState(() => _requiresAction = value);
+          },
+        ),
+      ],
     );
   }
 
@@ -608,39 +533,92 @@ class _GeneralRecordFormScreenState
     }
   }
 
-  Widget _buildAttachmentsSection() {
-    return Card(
+  Widget _buildModernSection({
+    required BuildContext context,
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            HealthBoxDesignSystem.medicalGreen.colors.first.withValues(alpha: 0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: HealthBoxDesignSystem.medicalGreen.colors.first.withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: HealthBoxDesignSystem.medicalGreen.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
+            Row(
+              children: [
+                Container(
+                  width: 4,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    gradient: HealthBoxDesignSystem.medicalGreen,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: HealthBoxDesignSystem.medicalGreen.colors.first,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Add any relevant medical documents or files',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 15,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'txt'],
-              maxFileSizeMB: 50,
-            ),
+            const SizedBox(height: 20),
+            ...children,
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return _buildModernSection(
+      context: context,
+      title: 'Attachments',
+      children: [
+        Text(
+          'Add any relevant medical documents or files',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 15,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'txt'],
+          maxFileSizeMB: 50,
+        ),
+      ],
     );
   }
 

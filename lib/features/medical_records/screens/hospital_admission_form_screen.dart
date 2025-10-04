@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import '../services/hospital_admission_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
@@ -66,94 +67,78 @@ class _HospitalAdmissionFormScreenState extends ConsumerState<HospitalAdmissionF
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Admission Details', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Title *',
-                        hintText: 'e.g., Emergency Admission',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.local_hospital),
-                      ),
-                      validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _hospitalController,
-                      decoration: const InputDecoration(
-                        labelText: 'Hospital *',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.business),
-                      ),
-                      validator: (value) => value?.trim().isEmpty == true ? 'Hospital is required' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      initialValue: _admissionType,
-                      decoration: const InputDecoration(
-                        labelText: 'Admission Type',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.category),
-                      ),
-                      items: _admissionTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-                      onChanged: (value) => setState(() => _admissionType = value!),
-                    ),
-                    const SizedBox(height: 16),
-                    ListTile(
-                      title: const Text('Admission Date'),
-                      subtitle: Text('${_admissionDate.day}/${_admissionDate.month}/${_admissionDate.year}'),
-                      trailing: const Icon(Icons.calendar_today),
-                      onTap: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: _admissionDate,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (date != null) setState(() => _admissionDate = date);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _chiefComplaintController,
-                      decoration: const InputDecoration(
-                        labelText: 'Chief Complaint *',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.report_problem),
-                      ),
-                      validator: (value) => value?.trim().isEmpty == true ? 'Chief complaint is required' : null,
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _reasonController,
-                      decoration: const InputDecoration(
-                        labelText: 'Reason for Admission',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _admittingPhysicianController,
-                      decoration: const InputDecoration(
-                        labelText: 'Admitting Physician',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
-                      ),
-                    ),
-                  ],
+            _buildModernSection(
+              context: context,
+              title: 'Admission Details',
+              children: [
+                ModernTextField(
+                  controller: _titleController,
+                  labelText: 'Title *',
+                  hintText: 'e.g., Emergency Admission',
+                  prefixIcon: const Icon(Icons.local_hospital),
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
+                  validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
                 ),
-              ),
+                const SizedBox(height: 16),
+                ModernTextField(
+                  controller: _hospitalController,
+                  labelText: 'Hospital *',
+                  prefixIcon: const Icon(Icons.business),
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
+                  validator: (value) => value?.trim().isEmpty == true ? 'Hospital is required' : null,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: _admissionType,
+                  decoration: const InputDecoration(
+                    labelText: 'Admission Type',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.category),
+                  ),
+                  items: _admissionTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+                  onChanged: (value) => setState(() => _admissionType = value!),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  title: const Text('Admission Date'),
+                  subtitle: Text('${_admissionDate.day}/${_admissionDate.month}/${_admissionDate.year}'),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: _admissionDate,
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (date != null) setState(() => _admissionDate = date);
+                  },
+                ),
+                const SizedBox(height: 16),
+                ModernTextField(
+                  controller: _chiefComplaintController,
+                  labelText: 'Chief Complaint *',
+                  prefixIcon: const Icon(Icons.report_problem),
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
+                  validator: (value) => value?.trim().isEmpty == true ? 'Chief complaint is required' : null,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 16),
+                ModernTextField(
+                  controller: _reasonController,
+                  labelText: 'Reason for Admission',
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+                ModernTextField(
+                  controller: _admittingPhysicianController,
+                  labelText: 'Admitting Physician',
+                  prefixIcon: const Icon(Icons.person),
+                  focusGradient: HealthBoxDesignSystem.medicalBlue,
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -251,39 +236,92 @@ class _HospitalAdmissionFormScreenState extends ConsumerState<HospitalAdmissionF
     }
   }
 
-  Widget _buildAttachmentsSection() {
-    return Card(
+  Widget _buildModernSection({
+    required BuildContext context,
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
+            Row(
+              children: [
+                Container(
+                  width: 4,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    gradient: HealthBoxDesignSystem.medicalBlue,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: HealthBoxDesignSystem.medicalBlue.colors.first,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Add admission records, treatment notes, or hospital documentation',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 8,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 50,
-            ),
+            const SizedBox(height: 20),
+            ...children,
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return _buildModernSection(
+      context: context,
+      title: 'Attachments',
+      children: [
+        Text(
+          'Add admission records, treatment notes, or hospital documentation',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 8,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 50,
+        ),
+      ],
     );
   }
 

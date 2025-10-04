@@ -12,6 +12,7 @@ import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 
 class VaccinationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -109,15 +110,15 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildVaccineDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAdministrationSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildDosageSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildCompletionSection(),
           ],
         ),
@@ -126,249 +127,192 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., COVID-19 Vaccination',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.vaccines),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Additional notes about this vaccination',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: true),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      icon: Icons.info_outline,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., COVID-19 Vaccination',
+          prefixIcon: const Icon(Icons.vaccines),
+          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          hintText: 'Additional notes about this vaccination',
+          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: true),
+        ),
+      ],
     );
   }
 
   Widget _buildVaccineDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Vaccine Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _vaccineNameController,
-              decoration: const InputDecoration(
-                labelText: 'Vaccine Name *',
-                hintText: 'e.g., Pfizer-BioNTech COVID-19',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_services),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Vaccine name is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedManufacturer,
-              decoration: const InputDecoration(
-                labelText: 'Manufacturer',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.business),
-              ),
-              items: VaccineManufacturers.allManufacturers
-                  .map((manufacturer) => DropdownMenuItem(
-                        value: manufacturer,
-                        child: Text(manufacturer),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedManufacturer = value;
-                  _manufacturerController.text = value ?? '';
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _batchNumberController,
-              decoration: const InputDecoration(
-                labelText: 'Batch/Lot Number',
-                hintText: 'e.g., EJ1685',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.tag),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Vaccine Details',
+      icon: Icons.medical_services,
+      children: [
+        ModernTextField(
+          controller: _vaccineNameController,
+          labelText: 'Vaccine Name *',
+          hintText: 'e.g., Pfizer-BioNTech COVID-19',
+          prefixIcon: const Icon(Icons.medical_services),
+          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Vaccine name is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedManufacturer,
+          decoration: const InputDecoration(
+            labelText: 'Manufacturer',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.business),
+          ),
+          items: VaccineManufacturers.allManufacturers
+              .map((manufacturer) => DropdownMenuItem(
+                    value: manufacturer,
+                    child: Text(manufacturer),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedManufacturer = value;
+              _manufacturerController.text = value ?? '';
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _batchNumberController,
+          labelText: 'Batch/Lot Number',
+          hintText: 'e.g., EJ1685',
+          prefixIcon: const Icon(Icons.tag),
+          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildAdministrationSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Administration Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Administration Date'),
-              subtitle: Text(_formatDate(_administrationDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: false),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedSite,
-              decoration: const InputDecoration(
-                labelText: 'Administration Site',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.location_on),
-              ),
-              items: VaccinationSites.allSites
-                  .map((site) => DropdownMenuItem(
-                        value: site,
-                        child: Text(site),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() => _selectedSite = value);
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _administeredByController,
-              decoration: const InputDecoration(
-                labelText: 'Administered By',
-                hintText: 'Healthcare provider name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Administration Details',
+      icon: Icons.local_hospital,
+      children: [
+        ListTile(
+          title: const Text('Administration Date'),
+          subtitle: Text(_formatDate(_administrationDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: false),
         ),
-      ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedSite,
+          decoration: const InputDecoration(
+            labelText: 'Administration Site',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.location_on),
+          ),
+          items: VaccinationSites.allSites
+              .map((site) => DropdownMenuItem(
+                    value: site,
+                    child: Text(site),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            setState(() => _selectedSite = value);
+          },
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _administeredByController,
+          labelText: 'Administered By',
+          hintText: 'Healthcare provider name',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildDosageSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dosage Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _doseNumberController,
-              decoration: const InputDecoration(
-                labelText: 'Dose Number',
-                hintText: 'e.g., 1, 2, 3',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.numbers),
-              ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  final dose = int.tryParse(value);
-                  if (dose == null || dose <= 0) {
-                    return 'Dose number must be a positive integer';
-                  }
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Next Due Date'),
-              subtitle: Text(_nextDueDate != null
-                  ? _formatDate(_nextDueDate!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.schedule),
-              onTap: () => _selectNextDueDate(context),
-            ),
-            if (_nextDueDate != null)
-              TextButton(
-                onPressed: () {
-                  setState(() => _nextDueDate = null);
-                },
-                child: const Text('Clear Next Due Date'),
-              ),
-          ],
+    return _buildModernSection(
+      title: 'Dosage Information',
+      icon: Icons.numbers,
+      children: [
+        ModernTextField(
+          controller: _doseNumberController,
+          labelText: 'Dose Number',
+          hintText: 'e.g., 1, 2, 3',
+          prefixIcon: const Icon(Icons.numbers),
+          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value != null && value.isNotEmpty) {
+              final dose = int.tryParse(value);
+              if (dose == null || dose <= 0) {
+                return 'Dose number must be a positive integer';
+              }
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Next Due Date'),
+          subtitle: Text(_nextDueDate != null
+              ? _formatDate(_nextDueDate!)
+              : 'Not set'),
+          trailing: const Icon(Icons.schedule),
+          onTap: () => _selectNextDueDate(context),
+        ),
+        if (_nextDueDate != null)
+          TextButton(
+            onPressed: () {
+              setState(() => _nextDueDate = null);
+            },
+            child: const Text('Clear Next Due Date'),
+          ),
+      ],
     );
   }
 
   Widget _buildCompletionSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Completion Status',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Mark as Complete'),
-              subtitle: const Text(
-                'Check this if this completes the vaccination series',
-              ),
-              value: _isComplete,
-              onChanged: (value) {
-                setState(() => _isComplete = value);
-              },
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Completion Status',
+      icon: Icons.check_circle_outline,
+      children: [
+        SwitchListTile(
+          title: const Text('Mark as Complete'),
+          subtitle: const Text(
+            'Check this if this completes the vaccination series',
+          ),
+          value: _isComplete,
+          onChanged: (value) {
+            setState(() => _isComplete = value);
+          },
         ),
-      ),
+      ],
     );
   }
 
@@ -521,40 +465,31 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add vaccination cards, certificates, or related documents',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 5,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 25,
-            ),
-            const SizedBox(height: 24),
-            _buildReminderSection(),
-          ],
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add vaccination cards, certificates, or related documents',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 5,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 25,
+        ),
+        const SizedBox(height: 24),
+        _buildReminderSection(),
+      ],
     );
   }
 
@@ -650,6 +585,95 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.vaccinationGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

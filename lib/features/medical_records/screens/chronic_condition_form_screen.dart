@@ -12,6 +12,7 @@ import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 
 class ChronicConditionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -106,19 +107,19 @@ class _ChronicConditionFormScreenState
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildConditionDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildDiagnosisSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildSeverityAndStatusSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildTreatmentSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildManagementSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildReminderSection(),
           ],
         ),
@@ -127,350 +128,266 @@ class _ChronicConditionFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Type 2 Diabetes Management',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_information),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Additional details about this condition',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: true),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      icon: Icons.info_outline,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Type 2 Diabetes Management',
+          prefixIcon: const Icon(Icons.medical_information),
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          hintText: 'Additional details about this condition',
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: true),
+        ),
+      ],
     );
   }
 
   Widget _buildConditionDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Condition Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _conditionNameController,
-              decoration: const InputDecoration(
-                labelText: 'Condition Name *',
-                hintText: 'e.g., Type 2 Diabetes, Hypertension',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_hospital),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Condition name is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Common Condition Categories',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: ConditionCategories.allCategories.map((category) {
-                return FilterChip(
-                  label: Text(category),
-                  selected: false,
-                  onSelected: (selected) {
-                    if (selected) {
-                      // This could be enhanced to auto-suggest condition names
-                      // based on the selected category
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Condition Details',
+      icon: Icons.local_hospital,
+      children: [
+        ModernTextField(
+          controller: _conditionNameController,
+          labelText: 'Condition Name *',
+          hintText: 'e.g., Type 2 Diabetes, Hypertension',
+          prefixIcon: const Icon(Icons.local_hospital),
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Condition name is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        Text(
+          'Common Condition Categories',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: ConditionCategories.allCategories.map((category) {
+            return FilterChip(
+              label: Text(category),
+              selected: false,
+              onSelected: (selected) {
+                if (selected) {
+                  // This could be enhanced to auto-suggest condition names
+                  // based on the selected category
+                }
+              },
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
   Widget _buildDiagnosisSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Diagnosis Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Diagnosis Date'),
-              subtitle: Text(_formatDate(_diagnosisDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: false),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _diagnosingProviderController,
-              decoration: const InputDecoration(
-                labelText: 'Diagnosing Healthcare Provider',
-                hintText: 'e.g., Dr. Smith, Cardiology',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Diagnosis Information',
+      icon: Icons.medical_information,
+      children: [
+        ListTile(
+          title: const Text('Diagnosis Date'),
+          subtitle: Text(_formatDate(_diagnosisDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: false),
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _diagnosingProviderController,
+          labelText: 'Diagnosing Healthcare Provider',
+          hintText: 'e.g., Dr. Smith, Cardiology',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildSeverityAndStatusSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Severity & Status',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Severity Level',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SegmentedButton<String>(
-              segments: ConditionSeverity.allSeverities
-                  .map((severity) => ButtonSegment<String>(
-                        value: severity,
-                        label: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_getSeverityDisplayName(severity)),
-                            Text(
-                              _getSeverityDescription(severity),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-              selected: {_selectedSeverity},
-              onSelectionChanged: (Set<String> selection) {
-                if (selection.isNotEmpty) {
-                  setState(() => _selectedSeverity = selection.first);
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Current Status',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SegmentedButton<String>(
-              segments: ConditionStatus.allStatuses
-                  .map((status) => ButtonSegment<String>(
-                        value: status,
-                        label: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_getStatusDisplayName(status)),
-                            Text(
-                              _getStatusDescription(status),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-              selected: {_selectedStatus},
-              onSelectionChanged: (Set<String> selection) {
-                if (selection.isNotEmpty) {
-                  setState(() => _selectedStatus = selection.first);
-                }
-              },
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Severity & Status',
+      icon: Icons.priority_high,
+      children: [
+        Text(
+          'Severity Level',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
         ),
-      ),
+        const SizedBox(height: 8),
+        SegmentedButton<String>(
+          segments: ConditionSeverity.allSeverities
+              .map((severity) => ButtonSegment<String>(
+                    value: severity,
+                    label: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_getSeverityDisplayName(severity)),
+                        Text(
+                          _getSeverityDescription(severity),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
+          selected: {_selectedSeverity},
+          onSelectionChanged: (Set<String> selection) {
+            if (selection.isNotEmpty) {
+              setState(() => _selectedSeverity = selection.first);
+            }
+          },
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Current Status',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SegmentedButton<String>(
+          segments: ConditionStatus.allStatuses
+              .map((status) => ButtonSegment<String>(
+                    value: status,
+                    label: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_getStatusDisplayName(status)),
+                        Text(
+                          _getStatusDescription(status),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
+          selected: {_selectedStatus},
+          onSelectionChanged: (Set<String> selection) {
+            if (selection.isNotEmpty) {
+              setState(() => _selectedStatus = selection.first);
+            }
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildTreatmentSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Treatment Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _treatmentController,
-              decoration: const InputDecoration(
-                labelText: 'Current Treatment',
-                hintText: 'e.g., Metformin 500mg twice daily',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medication),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _medicationsController,
-              decoration: const InputDecoration(
-                labelText: 'Related Medications',
-                hintText: 'List medications related to this condition',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_pharmacy),
-              ),
-              maxLines: 2,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Treatment Information',
+      icon: Icons.medication,
+      children: [
+        ModernTextField(
+          controller: _treatmentController,
+          labelText: 'Current Treatment',
+          hintText: 'e.g., Metformin 500mg twice daily',
+          prefixIcon: const Icon(Icons.medication),
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+          maxLines: 3,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _medicationsController,
+          labelText: 'Related Medications',
+          hintText: 'List medications related to this condition',
+          prefixIcon: const Icon(Icons.local_pharmacy),
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+          maxLines: 2,
+        ),
+      ],
     );
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add medical reports, test results, or care plans',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 5,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 25,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add medical reports, test results, or care plans',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 5,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 25,
+        ),
+      ],
     );
   }
 
   Widget _buildManagementSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Management Plan',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _managementPlanController,
-              decoration: const InputDecoration(
-                labelText: 'Management Plan',
-                hintText: 'Diet, exercise, monitoring guidelines, etc.',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.assignment),
-              ),
-              maxLines: 4,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Management Plan',
+      icon: Icons.assignment,
+      children: [
+        ModernTextField(
+          controller: _managementPlanController,
+          labelText: 'Management Plan',
+          hintText: 'Diet, exercise, monitoring guidelines, etc.',
+          prefixIcon: const Icon(Icons.assignment),
+          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
+          maxLines: 4,
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildReminderSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Reminder Settings',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Enable Reminders'),
-              subtitle: const Text('Get reminded about check-ups, medication, or monitoring'),
-              value: _enableReminder,
-              onChanged: (value) {
-                setState(() {
-                  _enableReminder = value;
-                });
-              },
-            ),
+    return _buildModernSection(
+      title: 'Reminder Settings',
+      icon: Icons.notifications_outlined,
+      children: [
+        SwitchListTile(
+          title: const Text('Enable Reminders'),
+          subtitle: const Text('Get reminded about check-ups, medication, or monitoring'),
+          value: _enableReminder,
+          onChanged: (value) {
+            setState(() {
+              _enableReminder = value;
+            });
+          },
+        ),
 
-            if (_enableReminder) ...[
+        if (_enableReminder) ...[
               const SizedBox(height: 16),
 
               // Reminder Type Selector
@@ -527,9 +444,7 @@ class _ChronicConditionFormScreenState
                 showTestButtons: true,
               ),
             ],
-          ],
-        ),
-      ),
+      ],
     );
   }
 
@@ -721,6 +636,95 @@ class _ChronicConditionFormScreenState
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.chronicConditionGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override

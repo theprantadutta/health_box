@@ -6,6 +6,7 @@ import '../services/dental_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import 'dart:developer' as developer;
 
 class DentalRecordFormScreen extends ConsumerStatefulWidget {
@@ -84,104 +85,93 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Dental Visit Details', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Title *',
-                        hintText: 'e.g., Routine Dental Cleaning',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.medical_services),
-                      ),
-                      validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _dentistController,
-                      decoration: const InputDecoration(
-                        labelText: 'Dentist Name',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _clinicController,
-                      decoration: const InputDecoration(
-                        labelText: 'Dental Clinic',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.business),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      initialValue: _visitType,
-                      decoration: const InputDecoration(
-                        labelText: 'Visit Type',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.category),
-                      ),
-                      items: _visitTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-                      onChanged: (value) => setState(() => _visitType = value!),
-                    ),
-                    const SizedBox(height: 16),
-                    ListTile(
-                      title: const Text('Visit Date'),
-                      subtitle: Text('${_visitDate.day}/${_visitDate.month}/${_visitDate.year}'),
-                      trailing: const Icon(Icons.calendar_today),
-                      onTap: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: _visitDate,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (date != null) setState(() => _visitDate = date);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _procedureController,
-                      decoration: const InputDecoration(
-                        labelText: 'Procedures Performed',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _treatmentController,
-                      decoration: const InputDecoration(
-                        labelText: 'Treatment Details',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _notesController,
-                      decoration: const InputDecoration(
-                        labelText: 'Additional Notes',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            _buildDentalVisitSection(),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDentalVisitSection() {
+    return _buildModernSection(
+      title: 'Dental Visit Details',
+      icon: Icons.medical_services,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Routine Dental Cleaning',
+          prefixIcon: const Icon(Icons.medical_services),
+          focusGradient: HealthBoxDesignSystem.dentalGradient,
+          validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _dentistController,
+          labelText: 'Dentist Name',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.dentalGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _clinicController,
+          labelText: 'Dental Clinic',
+          prefixIcon: const Icon(Icons.business),
+          focusGradient: HealthBoxDesignSystem.dentalGradient,
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _visitType,
+          decoration: const InputDecoration(
+            labelText: 'Visit Type',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.category),
+          ),
+          items: _visitTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+          onChanged: (value) => setState(() => _visitType = value!),
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Visit Date'),
+          subtitle: Text('${_visitDate.day}/${_visitDate.month}/${_visitDate.year}'),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () async {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: _visitDate,
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (date != null) setState(() => _visitDate = date);
+          },
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _procedureController,
+          labelText: 'Procedures Performed',
+          prefixIcon: const Icon(Icons.healing),
+          focusGradient: HealthBoxDesignSystem.dentalGradient,
+          maxLines: 2,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _treatmentController,
+          labelText: 'Treatment Details',
+          prefixIcon: const Icon(Icons.description),
+          focusGradient: HealthBoxDesignSystem.dentalGradient,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _notesController,
+          labelText: 'Additional Notes',
+          prefixIcon: const Icon(Icons.note),
+          focusGradient: HealthBoxDesignSystem.dentalGradient,
+          maxLines: 3,
+        ),
+      ],
     );
   }
 
@@ -277,34 +267,114 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add dental X-rays, treatment notes, or dental reports',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 10,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 50,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.dentalGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Add dental X-rays, treatment notes, or dental reports',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 10,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 50,
             ),
           ],
         ),

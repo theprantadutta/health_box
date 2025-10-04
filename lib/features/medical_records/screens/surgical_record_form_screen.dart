@@ -7,6 +7,7 @@ import '../../../data/models/surgical_record.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import 'dart:developer' as developer;
 
 class SurgicalRecordFormScreen extends ConsumerStatefulWidget {
@@ -97,17 +98,17 @@ class _SurgicalRecordFormScreenState
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildProcedureDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildSurgeryDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAnesthesiaSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildClinicalDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildRecoverySection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -116,343 +117,266 @@ class _SurgicalRecordFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Appendectomy Surgery',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_services),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Additional details about this procedure',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: true),
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Emergency Procedure'),
-              subtitle: const Text('Was this an emergency surgery?'),
-              value: _isEmergency,
-              onChanged: (value) {
-                setState(() => _isEmergency = value);
-              },
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      icon: Icons.info_outline,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Appendectomy Surgery',
+          prefixIcon: const Icon(Icons.medical_services),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          hintText: 'Additional details about this procedure',
+          prefixIcon: const Icon(Icons.description),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: true),
+        ),
+        const SizedBox(height: 16),
+        SwitchListTile(
+          title: const Text('Emergency Procedure'),
+          subtitle: const Text('Was this an emergency surgery?'),
+          value: _isEmergency,
+          onChanged: (value) {
+            setState(() => _isEmergency = value);
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildProcedureDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Procedure Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _procedureNameController,
-              decoration: const InputDecoration(
-                labelText: 'Procedure Name *',
-                hintText: 'e.g., Laparoscopic Appendectomy',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.healing),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Procedure name is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Common Surgical Categories',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: SurgicalCategories.allCategories.map((category) {
-                return FilterChip(
-                  label: Text(category),
-                  selected: false,
-                  onSelected: (selected) {
-                    // Could be enhanced to auto-suggest procedure names
-                    // based on the selected category
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _indicationController,
-              decoration: const InputDecoration(
-                labelText: 'Indication',
-                hintText: 'Reason for the procedure',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.info),
-              ),
-              maxLines: 2,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Procedure Details',
+      icon: Icons.healing,
+      children: [
+        ModernTextField(
+          controller: _procedureNameController,
+          labelText: 'Procedure Name *',
+          hintText: 'e.g., Laparoscopic Appendectomy',
+          prefixIcon: const Icon(Icons.healing),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Procedure name is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        Text(
+          'Common Surgical Categories',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: SurgicalCategories.allCategories.map((category) {
+            return FilterChip(
+              label: Text(category),
+              selected: false,
+              onSelected: (selected) {
+                // Could be enhanced to auto-suggest procedure names
+                // based on the selected category
+              },
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _indicationController,
+          labelText: 'Indication',
+          hintText: 'Reason for the procedure',
+          prefixIcon: const Icon(Icons.info),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          maxLines: 2,
+        ),
+      ],
     );
   }
 
   Widget _buildSurgeryDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return _buildModernSection(
+      title: 'Surgery Details',
+      icon: Icons.local_hospital,
+      children: [
+        ListTile(
+          title: const Text('Surgery Date'),
+          subtitle: Text(_formatDate(_surgeryDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: false),
+        ),
+        const SizedBox(height: 16),
+        Row(
           children: [
-            Text(
-              'Surgery Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Surgery Date'),
-              subtitle: Text(_formatDate(_surgeryDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: false),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: const Text('Start Time'),
-                    subtitle: Text(_surgeryStartTime != null
-                        ? _surgeryStartTime!.format(context)
-                        : 'Not set'),
-                    trailing: const Icon(Icons.access_time),
-                    onTap: () => _selectTime(context, isStartTime: true),
-                  ),
-                ),
-                Expanded(
-                  child: ListTile(
-                    title: const Text('End Time'),
-                    subtitle: Text(_surgeryEndTime != null
-                        ? _surgeryEndTime!.format(context)
-                        : 'Not set'),
-                    trailing: const Icon(Icons.access_time),
-                    onTap: () => _selectTime(context, isStartTime: false),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _surgeonNameController,
-              decoration: const InputDecoration(
-                labelText: 'Surgeon Name',
-                hintText: 'Primary surgeon',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
+            Expanded(
+              child: ListTile(
+                title: const Text('Start Time'),
+                subtitle: Text(_surgeryStartTime != null
+                    ? _surgeryStartTime!.format(context)
+                    : 'Not set'),
+                trailing: const Icon(Icons.access_time),
+                onTap: () => _selectTime(context, isStartTime: true),
               ),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _hospitalController,
-              decoration: const InputDecoration(
-                labelText: 'Hospital/Facility',
-                hintText: 'Where the surgery was performed',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_hospital),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _operatingRoomController,
-              decoration: const InputDecoration(
-                labelText: 'Operating Room',
-                hintText: 'e.g., OR 3',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.room),
+            Expanded(
+              child: ListTile(
+                title: const Text('End Time'),
+                subtitle: Text(_surgeryEndTime != null
+                    ? _surgeryEndTime!.format(context)
+                    : 'Not set'),
+                trailing: const Icon(Icons.access_time),
+                onTap: () => _selectTime(context, isStartTime: false),
               ),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _surgeonNameController,
+          labelText: 'Surgeon Name',
+          hintText: 'Primary surgeon',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _hospitalController,
+          labelText: 'Hospital/Facility',
+          hintText: 'Where the surgery was performed',
+          prefixIcon: const Icon(Icons.local_hospital),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _operatingRoomController,
+          labelText: 'Operating Room',
+          hintText: 'e.g., OR 3',
+          prefixIcon: const Icon(Icons.room),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildAnesthesiaSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Anesthesia Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedAnesthesiaType,
-              decoration: const InputDecoration(
-                labelText: 'Anesthesia Type',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.masks),
-              ),
-              items: AnesthesiaTypes.allTypes
-                  .map((type) => DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() => _selectedAnesthesiaType = value);
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _anesthesiologistController,
-              decoration: const InputDecoration(
-                labelText: 'Anesthesiologist',
-                hintText: 'Anesthesia provider name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Anesthesia Information',
+      icon: Icons.masks,
+      children: [
+        DropdownButtonFormField<String>(
+          initialValue: _selectedAnesthesiaType,
+          decoration: const InputDecoration(
+            labelText: 'Anesthesia Type',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.masks),
+          ),
+          items: AnesthesiaTypes.allTypes
+              .map((type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(type),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            setState(() => _selectedAnesthesiaType = value);
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _anesthesiologistController,
+          labelText: 'Anesthesiologist',
+          hintText: 'Anesthesia provider name',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+        ),
+      ],
     );
   }
 
   Widget _buildClinicalDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Clinical Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _findingsController,
-              decoration: const InputDecoration(
-                labelText: 'Surgical Findings',
-                hintText: 'What was found during the procedure',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _complicationsController,
-              decoration: const InputDecoration(
-                labelText: 'Complications',
-                hintText: 'Any complications that occurred',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.warning),
-              ),
-              maxLines: 3,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Clinical Details',
+      icon: Icons.search,
+      children: [
+        ModernTextField(
+          controller: _findingsController,
+          labelText: 'Surgical Findings',
+          hintText: 'What was found during the procedure',
+          prefixIcon: const Icon(Icons.search),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          maxLines: 3,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _complicationsController,
+          labelText: 'Complications',
+          hintText: 'Any complications that occurred',
+          prefixIcon: const Icon(Icons.warning),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          maxLines: 3,
+        ),
+      ],
     );
   }
 
   Widget _buildRecoverySection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Recovery & Follow-up',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _recoveryNotesController,
-              decoration: const InputDecoration(
-                labelText: 'Recovery Notes',
-                hintText: 'Post-operative recovery details',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.healing),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _followUpPlanController,
-              decoration: const InputDecoration(
-                labelText: 'Follow-up Plan',
-                hintText: 'Planned follow-up appointments and care',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.calendar_month),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Discharge Date'),
-              subtitle: Text(_dischargeDate != null
-                  ? _formatDate(_dischargeDate!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.exit_to_app),
-              onTap: () => _selectDischargeDate(context),
-            ),
-            if (_dischargeDate != null)
-              TextButton(
-                onPressed: () {
-                  setState(() => _dischargeDate = null);
-                },
-                child: const Text('Clear Discharge Date'),
-              ),
-          ],
+    return _buildModernSection(
+      title: 'Recovery & Follow-up',
+      icon: Icons.healing,
+      children: [
+        ModernTextField(
+          controller: _recoveryNotesController,
+          labelText: 'Recovery Notes',
+          hintText: 'Post-operative recovery details',
+          prefixIcon: const Icon(Icons.healing),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          maxLines: 3,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _followUpPlanController,
+          labelText: 'Follow-up Plan',
+          hintText: 'Planned follow-up appointments and care',
+          prefixIcon: const Icon(Icons.calendar_month),
+          focusGradient: HealthBoxDesignSystem.surgicalGradient,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Discharge Date'),
+          subtitle: Text(_dischargeDate != null
+              ? _formatDate(_dischargeDate!)
+              : 'Not set'),
+          trailing: const Icon(Icons.exit_to_app),
+          onTap: () => _selectDischargeDate(context),
+        ),
+        if (_dischargeDate != null)
+          TextButton(
+            onPressed: () {
+              setState(() => _dischargeDate = null);
+            },
+            child: const Text('Clear Discharge Date'),
+          ),
+      ],
     );
   }
 
@@ -668,43 +592,123 @@ class _SurgicalRecordFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add surgical reports, operative notes, or post-op instructions',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 10,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 50,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add surgical reports, operative notes, or post-op instructions',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 10,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 50,
+        ),
+      ],
     );
   }
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.surgicalGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override

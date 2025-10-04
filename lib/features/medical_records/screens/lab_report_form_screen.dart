@@ -7,6 +7,7 @@ import '../services/lab_report_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 
 class LabReportFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -58,46 +59,110 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Report Title *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.science),
-              ),
-            ),
+            _buildBasicInfoSection(),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _testNameController,
-              decoration: const InputDecoration(
-                labelText: 'Test Name *',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            _buildTestDetailsSection(),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _resultsController,
-              decoration: const InputDecoration(
-                labelText: 'Results',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 5,
-            ),
-            const SizedBox(height: 24),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 10,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 50,
-            ),
+            _buildAttachmentsSection(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBasicInfoSection() {
+    return _buildModernSection(
+      title: 'Basic Information',
+      icon: Icons.info_outline,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Report Title *',
+          hintText: 'e.g., Blood Test Results',
+          prefixIcon: const Icon(Icons.science),
+          focusGradient: HealthBoxDesignSystem.labReportGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Report title is required';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTestDetailsSection() {
+    return _buildModernSection(
+      title: 'Test Details',
+      icon: Icons.biotech,
+      children: [
+        ModernTextField(
+          controller: _testNameController,
+          labelText: 'Test Name *',
+          hintText: 'e.g., Complete Blood Count (CBC)',
+          prefixIcon: const Icon(Icons.medical_services),
+          focusGradient: HealthBoxDesignSystem.labReportGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Test name is required';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _resultsController,
+          labelText: 'Results',
+          hintText: 'Enter test results and findings',
+          prefixIcon: const Icon(Icons.description),
+          focusGradient: HealthBoxDesignSystem.labReportGradient,
+          maxLines: 5,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _labFacilityController,
+          labelText: 'Lab Facility',
+          hintText: 'Name of the laboratory',
+          prefixIcon: const Icon(Icons.business),
+          focusGradient: HealthBoxDesignSystem.labReportGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _orderingPhysicianController,
+          labelText: 'Ordering Physician',
+          hintText: 'Doctor who ordered the test',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.labReportGradient,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add lab reports, test results, or related documents',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 10,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 50,
+        ),
+      ],
     );
   }
 
@@ -208,5 +273,104 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.labReportGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _testNameController.dispose();
+    _resultsController.dispose();
+    _labFacilityController.dispose();
+    _orderingPhysicianController.dispose();
+    super.dispose();
   }
 }

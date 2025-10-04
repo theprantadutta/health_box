@@ -66,45 +66,60 @@ class _MedicalRecordListScreenState
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceContainerLowest,
-      appBar: AppBar(
-        title: Text(
-          'Medical Records',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicalPurple,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalPurple.colors.first
-                    .withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
+      body: CustomScrollView(
+        slivers: [
+          // Dashboard-style app bar
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: HealthBoxDesignSystem.medicalBlue,
+                boxShadow: [
+                  BoxShadow(
+                    color: HealthBoxDesignSystem.medicalBlue.colors.first
+                        .withValues(alpha: 0.3),
+                    offset: const Offset(0, 4),
+                    blurRadius: 12,
+                    spreadRadius: 0,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.group_work, color: Colors.white),
-            onPressed: () => context.push('/medical-records/medication-batches'),
-            tooltip: 'Medication Batches',
-          ),
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
-            onPressed: _showFilterDialog,
-            tooltip: 'Filter Records',
-          ),
-          PopupMenuButton<String>(
-            onSelected: _onAddRecordSelected,
-            itemBuilder: (context) => [
+            ),
+            title: Text(
+              'Medical Records',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.group_work_rounded,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+                onPressed: () => context.push('/medical-records/medication-batches'),
+                tooltip: 'Medication Batches',
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.tune_rounded,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+                onPressed: _showFilterBottomSheet,
+                tooltip: 'Filter Records',
+              ),
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.add_rounded,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+                onSelected: _onAddRecordSelected,
+                itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'prescription',
                 child: Row(
@@ -246,128 +261,72 @@ class _MedicalRecordListScreenState
                 ),
               ),
             ],
-            child: const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Icon(Icons.add),
-            ),
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: Column(
-        children: [
-          // Premium Search and Filter Section
-          CommonTransitions.fadeSlideIn(
-            child: ModernCard(
-              elevation: CardElevation.low,
+
+          // Search Bar
+          SliverToBoxAdapter(
+            child: Container(
               margin: const EdgeInsets.all(16.0),
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  // Premium Search Bar
-                  TextField(
-                    onChanged: (query) {
-                      setState(() {
-                        _searchQuery = query;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Search Medical Records',
-                      hintText: 'Search by title, description...',
-                      prefixIcon: const Icon(Icons.search_rounded),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  _searchQuery = '';
-                                });
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppTheme.primaryColorLight,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Record Type Filter
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.filter_list_rounded,
-                        color: theme.colorScheme.primary,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Filter by type:',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: theme.colorScheme.outline.withValues(
-                                alpha: 0.3,
-                              ),
-                            ),
-                          ),
-                          child: DropdownButton<String>(
-                            value: _selectedRecordType,
-                            isExpanded: true,
-                            underline: const SizedBox.shrink(),
-                            items: _recordTypes
-                                .map(
-                                  (type) => DropdownMenuItem(
-                                    value: type,
-                                    child: Text(
-                                      type,
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            color: theme.colorScheme.onSurface,
-                                          ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedRecordType = value!;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+                    offset: const Offset(0, 2),
+                    blurRadius: 8,
                   ),
                 ],
+              ),
+              child: TextField(
+                onChanged: (query) {
+                  setState(() {
+                    _searchQuery = query;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search medical records...',
+                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: theme.colorScheme.primary,
+                    size: 22,
+                  ),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: theme.colorScheme.onSurfaceVariant,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                        )
+                      : null,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
               ),
             ),
           ),
 
-          // Profile Filter
-          if (_selectedProfileId == null) _buildProfileSelector(),
-
           // Records List
-          Expanded(child: _buildRecordsList()),
+          _buildRecordsList(),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -382,65 +341,15 @@ class _MedicalRecordListScreenState
     );
   }
 
-  Widget _buildProfileSelector() {
-    final profilesAsync = ref.watch(allProfilesProvider);
-
-    return profilesAsync.when(
-      loading: () => const SizedBox.shrink(),
-      error: (error, stack) => const SizedBox.shrink(),
-      data: (profiles) {
-        if (profiles.isEmpty) return const SizedBox.shrink();
-
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            children: [
-              const Text('Profile: '),
-              Expanded(
-                child: DropdownButton<String?>(
-                  value: _selectedProfileId,
-                  isExpanded: true,
-                  hint: const Text('All Profiles'),
-                  items: [
-                    const DropdownMenuItem<String?>(
-                      value: null,
-                      child: Text('All Profiles'),
-                    ),
-                    ...profiles.map(
-                      (profile) => DropdownMenuItem<String?>(
-                        value: profile.id,
-                        child: Text('${profile.firstName} ${profile.lastName}'),
-                      ),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedProfileId = value;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   Widget _buildRecordsList() {
     final recordsAsync = _selectedProfileId != null
         ? ref.watch(recordsByProfileIdProvider(_selectedProfileId!))
         : ref.watch(allMedicalRecordsProvider);
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        ref.invalidate(allMedicalRecordsProvider);
-        if (_selectedProfileId != null) {
-          ref.invalidate(recordsByProfileIdProvider);
-        }
-      },
-      child: recordsAsync.when(
-        loading: () => Center(
+    return recordsAsync.when(
+      loading: () => SliverFillRemaining(
+        child: Center(
           child: CommonTransitions.fadeSlideIn(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -462,9 +371,11 @@ class _MedicalRecordListScreenState
             ),
           ),
         ),
-        error: (error, stack) => _buildErrorState(error, Theme.of(context)),
-        data: (records) => _buildRecordsGrid(records, Theme.of(context)),
       ),
+      error: (error, stack) => SliverFillRemaining(
+        child: _buildErrorState(error, Theme.of(context)),
+      ),
+      data: (records) => _buildRecordsGrid(records, Theme.of(context)),
     );
   }
 
@@ -509,21 +420,27 @@ class _MedicalRecordListScreenState
     final filteredRecords = _filterRecords(allRecords);
 
     if (filteredRecords.isEmpty) {
-      return _buildEmptyState(theme);
+      return SliverFillRemaining(
+        child: _buildEmptyState(theme),
+      );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: filteredRecords.length,
-      itemBuilder: (context, index) {
-        final record = filteredRecords[index];
-        return MedicalRecordCard(
-          record: record,
-          onTap: () => _navigateToRecordDetail(record),
-          onEdit: () => _navigateToEditRecord(record),
-          onDelete: () => _showDeleteConfirmation(record),
-        );
-      },
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final record = filteredRecords[index];
+            return MedicalRecordCard(
+              record: record,
+              onTap: () => _navigateToRecordDetail(record),
+              onEdit: () => _navigateToEditRecord(record),
+              onDelete: () => _showDeleteConfirmation(record),
+            );
+          },
+          childCount: filteredRecords.length,
+        ),
+      ),
     );
   }
 
@@ -653,49 +570,400 @@ class _MedicalRecordListScreenState
     return filteredRecords;
   }
 
-  void _showFilterDialog() {
-    showDialog(
+  void _showFilterBottomSheet() {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Filter Records'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Date Range Filter
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _dateRange != null
-                        ? 'From: ${_dateRange!.start.day}/${_dateRange!.start.month}/${_dateRange!.start.year}\nTo: ${_dateRange!.end.day}/${_dateRange!.end.month}/${_dateRange!.end.year}'
-                        : 'Select date range',
-                    style: Theme.of(context).textTheme.bodyMedium,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) => Column(
+            children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: HealthBoxDesignSystem.medicalPurple,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: HealthBoxDesignSystem.coloredShadow(
+                          HealthBoxDesignSystem.medicalPurple.colors.first,
+                          opacity: 0.3,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.tune_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Filter Records',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          ),
+                          Text(
+                            'Customize your view',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedRecordType = 'All';
+                          _selectedProfileId = null;
+                          _dateRange = null;
+                        });
+                        context.pop();
+                      },
+                      child: Text(
+                        'Reset',
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Divider(height: 1),
+
+              // Filters content
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(24),
+                  children: [
+                    // Record Type Filter
+                    _buildFilterSection(
+                      theme,
+                      'Record Type',
+                      Icons.category_rounded,
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _recordTypes.map((type) {
+                          final isSelected = _selectedRecordType == type;
+                          return FilterChip(
+                            label: Text(type),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              setState(() {
+                                _selectedRecordType = type;
+                              });
+                            },
+                            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                            selectedColor: theme.colorScheme.primaryContainer,
+                            labelStyle: TextStyle(
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                            ),
+                            checkmarkColor: theme.colorScheme.primary,
+                            side: BorderSide(
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.outlineVariant,
+                              width: 1,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Profile Filter
+                    _buildFilterSection(
+                      theme,
+                      'Profile',
+                      Icons.person_rounded,
+                      child: _buildProfileFilterSection(theme),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Date Range Filter
+                    _buildFilterSection(
+                      theme,
+                      'Date Range',
+                      Icons.calendar_today_rounded,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (_dateRange != null)
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.calendar_month_rounded,
+                                        size: 16,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'From: ${_dateRange!.start.day}/${_dateRange!.start.month}/${_dateRange!.start.year}',
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          color: theme.colorScheme.primary,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.calendar_month_rounded,
+                                        size: 16,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'To: ${_dateRange!.end.day}/${_dateRange!.end.month}/${_dateRange!.end.year}',
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          color: theme.colorScheme.primary,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: _selectDateRange,
+                                  icon: const Icon(Icons.date_range_rounded, size: 18),
+                                  label: Text(_dateRange != null ? 'Change Range' : 'Select Range'),
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    side: BorderSide(color: theme.colorScheme.primary),
+                                    foregroundColor: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              if (_dateRange != null) ...[
+                                const SizedBox(width: 12),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _dateRange = null;
+                                    });
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.all(12),
+                                    side: BorderSide(color: theme.colorScheme.error),
+                                    foregroundColor: theme.colorScheme.error,
+                                  ),
+                                  child: const Icon(Icons.close_rounded, size: 18),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Apply button
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => context.pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        'Apply Filters',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                TextButton(
-                  onPressed: _selectDateRange,
-                  child: const Text('Select'),
-                ),
-              ],
-            ),
-            if (_dateRange != null)
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _dateRange = null;
-                  });
-                },
-                child: const Text('Clear Date Filter'),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterSection(
+    ThemeData theme,
+    String title,
+    IconData icon, {
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Close'),
-          ),
-        ],
+        const SizedBox(height: 12),
+        child,
+      ],
+    );
+  }
+
+  Widget _buildProfileFilterSection(ThemeData theme) {
+    final profilesAsync = ref.watch(allProfilesProvider);
+
+    return profilesAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Text(
+        'Error loading profiles',
+        style: TextStyle(color: theme.colorScheme.error),
       ),
+      data: (profiles) {
+        if (profiles.isEmpty) {
+          return Text(
+            'No profiles available',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          );
+        }
+
+        return Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            FilterChip(
+              label: const Text('All Profiles'),
+              selected: _selectedProfileId == null,
+              onSelected: (selected) {
+                setState(() {
+                  _selectedProfileId = null;
+                });
+              },
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              selectedColor: theme.colorScheme.primaryContainer,
+              labelStyle: TextStyle(
+                color: _selectedProfileId == null
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface,
+                fontWeight: _selectedProfileId == null ? FontWeight.w600 : FontWeight.w500,
+              ),
+              checkmarkColor: theme.colorScheme.primary,
+              side: BorderSide(
+                color: _selectedProfileId == null
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.outlineVariant,
+                width: 1,
+              ),
+            ),
+            ...profiles.map((profile) {
+              final isSelected = _selectedProfileId == profile.id;
+              return FilterChip(
+                label: Text('${profile.firstName} ${profile.lastName}'),
+                selected: isSelected,
+                onSelected: (selected) {
+                  setState(() {
+                    _selectedProfileId = profile.id;
+                  });
+                },
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                selectedColor: theme.colorScheme.primaryContainer,
+                labelStyle: TextStyle(
+                  color: isSelected
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
+                checkmarkColor: theme.colorScheme.primary,
+                side: BorderSide(
+                  color: isSelected
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.outlineVariant,
+                  width: 1,
+                ),
+              );
+            }),
+          ],
+        );
+      },
     );
   }
 

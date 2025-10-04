@@ -8,6 +8,7 @@ import '../../../data/models/allergy.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 
 class AllergyFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -89,19 +90,19 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAllergenDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildSeveritySection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildSymptomsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildReactionDatesSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildTreatmentSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildStatusSection(),
           ],
         ),
@@ -110,346 +111,264 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Peanut Allergy',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.warning),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Additional details about this allergy',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, isRecordDate: true),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      icon: Icons.info_outline,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Peanut Allergy',
+          prefixIcon: const Icon(Icons.warning),
+          focusGradient: HealthBoxDesignSystem.allergyGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          hintText: 'Additional details about this allergy',
+          focusGradient: HealthBoxDesignSystem.allergyGradient,
+          maxLines: 3,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, isRecordDate: true),
+        ),
+      ],
     );
   }
 
   Widget _buildAllergenDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Allergen Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _allergenController,
-              decoration: const InputDecoration(
-                labelText: 'Allergen *',
-                hintText: 'e.g., Peanuts, Shellfish, Penicillin',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.eco),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Allergen is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Common Allergen Types',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: AllergenTypes.allTypes.map((type) {
-                return FilterChip(
-                  label: Text(type),
-                  selected: false,
-                  onSelected: (selected) {
-                    if (selected) {
-                      _allergenController.text = type;
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Allergen Details',
+      icon: Icons.eco,
+      children: [
+        ModernTextField(
+          controller: _allergenController,
+          labelText: 'Allergen *',
+          hintText: 'e.g., Peanuts, Shellfish, Penicillin',
+          prefixIcon: const Icon(Icons.eco),
+          focusGradient: HealthBoxDesignSystem.allergyGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Allergen is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        Text(
+          'Common Allergen Types',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          children: AllergenTypes.allTypes.map((type) {
+            return FilterChip(
+              label: Text(type),
+              selected: false,
+              onSelected: (selected) {
+                if (selected) {
+                  _allergenController.text = type;
+                }
+              },
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
   Widget _buildSeveritySection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Severity Level',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            SegmentedButton<String>(
-              segments: AllergySeverity.allSeverities
-                  .map((severity) => ButtonSegment<String>(
-                        value: severity,
-                        label: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_getSeverityDisplayName(severity)),
-                            Text(
-                              _getSeverityDescription(severity),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
+    return _buildModernSection(
+      title: 'Severity Level',
+      icon: Icons.emergency,
+      children: [
+        SegmentedButton<String>(
+          segments: AllergySeverity.allSeverities
+              .map((severity) => ButtonSegment<String>(
+                    value: severity,
+                    label: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_getSeverityDisplayName(severity)),
+                        Text(
+                          _getSeverityDescription(severity),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                      ))
-                  .toList(),
-              selected: {_selectedSeverity},
-              onSelectionChanged: (Set<String> selection) {
-                if (selection.isNotEmpty) {
-                  setState(() => _selectedSeverity = selection.first);
-                }
-              },
-            ),
-          ],
+                      ],
+                    ),
+                  ))
+              .toList(),
+          selected: {_selectedSeverity},
+          onSelectionChanged: (Set<String> selection) {
+            if (selection.isNotEmpty) {
+              setState(() => _selectedSeverity = selection.first);
+            }
+          },
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildSymptomsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Symptoms',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Select all symptoms you experience:',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: AllergySymptoms.allSymptoms.map((symptom) {
-                return FilterChip(
-                  label: Text(symptom),
-                  selected: _selectedSymptoms.contains(symptom),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _selectedSymptoms.add(symptom);
-                      } else {
-                        _selectedSymptoms.remove(symptom);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            if (_selectedSymptoms.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'Please select at least one symptom',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-          ],
+    return _buildModernSection(
+      title: 'Symptoms',
+      icon: Icons.health_and_safety,
+      children: [
+        Text(
+          'Select all symptoms you experience:',
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
-      ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: AllergySymptoms.allSymptoms.map((symptom) {
+            return FilterChip(
+              label: Text(symptom),
+              selected: _selectedSymptoms.contains(symptom),
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedSymptoms.add(symptom);
+                  } else {
+                    _selectedSymptoms.remove(symptom);
+                  }
+                });
+              },
+            );
+          }).toList(),
+        ),
+        if (_selectedSymptoms.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              'Please select at least one symptom',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontSize: 12,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
   Widget _buildReactionDatesSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Reaction History',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('First Reaction'),
-              subtitle: Text(_firstReaction != null
-                  ? _formatDate(_firstReaction!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.history),
-              onTap: () => _selectReactionDate(context, isFirst: true),
-            ),
-            ListTile(
-              title: const Text('Last Reaction'),
-              subtitle: Text(_lastReaction != null
-                  ? _formatDate(_lastReaction!)
-                  : 'Not set'),
-              trailing: const Icon(Icons.access_time),
-              onTap: () => _selectReactionDate(context, isFirst: false),
-            ),
-            if (_firstReaction != null || _lastReaction != null)
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _firstReaction = null;
-                    _lastReaction = null;
-                  });
-                },
-                child: const Text('Clear Reaction Dates'),
-              ),
-          ],
+    return _buildModernSection(
+      title: 'Reaction History',
+      icon: Icons.history,
+      children: [
+        ListTile(
+          title: const Text('First Reaction'),
+          subtitle: Text(_firstReaction != null
+              ? _formatDate(_firstReaction!)
+              : 'Not set'),
+          trailing: const Icon(Icons.history),
+          onTap: () => _selectReactionDate(context, isFirst: true),
         ),
-      ),
+        ListTile(
+          title: const Text('Last Reaction'),
+          subtitle: Text(_lastReaction != null
+              ? _formatDate(_lastReaction!)
+              : 'Not set'),
+          trailing: const Icon(Icons.access_time),
+          onTap: () => _selectReactionDate(context, isFirst: false),
+        ),
+        if (_firstReaction != null || _lastReaction != null)
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _firstReaction = null;
+                _lastReaction = null;
+              });
+            },
+            child: const Text('Clear Reaction Dates'),
+          ),
+      ],
     );
   }
 
   Widget _buildTreatmentSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Treatment & Notes',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _treatmentController,
-              decoration: const InputDecoration(
-                labelText: 'Treatment',
-                hintText: 'e.g., Antihistamines, EpiPen, Avoidance',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_services),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'Additional Notes',
-                hintText: 'Any other relevant information',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.note),
-              ),
-              maxLines: 3,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Treatment & Notes',
+      icon: Icons.medical_services,
+      children: [
+        ModernTextField(
+          controller: _treatmentController,
+          labelText: 'Treatment',
+          hintText: 'e.g., Antihistamines, EpiPen, Avoidance',
+          prefixIcon: const Icon(Icons.medical_services),
+          focusGradient: HealthBoxDesignSystem.allergyGradient,
+          maxLines: 2,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _notesController,
+          labelText: 'Additional Notes',
+          hintText: 'Any other relevant information',
+          prefixIcon: const Icon(Icons.note),
+          focusGradient: HealthBoxDesignSystem.allergyGradient,
+          maxLines: 3,
+        ),
+      ],
     );
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add allergy test results, medical reports, or related documents',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 5,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 25,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add allergy test results, medical reports, or related documents',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 5,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 25,
+        ),
+      ],
     );
   }
 
   Widget _buildStatusSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Allergy Status',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Active Allergy'),
-              subtitle: const Text(
-                'Uncheck if this allergy is no longer active',
-              ),
-              value: _isAllergyActive,
-              onChanged: (value) {
-                setState(() => _isAllergyActive = value);
-              },
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Allergy Status',
+      icon: Icons.toggle_on,
+      children: [
+        SwitchListTile(
+          title: const Text('Active Allergy'),
+          subtitle: const Text(
+            'Uncheck if this allergy is no longer active',
+          ),
+          value: _isAllergyActive,
+          onChanged: (value) {
+            setState(() => _isAllergyActive = value);
+          },
         ),
-      ),
+      ],
     );
   }
 
@@ -655,6 +574,95 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.allergyGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override

@@ -6,6 +6,7 @@ import '../../../shared/theme/design_system.dart';
 import '../services/mental_health_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import 'dart:developer' as developer;
 
 class MentalHealthRecordFormScreen extends ConsumerStatefulWidget {
@@ -81,126 +82,8 @@ class _MentalHealthRecordFormScreenState extends ConsumerState<MentalHealthRecor
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Session Details', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Title *',
-                        hintText: 'e.g., Therapy Session - Anxiety Management',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.psychology),
-                      ),
-                      validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _providerController,
-                      decoration: const InputDecoration(
-                        labelText: 'Mental Health Provider',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _facilityController,
-                      decoration: const InputDecoration(
-                        labelText: 'Facility/Practice',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.business),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      initialValue: _sessionType,
-                      decoration: const InputDecoration(
-                        labelText: 'Session Type',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.category),
-                      ),
-                      items: _sessionTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-                      onChanged: (value) => setState(() => _sessionType = value!),
-                    ),
-                    const SizedBox(height: 16),
-                    ListTile(
-                      title: const Text('Session Date'),
-                      subtitle: Text('${_sessionDate.day}/${_sessionDate.month}/${_sessionDate.year}'),
-                      trailing: const Icon(Icons.calendar_today),
-                      onTap: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: _sessionDate,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (date != null) setState(() => _sessionDate = date);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        const Text('Mood Rating (1-10): '),
-                        Expanded(
-                          child: Slider(
-                            value: double.parse(_moodRating),
-                            min: 1,
-                            max: 10,
-                            divisions: 9,
-                            label: _moodRating,
-                            onChanged: (value) => setState(() => _moodRating = value.round().toString()),
-                          ),
-                        ),
-                        Text(_moodRating),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _sessionNotesController,
-                      decoration: const InputDecoration(
-                        labelText: 'Session Notes',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 4,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _assessmentController,
-                      decoration: const InputDecoration(
-                        labelText: 'Assessment/Observations',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _treatmentPlanController,
-                      decoration: const InputDecoration(
-                        labelText: 'Treatment Plan',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _medicationsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Medications/Recommendations',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 2,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            _buildSessionDetailsSection(),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -301,36 +184,192 @@ class _MentalHealthRecordFormScreenState extends ConsumerState<MentalHealthRecor
     }
   }
 
+  Widget _buildSessionDetailsSection() {
+    return _buildModernSection(
+      title: 'Session Details',
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Therapy Session - Anxiety Management',
+          prefixIcon: const Icon(Icons.psychology),
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+          validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _providerController,
+          labelText: 'Mental Health Provider',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _facilityController,
+          labelText: 'Facility/Practice',
+          prefixIcon: const Icon(Icons.business),
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _sessionType,
+          decoration: const InputDecoration(
+            labelText: 'Session Type',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.category),
+          ),
+          items: _sessionTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+          onChanged: (value) => setState(() => _sessionType = value!),
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Session Date'),
+          subtitle: Text('${_sessionDate.day}/${_sessionDate.month}/${_sessionDate.year}'),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () async {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: _sessionDate,
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (date != null) setState(() => _sessionDate = date);
+          },
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            const Text('Mood Rating (1-10): '),
+            Expanded(
+              child: Slider(
+                value: double.parse(_moodRating),
+                min: 1,
+                max: 10,
+                divisions: 9,
+                label: _moodRating,
+                onChanged: (value) => setState(() => _moodRating = value.round().toString()),
+              ),
+            ),
+            Text(_moodRating),
+          ],
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _sessionNotesController,
+          labelText: 'Session Notes',
+          maxLines: 4,
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _assessmentController,
+          labelText: 'Assessment/Observations',
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _treatmentPlanController,
+          labelText: 'Treatment Plan',
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _medicationsController,
+          labelText: 'Medications/Recommendations',
+          maxLines: 2,
+          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
+        ),
+      ],
+    );
+  }
+
   Widget _buildAttachmentsSection() {
-    return Card(
+    return _buildModernSection(
+      title: 'Attachments',
+      subtitle: 'Add therapy notes, assessments, or treatment plans',
+      children: [
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 8,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 25,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    String? subtitle,
+    required List<Widget> children,
+    Gradient? gradient,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
+                .colors
+                .first
+                .withValues(alpha: 0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
+              .colors
+              .first
+              .withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
+                .colors
+                .first
+                .withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add therapy notes, assessments, or treatment plans',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ShaderMask(
+              shaderCallback: (bounds) => (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
+                  .createShader(bounds),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
               ),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
             const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 8,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 25,
-            ),
+            ...children,
           ],
         ),
       ),

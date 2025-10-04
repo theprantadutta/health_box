@@ -6,6 +6,7 @@ import '../../../shared/theme/design_system.dart';
 import '../services/discharge_summary_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import 'dart:developer' as developer;
 
 class DischargeSummaryFormScreen extends ConsumerStatefulWidget {
@@ -88,13 +89,13 @@ class _DischargeSummaryFormScreenState
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildHospitalStaySection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildDiagnosesSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildDischargeDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -103,177 +104,129 @@ class _DischargeSummaryFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Basic Information', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Hospital Discharge Summary',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.exit_to_app),
-              ),
-              validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _hospitalController,
-              decoration: const InputDecoration(
-                labelText: 'Hospital/Facility *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_hospital),
-              ),
-              validator: (value) => value?.trim().isEmpty == true ? 'Hospital is required' : null,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Hospital Discharge Summary',
+          prefixIcon: const Icon(Icons.exit_to_app),
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+          validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          maxLines: 2,
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _hospitalController,
+          labelText: 'Hospital/Facility *',
+          prefixIcon: const Icon(Icons.local_hospital),
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+          validator: (value) => value?.trim().isEmpty == true ? 'Hospital is required' : null,
+        ),
+      ],
     );
   }
 
   Widget _buildHospitalStaySection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Hospital Stay', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Admission Date'),
-              subtitle: Text(_formatDate(_admissionDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'admission'),
-            ),
-            ListTile(
-              title: const Text('Discharge Date'),
-              subtitle: Text(_formatDate(_dischargeDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'discharge'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _attendingPhysicianController,
-              decoration: const InputDecoration(
-                labelText: 'Attending Physician',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Hospital Stay',
+      children: [
+        ListTile(
+          title: const Text('Admission Date'),
+          subtitle: Text(_formatDate(_admissionDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'admission'),
         ),
-      ),
+        ListTile(
+          title: const Text('Discharge Date'),
+          subtitle: Text(_formatDate(_dischargeDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'discharge'),
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _attendingPhysicianController,
+          labelText: 'Attending Physician',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+      ],
     );
   }
 
   Widget _buildDiagnosesSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Diagnoses & Course', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _primaryDiagnosisController,
-              decoration: const InputDecoration(
-                labelText: 'Primary Diagnosis *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_information),
-              ),
-              validator: (value) => value?.trim().isEmpty == true ? 'Primary diagnosis is required' : null,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _secondaryDiagnosesController,
-              decoration: const InputDecoration(
-                labelText: 'Secondary Diagnoses',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _hospitalCourseController,
-              decoration: const InputDecoration(
-                labelText: 'Hospital Course',
-                hintText: 'Summary of treatment and progress',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 4,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Diagnoses & Course',
+      children: [
+        ModernTextField(
+          controller: _primaryDiagnosisController,
+          labelText: 'Primary Diagnosis *',
+          prefixIcon: const Icon(Icons.medical_information),
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+          validator: (value) => value?.trim().isEmpty == true ? 'Primary diagnosis is required' : null,
+          maxLines: 2,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _secondaryDiagnosesController,
+          labelText: 'Secondary Diagnoses',
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _hospitalCourseController,
+          labelText: 'Hospital Course',
+          hintText: 'Summary of treatment and progress',
+          maxLines: 4,
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+      ],
     );
   }
 
   Widget _buildDischargeDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Discharge Details', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _dischargeDisposition,
-              decoration: const InputDecoration(
-                labelText: 'Discharge Disposition',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.home),
-              ),
-              items: _dispositions.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
-              onChanged: (value) => setState(() => _dischargeDisposition = value!),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _dischargeConditionController,
-              decoration: const InputDecoration(
-                labelText: 'Condition at Discharge',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _dischargeMedicationsController,
-              decoration: const InputDecoration(
-                labelText: 'Discharge Medications',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _followUpInstructionsController,
-              decoration: const InputDecoration(
-                labelText: 'Follow-up Instructions',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 4,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Discharge Details',
+      children: [
+        DropdownButtonFormField<String>(
+          initialValue: _dischargeDisposition,
+          decoration: const InputDecoration(
+            labelText: 'Discharge Disposition',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.home),
+          ),
+          items: _dispositions.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+          onChanged: (value) => setState(() => _dischargeDisposition = value!),
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _dischargeConditionController,
+          labelText: 'Condition at Discharge',
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _dischargeMedicationsController,
+          labelText: 'Discharge Medications',
+          maxLines: 3,
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _followUpInstructionsController,
+          labelText: 'Follow-up Instructions',
+          maxLines: 4,
+          focusGradient: HealthBoxDesignSystem.medicalPurple,
+        ),
+      ],
     );
   }
 
@@ -396,35 +349,90 @@ class _DischargeSummaryFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
+    return _buildModernSection(
+      title: 'Attachments',
+      subtitle: 'Add discharge papers, care instructions, or follow-up notes',
+      children: [
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 12,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+          maxFileSizeMB: 50,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    String? subtitle,
+    required List<Widget> children,
+    Gradient? gradient,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            (gradient ?? HealthBoxDesignSystem.medicalPurple)
+                .colors
+                .first
+                .withValues(alpha: 0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: (gradient ?? HealthBoxDesignSystem.medicalPurple)
+              .colors
+              .first
+              .withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: (gradient ?? HealthBoxDesignSystem.medicalPurple)
+                .colors
+                .first
+                .withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add discharge papers, care instructions, or follow-up notes',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ShaderMask(
+              shaderCallback: (bounds) => (gradient ?? HealthBoxDesignSystem.medicalPurple)
+                  .createShader(bounds),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
               ),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
             const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 12,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-              maxFileSizeMB: 50,
-            ),
+            ...children,
           ],
         ),
       ),

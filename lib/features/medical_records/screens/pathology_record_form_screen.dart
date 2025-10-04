@@ -6,6 +6,7 @@ import '../../../shared/theme/design_system.dart';
 import '../services/pathology_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
+import '../../../shared/widgets/modern_text_field.dart';
 import 'dart:developer' as developer;
 
 class PathologyRecordFormScreen extends ConsumerStatefulWidget {
@@ -92,15 +93,15 @@ class _PathologyRecordFormScreenState
           padding: const EdgeInsets.all(16),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildSpecimenDetailsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildLaboratoryInfoSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildFindingsSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildDiagnosisSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             _buildAttachmentsSection(),
           ],
         ),
@@ -109,297 +110,225 @@ class _PathologyRecordFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title *',
-                hintText: 'e.g., Skin Biopsy Report',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.assignment),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Record Date'),
-              subtitle: Text(_formatDate(_recordDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'record'),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Basic Information',
+      icon: Icons.info_outline,
+      children: [
+        ModernTextField(
+          controller: _titleController,
+          labelText: 'Title *',
+          hintText: 'e.g., Skin Biopsy Report',
+          prefixIcon: const Icon(Icons.assignment),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Title is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _descriptionController,
+          labelText: 'Description',
+          prefixIcon: const Icon(Icons.description),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 2,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Record Date'),
+          subtitle: Text(_formatDate(_recordDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'record'),
+        ),
+      ],
     );
   }
 
   Widget _buildSpecimenDetailsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Specimen Details',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Specimen Type *',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.biotech),
-              ),
-              items: _specimenTypes
-                  .map((type) => DropdownMenuItem(value: type, child: Text(type)))
-                  .toList(),
-              onChanged: (value) => _specimenTypeController.text = value ?? '',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Specimen type is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _specimenSiteController,
-              decoration: const InputDecoration(
-                labelText: 'Specimen Site',
-                hintText: 'e.g., Left arm, Abdomen',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.location_on),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _collectionMethodController,
-              decoration: const InputDecoration(
-                labelText: 'Collection Method',
-                hintText: 'e.g., Punch biopsy, Excision',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_services),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Collection Date'),
-              subtitle: Text(_formatDate(_collectionDate)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'collection'),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Specimen Details',
+      icon: Icons.biotech,
+      children: [
+        DropdownButtonFormField<String>(
+          decoration: const InputDecoration(
+            labelText: 'Specimen Type *',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.biotech),
+          ),
+          items: _specimenTypes
+              .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+              .toList(),
+          onChanged: (value) => _specimenTypeController.text = value ?? '',
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Specimen type is required';
+            }
+            return null;
+          },
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _specimenSiteController,
+          labelText: 'Specimen Site',
+          hintText: 'e.g., Left arm, Abdomen',
+          prefixIcon: const Icon(Icons.location_on),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _collectionMethodController,
+          labelText: 'Collection Method',
+          hintText: 'e.g., Punch biopsy, Excision',
+          prefixIcon: const Icon(Icons.medical_services),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Collection Date'),
+          subtitle: Text(_formatDate(_collectionDate)),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'collection'),
+        ),
+      ],
     );
   }
 
   Widget _buildLaboratoryInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Laboratory Information',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _pathologistController,
-              decoration: const InputDecoration(
-                labelText: 'Pathologist',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _laboratoryController,
-              decoration: const InputDecoration(
-                labelText: 'Laboratory',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.local_hospital),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _referringPhysicianController,
-              decoration: const InputDecoration(
-                labelText: 'Referring Physician',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person_outline),
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedUrgency,
-              decoration: const InputDecoration(
-                labelText: 'Urgency Level',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.priority_high),
-              ),
-              items: _urgencyLevels
-                  .map((urgency) => DropdownMenuItem(
-                        value: urgency,
-                        child: Text(urgency.toUpperCase()),
-                      ))
-                  .toList(),
-              onChanged: (value) => setState(() => _selectedUrgency = value!),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Report Date'),
-              subtitle: Text(_reportDate != null ? _formatDate(_reportDate!) : 'Not set'),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context, 'report'),
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Laboratory Information',
+      icon: Icons.local_hospital,
+      children: [
+        ModernTextField(
+          controller: _pathologistController,
+          labelText: 'Pathologist',
+          prefixIcon: const Icon(Icons.person),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _laboratoryController,
+          labelText: 'Laboratory',
+          prefixIcon: const Icon(Icons.local_hospital),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _referringPhysicianController,
+          labelText: 'Referring Physician',
+          prefixIcon: const Icon(Icons.person_outline),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedUrgency,
+          decoration: const InputDecoration(
+            labelText: 'Urgency Level',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.priority_high),
+          ),
+          items: _urgencyLevels
+              .map((urgency) => DropdownMenuItem(
+                    value: urgency,
+                    child: Text(urgency.toUpperCase()),
+                  ))
+              .toList(),
+          onChanged: (value) => setState(() => _selectedUrgency = value!),
+        ),
+        const SizedBox(height: 16),
+        ListTile(
+          title: const Text('Report Date'),
+          subtitle: Text(_reportDate != null ? _formatDate(_reportDate!) : 'Not set'),
+          trailing: const Icon(Icons.calendar_today),
+          onTap: () => _selectDate(context, 'report'),
+        ),
+      ],
     );
   }
 
   Widget _buildFindingsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Pathological Findings',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _grossDescriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Gross Description',
-                hintText: 'Macroscopic findings',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.visibility),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _microscopicFindingsController,
-              decoration: const InputDecoration(
-                labelText: 'Microscopic Findings',
-                hintText: 'Histological observations',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
-              ),
-              maxLines: 4,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _immunohistochemistryController,
-              decoration: const InputDecoration(
-                labelText: 'Immunohistochemistry',
-                hintText: 'IHC results',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.science),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _molecularStudiesController,
-              decoration: const InputDecoration(
-                labelText: 'Molecular Studies',
-                hintText: 'Genetic/molecular analysis',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.dns),
-              ),
-              maxLines: 2,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Pathological Findings',
+      icon: Icons.search,
+      children: [
+        ModernTextField(
+          controller: _grossDescriptionController,
+          labelText: 'Gross Description',
+          hintText: 'Macroscopic findings',
+          prefixIcon: const Icon(Icons.visibility),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 3,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _microscopicFindingsController,
+          labelText: 'Microscopic Findings',
+          hintText: 'Histological observations',
+          prefixIcon: const Icon(Icons.search),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 4,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _immunohistochemistryController,
+          labelText: 'Immunohistochemistry',
+          hintText: 'IHC results',
+          prefixIcon: const Icon(Icons.science),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 2,
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _molecularStudiesController,
+          labelText: 'Molecular Studies',
+          hintText: 'Genetic/molecular analysis',
+          prefixIcon: const Icon(Icons.dns),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 2,
+        ),
+      ],
     );
   }
 
   Widget _buildDiagnosisSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Diagnosis & Recommendations',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _diagnosisController,
-              decoration: const InputDecoration(
-                labelText: 'Pathological Diagnosis',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.medical_information),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _stagingGradingController,
-              decoration: const InputDecoration(
-                labelText: 'Staging/Grading',
-                hintText: 'TNM staging, grade',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.stairs),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Malignant'),
-              subtitle: const Text('Check if malignancy is present'),
-              value: _isMalignant,
-              onChanged: (value) => setState(() => _isMalignant = value),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _recommendationController,
-              decoration: const InputDecoration(
-                labelText: 'Recommendations',
-                hintText: 'Further studies, treatment recommendations',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.recommend),
-              ),
-              maxLines: 3,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Diagnosis & Recommendations',
+      icon: Icons.medical_information,
+      children: [
+        ModernTextField(
+          controller: _diagnosisController,
+          labelText: 'Pathological Diagnosis',
+          prefixIcon: const Icon(Icons.medical_information),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 3,
         ),
-      ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _stagingGradingController,
+          labelText: 'Staging/Grading',
+          hintText: 'TNM staging, grade',
+          prefixIcon: const Icon(Icons.stairs),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 2,
+        ),
+        const SizedBox(height: 16),
+        SwitchListTile(
+          title: const Text('Malignant'),
+          subtitle: const Text('Check if malignancy is present'),
+          value: _isMalignant,
+          onChanged: (value) => setState(() => _isMalignant = value),
+        ),
+        const SizedBox(height: 16),
+        ModernTextField(
+          controller: _recommendationController,
+          labelText: 'Recommendations',
+          hintText: 'Further studies, treatment recommendations',
+          prefixIcon: const Icon(Icons.recommend),
+          focusGradient: HealthBoxDesignSystem.pathologyGradient,
+          maxLines: 3,
+        ),
+      ],
     );
   }
 
@@ -586,43 +515,123 @@ class _PathologyRecordFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Attachments',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add pathology reports, biopsy results, or lab findings',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AttachmentFormWidget(
-              initialAttachments: _attachments,
-              onAttachmentsChanged: (attachments) {
-                setState(() {
-                  _attachments = attachments;
-                });
-              },
-              maxFiles: 10,
-              allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'tiff'],
-              maxFileSizeMB: 50,
-            ),
-          ],
+    return _buildModernSection(
+      title: 'Attachments',
+      icon: Icons.attach_file,
+      children: [
+        Text(
+          'Add pathology reports, biopsy results, or lab findings',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        AttachmentFormWidget(
+          initialAttachments: _attachments,
+          onAttachmentsChanged: (attachments) {
+            setState(() {
+              _attachments = attachments;
+            });
+          },
+          maxFiles: 10,
+          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'tiff'],
+          maxFileSizeMB: 50,
+        ),
+      ],
     );
   }
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Widget _buildModernSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    LinearGradient? gradient,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final sectionGradient = gradient ?? HealthBoxDesignSystem.pathologyGradient;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: sectionGradient.colors.first.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: sectionGradient.colors.first.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 4,
+              decoration: BoxDecoration(gradient: sectionGradient),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: sectionGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(icon, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ...children,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
