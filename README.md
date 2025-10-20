@@ -259,32 +259,30 @@ Material 3 design with custom enhancements:
 <div align="center">
 
 ### 🏠 Dashboard & Home
-![Dashboard Home Screen](screenshots/dashboard.png)
+![Dashboard Home Screen](./screenshots/dashboard.jpg)
 *Modern Material 3 dashboard with quick access to all features*
 
 ### 📋 Medical Records Management
-![Medical Records List](screenshots/medical-records.png)
+![Medical Records List](./screenshots/medical-records.jpg)
 *Comprehensive medical records with 14 different record types*
 
 ### ⏰ Smart Reminders & Adherence Tracking
-![Medication Reminders](screenshots/reminders.png)
+![Medication Reminders](./screenshots/reminders.jpg)
 *Never miss a dose with smart medication reminders and adherence calendar*
 
 ### 👥 Family Profiles
-![Family Profile Management](screenshots/profiles.png)
+![Family Profile Management](./screenshots/profiles.jpg)
 *Manage medical information for your entire family in one place*
 
 ### 📊 Health Analytics & Trends
-![Vitals Tracking Charts](screenshots/analytics.png)
+![Vitals Tracking Charts](./screenshots/analytics.jpg)
 *Track vitals and visualize health trends with interactive charts*
 
 ### ⚙️ Settings & Customization
-![Settings Screen](screenshots/settings.png)
+![Settings Screen](./screenshots/settings.jpg)
 *Comprehensive settings including privacy, notifications, and Google Drive sync*
 
 </div>
-
-> **Note**: Add your app screenshots to the `screenshots/` folder in the project root to showcase the app's features.
 
 ---
 
