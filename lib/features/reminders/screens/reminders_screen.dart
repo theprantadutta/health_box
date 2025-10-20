@@ -71,7 +71,10 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
             gradient: HealthBoxDesignSystem.chronicConditionGradient,
             boxShadow: [
               BoxShadow(
-                color: HealthBoxDesignSystem.chronicConditionGradient.colors.first
+                color: HealthBoxDesignSystem
+                    .chronicConditionGradient
+                    .colors
+                    .first
                     .withValues(alpha: 0.3),
                 offset: const Offset(0, 4),
                 blurRadius: 12,
@@ -262,7 +265,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                       Icons.warning_rounded,
                       overdueCount > 0
                           ? AppTheme.errorColor
-                          : AppTheme.neutralColorLight,
+                          : AppTheme.neutralColorDark,
                     ),
                   ],
                   crossAxisCount: 3,
@@ -610,7 +613,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                                       ? theme.colorScheme.error
                                       : reminder.isActive
                                       ? theme.colorScheme.primary
-                                      : theme.colorScheme.outline.withValues(alpha: 0.2,),
+                                      : theme.colorScheme.outline.withValues(
+                                          alpha: 0.2,
+                                        ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -653,8 +658,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.3),
+                    color: theme.colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.3,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -746,7 +752,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
                       icon: const Icon(Icons.delete_outline),
                       color: theme.colorScheme.error,
                       style: IconButton.styleFrom(
-                        backgroundColor: theme.colorScheme.error.withValues(alpha: 0.1,),
+                        backgroundColor: theme.colorScheme.error.withValues(
+                          alpha: 0.1,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
