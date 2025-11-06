@@ -7,7 +7,10 @@ import '../services/lab_report_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
 
 class LabReportFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -31,38 +34,27 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
   List<AttachmentResult> _attachments = [];
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('New Lab Report'),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.labReportGradient,
-          ),
-        ),
-        elevation: 0,
-        shadowColor: HealthBoxDesignSystem.labReportGradient.colors.last.withValues(alpha: 0.3),
+      appBar: HBAppBar.gradient(
+        title: 'New Lab Report',
+        gradient: RecordTypeUtils.getGradient('lab_report'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveLabReport,
-            child: const Text('SAVE'),
+            child: const Text('SAVE', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildTestDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
           ],
         ),
@@ -71,103 +63,214 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
   }
 
   Widget _buildBasicInfoSection() {
-    return _buildModernSection(
-      title: 'Basic Information',
-      icon: Icons.info_outline,
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Report Title *',
-          hintText: 'e.g., Blood Test Results',
-          prefixIcon: const Icon(Icons.science),
-          focusGradient: HealthBoxDesignSystem.labReportGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Report title is required';
-            }
-            return null;
-          },
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Basic Information',
+            Icons.info_outline,
+            RecordTypeUtils.getGradient('lab_report'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Report Title',
+            hint: 'e.g., Blood Test Results',
+            prefixIcon: Icons.science,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Report title is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateField('Test Date', _testDate, (date) {
+            setState(() => _testDate = date);
+          }),
+        ],
+      ),
     );
   }
 
   Widget _buildTestDetailsSection() {
-    return _buildModernSection(
-      title: 'Test Details',
-      icon: Icons.biotech,
-      children: [
-        ModernTextField(
-          controller: _testNameController,
-          labelText: 'Test Name *',
-          hintText: 'e.g., Complete Blood Count (CBC)',
-          prefixIcon: const Icon(Icons.medical_services),
-          focusGradient: HealthBoxDesignSystem.labReportGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Test name is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _resultsController,
-          labelText: 'Results',
-          hintText: 'Enter test results and findings',
-          prefixIcon: const Icon(Icons.description),
-          focusGradient: HealthBoxDesignSystem.labReportGradient,
-          maxLines: 5,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _labFacilityController,
-          labelText: 'Lab Facility',
-          hintText: 'Name of the laboratory',
-          prefixIcon: const Icon(Icons.business),
-          focusGradient: HealthBoxDesignSystem.labReportGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _orderingPhysicianController,
-          labelText: 'Ordering Physician',
-          hintText: 'Doctor who ordered the test',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.labReportGradient,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Test Details',
+            Icons.biotech,
+            AppColors.successGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _testNameController,
+            label: 'Test Name',
+            hint: 'e.g., Complete Blood Count (CBC)',
+            prefixIcon: Icons.medical_services,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Test name is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _resultsController,
+            label: 'Results',
+            hint: 'Enter test results and findings',
+            minLines: 5,
+            maxLines: 8,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _labFacilityController,
+            label: 'Lab Facility',
+            hint: 'Name of the laboratory',
+            prefixIcon: Icons.business,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _orderingPhysicianController,
+            label: 'Ordering Physician',
+            hint: 'Doctor who ordered the test',
+            prefixIcon: Icons.person,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      icon: Icons.attach_file,
-      children: [
-        Text(
-          'Add lab reports, test results, or related documents',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            AppColors.secondaryGradient,
           ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add lab reports, test results, or related documents',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 10,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 50,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
         ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 10,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 50,
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
         ),
       ],
     );
   }
 
+  Widget _buildDateField(
+    String label,
+    DateTime? date,
+    ValueChanged<DateTime> onChanged,
+  ) {
+    return InkWell(
+      onTap: () => _selectDate(onChanged),
+      borderRadius: AppRadii.radiusMd,
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: const Icon(Icons.calendar_today),
+          filled: true,
+          fillColor: context.colorScheme.surfaceContainerHighest,
+          border: OutlineInputBorder(
+            borderRadius: AppRadii.radiusMd,
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.base,
+            vertical: AppSpacing.md,
+          ),
+        ),
+        child: Text(
+          date != null
+              ? '${date.day}/${date.month}/${date.year}'
+              : 'Select date',
+          style: date != null
+              ? null
+              : TextStyle(color: context.colorScheme.onSurfaceVariant),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(ValueChanged<DateTime> onChanged) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) onChanged(picked);
+  }
+
   Future<void> _saveLabReport() async {
     if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please fill in all required fields'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
+        ),
+      );
       return;
     }
 
@@ -204,14 +307,12 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
 
       await service.createLabReport(request);
 
-      // Log success
       developer.log(
         'Lab report created successfully for profile: $selectedProfileId',
         name: 'LabReportForm',
-        level: 800, // INFO level
+        level: 800,
       );
 
-      // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
@@ -222,44 +323,42 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
             content: Row(
               children: [
                 const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Lab report saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
     } catch (error, stackTrace) {
-      // Log detailed error to console
       developer.log(
         'Failed to save lab report',
         name: 'LabReportForm',
-        level: 1000, // ERROR level
+        level: 1000,
         error: error,
         stackTrace: stackTrace,
       );
 
       if (mounted) {
-        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
                 const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save lab report. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: context.colorScheme.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -273,95 +372,6 @@ class _LabReportFormScreenState extends ConsumerState<LabReportFormScreen> {
         setState(() => _isLoading = false);
       }
     }
-  }
-
-  Widget _buildModernSection({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.labReportGradient;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: sectionGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Icon(icon, size: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ...children,
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override

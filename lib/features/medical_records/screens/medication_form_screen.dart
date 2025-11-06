@@ -9,8 +9,12 @@ import '../../../shared/services/attachment_service.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/models/medication_batch.dart';
 import '../../../shared/widgets/reminder_settings_widget.dart';
-import '../../../shared/widgets/reminder_type_selector.dart'; // Import for ReminderType enum
+import '../../../shared/widgets/reminder_type_selector.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
 import 'dart:developer' as developer;
 
 class MedicationFormScreen extends ConsumerStatefulWidget {
@@ -115,245 +119,271 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'New Medication',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicationGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicationGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: 'New Medication',
+        gradient: RecordTypeUtils.getGradient('medication'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveMedication,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('SAVE'),
+            child: const Text('SAVE', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
-            _buildExpandableSection(
-              title: 'Medication Information',
-              icon: Icons.medication,
-              isExpanded: _medicationInfoExpanded,
-              onExpansionChanged: (value) => setState(() => _medicationInfoExpanded = value),
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Medication Name *',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.medication),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Medication name is required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _dosageController,
-                  decoration: const InputDecoration(
-                    labelText: 'Dosage *',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.straighten),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Dosage is required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _frequencyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Frequency *',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.schedule),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Frequency is required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Batch Selection
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedBatchId,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Medication Batch (Optional)',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.group_work),
-                    hintText: 'Select a batch for this medication',
-                  ),
-                  items: [
-                    const DropdownMenuItem<String>(
-                      value: null,
-                      child: Text(
-                        'No batch (individual medication)',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    ..._availableBatches.map((batch) {
-                      return DropdownMenuItem<String>(
-                        value: batch.id,
-                        child: SizedBox(
-                          width: double.maxFinite,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                batch.name,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                _getBatchDescription(batch),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                  ],
-                  onChanged: (value) {
-                    setState(() => _selectedBatchId = value);
-                  },
-                ),
-                if (_selectedBatchId != null) ...[
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.info, color: Colors.blue, size: 16),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'This medication will be included in batch reminders. Individual reminder settings will be ignored.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.blue.shade700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            _buildExpandableSection(
-              title: 'Attachments',
-              icon: Icons.attach_file,
-              isExpanded: _attachmentsExpanded,
-              onExpansionChanged: (value) => setState(() => _attachmentsExpanded = value),
-              children: [
-                _buildAttachmentsContent(),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            _buildExpandableSection(
-              title: 'Reminder Settings',
-              icon: Icons.notifications,
-              isExpanded: _reminderSettingsExpanded,
-              onExpansionChanged: (value) => setState(() => _reminderSettingsExpanded = value),
-              children: [
-                _buildReminderSettingsContent(),
-              ],
-            ),
+            _buildMedicationInfoSection(),
+            SizedBox(height: AppSpacing.base),
+            _buildAttachmentsSection(),
+            SizedBox(height: AppSpacing.base),
+            _buildReminderSettingsSection(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAttachmentsContent() {
+  Widget _buildMedicationInfoSection() {
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Medication Information',
+            Icons.medication,
+            RecordTypeUtils.getGradient('medication'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _nameController,
+            label: 'Medication Name',
+            hint: 'Enter medication name',
+            prefixIcon: Icons.medication,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Medication name is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _dosageController,
+            label: 'Dosage',
+            hint: 'e.g., 10mg',
+            prefixIcon: Icons.straighten,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Dosage is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _frequencyController,
+            label: 'Frequency',
+            hint: 'e.g., Twice daily',
+            prefixIcon: Icons.schedule,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Frequency is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildBatchDropdown(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBatchDropdown() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Add medication labels, pill images, or doctor instructions',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+        DropdownButtonFormField<String>(
+          value: _selectedBatchId,
+          isExpanded: true,
+          decoration: InputDecoration(
+            labelText: 'Medication Batch (Optional)',
+            hintText: 'Select a batch for this medication',
+            prefixIcon: const Icon(Icons.group_work),
+            filled: true,
+            fillColor: context.colorScheme.surfaceContainerHighest,
+            border: OutlineInputBorder(
+              borderRadius: AppRadii.radiusMd,
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.base,
+              vertical: AppSpacing.md,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
+          items: [
+            const DropdownMenuItem<String>(
+              value: null,
+              child: Text('No batch (individual medication)'),
+            ),
+            ..._availableBatches.map((batch) {
+              return DropdownMenuItem<String>(
+                value: batch.id,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(batch.name),
+                    Text(
+                      _getBatchDescription(batch),
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+          onChanged: (value) {
+            setState(() => _selectedBatchId = value);
           },
-          maxFiles: 6,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 25,
         ),
+        if (_selectedBatchId != null) ...[
+          SizedBox(height: AppSpacing.sm),
+          Container(
+            padding: EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: context.colorScheme.primaryContainer,
+              borderRadius: AppRadii.radiusMd,
+              border: Border.all(
+                color: context.colorScheme.primary.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info,
+                  color: context.colorScheme.onPrimaryContainer,
+                  size: AppSizes.iconSm,
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'This medication will be included in batch reminders. Individual reminder settings will be ignored.',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildReminderSettingsContent() {
-    return ReminderSettingsWidget(
-      enabled: _remindersEnabled,
-      onEnabledChanged: (value) => setState(() => _remindersEnabled = value),
-      reminderTimes: _reminderTimes,
-      onReminderTimesChanged: (times) => setState(() => _reminderTimes = times),
-      reminderType: _reminderType,
-      onReminderTypeChanged: (type) => setState(() => _reminderType = type),
-      alarmSound: _alarmSound,
-      onAlarmSoundChanged: (sound) => setState(() => _alarmSound = sound),
-      alarmVolume: _alarmVolume,
-      onAlarmVolumeChanged: (volume) => setState(() => _alarmVolume = volume),
-      frequency: _reminderFrequency,
-      onFrequencyChanged: (freq) => setState(() => _reminderFrequency = freq),
-      snoozeMinutes: _snoozeMinutes,
-      onSnoozeMinutesChanged: (mins) => setState(() => _snoozeMinutes = mins),
-      medicationName: _nameController.text,
-      dosage: _dosageController.text,
-      showPreview: true,
-      showFrequency: true,
-      showSnooze: true,
+  Widget _buildAttachmentsSection() {
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            AppColors.secondaryGradient,
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add medication labels, pill images, or doctor instructions',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 6,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 25,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReminderSettingsSection() {
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Reminder Settings',
+            Icons.notifications,
+            AppColors.warningGradient,
+          ),
+          SizedBox(height: AppSpacing.base),
+          ReminderSettingsWidget(
+            enabled: _remindersEnabled,
+            onEnabledChanged: (value) => setState(() => _remindersEnabled = value),
+            reminderTimes: _reminderTimes,
+            onReminderTimesChanged: (times) => setState(() => _reminderTimes = times),
+            reminderType: _reminderType,
+            onReminderTypeChanged: (type) => setState(() => _reminderType = type),
+            alarmSound: _alarmSound,
+            onAlarmSoundChanged: (sound) => setState(() => _alarmSound = sound),
+            alarmVolume: _alarmVolume,
+            onAlarmVolumeChanged: (volume) => setState(() => _alarmVolume = volume),
+            frequency: _reminderFrequency,
+            onFrequencyChanged: (freq) => setState(() => _reminderFrequency = freq),
+            snoozeMinutes: _snoozeMinutes,
+            onSnoozeMinutesChanged: (mins) => setState(() => _snoozeMinutes = mins),
+            medicationName: _nameController.text,
+            dosage: _dosageController.text,
+            showPreview: true,
+            showFrequency: true,
+            showSnooze: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
+        ),
+      ],
     );
   }
 
@@ -364,9 +394,18 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
       developer.log('Form validation failed', name: 'MedicationForm', level: 900);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please fill in all required fields'),
-          backgroundColor: Colors.orange,
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please fill in all required fields'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
         ),
       );
       return;
@@ -379,9 +418,18 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
       developer.log('Reminders enabled but no times set', name: 'MedicationForm', level: 900);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please add at least one reminder time or disable reminders'),
-          backgroundColor: Colors.orange,
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please add at least one reminder time or disable reminders'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
         ),
       );
       return;
@@ -427,23 +475,21 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                 minute: timeOfDay.minute,
               )).toList()
             : [],
-        // NEW: Add reminder settings for proper alarm/notification scheduling
-        reminderType: _reminderType.value, // Convert enum to string
+        reminderType: _reminderType.value,
         alarmSound: _alarmSound,
         alarmVolume: _alarmVolume,
         snoozeMinutes: _snoozeMinutes,
-        reminderFrequency: _reminderFrequency, // CRITICAL: Pass reminder frequency (once/daily/weekly/monthly), not medication frequency!
+        reminderFrequency: _reminderFrequency,
       );
 
       developer.log('Calling service.createMedication with request', name: 'MedicationForm', level: 800);
       await service.createMedication(request);
       developer.log('Service.createMedication completed successfully', name: 'MedicationForm', level: 800);
 
-      // Log success
       developer.log(
         'Medication created successfully for profile: $selectedProfileId',
         name: 'MedicationForm',
-        level: 800, // INFO level
+        level: 800,
       );
 
       // Refresh medical records providers
@@ -457,30 +503,28 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
             content: Row(
               children: [
                 const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Medication saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
     } catch (error, stackTrace) {
-      // Log detailed error to console
       developer.log(
         'Failed to save medication',
         name: 'MedicationForm',
-        level: 1000, // ERROR level
+        level: 1000,
         error: error,
         stackTrace: stackTrace,
       );
 
       if (mounted) {
-        // Show user-friendly error message with specific error details
         final errorMessage = error.toString().length > 100
             ? 'Failed to save medication. Please try again.'
             : 'Error: ${error.toString()}';
@@ -490,21 +534,21 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
             content: Row(
               children: [
                 const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(errorMessage),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: context.colorScheme.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
               onPressed: () => _saveMedication(),
             ),
-            duration: const Duration(seconds: 5), // Show longer for error details
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -515,96 +559,11 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
     }
   }
 
-  Widget _buildExpandableSection({
-    required String title,
-    required IconData icon,
-    required bool isExpanded,
-    required ValueChanged<bool> onExpansionChanged,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.medicalBlue;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Gradient Header Strip
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
-            ),
-            // Expandable Content
-            Theme(
-              data: theme.copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                title: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        gradient: sectionGradient,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                            offset: const Offset(0, 2),
-                            blurRadius: 6,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Icon(icon, size: 18, color: Colors.white),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-                initiallyExpanded: isExpanded,
-                onExpansionChanged: onExpansionChanged,
-                childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                children: children,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dosageController.dispose();
+    _frequencyController.dispose();
+    super.dispose();
   }
 }
