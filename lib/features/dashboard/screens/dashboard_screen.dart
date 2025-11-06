@@ -9,8 +9,10 @@ import '../../../shared/navigation/app_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/gradient_button.dart';
-import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_state_widgets.dart';
+import '../../../shared/widgets/hb_text_field.dart';
 import '../../../test_alarm_notification.dart';
 import '../widgets/recent_activity_widget.dart';
 import '../widgets/upcoming_reminders_widget.dart';
@@ -25,21 +27,19 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final profilesAsync = ref.watch(simpleProfilesProvider);
     final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
-      body: RefreshIndicator(
+      backgroundColor: context.colorScheme.surfaceContainerLowest,
+      body: HBRefreshIndicator(
         onRefresh: () async {
-          // Refresh the simple providers
           ref.invalidate(simpleProfilesProvider);
           ref.invalidate(simpleSelectedProfileProvider);
         },
         child: CustomScrollView(
           slivers: [
-            // Premium gradient app bar
+            // App Bar with gradient
             SliverAppBar(
               floating: true,
               snap: true,
@@ -48,22 +48,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               surfaceTintColor: Colors.transparent,
               flexibleSpace: Container(
                 decoration: BoxDecoration(
-                  gradient: HealthBoxDesignSystem.medicalBlue,
-                  boxShadow: [
-                    BoxShadow(
-                      color: HealthBoxDesignSystem.medicalBlue.colors.first
-                          .withValues(alpha: 0.3),
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                    ),
-                  ],
+                  gradient: AppColors.primaryGradient,
+                  boxShadow: AppElevation.coloredShadow(
+                    AppColors.primary,
+                    opacity: 0.3,
+                  ),
                 ),
               ),
               title: Text(
                 'HealthBox',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+                style: context.textTheme.headlineSmall?.copyWith(
+                  fontWeight: AppTypography.fontWeightBold,
                   color: Colors.white,
                 ),
               ),
@@ -84,31 +79,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   onPressed: () => context.push(AppRoutes.reminders),
                   tooltip: 'Notifications',
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: context.responsivePadding / 2),
               ],
             ),
 
             // Main content
             SliverPadding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(context.responsivePadding),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // Hero section - welcome
                   _buildHeroSection(selectedProfileAsync, profilesAsync),
-                  const SizedBox(height: 20),
+                  SizedBox(height: AppSpacing.lg),
 
                   // Statistics overview
                   _buildStatsSection(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: AppSpacing.lg),
 
                   // Quick actions
                   _buildQuickActionsSection(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: AppSpacing.lg),
 
                   // Activity section
                   _buildActivitySection(),
 
-                  const SizedBox(height: 120), // FAB space
+                  SizedBox(height: AppSpacing.xl2 * 3), // FAB space
                 ]),
               ),
             ),
@@ -123,52 +118,58 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     AsyncValue<FamilyMemberProfile?> selectedProfileAsync,
     AsyncValue<List<FamilyMemberProfile>> profilesAsync,
   ) {
-    final theme = Theme.of(context);
-
     return selectedProfileAsync.when(
       loading: () => CommonTransitions.fadeIn(
-        child: ModernCard(
-          medicalTheme: MedicalCardTheme.primary,
-          elevation: CardElevation.low,
-          padding: const EdgeInsets.all(24),
+        child: HBCard.gradient(
+          gradient: AppColors.primaryGradient,
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Loading...'),
-              SizedBox(height: 20),
-              Center(child: CircularProgressIndicator()),
+              Text(
+                'Loading...',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: AppTypography.fontSizeLg,
+                ),
+              ),
+              SizedBox(height: AppSpacing.lg),
+              Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
             ],
           ),
         ),
       ),
       error: (error, stack) => CommonTransitions.fadeSlideIn(
-        child: ModernCard(
-          medicalTheme: MedicalCardTheme.primary,
-          elevation: CardElevation.medium,
-          padding: const EdgeInsets.all(24),
+        child: HBCard.gradient(
+          gradient: AppColors.primaryGradient,
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Welcome to',
-                style: theme.textTheme.bodyLarge?.copyWith(
+                style: context.textTheme.bodyLarge?.copyWith(
                   color: Colors.white.withValues(alpha: 0.9),
-                  fontWeight: FontWeight.w500,
+                  fontWeight: AppTypography.fontWeightMedium,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: AppSpacing.xs),
               Text(
                 'HealthBox',
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
+                style: context.textTheme.headlineLarge?.copyWith(
+                  fontWeight: AppTypography.fontWeightBold,
                   color: Colors.white,
                   height: 1.1,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 'Your family\'s health management hub',
-                style: theme.textTheme.bodyMedium?.copyWith(
+                style: context.textTheme.bodyMedium?.copyWith(
                   color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
@@ -177,145 +178,142 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       ),
       data: (selectedProfile) => CommonTransitions.fadeSlideIn(
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.2),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.15),
-                offset: const Offset(0, 8),
-                blurRadius: 24,
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(23),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Gradient Header Strip
-                Container(
-                  height: 6,
-                  decoration: BoxDecoration(
-                    gradient: HealthBoxDesignSystem.medicalBlue,
+        child: HBCard.elevated(
+          padding: EdgeInsets.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Gradient Header Strip
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(AppRadii.md),
+                    topRight: Radius.circular(AppRadii.md),
                   ),
                 ),
-                // Card Content
-                Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Row(
-                    children: [
-                      // Avatar
-                      if (selectedProfile != null)
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            gradient: HealthBoxDesignSystem.medicalBlue,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: HealthBoxDesignSystem.coloredShadow(
-                              HealthBoxDesignSystem.medicalBlue.colors.first,
-                              opacity: 0.35,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${selectedProfile.firstName[0]}${selectedProfile.lastName[0]}'.toUpperCase(),
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 22,
-                              ),
-                            ),
+              ),
+              // Card Content
+              Padding(
+                padding: EdgeInsets.all(AppSpacing.lg),
+                child: Row(
+                  children: [
+                    // Avatar
+                    if (selectedProfile != null)
+                      Container(
+                        width: AppSizes.xl2,
+                        height: AppSizes.xl2,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: AppRadii.radiusMd,
+                          boxShadow: AppElevation.coloredShadow(
+                            AppColors.primary,
+                            opacity: 0.35,
                           ),
                         ),
-                      if (selectedProfile != null) const SizedBox(width: 14),
-                      // Text Content
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              selectedProfile != null ? 'Welcome back,' : 'Welcome to',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
-                              ),
+                        child: Center(
+                          child: Text(
+                            '${selectedProfile.firstName[0]}${selectedProfile.lastName[0]}'
+                                .toUpperCase(),
+                            style: context.textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: AppTypography.fontWeightBold,
+                              fontSize: AppTypography.fontSize2Xl,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              selectedProfile != null
-                                  ? selectedProfile.firstName
-                                  : 'HealthBox',
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: theme.colorScheme.onSurface,
-                                height: 1.1,
-                              ),
-                            ),
-                            if (selectedProfile != null) ...[
-                              const SizedBox(height: 6),
-                              Text(
-                                '${selectedProfile.firstName} ${selectedProfile.lastName}',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ],
+                          ),
                         ),
                       ),
-                      // Switch Profile Button
-                      if (selectedProfile != null)
-                        Container(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IconButton(
-                            onPressed: () => _showProfileSelector(context, profilesAsync),
-                            padding: const EdgeInsets.all(10),
-                            constraints: const BoxConstraints(),
-                            icon: Icon(
-                              Icons.swap_horiz_rounded,
-                              color: theme.colorScheme.onSurfaceVariant,
-                              size: 22,
+                    if (selectedProfile != null) SizedBox(width: AppSpacing.md),
+                    // Text Content
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            selectedProfile != null
+                                ? 'Welcome back,'
+                                : 'Welcome to',
+                            style: context.textTheme.bodyMedium?.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                              fontWeight: AppTypography.fontWeightMedium,
                             ),
-                            tooltip: 'Switch Profile',
                           ),
+                          SizedBox(height: AppSpacing.xs),
+                          Text(
+                            selectedProfile != null
+                                ? selectedProfile.firstName
+                                : 'HealthBox',
+                            style: context.textTheme.headlineMedium?.copyWith(
+                              fontWeight: AppTypography.fontWeightBold,
+                              color: context.colorScheme.onSurface,
+                              height: 1.1,
+                            ),
+                          ),
+                          if (selectedProfile != null) ...[
+                            SizedBox(height: AppSpacing.xs),
+                            Text(
+                              '${selectedProfile.firstName} ${selectedProfile.lastName}',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                                fontWeight: AppTypography.fontWeightMedium,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    // Switch Profile Button
+                    if (selectedProfile != null)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.surfaceContainerHighest
+                              .withValues(alpha: 0.6),
+                          borderRadius: AppRadii.radiusMd,
                         ),
-                    ],
-                  ),
+                        child: IconButton(
+                          onPressed: () =>
+                              _showProfileSelector(context, profilesAsync),
+                          padding: EdgeInsets.all(AppSpacing.sm),
+                          constraints: const BoxConstraints(),
+                          icon: Icon(
+                            Icons.swap_horiz_rounded,
+                            color: context.colorScheme.onSurfaceVariant,
+                            size: AppSizes.iconMd,
+                          ),
+                          tooltip: 'Switch Profile',
+                        ),
+                      ),
+                  ],
                 ),
-                // No Profile Selected Section
-                if (selectedProfile == null) ...[
-                  const SizedBox(height: 16),
-                  profilesAsync.when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
+              ),
+              // No Profile Selected Section
+              if (selectedProfile == null) ...[
+                SizedBox(height: AppSpacing.base),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: profilesAsync.when(
+                    loading: () => const Center(
+                      child: HBLoading.small(),
+                    ),
                     error: (error, _) => Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(AppSpacing.base),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.errorContainer,
-                        borderRadius: BorderRadius.circular(12),
+                        color: context.colorScheme.errorContainer,
+                        borderRadius: AppRadii.radiusMd,
                       ),
                       child: Row(
                         children: [
                           Icon(
                             Icons.error_outline,
-                            color: theme.colorScheme.error,
+                            color: context.colorScheme.error,
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: Text(
                               'Error loading profiles',
                               style: TextStyle(
-                                color: theme.colorScheme.onErrorContainer,
+                                color: context.colorScheme.onErrorContainer,
                               ),
                             ),
                           ),
@@ -328,38 +326,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             children: [
                               Text(
                                 'Get started by adding your first family member',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.8,
-                                  ),
+                                style: context.textTheme.bodyLarge?.copyWith(
+                                  color: context.colorScheme.onSurface
+                                      .withValues(alpha: 0.8),
                                 ),
                               ),
-                              const SizedBox(height: 16),
-                              HealthButton(
+                              SizedBox(height: AppSpacing.base),
+                              HBButton.primary(
                                 onPressed: () => context.push(AppRoutes.profiles),
-                                medicalTheme: MedicalButtonTheme.primary,
-                                size: HealthButtonSize.medium,
-                                enableHoverEffect: true,
-                                enablePressEffect: true,
-                                enableHaptics: true,
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.person_add_rounded,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'Add Family Member',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                icon: Icons.person_add_rounded,
+                                child: const Text('Add Family Member'),
                               ),
                             ],
                           )
@@ -368,16 +344,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             children: [
                               Text(
                                 'Select a family member:',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.8,
-                                  ),
+                                style: context.textTheme.bodyLarge?.copyWith(
+                                  color: context.colorScheme.onSurface
+                                      .withValues(alpha: 0.8),
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: AppSpacing.base),
                               Wrap(
-                                spacing: 12,
-                                runSpacing: 12,
+                                spacing: AppSpacing.md,
+                                runSpacing: AppSpacing.md,
                                 children: profiles.map((profile) {
                                   return InkWell(
                                     onTap: () {
@@ -385,17 +360,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           .read(setSelectedProfileProvider)
                                           .call(profile.id);
                                     },
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: AppRadii.radiusMd,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 10,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: AppSpacing.base,
+                                        vertical: AppSpacing.sm,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: theme.colorScheme.surface,
-                                        borderRadius: BorderRadius.circular(12),
+                                        color: context.colorScheme.surface,
+                                        borderRadius: AppRadii.radiusMd,
                                         border: Border.all(
-                                          color: theme.colorScheme.outline
+                                          color: context.colorScheme.outline
                                               .withValues(alpha: 0.2),
                                         ),
                                       ),
@@ -403,25 +378,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: theme
-                                                .colorScheme
-                                                .primary
+                                            radius: AppSizes.lg,
+                                            backgroundColor: context
+                                                .colorScheme.primary
                                                 .withValues(alpha: 0.1),
                                             child: Text(
                                               profile.firstName[0],
                                               style: TextStyle(
-                                                color: theme.colorScheme.primary,
-                                                fontWeight: FontWeight.w600,
+                                                color:
+                                                    context.colorScheme.primary,
+                                                fontWeight: AppTypography
+                                                    .fontWeightSemiBold,
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(width: 12),
+                                          SizedBox(width: AppSpacing.md),
                                           Text(
                                             '${profile.firstName} ${profile.lastName}',
-                                            style: theme.textTheme.bodyMedium
+                                            style: context.textTheme.bodyMedium
                                                 ?.copyWith(
-                                              fontWeight: FontWeight.w500,
+                                              fontWeight: AppTypography
+                                                  .fontWeightMedium,
                                             ),
                                           ),
                                         ],
@@ -433,9 +410,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ],
                           ),
                   ),
-                ],
+                ),
+                SizedBox(height: AppSpacing.base),
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -443,7 +421,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildStatsSection() {
-    final theme = Theme.of(context);
     final profilesAsync = ref.watch(simpleProfilesProvider);
     final medicalRecordsAsync = ref.watch(allMedicalRecordsProvider);
 
@@ -456,7 +433,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (profiles) => profiles.length.toString(),
         ),
         icon: Icons.people_rounded,
-        color: const Color(0xFF6366F1), // Indigo
+        gradient: const LinearGradient(
+          colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+        ),
       ),
       _StatItem(
         label: 'Medical Records',
@@ -466,19 +445,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (records) => records.length.toString(),
         ),
         icon: Icons.description_rounded,
-        color: const Color(0xFF059669), // Emerald
+        gradient: const LinearGradient(
+          colors: [Color(0xFF059669), Color(0xFF047857)],
+        ),
       ),
       _StatItem(
         label: 'Active Reminders',
         value: '0',
         icon: Icons.notifications_active_rounded,
-        color: const Color(0xFFF59E0B), // Amber
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+        ),
       ),
       _StatItem(
         label: 'This Month',
         value: '0',
         icon: Icons.calendar_today_rounded,
-        color: const Color(0xFFEF4444), // Red
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+        ),
       ),
     ];
 
@@ -487,25 +472,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       children: [
         Text(
           'Overview',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.textTheme.titleLarge?.copyWith(
+            fontWeight: AppTypography.fontWeightBold,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: AppSpacing.base),
         Column(
           children: [
             Row(
               children: [
                 Expanded(child: _buildStatCard(stats[0])),
-                const SizedBox(width: 16),
+                SizedBox(width: AppSpacing.base),
                 Expanded(child: _buildStatCard(stats[1])),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             Row(
               children: [
                 Expanded(child: _buildStatCard(stats[2])),
-                const SizedBox(width: 16),
+                SizedBox(width: AppSpacing.base),
                 Expanded(child: _buildStatCard(stats[3])),
               ],
             ),
@@ -516,158 +501,123 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildStatCard(_StatItem stat) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: stat.color.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: stat.color.withValues(alpha: 0.1),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
+    return HBCard.elevated(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Gradient Header Strip
+          Container(
+            height: 4,
+            decoration: BoxDecoration(
+              gradient: stat.gradient,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppRadii.md),
+                topRight: Radius.circular(AppRadii.md),
+              ),
+            ),
           ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
+          // Card Content
+          Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    gradient: stat.gradient,
+                    borderRadius: AppRadii.radiusMd,
+                    boxShadow: AppElevation.coloredShadow(
+                      stat.gradient.colors.first,
+                      opacity: 0.3,
+                    ),
+                  ),
+                  child: Icon(
+                    stat.icon,
+                    color: Colors.white,
+                    size: AppSizes.iconMd,
+                  ),
+                ),
+                SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        stat.value,
+                        style: context.textTheme.headlineSmall?.copyWith(
+                          fontWeight: AppTypography.fontWeightBold,
+                          color: context.colorScheme.onSurface,
+                          fontSize: AppTypography.fontSize2Xl,
+                        ),
+                      ),
+                      SizedBox(height: AppSpacing.xs / 2),
+                      Text(
+                        stat.label,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                          fontWeight: AppTypography.fontWeightSemiBold,
+                          fontSize: AppTypography.fontSizeXs,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Gradient Header Strip
-            Container(
-              height: 4,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [stat.color, stat.color.withValues(alpha: 0.7)],
-                ),
-              ),
-            ),
-            // Card Content
-            Padding(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          stat.color,
-                          stat.color.withValues(alpha: 0.7),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: stat.color.withValues(alpha: 0.3),
-                          offset: const Offset(0, 3),
-                          blurRadius: 8,
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: Icon(stat.icon, color: Colors.white, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          stat.value,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: theme.colorScheme.onSurface,
-                            fontSize: 22,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          stat.label,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
   Widget _buildQuickActionsSection() {
-    final theme = Theme.of(context);
-
     final actions = [
       _QuickAction(
         title: 'Add Record',
         icon: Icons.medical_information_rounded,
-        color: const Color(0xFF8B5CF6), // Purple
-        onTap: () {
-          print('Add Record clicked');
-          context.push(AppRoutes.medicalRecords);
-        },
+        gradient: const LinearGradient(
+          colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+        ),
+        onTap: () => context.push(AppRoutes.medicalRecords),
       ),
       _QuickAction(
         title: 'Set Reminder',
         icon: Icons.alarm_add_rounded,
-        color: const Color(0xFF06B6D4), // Cyan
-        onTap: () {
-          print('Set Reminder clicked');
-          context.push(AppRoutes.reminders);
-        },
+        gradient: const LinearGradient(
+          colors: [Color(0xFF06B6D4), Color(0xFF0891B2)],
+        ),
+        onTap: () => context.push(AppRoutes.reminders),
       ),
       _QuickAction(
         title: 'Scan Document',
         icon: Icons.document_scanner_rounded,
-        color: const Color(0xFFF97316), // Orange
-        onTap: () {
-          print('Scan Document clicked');
-          context.push(AppRoutes.ocrScan);
-        },
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF97316), Color(0xFFEA580C)],
+        ),
+        onTap: () => context.push(AppRoutes.ocrScan),
       ),
       _QuickAction(
         title: 'Track Vitals',
         icon: Icons.favorite_rounded,
-        color: const Color(0xFFEC4899), // Pink
-        onTap: () {
-          print('Track Vitals clicked');
-          _handleQuickVitalsNavigation(context);
-        },
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEC4899), Color(0xFFDB2777)],
+        ),
+        onTap: () => context.push(AppRoutes.vitalsTracking),
       ),
-      if (kDebugMode)
+    ];
+
+    if (kDebugMode) {
+      actions.add(
         _QuickAction(
           title: 'Test Alarms 🧪',
           icon: Icons.bug_report_rounded,
-          color: const Color(0xFFEF4444), // Red
+          gradient: const LinearGradient(
+            colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+          ),
           onTap: () {
             Navigator.push(
               context,
@@ -677,41 +627,41 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             );
           },
         ),
-    ];
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Quick Actions',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.textTheme.titleLarge?.copyWith(
+            fontWeight: AppTypography.fontWeightBold,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: AppSpacing.base),
         CommonTransitions.fadeSlideIn(
           child: Column(
             children: [
-              // First row with 2 items
               Row(
                 children: [
                   Expanded(child: _buildActionCard(actions[0])),
-                  const SizedBox(width: 16),
+                  SizedBox(width: AppSpacing.base),
                   Expanded(child: _buildActionCard(actions[1])),
                 ],
               ),
-              const SizedBox(height: 16),
-              // Second row with 2 items
+              SizedBox(height: AppSpacing.base),
               Row(
                 children: [
                   Expanded(child: _buildActionCard(actions[2])),
-                  const SizedBox(width: 16),
+                  SizedBox(width: AppSpacing.base),
                   Expanded(child: _buildActionCard(actions[3])),
                 ],
               ),
-              const SizedBox(height: 16),
-              // Third row with Test Alarm button
-              Row(children: [Expanded(child: _buildActionCard(actions[4]))]),
+              if (kDebugMode) ...[
+                SizedBox(height: AppSpacing.base),
+                _buildActionCard(actions[4]),
+              ],
             ],
           ),
         ),
@@ -720,216 +670,133 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildActionCard(_QuickAction action) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return GestureDetector(
+    return HBCard.elevated(
       onTap: action.onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: action.color.withValues(alpha: 0.2),
-            width: 1,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Gradient Header Strip
+          Container(
+            height: 4,
+            decoration: BoxDecoration(
+              gradient: action.gradient,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppRadii.md),
+                topRight: Radius.circular(AppRadii.md),
+              ),
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: action.color.withValues(alpha: 0.1),
-              offset: const Offset(0, 4),
-              blurRadius: 12,
-              spreadRadius: 0,
-            ),
-            BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.2)
-                  : Colors.grey.withValues(alpha: 0.05),
-              offset: const Offset(0, 2),
-              blurRadius: 8,
-              spreadRadius: 0,
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(19),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Gradient Header Strip
-              Container(
-                height: 4,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [action.color, action.color.withValues(alpha: 0.7)],
+          // Card Content
+          Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    gradient: action.gradient,
+                    borderRadius: AppRadii.radiusMd,
+                    boxShadow: AppElevation.coloredShadow(
+                      action.gradient.colors.first,
+                      opacity: 0.3,
+                    ),
+                  ),
+                  child: Icon(
+                    action.icon,
+                    color: Colors.white,
+                    size: AppSizes.iconMd,
                   ),
                 ),
-              ),
-              // Card Content
-              Padding(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            action.color,
-                            action.color.withValues(alpha: 0.7),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: action.color.withValues(alpha: 0.3),
-                            offset: const Offset(0, 3),
-                            blurRadius: 8,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Icon(action.icon, color: Colors.white, size: 22),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      action.title,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                SizedBox(height: AppSpacing.md),
+                Text(
+                  action.title,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
+                    fontSize: AppTypography.fontSizeSm,
+                    color: context.colorScheme.onSurface,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildActivitySection() {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Activity',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.textTheme.titleLarge?.copyWith(
+            fontWeight: AppTypography.fontWeightBold,
           ),
         ),
-        const SizedBox(height: 16),
-        // Reminders with modern card design
+        SizedBox(height: AppSpacing.base),
+        // Reminders
         CommonTransitions.fadeSlideIn(
-          direction: const Offset(0, 40),
-          child: Container(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
-                  offset: const Offset(0, 4),
-                  blurRadius: 12,
-                  spreadRadius: 0,
+          direction: Offset(0, AppSpacing.xl),
+          child: HBCard.elevated(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Gradient Header Strip
+                Container(
+                  height: 4,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(AppRadii.md),
+                      topRight: Radius.circular(AppRadii.md),
+                    ),
+                  ),
                 ),
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.2)
-                      : Colors.grey.withValues(alpha: 0.05),
-                  offset: const Offset(0, 2),
-                  blurRadius: 8,
-                  spreadRadius: 0,
+                // Card Content
+                Padding(
+                  padding: EdgeInsets.all(AppSpacing.base),
+                  child: const UpcomingRemindersWidget(),
                 ),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(19),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Gradient Header Strip
-                  Container(
-                    height: 4,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-                      ),
-                    ),
-                  ),
-                  // Card Content
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: UpcomingRemindersWidget(),
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
-        const SizedBox(height: 16),
-        // Recent Activity with modern card design
+        SizedBox(height: AppSpacing.base),
+        // Recent Activity
         CommonTransitions.fadeSlideIn(
-          direction: const Offset(0, 40),
-          child: Container(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: const Color(0xFF059669).withValues(alpha: 0.2),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF059669).withValues(alpha: 0.1),
-                  offset: const Offset(0, 4),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.2)
-                      : Colors.grey.withValues(alpha: 0.05),
-                  offset: const Offset(0, 2),
-                  blurRadius: 8,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(19),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Gradient Header Strip
-                  Container(
-                    height: 4,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFF059669), Color(0xFF047857)],
-                      ),
+          direction: Offset(0, AppSpacing.xl),
+          child: HBCard.elevated(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Gradient Header Strip
+                Container(
+                  height: 4,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF059669), Color(0xFF047857)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(AppRadii.md),
+                      topRight: Radius.circular(AppRadii.md),
                     ),
                   ),
-                  // Card Content
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: RecentActivityWidget(),
-                  ),
-                ],
-              ),
+                ),
+                // Card Content
+                Padding(
+                  padding: EdgeInsets.all(AppSpacing.base),
+                  child: const RecentActivityWidget(),
+                ),
+              ],
             ),
           ),
         ),
@@ -941,10 +808,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return FloatingActionButton.extended(
       onPressed: () => _showQuickAddDialog(context),
       tooltip: 'Quick Add',
-      icon: const Icon(Icons.add_rounded, size: 20),
-      label: const Text(
+      icon: Icon(Icons.add_rounded, size: AppSizes.iconMd),
+      label: Text(
         'Quick Add',
-        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        style: TextStyle(
+          fontWeight: AppTypography.fontWeightSemiBold,
+          fontSize: AppTypography.fontSizeSm,
+        ),
       ),
     );
   }
@@ -953,26 +823,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: AppRadii.radiusLg,
+        ),
         title: const Text('Search'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search medical records, profiles...',
-                prefixIcon: const Icon(Icons.search_rounded),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+            HBTextField.filled(
+              hint: 'Search medical records, profiles...',
+              prefixIcon: Icons.search_rounded,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             const Text('Global search will be available in a future update.'),
           ],
         ),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: () => context.pop(),
             child: const Text('Close'),
           ),
@@ -984,33 +851,33 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void _showQuickAddDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadii.lg),
+        ),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40,
+                width: AppSizes.xl,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.outline.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
+                  color: context.colorScheme.outline.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(AppRadii.xs),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
               Text(
                 'Quick Add',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                style: context.textTheme.titleLarge?.copyWith(
+                  fontWeight: AppTypography.fontWeightBold,
+                ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
               _buildQuickAddOption(
                 context,
                 Icons.person_add_rounded,
@@ -1047,7 +914,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   context.push(AppRoutes.reminders);
                 },
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
@@ -1061,35 +928,33 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     String title,
     VoidCallback onTap,
   ) {
-    final theme = Theme.of(context);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadii.radiusMd,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.base),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
+                  color: context.colorScheme.primaryContainer,
+                  borderRadius: AppRadii.radiusSm,
                 ),
                 child: Icon(
                   icon,
-                  color: theme.colorScheme.onPrimaryContainer,
-                  size: 24,
+                  color: context.colorScheme.onPrimaryContainer,
+                  size: AppSizes.iconLg,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: AppSpacing.base),
               Text(
                 title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: AppTypography.fontWeightMedium,
                 ),
               ),
             ],
@@ -1109,9 +974,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       data: (profiles) {
         if (profiles.isEmpty) return;
 
-        final theme = Theme.of(context);
-        final isDark = theme.brightness == Brightness.dark;
-
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -1123,74 +985,74 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             expand: false,
             builder: (context, scrollController) => Container(
               decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(28),
+                color: context.colorScheme.surface,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(AppRadii.xl2),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isDark
-                        ? Colors.black.withValues(alpha: 0.3)
-                        : Colors.grey.withValues(alpha: 0.2),
-                    offset: const Offset(0, -4),
-                    blurRadius: 16,
-                    spreadRadius: 0,
-                  ),
-                ],
+                boxShadow: AppElevation.shadow(
+                  AppElevation.level5,
+                  isDark: context.isDark,
+                ),
               ),
               child: Column(
                 children: [
-                  // Enhanced Header Section
+                  // Header Section
                   Container(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    padding: EdgeInsets.fromLTRB(
+                      AppSpacing.xl,
+                      AppSpacing.base,
+                      AppSpacing.xl,
+                      0,
+                    ),
                     child: Column(
                       children: [
                         // Drag Handle
                         Container(
-                          width: 40,
+                          width: AppSizes.xl,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.outline.withValues(
-                              alpha: 0.4,
-                            ),
-                            borderRadius: BorderRadius.circular(2),
+                            color: context.colorScheme.outline
+                                .withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(AppRadii.xs),
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xl),
                         // Header with Icon and Title
                         Row(
                           children: [
                             Container(
-                              width: 48,
-                              height: 48,
+                              width: AppSizes.xl2,
+                              height: AppSizes.xl2,
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(16),
+                                color: context.colorScheme.primaryContainer,
+                                borderRadius: AppRadii.radiusMd,
                               ),
                               child: Icon(
                                 Icons.people_rounded,
-                                color: theme.colorScheme.onPrimaryContainer,
-                                size: 24,
+                                color: context.colorScheme.onPrimaryContainer,
+                                size: AppSizes.iconLg,
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: AppSpacing.base),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'Select Profile',
-                                    style: theme.textTheme.headlineSmall
+                                    style: context.textTheme.headlineSmall
                                         ?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
+                                      fontWeight: AppTypography.fontWeightBold,
+                                      color: context.colorScheme.onSurface,
+                                    ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: AppSpacing.xs),
                                   Text(
                                     'Choose a family member',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
+                                    style: context.textTheme.bodyMedium
+                                        ?.copyWith(
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                 ],
@@ -1198,28 +1060,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xl),
                       ],
                     ),
                   ),
-                  // Enhanced Profile List
+                  // Profile List
                   Expanded(
                     child: ListView.separated(
                       controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.xl,
+                      ),
                       itemCount: profiles.length,
                       separatorBuilder: (context, index) =>
-                          const SizedBox(height: 8),
+                          SizedBox(height: AppSpacing.sm),
                       itemBuilder: (context, index) =>
-                          _buildEnhancedProfileOption(
-                            context,
-                            profiles[index],
-                            isDark,
-                          ),
+                          _buildProfileOption(context, profiles[index]),
                     ),
                   ),
-                  // Bottom Padding
-                  const SizedBox(height: 24),
+                  SizedBox(height: AppSpacing.xl),
                 ],
               ),
             ),
@@ -1229,222 +1088,187 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildEnhancedProfileOption(
+  Widget _buildProfileOption(
     BuildContext context,
     FamilyMemberProfile profile,
-    bool isDark,
   ) {
-    final theme = Theme.of(context);
     final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
     final isSelected = selectedProfileAsync.maybeWhen(
       data: (selectedProfile) => selectedProfile?.id == profile.id,
       orElse: () => false,
     );
     final age = DateTime.now().year - profile.dateOfBirth.year;
-    final genderColor = _getGenderColor(profile.gender, isDark);
-    final initials = '${profile.firstName[0]}${profile.lastName[0]}'
-        .toUpperCase();
+    final genderColor = _getGenderColor(profile.gender);
+    final initials =
+        '${profile.firstName[0]}${profile.lastName[0]}'.toUpperCase();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isSelected
-            ? theme.colorScheme.primaryContainer.withValues(
-                alpha: isDark ? 0.3 : 0.15,
-              )
-            : (isDark
-                  ? theme.colorScheme.surfaceContainerHighest.withValues(
-                      alpha: 0.5,
-                    )
-                  : theme.colorScheme.surfaceContainerHigh),
-        borderRadius: BorderRadius.circular(20),
-        border: isSelected
-            ? Border.all(color: theme.colorScheme.primary, width: 2)
-            : Border.all(
-                color: theme.colorScheme.outline.withValues(alpha: 0.15),
-                width: 1,
+    return HBCard.elevated(
+      onTap: () {
+        ref.read(setSelectedProfileProvider).call(profile.id);
+        context.pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Switched to ${profile.firstName}\'s profile'),
+            duration: AppDurations.short,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: AppRadii.radiusMd,
+            ),
+          ),
+        );
+      },
+      borderColor: isSelected ? context.colorScheme.primary : null,
+      borderWidth: isSelected ? 2 : 0,
+      backgroundColor: isSelected
+          ? context.colorScheme.primaryContainer
+              .withValues(alpha: context.isDark ? 0.3 : 0.15)
+          : null,
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        children: [
+          // Avatar with Gradient
+          Container(
+            width: AppSizes.xl2,
+            height: AppSizes.xl2,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [genderColor, genderColor.withValues(alpha: 0.8)],
               ),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                  offset: const Offset(0, 4),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ]
-            : null,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          onTap: () {
-            ref.read(setSelectedProfileProvider).call(profile.id);
-            context.pop();
-            // Show feedback
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Switched to ${profile.firstName}\'s profile'),
-                duration: const Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              shape: BoxShape.circle,
+              boxShadow: AppElevation.coloredShadow(
+                genderColor,
+                opacity: 0.3,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                initials,
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: AppTypography.fontWeightBold,
+                  fontSize: AppTypography.fontSizeLg,
                 ),
               ),
-            );
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
+            ),
+          ),
+          SizedBox(width: AppSpacing.lg),
+          // Profile Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Enhanced Avatar with Gradient
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [genderColor, genderColor.withValues(alpha: 0.8)],
-                    ),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: genderColor.withValues(alpha: 0.3),
-                        offset: const Offset(0, 4),
-                        blurRadius: 8,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      initials,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
-                    ),
+                Text(
+                  '${profile.firstName} ${profile.lastName}',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightSemiBold,
+                    color: isSelected
+                        ? context.colorScheme.primary
+                        : context.colorScheme.onSurface,
+                    height: 1.2,
                   ),
                 ),
-                const SizedBox(width: 20),
-                // Enhanced Profile Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${profile.firstName} ${profile.lastName}',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: isSelected
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurface,
-                          height: 1.2,
-                        ),
+                SizedBox(height: AppSpacing.xs),
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
-                      const SizedBox(height: 6),
-                      Row(
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.surfaceContainerHighest,
+                        borderRadius: AppRadii.radiusSm,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? theme.colorScheme.surfaceContainerHighest
-                                  : theme.colorScheme.surfaceContainerHigh,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.cake_outlined,
-                                  size: 14,
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '$age years',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          Icon(
+                            Icons.cake_outlined,
+                            size: AppSizes.iconXs,
+                            color: context.colorScheme.onSurfaceVariant,
                           ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: genderColor.withValues(
-                                alpha: isDark ? 0.2 : 0.1,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  _getGenderIcon(profile.gender),
-                                  size: 14,
-                                  color: genderColor,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  profile.gender,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: genderColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
+                          SizedBox(width: AppSpacing.xs),
+                          Text(
+                            '$age years',
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                              fontWeight: AppTypography.fontWeightMedium,
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: genderColor
+                            .withValues(alpha: context.isDark ? 0.2 : 0.1),
+                        borderRadius: AppRadii.radiusSm,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _getGenderIcon(profile.gender),
+                            size: AppSizes.iconXs,
+                            color: genderColor,
+                          ),
+                          SizedBox(width: AppSpacing.xs),
+                          Text(
+                            profile.gender,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: genderColor,
+                              fontWeight: AppTypography.fontWeightSemiBold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                // Enhanced Selection Indicator
-                if (isSelected)
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
               ],
             ),
           ),
-        ),
+          // Selection Indicator
+          if (isSelected)
+            Container(
+              width: AppSizes.lg,
+              height: AppSizes.lg,
+              decoration: BoxDecoration(
+                color: context.colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: AppSizes.iconMd,
+              ),
+            ),
+        ],
       ),
     );
   }
 
-  Color _getGenderColor(String gender, bool isDark) {
+  Color _getGenderColor(String gender) {
     switch (gender.toLowerCase()) {
       case 'male':
-        return isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
+        return context.isDark
+            ? const Color(0xFF60A5FA)
+            : const Color(0xFF3B82F6);
       case 'female':
-        return isDark ? const Color(0xFFF472B6) : const Color(0xFFEC4899);
+        return context.isDark
+            ? const Color(0xFFF472B6)
+            : const Color(0xFFEC4899);
       default:
-        return isDark ? const Color(0xFF34D399) : const Color(0xFF059669);
+        return context.isDark
+            ? const Color(0xFF34D399)
+            : const Color(0xFF059669);
     }
   }
 
@@ -1458,25 +1282,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         return Icons.person;
     }
   }
-
-  void _handleQuickVitalsNavigation(BuildContext context) {
-    // Simple navigation - go directly to vitals tracking screen
-    // The vitals screen should handle profile selection if needed
-    context.push(AppRoutes.vitalsTracking);
-  }
 }
 
 class _QuickAction {
   const _QuickAction({
     required this.title,
     required this.icon,
-    required this.color,
+    required this.gradient,
     required this.onTap,
   });
 
   final String title;
   final IconData icon;
-  final Color color;
+  final Gradient gradient;
   final VoidCallback onTap;
 }
 
@@ -1485,11 +1303,11 @@ class _StatItem {
     required this.label,
     required this.value,
     required this.icon,
-    required this.color,
+    required this.gradient,
   });
 
   final String label;
   final String value;
   final IconData icon;
-  final Color color;
+  final Gradient gradient;
 }
