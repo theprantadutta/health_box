@@ -12,7 +12,12 @@ import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_chip.dart';
+import '../../../shared/widgets/hb_list_tile.dart';
 
 class ChronicConditionFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -65,61 +70,43 @@ class _ChronicConditionFormScreenState
 
   Future<void> _loadChronicCondition() async {
     // TODO: Load existing chronic condition data when editing
-    // This will be implemented with the chronic condition service
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEditing ? 'Edit Chronic Condition' : 'New Chronic Condition',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.chronicConditionGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.chronicConditionGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: _isEditing ? 'Edit Chronic Condition' : 'New Chronic Condition',
+        gradient: RecordTypeUtils.getGradient('chronic_condition'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveChronicCondition,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
             ),
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildConditionDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildDiagnosisSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildSeverityAndStatusSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildTreatmentSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildManagementSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildReminderSection(),
           ],
         ),
@@ -128,328 +115,431 @@ class _ChronicConditionFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return _buildModernSection(
-      title: 'Basic Information',
-      icon: Icons.info_outline,
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., Type 2 Diabetes Management',
-          prefixIcon: const Icon(Icons.medical_information),
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Title is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _descriptionController,
-          labelText: 'Description',
-          hintText: 'Additional details about this condition',
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Record Date'),
-          subtitle: Text(_formatDate(_recordDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: true),
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Basic Information',
+            Icons.info_outline,
+            RecordTypeUtils.getGradient('chronic_condition'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., Type 2 Diabetes Management',
+            prefixIcon: Icons.medical_information,
+            validator: HBValidators.required,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _descriptionController,
+            label: 'Description',
+            hint: 'Additional details about this condition',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile('Record Date', _recordDate, () => _selectDate(context, isRecordDate: true)),
+        ],
+      ),
     );
   }
 
   Widget _buildConditionDetailsSection() {
-    return _buildModernSection(
-      title: 'Condition Details',
-      icon: Icons.local_hospital,
-      children: [
-        ModernTextField(
-          controller: _conditionNameController,
-          labelText: 'Condition Name *',
-          hintText: 'e.g., Type 2 Diabetes, Hypertension',
-          prefixIcon: const Icon(Icons.local_hospital),
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Condition name is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Common Condition Categories',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: ConditionCategories.allCategories.map((category) {
-            return FilterChip(
-              label: Text(category),
-              selected: false,
-              onSelected: (selected) {
-                if (selected) {
-                  // This could be enhanced to auto-suggest condition names
-                  // based on the selected category
-                }
-              },
-            );
-          }).toList(),
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Condition Details',
+            Icons.local_hospital,
+            AppColors.primaryGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _conditionNameController,
+            label: 'Condition Name',
+            hint: 'e.g., Type 2 Diabetes, Hypertension',
+            prefixIcon: Icons.local_hospital,
+            validator: HBValidators.required,
+          ),
+          SizedBox(height: AppSpacing.base),
+          Text(
+            'Common Condition Categories',
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightMedium,
+            ),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
+            children: ConditionCategories.allCategories.map((category) {
+              return HBChip.filter(
+                label: category,
+                selected: false,
+                onSelected: (selected) {
+                  // Could auto-suggest based on category
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDiagnosisSection() {
-    return _buildModernSection(
-      title: 'Diagnosis Information',
-      icon: Icons.medical_information,
-      children: [
-        ListTile(
-          title: const Text('Diagnosis Date'),
-          subtitle: Text(_formatDate(_diagnosisDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: false),
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _diagnosingProviderController,
-          labelText: 'Diagnosing Healthcare Provider',
-          hintText: 'e.g., Dr. Smith, Cardiology',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Diagnosis Information',
+            Icons.medical_information,
+            AppColors.secondaryGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          _buildDateTile('Diagnosis Date', _diagnosisDate, () => _selectDate(context, isRecordDate: false)),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _diagnosingProviderController,
+            label: 'Diagnosing Healthcare Provider',
+            hint: 'e.g., Dr. Smith, Cardiology',
+            prefixIcon: Icons.person,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSeverityAndStatusSection() {
-    return _buildModernSection(
-      title: 'Severity & Status',
-      icon: Icons.priority_high,
-      children: [
-        Text(
-          'Severity Level',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Severity & Status',
+            Icons.priority_high,
+            AppColors.warningGradient,
           ),
-        ),
-        const SizedBox(height: 8),
-        SegmentedButton<String>(
-          segments: ConditionSeverity.allSeverities
-              .map((severity) => ButtonSegment<String>(
-                    value: severity,
-                    label: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(_getSeverityDisplayName(severity)),
-                        Text(
-                          _getSeverityDescription(severity),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
-          selected: {_selectedSeverity},
-          onSelectionChanged: (Set<String> selection) {
-            if (selection.isNotEmpty) {
-              setState(() => _selectedSeverity = selection.first);
-            }
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Current Status',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
+          SizedBox(height: AppSpacing.base),
+          Text(
+            'Severity Level',
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightMedium,
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        SegmentedButton<String>(
-          segments: ConditionStatus.allStatuses
-              .map((status) => ButtonSegment<String>(
-                    value: status,
-                    label: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(_getStatusDisplayName(status)),
-                        Text(
-                          _getStatusDescription(status),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
-          selected: {_selectedStatus},
-          onSelectionChanged: (Set<String> selection) {
-            if (selection.isNotEmpty) {
-              setState(() => _selectedStatus = selection.first);
-            }
-          },
-        ),
-      ],
+          SizedBox(height: AppSpacing.sm),
+          SegmentedButton<String>(
+            segments: ConditionSeverity.allSeverities
+                .map((severity) => ButtonSegment<String>(
+                      value: severity,
+                      label: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_getSeverityDisplayName(severity)),
+                          Text(
+                            _getSeverityDescription(severity),
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            selected: {_selectedSeverity},
+            onSelectionChanged: (Set<String> selection) {
+              if (selection.isNotEmpty) {
+                setState(() => _selectedSeverity = selection.first);
+              }
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          Text(
+            'Current Status',
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightMedium,
+            ),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          SegmentedButton<String>(
+            segments: ConditionStatus.allStatuses
+                .map((status) => ButtonSegment<String>(
+                      value: status,
+                      label: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_getStatusDisplayName(status)),
+                          Text(
+                            _getStatusDescription(status),
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            selected: {_selectedStatus},
+            onSelectionChanged: (Set<String> selection) {
+              if (selection.isNotEmpty) {
+                setState(() => _selectedStatus = selection.first);
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildTreatmentSection() {
-    return _buildModernSection(
-      title: 'Treatment Information',
-      icon: Icons.medication,
-      children: [
-        ModernTextField(
-          controller: _treatmentController,
-          labelText: 'Current Treatment',
-          hintText: 'e.g., Metformin 500mg twice daily',
-          prefixIcon: const Icon(Icons.medication),
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _medicationsController,
-          labelText: 'Related Medications',
-          hintText: 'List medications related to this condition',
-          prefixIcon: const Icon(Icons.local_pharmacy),
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-          maxLines: 2,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Treatment Information',
+            Icons.medication,
+            AppColors.successGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.multiline(
+            controller: _treatmentController,
+            label: 'Current Treatment',
+            hint: 'e.g., Metformin 500mg twice daily',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _medicationsController,
+            label: 'Related Medications',
+            hint: 'List medications related to this condition',
+            minLines: 2,
+            maxLines: 3,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      icon: Icons.attach_file,
-      children: [
-        Text(
-          'Add medical reports, test results, or care plans',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            AppColors.secondaryGradient,
           ),
-        ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 5,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 25,
-        ),
-      ],
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add medical reports, test results, or care plans',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 5,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 25,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildManagementSection() {
-    return _buildModernSection(
-      title: 'Management Plan',
-      icon: Icons.assignment,
-      children: [
-        ModernTextField(
-          controller: _managementPlanController,
-          labelText: 'Management Plan',
-          hintText: 'Diet, exercise, monitoring guidelines, etc.',
-          prefixIcon: const Icon(Icons.assignment),
-          focusGradient: HealthBoxDesignSystem.chronicConditionGradient,
-          maxLines: 4,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Management Plan',
+            Icons.assignment,
+            AppColors.primaryGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.multiline(
+            controller: _managementPlanController,
+            label: 'Management Plan',
+            hint: 'Diet, exercise, monitoring guidelines, etc.',
+            minLines: 4,
+            maxLines: 6,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildReminderSection() {
-    return _buildModernSection(
-      title: 'Reminder Settings',
-      icon: Icons.notifications_outlined,
-      children: [
-        SwitchListTile(
-          title: const Text('Enable Reminders'),
-          subtitle: const Text('Get reminded about check-ups, medication, or monitoring'),
-          value: _enableReminder,
-          onChanged: (value) {
-            setState(() {
-              _enableReminder = value;
-            });
-          },
-        ),
-
-        if (_enableReminder) ...[
-              const SizedBox(height: 16),
-
-              // Reminder Type Selector
-              ReminderTypeSelector(
-                selectedType: _reminderType,
-                onChanged: (type) {
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Reminder Settings',
+            Icons.notifications_outlined,
+            AppColors.warningGradient,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBListTile.switchTile(
+            title: 'Enable Reminders',
+            subtitle: 'Get reminded about check-ups, medication, or monitoring',
+            icon: Icons.notifications,
+            value: _enableReminder,
+            onChanged: (value) {
+              setState(() {
+                _enableReminder = value;
+              });
+            },
+            iconColor: AppColors.warning,
+          ),
+          if (_enableReminder) ...[
+            SizedBox(height: AppSpacing.base),
+            ReminderTypeSelector(
+              selectedType: _reminderType,
+              onChanged: (type) {
+                setState(() {
+                  _reminderType = type;
+                });
+              },
+              helpText: 'Choose how you want to be reminded about this condition',
+            ),
+            if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
+              SizedBox(height: AppSpacing.base),
+              AlarmSoundPicker(
+                selectedSound: _alarmSound,
+                onSoundChanged: (sound) {
                   setState(() {
-                    _reminderType = type;
+                    _alarmSound = sound;
                   });
                 },
-                helpText: 'Choose how you want to be reminded about this condition',
+                showPreview: true,
               ),
-
-              const SizedBox(height: 16),
-
-              // Alarm Sound Picker (only show if alarm is selected)
-              if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
-                AlarmSoundPicker(
-                  selectedSound: _alarmSound,
-                  onSoundChanged: (sound) {
-                    setState(() {
-                      _alarmSound = sound;
-                    });
-                  },
-                  showPreview: true,
-                ),
-                const SizedBox(height: 16),
-
-                AlarmVolumeSlider(
-                  volume: _alarmVolume,
-                  onVolumeChanged: (volume) {
-                    setState(() {
-                      _alarmVolume = volume;
-                    });
-                  },
-                  previewSound: _alarmSound,
-                  label: 'Condition Reminder Volume',
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              // Reminder Preview
-              ReminderPreview(
-                title: _conditionNameController.text.isNotEmpty
-                  ? '${_conditionNameController.text} Check-up'
-                  : 'Chronic Condition Reminder',
-                description: _managementPlanController.text.isNotEmpty
-                  ? 'Management: ${_managementPlanController.text.substring(0, _managementPlanController.text.length > 50 ? 50 : _managementPlanController.text.length)}...'
-                  : 'Time for your condition check-up or medication',
-                scheduledTime: DateTime.now().add(const Duration(days: 7)),
-                reminderType: _reminderType,
-                alarmSound: _alarmSound,
-                alarmVolume: _alarmVolume,
-                showTestButtons: true,
+              SizedBox(height: AppSpacing.base),
+              AlarmVolumeSlider(
+                volume: _alarmVolume,
+                onVolumeChanged: (volume) {
+                  setState(() {
+                    _alarmVolume = volume;
+                  });
+                },
+                previewSound: _alarmSound,
+                label: 'Condition Reminder Volume',
               ),
             ],
+            SizedBox(height: AppSpacing.base),
+            ReminderPreview(
+              title: _conditionNameController.text.isNotEmpty
+                  ? '${_conditionNameController.text} Check-up'
+                  : 'Chronic Condition Reminder',
+              description: _managementPlanController.text.isNotEmpty
+                  ? 'Management: ${_managementPlanController.text.substring(0, _managementPlanController.text.length > 50 ? 50 : _managementPlanController.text.length)}...'
+                  : 'Time for your condition check-up or medication',
+              scheduledTime: DateTime.now().add(const Duration(days: 7)),
+              reminderType: _reminderType,
+              alarmSound: _alarmSound,
+              alarmVolume: _alarmVolume,
+              showTestButtons: true,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
+        ),
       ],
     );
   }
 
-  Future<void> _selectDate(BuildContext context,
-      {required bool isRecordDate}) async {
+  Widget _buildDateTile(String label, DateTime? date, VoidCallback onTap, {bool optional = false}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today,
+              color: context.colorScheme.onSurfaceVariant,
+              size: AppSizes.iconMd,
+            ),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    date != null ? _formatDate(date) : (optional ? 'Not set' : 'Select date'),
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: date != null ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context, {required bool isRecordDate}) async {
     final initialDate = isRecordDate ? _recordDate : _diagnosisDate;
     final selectedDate = await showDatePicker(
       context: context,
@@ -471,6 +561,22 @@ class _ChronicConditionFormScreenState
 
   Future<void> _saveChronicCondition() async {
     if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please fill in all required fields'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
+        ),
+      );
       return;
     }
 
@@ -511,15 +617,13 @@ class _ChronicConditionFormScreenState
 
       await service.createChronicCondition(request);
 
-      // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
-      // Log success
       developer.log(
         'Chronic condition created successfully for profile: $selectedProfileId',
         name: 'ChronicConditionForm',
-        level: 800, // INFO level
+        level: 800,
       );
 
       if (mounted) {
@@ -529,44 +633,42 @@ class _ChronicConditionFormScreenState
             content: Row(
               children: [
                 const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Chronic condition saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
     } catch (error, stackTrace) {
-      // Log detailed error to console
       developer.log(
         'Failed to save chronic condition',
         name: 'ChronicConditionForm',
-        level: 1000, // ERROR level
+        level: 1000,
         error: error,
         stackTrace: stackTrace,
       );
 
       if (mounted) {
-        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
                 const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save chronic condition. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: context.colorScheme.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -598,11 +700,11 @@ class _ChronicConditionFormScreenState
   String _getSeverityDescription(String severity) {
     switch (severity) {
       case ConditionSeverity.mild:
-        return 'Minimal impact on daily activities';
+        return 'Minimal impact';
       case ConditionSeverity.moderate:
-        return 'Some limitation on daily activities';
+        return 'Some limitation';
       case ConditionSeverity.severe:
-        return 'Significant impact on daily activities';
+        return 'Significant impact';
       default:
         return '';
     }
@@ -624,11 +726,11 @@ class _ChronicConditionFormScreenState
   String _getStatusDescription(String status) {
     switch (status) {
       case ConditionStatus.active:
-        return 'Currently experiencing symptoms or requiring treatment';
+        return 'Experiencing symptoms';
       case ConditionStatus.managed:
-        return 'Under control with current treatment plan';
+        return 'Under control';
       case ConditionStatus.resolved:
-        return 'No longer active or requiring treatment';
+        return 'No longer active';
       default:
         return '';
     }
@@ -636,95 +738,6 @@ class _ChronicConditionFormScreenState
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-
-  Widget _buildModernSection({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.chronicConditionGradient;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: sectionGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Icon(icon, size: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ...children,
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
