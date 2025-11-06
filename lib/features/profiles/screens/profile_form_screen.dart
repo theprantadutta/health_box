@@ -8,7 +8,10 @@ import 'package:path/path.dart' as path;
 import 'dart:io';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
-import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_card.dart';
 import '../../../shared/theme/design_system.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../services/profile_service.dart';
@@ -193,8 +196,6 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return PopScope(
       canPop: !_isMandatoryFirstProfile && !_hasUnsavedChanges,
       onPopInvokedWithResult: (didPop, result) async {
@@ -206,116 +207,84 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            _isEditing
-                ? 'Edit Profile'
-                : _isMandatoryFirstProfile
-                ? 'Create Your First Profile'
-                : 'Add New Profile',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          iconTheme: const IconThemeData(color: Colors.white),
+        appBar: HBAppBar.gradient(
+          title: _isEditing
+              ? 'Edit Profile'
+              : _isMandatoryFirstProfile
+                  ? 'Create Your First Profile'
+                  : 'Add New Profile',
+          gradient: HealthBoxDesignSystem.medicalGreen,
           automaticallyImplyLeading: !_isMandatoryFirstProfile,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: HealthBoxDesignSystem.medicalGreen,
-              boxShadow: [
-                BoxShadow(
-                  color: HealthBoxDesignSystem.medicalGreen.colors.first
-                      .withValues(alpha: 0.3),
-                  offset: const Offset(0, 4),
-                  blurRadius: 12,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            if (_isLoading)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          actions: _isLoading
+              ? [
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
                     ),
+                  )
+                ]
+              : [
+                  HBButton.text(
+                    text: 'SAVE',
+                    onPressed: _saveProfile,
+                    textColor: Colors.white,
                   ),
-                ),
-              )
-            else
-              TextButton(
-                onPressed: () {
-                  print('=== APP BAR SAVE BUTTON PRESSED ===');
-                  print('Loading state: $_isLoading');
-                  print('Form valid: ${_formKey.currentState?.validate()}');
-                  print('Date of birth: $_selectedDateOfBirth');
-                  _saveProfile();
-                },
-                child: const Text(
-                  'SAVE',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-          ],
+                ],
         ),
         body: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(16.0),
+            padding: context.responsivePadding,
             children: [
               // Profile Image Section
               Hero(
                 tag: widget.profile != null
                     ? 'profile_${widget.profile!.id}'
                     : 'new_profile',
-                child: ModernCard(
-                  elevation: CardElevation.medium,
+                child: HBCard.elevated(
+                  padding: EdgeInsets.all(AppSpacing.lg),
                   child: _buildProfileImageSection(),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
 
               // Mandatory Profile Message for first profile
-              if (_isMandatoryFirstProfile)
-                ModernCard(
-                  elevation: CardElevation.low,
-                  color: theme.colorScheme.primaryContainer,
+              if (_isMandatoryFirstProfile) ...[
+                HBCard.elevated(
+                  padding: EdgeInsets.all(AppSpacing.base),
+                  backgroundColor: context.colorScheme.primaryContainer,
                   child: Row(
                     children: [
                       Icon(
                         Icons.info_outline,
-                        color: theme.colorScheme.onPrimaryContainer,
-                        size: 24,
+                        color: context.colorScheme.onPrimaryContainer,
+                        size: AppSizes.iconMd,
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Create Your Profile',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.onPrimaryContainer,
+                              style: context.textTheme.titleSmall?.copyWith(
+                                fontWeight: AppTypography.fontWeightBold,
+                                color: context.colorScheme.onPrimaryContainer,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: AppSpacing.xs),
                             Text(
                               'To get started with HealthBox, please create your profile. You can add family members later.',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onPrimaryContainer,
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onPrimaryContainer,
                               ),
                             ),
                           ],
@@ -324,32 +293,32 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                     ],
                   ),
                 ),
-              if (_isMandatoryFirstProfile) const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.xl),
+              ],
 
               // Basic Information Card
-              ModernCard(
-                elevation: CardElevation.medium,
+              HBCard.elevated(
+                padding: EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    _buildSectionHeader(
                       'Basic Information',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
-                      ),
+                      Icons.person,
+                      HealthBoxDesignSystem.medicalBlue,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.lg),
 
                     // First Name
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _firstNameController,
                       focusNode: _firstNameFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'First Name *',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
-                      ),
+                      label: 'First Name *',
+                      prefixIcon: Icons.person,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) => _lastNameFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'First name is required';
@@ -359,23 +328,19 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                         }
                         return null;
                       },
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) => _lastNameFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Last Name
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _lastNameController,
                       focusNode: _lastNameFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Last Name *',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
-                      ),
+                      label: 'Last Name *',
+                      prefixIcon: Icons.person,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) => _middleNameFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Last name is required';
@@ -385,237 +350,185 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                         }
                         return null;
                       },
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) => _middleNameFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Middle Name
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _middleNameController,
                       focusNode: _middleNameFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Middle Name',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person_outline),
-                      ),
+                      label: 'Middle Name',
+                      prefixIcon: Icons.person_outline,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) => _phoneFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                       validator: (value) {
                         if (value != null && value.length > 50) {
                           return 'Middle name cannot exceed 50 characters';
                         }
                         return null;
                       },
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) => _phoneFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Date of Birth
-                    _buildDateOfBirthField(),
-                    const SizedBox(height: 16),
+                    _buildDateOfBirthTile(),
+                    SizedBox(height: AppSpacing.base),
 
                     // Gender
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Gender *',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.people),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: _selectedGender,
-                          isExpanded: true,
-                          items: _genders.map((gender) {
-                            return DropdownMenuItem(
-                              value: gender,
-                              child: Text(gender),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedGender = value!;
-                              _hasUnsavedChanges = true;
-                            });
-                          },
-                        ),
-                      ),
+                    _buildDropdownTile(
+                      label: 'Gender *',
+                      icon: Icons.people,
+                      value: _selectedGender,
+                      items: _genders,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGender = value!;
+                          _hasUnsavedChanges = true;
+                        });
+                      },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Relationship (only show when creating new profiles, not when editing main user)
-                    if (!_isMainUserProfile)
-                      InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Relationship *',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.family_restroom),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: _selectedRelationship,
-                            isExpanded: true,
-                            items: _relationships.map((relationship) {
-                              return DropdownMenuItem(
-                                value: relationship,
-                                child: Text(relationship),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedRelationship = value!;
-                                _hasUnsavedChanges = true;
-                              });
-                            },
-                          ),
-                        ),
+                    if (!_isMainUserProfile) ...[
+                      _buildDropdownTile(
+                        label: 'Relationship *',
+                        icon: Icons.family_restroom,
+                        value: _selectedRelationship,
+                        items: _relationships,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedRelationship = value!;
+                            _hasUnsavedChanges = true;
+                          });
+                        },
                       ),
-                    if (!_isMainUserProfile) const SizedBox(height: 16),
-                    const SizedBox(height: 24),
+                      SizedBox(height: AppSpacing.base),
+                    ],
+                  ],
+                ),
+              ),
+              SizedBox(height: AppSpacing.lg),
 
-                    // Contact Information
-                    Text(
+              // Contact Information Card
+              HBCard.elevated(
+                padding: EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionHeader(
                       'Contact Information',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
-                      ),
+                      Icons.contact_phone,
+                      HealthBoxDesignSystem.medicalPurple,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.lg),
 
                     // Phone Number
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _phoneController,
                       focusNode: _phoneFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone Number',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.phone),
-                        hintText: '+1 (555) 123-4567',
-                      ),
+                      label: 'Phone Number',
+                      prefixIcon: Icons.phone,
+                      hint: '+1 (555) 123-4567',
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) => _emailFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
-                          // Basic phone validation
                           if (value.length < 10) {
                             return 'Phone number must be at least 10 digits';
                           }
                         }
                         return null;
                       },
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Email Address
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _emailController,
                       focusNode: _emailFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Email Address',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.email),
-                        hintText: 'example@email.com',
-                      ),
+                      label: 'Email Address',
+                      prefixIcon: Icons.email,
+                      hint: 'example@email.com',
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) => _addressFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
-                          // Email validation
-                          if (!RegExp(
-                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                          ).hasMatch(value)) {
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
                             return 'Please enter a valid email address';
                           }
                         }
                         return null;
                       },
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Address
-                    TextFormField(
+                    HBTextField.multiline(
                       controller: _addressController,
                       focusNode: _addressFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Address',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.home),
-                        hintText: 'Street address, city, state, zip',
-                      ),
+                      label: 'Address',
+                      prefixIcon: Icons.home,
+                      hint: 'Street address, city, state, zip',
                       maxLines: 2,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) => _heightFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+              SizedBox(height: AppSpacing.lg),
 
-                    // Medical Information
-                    Text(
+              // Medical Information Card
+              HBCard.elevated(
+                padding: EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionHeader(
                       'Medical Information',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      Icons.medical_information,
+                      HealthBoxDesignSystem.medicalRed,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.lg),
 
                     // Blood Type
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Blood Type',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.bloodtype),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String?>(
-                          value: _selectedBloodType,
-                          isExpanded: true,
-                          hint: const Text('Select blood type'),
-                          items: _bloodTypes.map((bloodType) {
-                            return DropdownMenuItem(
-                              value: bloodType,
-                              child: Text(bloodType),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedBloodType = value;
-                              _hasUnsavedChanges = true;
-                            });
-                          },
-                        ),
-                      ),
+                    _buildDropdownTile(
+                      label: 'Blood Type',
+                      icon: Icons.bloodtype,
+                      value: _selectedBloodType,
+                      items: _bloodTypes,
+                      hint: 'Select blood type',
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedBloodType = value;
+                          _hasUnsavedChanges = true;
+                        });
+                      },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Height and Weight Row
                     Row(
                       children: [
                         Expanded(
-                          child: TextFormField(
+                          child: HBTextField.number(
                             controller: _heightController,
                             focusNode: _heightFocus,
-                            decoration: const InputDecoration(
-                              labelText: 'Height (cm)',
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.height),
-                            ),
-                            keyboardType: TextInputType.number,
+                            label: 'Height (cm)',
+                            prefixIcon: Icons.height,
                             textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) =>
-                                _weightFocus.requestFocus(),
+                            onFieldSubmitted: (_) => _weightFocus.requestFocus(),
+                            onChanged: (_) =>
+                                setState(() => _hasUnsavedChanges = true),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                 RegExp(r'^\d+\.?\d{0,1}'),
@@ -633,24 +546,20 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                               }
                               return null;
                             },
-                            onChanged: (_) =>
-                                setState(() => _hasUnsavedChanges = true),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: AppSpacing.base),
                         Expanded(
-                          child: TextFormField(
+                          child: HBTextField.number(
                             controller: _weightController,
                             focusNode: _weightFocus,
-                            decoration: const InputDecoration(
-                              labelText: 'Weight (kg)',
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.monitor_weight),
-                            ),
-                            keyboardType: TextInputType.number,
+                            label: 'Weight (kg)',
+                            prefixIcon: Icons.monitor_weight,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (_) =>
                                 _medicalConditionsFocus.requestFocus(),
+                            onChanged: (_) =>
+                                setState(() => _hasUnsavedChanges = true),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                 RegExp(r'^\d+\.?\d{0,1}'),
@@ -668,93 +577,82 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                               }
                               return null;
                             },
-                            onChanged: (_) =>
-                                setState(() => _hasUnsavedChanges = true),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Medical Conditions
-                    TextFormField(
+                    HBTextField.multiline(
                       controller: _medicalConditionsController,
                       focusNode: _medicalConditionsFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Medical Conditions',
-                        hintText: 'Diabetes, hypertension, asthma, etc.',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.local_hospital),
-                      ),
+                      label: 'Medical Conditions',
+                      prefixIcon: Icons.local_hospital,
+                      hint: 'Diabetes, hypertension, asthma, etc.',
                       maxLines: 3,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) => _allergiesFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Allergies
-                    TextFormField(
+                    HBTextField.multiline(
                       controller: _allergiesController,
                       focusNode: _allergiesFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Allergies',
-                        hintText:
-                            'Food allergies, medications, environmental, etc.',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.warning_amber),
-                      ),
+                      label: 'Allergies',
+                      prefixIcon: Icons.warning_amber,
+                      hint: 'Food allergies, medications, environmental, etc.',
                       maxLines: 2,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) =>
                           _emergencyContactFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+              SizedBox(height: AppSpacing.lg),
 
-                    // Emergency Information
-                    Text(
+              // Emergency Information Card
+              HBCard.elevated(
+                padding: EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionHeader(
                       'Emergency Information',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      Icons.emergency,
+                      HealthBoxDesignSystem.medicalOrange,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.lg),
 
                     // Emergency Contact Name
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _emergencyContactController,
                       focusNode: _emergencyContactFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Emergency Contact Name',
-                        hintText: 'Full name of emergency contact',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.emergency),
-                      ),
+                      label: 'Emergency Contact Name',
+                      prefixIcon: Icons.emergency,
+                      hint: 'Full name of emergency contact',
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) =>
-                          _emergencyPhoneFocus.requestFocus(),
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
+                      onFieldSubmitted: (_) => _emergencyPhoneFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Emergency Contact Phone
-                    TextFormField(
+                    HBTextField.filled(
                       controller: _emergencyPhoneController,
                       focusNode: _emergencyPhoneFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Emergency Contact Phone',
-                        hintText: '+1 (555) 123-4567',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.phone_in_talk),
-                      ),
+                      label: 'Emergency Contact Phone',
+                      prefixIcon: Icons.phone_in_talk,
+                      hint: '+1 (555) 123-4567',
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) => _insuranceFocus.requestFocus(),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
                           if (value.length < 10) {
@@ -763,34 +661,28 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                         }
                         return null;
                       },
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
 
                     // Insurance Information
-                    TextFormField(
+                    HBTextField.multiline(
                       controller: _insuranceInfoController,
                       focusNode: _insuranceFocus,
-                      decoration: const InputDecoration(
-                        labelText: 'Insurance Information',
-                        hintText: 'Provider, policy number, etc.',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.medical_services),
-                      ),
+                      label: 'Insurance Information',
+                      prefixIcon: Icons.medical_services,
+                      hint: 'Provider, policy number, etc.',
                       maxLines: 3,
                       textInputAction: TextInputAction.done,
-                      onChanged: (_) =>
-                          setState(() => _hasUnsavedChanges = true),
+                      onChanged: (_) => setState(() => _hasUnsavedChanges = true),
                     ),
-                    const SizedBox(height: 32),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
 
               // Action Buttons
               _buildActionButtons(),
+              SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
@@ -799,8 +691,6 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
   }
 
   Widget _buildProfileImageSection() {
-    final theme = Theme.of(context);
-
     return Center(
       child: Column(
         children: [
@@ -809,22 +699,11 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.colorScheme.primary,
-                      theme.colorScheme.primary.withValues(alpha: 0.7),
-                    ],
+                  gradient: HealthBoxDesignSystem.medicalGreen,
+                  boxShadow: AppElevation.coloredShadow(
+                    HealthBoxDesignSystem.medicalGreen.colors.first,
+                    opacity: 0.3,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                    ),
-                  ],
                 ),
                 child: CircleAvatar(
                   radius: 50,
@@ -842,19 +721,13 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                 right: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary,
+                    color: context.colorScheme.secondary,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: theme.colorScheme.surface,
+                      color: context.colorScheme.surface,
                       width: 2,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
+                    boxShadow: AppElevation.md,
                   ),
                   child: IconButton(
                     onPressed: _showImagePickerDialog,
@@ -870,11 +743,11 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: AppSpacing.md),
           Text(
             _isEditing ? 'Update Profile Photo' : 'Add Profile Photo',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -882,26 +755,177 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
     );
   }
 
-  Widget _buildDateOfBirthField() {
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateOfBirthTile() {
+    final bool hasError = _dateOfBirthTouched && _selectedDateOfBirth == null;
+
     return InkWell(
       onTap: _selectDateOfBirth,
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: 'Date of Birth *',
-          border: const OutlineInputBorder(),
-          prefixIcon: const Icon(Icons.calendar_today),
-          errorText: _dateOfBirthTouched && _selectedDateOfBirth == null
-              ? 'Date of birth is required'
-              : null,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
+          border: Border.all(
+            color: hasError
+                ? context.colorScheme.error
+                : context.colorScheme.outline.withValues(alpha: 0.3),
+            width: 1,
+          ),
         ),
-        child: Text(
-          _selectedDateOfBirth != null
-              ? '${_selectedDateOfBirth!.day}/${_selectedDateOfBirth!.month}/${_selectedDateOfBirth!.year}'
-              : 'Select date of birth',
-          style: _selectedDateOfBirth != null
-              ? null
-              : TextStyle(color: Theme.of(context).hintColor),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: context.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(AppRadii.sm),
+              ),
+              child: Icon(
+                Icons.calendar_today,
+                size: AppSizes.iconSm,
+                color: context.colorScheme.onPrimaryContainer,
+              ),
+            ),
+            SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Date of Birth *',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: hasError
+                          ? context.colorScheme.error
+                          : context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  SizedBox(height: AppSpacing.xs),
+                  Text(
+                    _selectedDateOfBirth != null
+                        ? '${_selectedDateOfBirth!.day}/${_selectedDateOfBirth!.month}/${_selectedDateOfBirth!.year}'
+                        : 'Select date of birth',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: _selectedDateOfBirth != null
+                          ? context.colorScheme.onSurface
+                          : context.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  if (hasError) ...[
+                    SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Date of birth is required',
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: context.colorScheme.error,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: AppSizes.iconXs,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownTile({
+    required String label,
+    required IconData icon,
+    required String? value,
+    required List<String> items,
+    String? hint,
+    required void Function(String?) onChanged,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.base),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerHighest,
+        borderRadius: AppRadii.radiusMd,
+        border: Border.all(
+          color: context.colorScheme.outline.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: context.colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+            ),
+            child: Icon(
+              icon,
+              size: AppSizes.iconSm,
+              color: context.colorScheme.onPrimaryContainer,
+            ),
+          ),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.xs),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<String?>(
+                    value: value,
+                    isExpanded: true,
+                    isDense: true,
+                    hint: hint != null ? Text(hint) : null,
+                    items: items.map((item) {
+                      return DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: context.textTheme.bodyMedium,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: onChanged,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -911,57 +935,19 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
       children: [
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _isLoading
-                ? null
-                : () {
-                    print('=== ADD PROFILE BUTTON PRESSED ===');
-                    print('Loading state: $_isLoading');
-                    print('Form valid: ${_formKey.currentState?.validate()}');
-                    print('Date of birth: $_selectedDateOfBirth');
-                    _saveProfile();
-                  },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-            ),
-            child: _isLoading
-                ? const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text('Saving...'),
-                    ],
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _isEditing ? Icons.save : Icons.person_add,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(_isEditing ? 'Save Changes' : 'Add Profile'),
-                    ],
-                  ),
+          child: HBButton.primary(
+            text: _isEditing ? 'Save Changes' : 'Add Profile',
+            onPressed: _isLoading ? null : _saveProfile,
+            isLoading: _isLoading,
+            icon: _isEditing ? Icons.save : Icons.person_add,
           ),
         ),
         if (!_isMandatoryFirstProfile) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: AppSpacing.md),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton(
+            child: HBButton.outlined(
+              text: 'Cancel',
               onPressed: _isLoading
                   ? null
                   : () async {
@@ -974,10 +960,6 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                         context.pop();
                       }
                     },
-              child: const Text('Cancel'),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
             ),
           ),
         ],
@@ -992,8 +974,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
 
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate:
-          _selectedDateOfBirth ??
+      initialDate: _selectedDateOfBirth ??
           DateTime.now().subtract(const Duration(days: 365 * 25)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
@@ -1041,7 +1022,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
             content: const Text(
               'Please check the date of birth - age seems unrealistic',
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
           ),
         );
         return;
@@ -1135,10 +1116,11 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
           // Navigate to dashboard after creating the first profile
           context.pushReplacement(AppRoutes.dashboard);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
+            SnackBar(
+              content: const Text(
                 'Welcome to HealthBox! Your profile has been created.',
               ),
+              backgroundColor: AppColors.success,
             ),
           );
         } else {
@@ -1150,6 +1132,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                     ? 'Profile updated successfully'
                     : 'Profile created successfully',
               ),
+              backgroundColor: AppColors.success,
             ),
           );
         }
@@ -1159,7 +1142,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${error.toString()}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -1190,7 +1173,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                 TextButton(
                   onPressed: () => context.pop(true),
                   style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.error,
+                    foregroundColor: context.colorScheme.error,
                   ),
                   child: const Text('Leave'),
                 ),
@@ -1228,10 +1211,10 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
               ),
               if (_selectedImage != null)
                 ListTile(
-                  leading: const Icon(Icons.delete, color: Colors.red),
-                  title: const Text(
+                  leading: Icon(Icons.delete, color: AppColors.error),
+                  title: Text(
                     'Remove Photo',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: AppColors.error),
                   ),
                   onTap: () {
                     context.pop();
@@ -1271,7 +1254,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error picking image: ${e.toString()}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
           ),
         );
       }
