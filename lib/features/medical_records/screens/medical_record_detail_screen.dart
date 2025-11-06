@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/database/app_database.dart';
@@ -8,6 +8,9 @@ import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_state_widgets.dart';
 
 class MedicalRecordDetailScreen extends ConsumerWidget {
   final String recordId;
@@ -27,85 +30,21 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
         : ref.watch(medicalRecordByIdProvider(recordId));
 
     final recordGradient = recordAsync.value != null
-        ? HealthBoxDesignSystem.getRecordTypeGradient(
-            recordAsync.value!.recordType)
-        : HealthBoxDesignSystem.medicalBlue;
+        ? RecordTypeUtils.getGradient(recordAsync.value!.recordType)
+        : AppColors.primaryGradient;
 
     return Scaffold(
       body: recordAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => _buildErrorState(context, error),
+        loading: () => const HBLoading.large(
+          message: 'Loading record details...',
+        ),
+        error: (error, stack) => HBErrorState(
+          error: error,
+          onRetry: () => context.pop(),
+        ),
         data: (record) => record == null
-            ? _buildRecordNotFound(context)
+            ? HBErrorState.notFound(resourceName: 'Medical Record')
             : _buildRecordDetail(context, ref, record, recordGradient),
-      ),
-    );
-  }
-
-  Widget _buildErrorState(BuildContext context, Object error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading record',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error.toString(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back),
-            label: const Text('Go Back'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecordNotFound(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.search_off,
-            size: 64,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Record not found',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'The medical record you\'re looking for doesn\'t exist or has been deleted',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back),
-            label: const Text('Go Back'),
-          ),
-        ],
       ),
     );
   }
@@ -117,8 +56,6 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     LinearGradient gradient,
   ) {
     final profileAsync = ref.watch(profileByIdProvider(record.profileId));
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return CustomScrollView(
       slivers: [
@@ -126,31 +63,35 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
         _buildHeroAppBar(context, record, gradient),
 
         // Content
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
+        SliverPadding(
+          padding: EdgeInsets.all(context.responsivePadding),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
               // Title and Description Card
               CommonTransitions.fadeSlideIn(
-                child: _buildHeaderCard(context, record, gradient, isDark),
+                child: _buildHeaderCard(context, record, gradient),
               ),
+              SizedBox(height: AppSpacing.base),
 
               // Profile Information
               CommonTransitions.fadeSlideIn(
-                child: _buildProfileCard(context, profileAsync, gradient, isDark),
+                child: _buildProfileCard(context, profileAsync, gradient),
               ),
+              SizedBox(height: AppSpacing.base),
 
-              // Record Details Grid
+              // Record Details
               CommonTransitions.fadeSlideIn(
-                child: _buildDetailsGrid(context, record, gradient, isDark),
+                child: _buildDetailsCard(context, record, gradient),
               ),
+              SizedBox(height: AppSpacing.base),
 
               // Metadata Card
               CommonTransitions.fadeSlideIn(
-                child: _buildMetadataCard(context, record, gradient, isDark),
+                child: _buildMetadataCard(context, record, gradient),
               ),
 
-              const SizedBox(height: 32),
-            ],
+              SizedBox(height: AppSpacing.xl2),
+            ]),
           ),
         ),
       ],
@@ -162,8 +103,6 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     MedicalRecord record,
     LinearGradient gradient,
   ) {
-    final theme = Theme.of(context);
-
     return SliverAppBar(
       expandedHeight: 180,
       pinned: true,
@@ -177,16 +116,24 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
           ),
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(60, 20, 16, 20),
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.xl2 * 2,
+                AppSpacing.lg,
+                AppSpacing.base,
+                AppSpacing.lg,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadii.radiusMd,
                       border: Border.all(
                         color: Colors.white.withValues(alpha: 0.4),
                         width: 1,
@@ -196,28 +143,28 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          _getRecordTypeIcon(record.recordType),
-                          size: 16,
+                          RecordTypeUtils.getIcon(record.recordType),
+                          size: AppSizes.iconSm,
                           color: Colors.white,
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: AppSpacing.xs),
                         Text(
                           _getDisplayName(record.recordType),
-                          style: theme.textTheme.labelMedium?.copyWith(
+                          style: context.textTheme.labelMedium?.copyWith(
                             color: Colors.white,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: AppTypography.fontWeightBold,
                             letterSpacing: 0.8,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: AppSpacing.md),
                   Text(
                     'Medical Record Details',
-                    style: theme.textTheme.headlineSmall?.copyWith(
+                    style: context.textTheme.headlineSmall?.copyWith(
                       color: Colors.white,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: AppTypography.fontWeightBold,
                       shadows: [
                         Shadow(
                           color: Colors.black.withValues(alpha: 0.25),
@@ -235,10 +182,10 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
       ),
       actions: [
         Container(
-          margin: const EdgeInsets.only(right: 4),
+          margin: EdgeInsets.only(right: AppSpacing.xs),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadii.radiusMd,
           ),
           child: IconButton(
             icon: const Icon(Icons.edit_rounded, color: Colors.white),
@@ -247,16 +194,16 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(right: 8),
+          margin: EdgeInsets.only(right: AppSpacing.sm),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadii.radiusMd,
           ),
           child: PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
             onSelected: (value) => _handleMenuAction(context, value, record),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadii.radiusLg,
             ),
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -264,18 +211,19 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(8),
+                        color: context.colorScheme.primaryContainer
+                            .withValues(alpha: 0.3),
+                        borderRadius: AppRadii.radiusSm,
                       ),
                       child: Icon(
                         Icons.share_rounded,
-                        size: 16,
-                        color: theme.colorScheme.primary,
+                        size: AppSizes.iconSm,
+                        color: context.colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: AppSpacing.md),
                     const Text('Share'),
                   ],
                 ),
@@ -285,21 +233,22 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(8),
+                        color: context.colorScheme.errorContainer
+                            .withValues(alpha: 0.3),
+                        borderRadius: AppRadii.radiusSm,
                       ),
                       child: Icon(
                         Icons.delete_outline_rounded,
-                        size: 16,
-                        color: theme.colorScheme.error,
+                        size: AppSizes.iconSm,
+                        color: context.colorScheme.error,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: AppSpacing.md),
                     Text(
                       'Delete',
-                      style: TextStyle(color: theme.colorScheme.error),
+                      style: TextStyle(color: context.colorScheme.error),
                     ),
                   ],
                 ),
@@ -315,117 +264,90 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     BuildContext context,
     MedicalRecord record,
     LinearGradient gradient,
-    bool isDark,
   ) {
-    final theme = Theme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: gradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withValues(alpha: 0.1),
-            offset: const Offset(0, 8),
-            blurRadius: 24,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
+    return HBCard.elevated(
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Gradient Header
+          // Gradient Header Strip
           Container(
             height: 6,
             decoration: BoxDecoration(
               gradient: gradient,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(24),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppRadii.md),
+                topRight: Radius.circular(AppRadii.md),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(AppSpacing.xl),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        gradient: gradient,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: HealthBoxDesignSystem.coloredShadow(
-                          gradient.colors.first,
-                          opacity: 0.35,
-                        ),
-                      ),
-                      child: Icon(
-                        _getRecordTypeIcon(record.recordType),
-                        size: 32,
-                        color: Colors.white,
-                      ),
+                    HBRecordIcon(
+                      recordType: record.recordType,
+                      size: AppSizes.xl2,
+                      useGradient: true,
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: AppSpacing.base),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             record.title,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: theme.colorScheme.onSurface,
+                            style: context.textTheme.headlineSmall?.copyWith(
+                              fontWeight: AppTypography.fontWeightBold,
+                              color: context.colorScheme.onSurface,
                               height: 1.2,
                             ),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: AppSpacing.xs),
                           Row(
                             children: [
                               if (!record.isActive)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.sm,
+                                    vertical: AppSpacing.xs,
                                   ),
-                                  margin: const EdgeInsets.only(right: 8),
+                                  margin: EdgeInsets.only(right: AppSpacing.sm),
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.error.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
+                                    color: context.colorScheme.error
+                                        .withValues(alpha: 0.1),
+                                    borderRadius: AppRadii.radiusSm,
                                     border: Border.all(
-                                      color: theme.colorScheme.error.withValues(alpha: 0.3),
+                                      color: context.colorScheme.error
+                                          .withValues(alpha: 0.3),
                                     ),
                                   ),
                                   child: Text(
                                     'INACTIVE',
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: theme.colorScheme.error,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 10,
+                                    style: context.textTheme.labelSmall
+                                        ?.copyWith(
+                                      color: context.colorScheme.error,
+                                      fontWeight: AppTypography.fontWeightBold,
+                                      fontSize: AppTypography.fontSizeXs,
                                     ),
                                   ),
                                 ),
                               Icon(
                                 Icons.calendar_today_rounded,
-                                size: 14,
-                                color: theme.colorScheme.onSurfaceVariant,
+                                size: AppSizes.iconXs,
+                                color: context.colorScheme.onSurfaceVariant,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: AppSpacing.xs),
                               Text(
                                 _formatDate(record.recordDate),
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.w600,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant,
+                                  fontWeight: AppTypography.fontWeightSemiBold,
                                 ),
                               ),
                             ],
@@ -436,16 +358,19 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                   ],
                 ),
                 if (record.description?.isNotEmpty == true) ...[
-                  const SizedBox(height: 20),
+                  SizedBox(height: AppSpacing.lg),
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(AppSpacing.base),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
-                          : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(16),
+                      color: context.isDark
+                          ? context.colorScheme.surfaceContainerHighest
+                              .withValues(alpha: 0.4)
+                          : context.colorScheme.surfaceContainerHigh
+                              .withValues(alpha: 0.6),
+                      borderRadius: AppRadii.radiusMd,
                       border: Border.all(
-                        color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                        color: context.colorScheme.outlineVariant
+                            .withValues(alpha: 0.3),
                       ),
                     ),
                     child: Column(
@@ -455,25 +380,25 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                           children: [
                             Icon(
                               Icons.description_rounded,
-                              size: 16,
-                              color: theme.colorScheme.primary,
+                              size: AppSizes.iconSm,
+                              color: context.colorScheme.primary,
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(width: AppSpacing.sm),
                             Text(
                               'Description',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.w700,
+                              style: context.textTheme.titleSmall?.copyWith(
+                                color: context.colorScheme.primary,
+                                fontWeight: AppTypography.fontWeightBold,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: AppSpacing.md),
                         Text(
                           record.description!,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurface,
-                            height: 1.6,
+                          style: context.textTheme.bodyLarge?.copyWith(
+                            color: context.colorScheme.onSurface,
+                            height: AppTypography.lineHeightRelaxed,
                           ),
                         ),
                       ],
@@ -492,54 +417,30 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     BuildContext context,
     AsyncValue<FamilyMemberProfile?> profileAsync,
     LinearGradient gradient,
-    bool isDark,
   ) {
-    final theme = Theme.of(context);
-
     return profileAsync.when(
-      loading: () => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: const Center(child: CircularProgressIndicator()),
+      loading: () => HBCard.elevated(
+        child: const HBLoading.small(),
       ),
       error: (error, stack) => const SizedBox.shrink(),
       data: (profile) {
         if (profile == null) return const SizedBox.shrink();
 
         final age = _calculateAge(profile.dateOfBirth);
-        final initials = '${profile.firstName[0]}${profile.lastName[0]}'.toUpperCase();
+        final initials =
+            '${profile.firstName[0]}${profile.lastName[0]}'.toUpperCase();
 
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: gradient.colors.first.withValues(alpha: 0.15),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: gradient.colors.first.withValues(alpha: 0.08),
-                offset: const Offset(0, 4),
-                blurRadius: 16,
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.all(20),
+        return HBCard.elevated(
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
               Container(
-                width: 64,
-                height: 64,
+                width: AppSizes.xl2,
+                height: AppSizes.xl2,
                 decoration: BoxDecoration(
                   gradient: _getGenderGradient(profile.gender),
                   shape: BoxShape.circle,
-                  boxShadow: HealthBoxDesignSystem.coloredShadow(
+                  boxShadow: AppElevation.coloredShadow(
                     _getGenderGradient(profile.gender).colors.first,
                     opacity: 0.3,
                   ),
@@ -547,65 +448,73 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
                 child: Center(
                   child: Text(
                     initials,
-                    style: theme.textTheme.titleLarge?.copyWith(
+                    style: context.textTheme.titleLarge?.copyWith(
                       color: Colors.white,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: AppTypography.fontWeightBold,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: AppSpacing.base),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Patient Information',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w700,
+                      style: context.textTheme.labelMedium?.copyWith(
+                        color: context.colorScheme.primary,
+                        fontWeight: AppTypography.fontWeightBold,
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: AppSpacing.xs / 2),
                     Text(
                       '${profile.firstName} ${profile.lastName}',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
+                      style: context.textTheme.titleLarge?.copyWith(
+                        fontWeight: AppTypography.fontWeightBold,
+                        color: context.colorScheme.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(8),
+                            color: context.colorScheme.primaryContainer
+                                .withValues(alpha: 0.5),
+                            borderRadius: AppRadii.radiusSm,
                           ),
                           child: Text(
                             '$age years',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 11,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.primary,
+                              fontWeight: AppTypography.fontWeightSemiBold,
+                              fontSize: AppTypography.fontSizeXs,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: AppSpacing.sm),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(8),
+                            color: context.colorScheme.secondaryContainer
+                                .withValues(alpha: 0.5),
+                            borderRadius: AppRadii.radiusSm,
                           ),
                           child: Text(
                             profile.gender,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.secondary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 11,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.secondary,
+                              fontWeight: AppTypography.fontWeightSemiBold,
+                              fontSize: AppTypography.fontSizeXs,
                             ),
                           ),
                         ),
@@ -621,82 +530,60 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDetailsGrid(
+  Widget _buildDetailsCard(
     BuildContext context,
     MedicalRecord record,
     LinearGradient gradient,
-    bool isDark,
   ) {
-    final theme = Theme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: gradient.colors.first.withValues(alpha: 0.15),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 16,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   gradient: gradient,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadii.radiusMd,
                 ),
                 child: Icon(
                   Icons.info_rounded,
-                  size: 20,
+                  size: AppSizes.iconMd,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: AppSpacing.md),
               Text(
                 'Record Information',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: AppTypography.fontWeightBold,
+                  color: context.colorScheme.onSurface,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          _buildDetailItem(
-            context,
-            'Record Type',
-            _getDisplayName(record.recordType),
-            Icons.category_rounded,
-            gradient.colors.first,
+          SizedBox(height: AppSpacing.lg),
+          HBDetailRow(
+            label: 'Record Type',
+            value: _getDisplayName(record.recordType),
+            icon: Icons.category_rounded,
           ),
-          const SizedBox(height: 16),
-          _buildDetailItem(
-            context,
-            'Record Date',
-            _formatDateTime(record.recordDate),
-            Icons.calendar_today_rounded,
-            gradient.colors.first,
+          HBDetailRow(
+            label: 'Record Date',
+            value: _formatDateTime(record.recordDate),
+            icon: Icons.calendar_today_rounded,
           ),
-          const SizedBox(height: 16),
-          _buildDetailItem(
-            context,
-            'Status',
-            record.isActive ? 'Active' : 'Inactive',
-            record.isActive ? Icons.check_circle_rounded : Icons.cancel_rounded,
-            record.isActive ? HealthBoxDesignSystem.successColor : theme.colorScheme.error,
+          HBDetailRow(
+            label: 'Status',
+            value: record.isActive ? 'Active' : 'Inactive',
+            icon: record.isActive
+                ? Icons.check_circle_rounded
+                : Icons.cancel_rounded,
+            valueColor: record.isActive
+                ? AppColors.success
+                : context.colorScheme.error,
           ),
         ],
       ),
@@ -707,218 +594,63 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     BuildContext context,
     MedicalRecord record,
     LinearGradient gradient,
-    bool isDark,
   ) {
-    final theme = Theme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: gradient.colors.first.withValues(alpha: 0.15),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 16,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   gradient: gradient,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadii.radiusMd,
                 ),
                 child: Icon(
                   Icons.access_time_rounded,
-                  size: 20,
+                  size: AppSizes.iconMd,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: AppSpacing.md),
               Text(
                 'Record Metadata',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: AppTypography.fontWeightBold,
+                  color: context.colorScheme.onSurface,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          _buildDetailItem(
-            context,
-            'Created At',
-            _formatDateTime(record.createdAt),
-            Icons.add_circle_outline_rounded,
-            gradient.colors.first,
+          SizedBox(height: AppSpacing.lg),
+          HBDetailRow(
+            label: 'Created At',
+            value: _formatDateTime(record.createdAt),
+            icon: Icons.add_circle_outline_rounded,
           ),
-          const SizedBox(height: 16),
-          _buildDetailItem(
-            context,
-            'Last Updated',
-            _formatDateTime(record.updatedAt),
-            Icons.edit_calendar_rounded,
-            gradient.colors.first,
+          HBDetailRow(
+            label: 'Last Updated',
+            value: _formatDateTime(record.updatedAt),
+            icon: Icons.edit_calendar_rounded,
           ),
-          const SizedBox(height: 16),
-          _buildDetailItem(
-            context,
-            'Record ID',
-            record.id,
-            Icons.fingerprint_rounded,
-            gradient.colors.first,
-            monospace: true,
+          HBDetailRow(
+            label: 'Record ID',
+            value: record.id,
+            icon: Icons.fingerprint_rounded,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDetailItem(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-    Color color, {
-    bool monospace = false,
-  }) {
-    final theme = Theme.of(context);
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(
-            icon,
-            size: 18,
-            color: color,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: monospace ? 'monospace' : null,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  IconData _getRecordTypeIcon(String recordType) {
-    switch (recordType.toLowerCase()) {
-      case 'prescription':
-        return Icons.medication_rounded;
-      case 'medication':
-        return Icons.medical_services_rounded;
-      case 'lab_report':
-      case 'lab report':
-        return Icons.science_rounded;
-      case 'vaccination':
-        return Icons.vaccines_rounded;
-      case 'allergy':
-        return Icons.warning_rounded;
-      case 'chronic_condition':
-      case 'chronic condition':
-        return Icons.health_and_safety_rounded;
-      case 'surgical_record':
-      case 'surgical record':
-        return Icons.medical_services_outlined;
-      case 'radiology_record':
-      case 'radiology record':
-        return Icons.medical_information_rounded;
-      case 'pathology_record':
-      case 'pathology record':
-        return Icons.biotech_rounded;
-      case 'discharge_summary':
-      case 'discharge summary':
-        return Icons.exit_to_app_rounded;
-      case 'hospital_admission':
-      case 'hospital admission':
-        return Icons.local_hospital_rounded;
-      case 'dental_record':
-      case 'dental record':
-        return Icons.healing_rounded;
-      case 'mental_health_record':
-      case 'mental health record':
-        return Icons.psychology_rounded;
-      case 'general_record':
-      case 'general record':
-        return Icons.description_rounded;
-      default:
-        return Icons.description_rounded;
-    }
-  }
-
   String _getDisplayName(String recordType) {
-    switch (recordType.toLowerCase()) {
-      case 'prescription':
-        return 'PRESCRIPTION';
-      case 'medication':
-        return 'MEDICATION';
-      case 'lab_report':
-        return 'LAB REPORT';
-      case 'vaccination':
-        return 'VACCINATION';
-      case 'allergy':
-        return 'ALLERGY';
-      case 'chronic_condition':
-        return 'CHRONIC CONDITION';
-      case 'surgical_record':
-        return 'SURGICAL';
-      case 'radiology_record':
-        return 'RADIOLOGY';
-      case 'pathology_record':
-        return 'PATHOLOGY';
-      case 'discharge_summary':
-        return 'DISCHARGE';
-      case 'hospital_admission':
-        return 'ADMISSION';
-      case 'dental_record':
-        return 'DENTAL';
-      case 'mental_health_record':
-        return 'MENTAL HEALTH';
-      case 'general_record':
-        return 'GENERAL';
-      default:
-        return recordType.toUpperCase().replaceAll('_', ' ');
-    }
+    return recordType
+        .toUpperCase()
+        .replaceAll('_', ' ')
+        .replaceAll('RECORD', '')
+        .trim();
   }
 
   String _formatDateTime(DateTime dateTime) {
@@ -964,6 +696,10 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
         content: Text(
           'Edit ${record.recordType} - Will be implemented in future update',
         ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppRadii.radiusMd,
+        ),
       ),
     );
   }
@@ -978,9 +714,13 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     switch (action) {
       case 'share':
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
+          SnackBar(
+            content: const Text(
               'Share functionality will be implemented soon',
+            ),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: AppRadii.radiusMd,
             ),
           ),
         );
@@ -995,30 +735,34 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: AppRadii.radiusLg,
+        ),
         title: const Text('Delete Record'),
         content: Text(
           'Are you sure you want to delete "${record.title}"? This action cannot be undone.',
         ),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          HBButton.destructive(
             onPressed: () {
               context.pop();
               context.pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
+                SnackBar(
+                  content: const Text(
                     'Delete functionality will be implemented with service integration',
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppRadii.radiusMd,
                   ),
                 ),
               );
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
             child: const Text('Delete'),
           ),
         ],
