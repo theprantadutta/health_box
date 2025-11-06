@@ -12,7 +12,11 @@ import '../../../shared/widgets/alarm_sound_picker.dart';
 import '../../../shared/widgets/alarm_volume_slider.dart';
 import '../../../shared/widgets/reminder_preview.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_list_tile.dart';
 
 class VaccinationFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -66,36 +70,16 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
 
   Future<void> _loadVaccination() async {
     // TODO: Load existing vaccination data when editing
-    // This will be implemented with the vaccination service
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Vaccination' : 'New Vaccination'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.vaccinationGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.vaccinationGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: _isEditing ? 'Edit Vaccination' : 'New Vaccination',
+        gradient: RecordTypeUtils.getGradient('vaccination'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveVaccination,
             child: Text(
               _isLoading ? 'SAVING...' : 'SAVE',
@@ -107,18 +91,18 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildVaccineDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAdministrationSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildDosageSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildCompletionSection(),
           ],
         ),
@@ -127,197 +111,429 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
   }
 
   Widget _buildBasicInfoSection() {
-    return _buildModernSection(
-      title: 'Basic Information',
-      icon: Icons.info_outline,
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., COVID-19 Vaccination',
-          prefixIcon: const Icon(Icons.vaccines),
-          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Title is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _descriptionController,
-          labelText: 'Description',
-          hintText: 'Additional notes about this vaccination',
-          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Record Date'),
-          subtitle: Text(_formatDate(_recordDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: true),
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Basic Information',
+            Icons.info_outline,
+            RecordTypeUtils.getGradient('vaccination'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., COVID-19 Vaccination',
+            prefixIcon: Icons.vaccines,
+            validator: HBValidators.required,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _descriptionController,
+            label: 'Description',
+            hint: 'Additional notes about this vaccination',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile('Record Date', _recordDate, () => _selectDate(context, isRecordDate: true)),
+        ],
+      ),
     );
   }
 
   Widget _buildVaccineDetailsSection() {
-    return _buildModernSection(
-      title: 'Vaccine Details',
-      icon: Icons.medical_services,
-      children: [
-        ModernTextField(
-          controller: _vaccineNameController,
-          labelText: 'Vaccine Name *',
-          hintText: 'e.g., Pfizer-BioNTech COVID-19',
-          prefixIcon: const Icon(Icons.medical_services),
-          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Vaccine name is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedManufacturer,
-          decoration: const InputDecoration(
-            labelText: 'Manufacturer',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.business),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Vaccine Details',
+            Icons.medical_services,
+            AppColors.successGradient,
           ),
-          items: VaccineManufacturers.allManufacturers
-              .map((manufacturer) => DropdownMenuItem(
-                    value: manufacturer,
-                    child: Text(manufacturer),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedManufacturer = value;
-              _manufacturerController.text = value ?? '';
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _batchNumberController,
-          labelText: 'Batch/Lot Number',
-          hintText: 'e.g., EJ1685',
-          prefixIcon: const Icon(Icons.tag),
-          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
-        ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _vaccineNameController,
+            label: 'Vaccine Name',
+            hint: 'e.g., Pfizer-BioNTech COVID-19',
+            prefixIcon: Icons.medical_services,
+            validator: HBValidators.required,
+          ),
+          SizedBox(height: AppSpacing.base),
+          DropdownButtonFormField<String>(
+            value: _selectedManufacturer,
+            decoration: InputDecoration(
+              labelText: 'Manufacturer',
+              hintText: 'Select manufacturer',
+              prefixIcon: const Icon(Icons.business),
+              filled: true,
+              fillColor: context.colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: AppRadii.radiusMd,
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.base,
+                vertical: AppSpacing.md,
+              ),
+            ),
+            items: VaccineManufacturers.allManufacturers
+                .map((manufacturer) => DropdownMenuItem(
+                      value: manufacturer,
+                      child: Text(manufacturer),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedManufacturer = value;
+                _manufacturerController.text = value ?? '';
+              });
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _batchNumberController,
+            label: 'Batch/Lot Number',
+            hint: 'e.g., EJ1685',
+            prefixIcon: Icons.tag,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAdministrationSection() {
-    return _buildModernSection(
-      title: 'Administration Details',
-      icon: Icons.local_hospital,
-      children: [
-        ListTile(
-          title: const Text('Administration Date'),
-          subtitle: Text(_formatDate(_administrationDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: false),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedSite,
-          decoration: const InputDecoration(
-            labelText: 'Administration Site',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.location_on),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Administration Details',
+            Icons.local_hospital,
+            AppColors.primaryGradient,
           ),
-          items: VaccinationSites.allSites
-              .map((site) => DropdownMenuItem(
-                    value: site,
-                    child: Text(site),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            setState(() => _selectedSite = value);
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _administeredByController,
-          labelText: 'Administered By',
-          hintText: 'Healthcare provider name',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
-        ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          _buildDateTile('Administration Date', _administrationDate, () => _selectDate(context, isRecordDate: false)),
+          SizedBox(height: AppSpacing.base),
+          DropdownButtonFormField<String>(
+            value: _selectedSite,
+            decoration: InputDecoration(
+              labelText: 'Administration Site',
+              hintText: 'Select site',
+              prefixIcon: const Icon(Icons.location_on),
+              filled: true,
+              fillColor: context.colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: AppRadii.radiusMd,
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.base,
+                vertical: AppSpacing.md,
+              ),
+            ),
+            items: VaccinationSites.allSites
+                .map((site) => DropdownMenuItem(
+                      value: site,
+                      child: Text(site),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              setState(() => _selectedSite = value);
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _administeredByController,
+            label: 'Administered By',
+            hint: 'Healthcare provider name',
+            prefixIcon: Icons.person,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDosageSection() {
-    return _buildModernSection(
-      title: 'Dosage Information',
-      icon: Icons.numbers,
-      children: [
-        ModernTextField(
-          controller: _doseNumberController,
-          labelText: 'Dose Number',
-          hintText: 'e.g., 1, 2, 3',
-          prefixIcon: const Icon(Icons.numbers),
-          focusGradient: HealthBoxDesignSystem.vaccinationGradient,
-          keyboardType: TextInputType.number,
-          validator: (value) {
-            if (value != null && value.isNotEmpty) {
-              final dose = int.tryParse(value);
-              if (dose == null || dose <= 0) {
-                return 'Dose number must be a positive integer';
-              }
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Next Due Date'),
-          subtitle: Text(_nextDueDate != null
-              ? _formatDate(_nextDueDate!)
-              : 'Not set'),
-          trailing: const Icon(Icons.schedule),
-          onTap: () => _selectNextDueDate(context),
-        ),
-        if (_nextDueDate != null)
-          TextButton(
-            onPressed: () {
-              setState(() => _nextDueDate = null);
-            },
-            child: const Text('Clear Next Due Date'),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Dosage Information',
+            Icons.numbers,
+            AppColors.secondaryGradient,
           ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.number(
+            controller: _doseNumberController,
+            label: 'Dose Number',
+            hint: 'e.g., 1, 2, 3',
+            prefixIcon: Icons.numbers,
+            validator: (value) {
+              if (value != null && value.isNotEmpty) {
+                final dose = int.tryParse(value);
+                if (dose == null || dose <= 0) {
+                  return 'Dose number must be a positive integer';
+                }
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile(
+            'Next Due Date',
+            _nextDueDate,
+            () => _selectNextDueDate(context),
+            optional: true,
+          ),
+          if (_nextDueDate != null) ...[
+            SizedBox(height: AppSpacing.sm),
+            HBButton.text(
+              onPressed: () {
+                setState(() => _nextDueDate = null);
+              },
+              child: const Text('Clear Next Due Date'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            AppColors.secondaryGradient,
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add vaccination cards, certificates, or related documents',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 5,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 25,
+          ),
+          SizedBox(height: AppSpacing.xl),
+          _buildReminderSection(),
+        ],
+      ),
     );
   }
 
   Widget _buildCompletionSection() {
-    return _buildModernSection(
-      title: 'Completion Status',
-      icon: Icons.check_circle_outline,
-      children: [
-        SwitchListTile(
-          title: const Text('Mark as Complete'),
-          subtitle: const Text(
-            'Check this if this completes the vaccination series',
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Completion Status',
+            Icons.check_circle_outline,
+            AppColors.successGradient,
           ),
-          value: _isComplete,
-          onChanged: (value) {
-            setState(() => _isComplete = value);
-          },
+          SizedBox(height: AppSpacing.base),
+          HBListTile.switchTile(
+            title: 'Mark as Complete',
+            subtitle: 'Check this if this completes the vaccination series',
+            icon: Icons.check_circle,
+            value: _isComplete,
+            onChanged: (value) {
+              setState(() => _isComplete = value);
+            },
+            iconColor: AppColors.success,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReminderSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.schedule_outlined,
+              color: context.colorScheme.primary,
+              size: AppSizes.iconMd,
+            ),
+            SizedBox(width: AppSpacing.sm),
+            Text(
+              'Vaccination Reminders',
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightSemiBold,
+                color: context.colorScheme.onSurface,
+              ),
+            ),
+            const Spacer(),
+            Switch(
+              value: _enableReminder,
+              onChanged: (value) {
+                setState(() {
+                  _enableReminder = value;
+                });
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: AppSpacing.xs),
+        Text(
+          'Set up reminders for vaccination boosters or follow-up appointments',
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        if (_enableReminder) ...[
+          SizedBox(height: AppSpacing.base),
+          ReminderTypeSelector(
+            selectedType: _reminderType,
+            onChanged: (type) {
+              setState(() {
+                _reminderType = type;
+              });
+            },
+            helpText: 'Choose how you want to be reminded about this vaccination',
+          ),
+          if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
+            SizedBox(height: AppSpacing.base),
+            AlarmSoundPicker(
+              selectedSound: _alarmSound,
+              onSoundChanged: (sound) {
+                setState(() {
+                  _alarmSound = sound;
+                });
+              },
+              previewVolume: _alarmVolume,
+            ),
+            SizedBox(height: AppSpacing.base),
+            AlarmVolumeSlider(
+              volume: _alarmVolume,
+              onVolumeChanged: (volume) {
+                setState(() {
+                  _alarmVolume = volume;
+                });
+              },
+              previewSound: _alarmSound,
+            ),
+          ],
+          SizedBox(height: AppSpacing.base),
+          ReminderPreview(
+            title: _titleController.text.isNotEmpty
+              ? 'Vaccination Reminder: ${_titleController.text}'
+              : 'Vaccination Reminder',
+            description: _nextDueDate != null
+              ? 'Next dose due for ${_vaccineNameController.text.isNotEmpty ? _vaccineNameController.text : "vaccination"}'
+              : 'Follow-up reminder for vaccination',
+            scheduledTime: _nextDueDate ?? DateTime.now().add(const Duration(days: 30)),
+            reminderType: _reminderType,
+            alarmSound: _alarmSound,
+            alarmVolume: _alarmVolume,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
         ),
       ],
     );
   }
 
-  Future<void> _selectDate(BuildContext context,
-      {required bool isRecordDate}) async {
+  Widget _buildDateTile(String label, DateTime? date, VoidCallback onTap, {bool optional = false}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today,
+              color: context.colorScheme.onSurfaceVariant,
+              size: AppSizes.iconMd,
+            ),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    date != null ? _formatDate(date) : (optional ? 'Not set' : 'Select date'),
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: date != null ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context, {required bool isRecordDate}) async {
     final initialDate = isRecordDate ? _recordDate : _administrationDate;
     final selectedDate = await showDatePicker(
       context: context,
@@ -352,6 +568,22 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
 
   Future<void> _saveVaccination() async {
     if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please fill in all required fields'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
+        ),
+      );
       return;
     }
 
@@ -393,14 +625,12 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
 
       await service.createVaccination(request);
 
-      // Log success
       developer.log(
         'Vaccination created successfully for profile: $selectedProfileId',
         name: 'VaccinationForm',
-        level: 800, // INFO level
+        level: 800,
       );
 
-      // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
@@ -411,44 +641,42 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
             content: Row(
               children: [
                 const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Vaccination saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
     } catch (error, stackTrace) {
-      // Log detailed error to console
       developer.log(
         'Failed to save vaccination',
         name: 'VaccinationForm',
-        level: 1000, // ERROR level
+        level: 1000,
         error: error,
         stackTrace: stackTrace,
       );
 
       if (mounted) {
-        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
                 const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save vaccination. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: context.colorScheme.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -464,217 +692,8 @@ class _VaccinationFormScreenState extends ConsumerState<VaccinationFormScreen> {
     }
   }
 
-  Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      icon: Icons.attach_file,
-      children: [
-        Text(
-          'Add vaccination cards, certificates, or related documents',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 5,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 25,
-        ),
-        const SizedBox(height: 24),
-        _buildReminderSection(),
-      ],
-    );
-  }
-
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-
-  Widget _buildReminderSection() {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Enable Reminder Toggle
-        Row(
-          children: [
-            Icon(
-              Icons.schedule_outlined,
-              color: theme.colorScheme.primary,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Vaccination Reminders',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            const Spacer(),
-            Switch(
-              value: _enableReminder,
-              onChanged: (value) {
-                setState(() {
-                  _enableReminder = value;
-                });
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Set up reminders for vaccination boosters or follow-up appointments',
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        if (_enableReminder) ...[
-          const SizedBox(height: 16),
-          ReminderTypeSelector(
-            selectedType: _reminderType,
-            onChanged: (type) {
-              setState(() {
-                _reminderType = type;
-              });
-            },
-            helpText: 'Choose how you want to be reminded about this vaccination',
-          ),
-          if (_reminderType == ReminderType.alarm || _reminderType == ReminderType.both) ...[
-            const SizedBox(height: 16),
-            AlarmSoundPicker(
-              selectedSound: _alarmSound,
-              onSoundChanged: (sound) {
-                setState(() {
-                  _alarmSound = sound;
-                });
-              },
-              previewVolume: _alarmVolume,
-            ),
-            const SizedBox(height: 16),
-            AlarmVolumeSlider(
-              volume: _alarmVolume,
-              onVolumeChanged: (volume) {
-                setState(() {
-                  _alarmVolume = volume;
-                });
-              },
-              previewSound: _alarmSound,
-            ),
-          ],
-          const SizedBox(height: 16),
-          ReminderPreview(
-            title: _titleController.text.isNotEmpty
-              ? 'Vaccination Reminder: ${_titleController.text}'
-              : 'Vaccination Reminder',
-            description: _nextDueDate != null
-              ? 'Next dose due for ${_vaccineNameController.text.isNotEmpty ? _vaccineNameController.text : "vaccination"}'
-              : 'Follow-up reminder for vaccination',
-            scheduledTime: _nextDueDate ?? DateTime.now().add(const Duration(days: 30)),
-            reminderType: _reminderType,
-            alarmSound: _alarmSound,
-            alarmVolume: _alarmVolume,
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildModernSection({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.vaccinationGradient;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: sectionGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Icon(icon, size: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ...children,
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
