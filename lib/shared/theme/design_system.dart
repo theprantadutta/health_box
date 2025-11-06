@@ -760,3 +760,307 @@ enum ButtonSize {
   final double height;
   final EdgeInsets padding;
 }
+
+// ============================================================================
+// NEW MATERIAL 3 TOKEN CLASSES (Standardized Naming)
+// These provide a cleaner API while maintaining backwards compatibility
+// ============================================================================
+
+/// Simplified color tokens class (Material 3 naming convention)
+class AppColors {
+  // Primary colors
+  static const Color primary = HealthBoxDesignSystem.primaryBlue;
+  static const Color primaryLight = HealthBoxDesignSystem.primaryBlueLight;
+  static const Color primaryDark = HealthBoxDesignSystem.primaryBlueDark;
+
+  // Secondary colors
+  static const Color secondary = HealthBoxDesignSystem.accentCyan;
+  static const Color tertiary = HealthBoxDesignSystem.accentPurple;
+
+  // Semantic colors
+  static const Color success = HealthBoxDesignSystem.successColor;
+  static const Color warning = HealthBoxDesignSystem.warningColor;
+  static const Color error = HealthBoxDesignSystem.errorColor;
+  static const Color info = HealthBoxDesignSystem.primaryBlue;
+
+  // Neutral scale
+  static const Color neutral50 = HealthBoxDesignSystem.neutral50;
+  static const Color neutral100 = HealthBoxDesignSystem.neutral100;
+  static const Color neutral200 = HealthBoxDesignSystem.neutral200;
+  static const Color neutral300 = HealthBoxDesignSystem.neutral300;
+  static const Color neutral400 = HealthBoxDesignSystem.neutral400;
+  static const Color neutral500 = HealthBoxDesignSystem.neutral500;
+  static const Color neutral600 = HealthBoxDesignSystem.neutral600;
+  static const Color neutral700 = HealthBoxDesignSystem.neutral700;
+  static const Color neutral800 = HealthBoxDesignSystem.neutral800;
+  static const Color neutral900 = HealthBoxDesignSystem.neutral900;
+
+  // Gradients
+  static const LinearGradient primaryGradient = HealthBoxDesignSystem.medicalBlue;
+  static const LinearGradient primaryGradientDark = HealthBoxDesignSystem.darkMedicalBlue;
+  static const LinearGradient successGradient = HealthBoxDesignSystem.successGradient;
+  static const LinearGradient errorGradient = HealthBoxDesignSystem.errorGradient;
+  static const LinearGradient warningGradient = HealthBoxDesignSystem.warningGradient;
+}
+
+/// Typography tokens class
+class AppTypography {
+  static const double fontSizeXs = HealthBoxDesignSystem.textSizeXs;
+  static const double fontSizeSm = HealthBoxDesignSystem.textSizeSm;
+  static const double fontSizeBase = HealthBoxDesignSystem.textSizeBase;
+  static const double fontSizeLg = HealthBoxDesignSystem.textSizeLg;
+  static const double fontSizeXl = HealthBoxDesignSystem.textSizeXl;
+  static const double fontSize2xl = HealthBoxDesignSystem.textSize2xl;
+  static const double fontSize3xl = HealthBoxDesignSystem.textSize3xl;
+  static const double fontSize4xl = HealthBoxDesignSystem.textSize4xl;
+
+  static const FontWeight fontWeightLight = HealthBoxDesignSystem.fontWeightLight;
+  static const FontWeight fontWeightNormal = HealthBoxDesignSystem.fontWeightNormal;
+  static const FontWeight fontWeightMedium = HealthBoxDesignSystem.fontWeightMedium;
+  static const FontWeight fontWeightSemiBold = HealthBoxDesignSystem.fontWeightSemiBold;
+  static const FontWeight fontWeightBold = HealthBoxDesignSystem.fontWeightBold;
+
+  static const double lineHeightTight = HealthBoxDesignSystem.lineHeightTight;
+  static const double lineHeightSnug = HealthBoxDesignSystem.lineHeightSnug;
+  static const double lineHeightNormal = HealthBoxDesignSystem.lineHeightNormal;
+  static const double lineHeightRelaxed = HealthBoxDesignSystem.lineHeightRelaxed;
+  static const double lineHeightLoose = HealthBoxDesignSystem.lineHeightLoose;
+}
+
+/// Spacing tokens class (4px grid)
+class AppSpacing {
+  static const double none = 0.0;
+  static const double xs = HealthBoxDesignSystem.spacing1;
+  static const double sm = HealthBoxDesignSystem.spacing2;
+  static const double md = HealthBoxDesignSystem.spacing3;
+  static const double base = HealthBoxDesignSystem.spacing4;
+  static const double lg = HealthBoxDesignSystem.spacing5;
+  static const double xl = HealthBoxDesignSystem.spacing6;
+  static const double xl2 = HealthBoxDesignSystem.spacing8;
+  static const double xl3 = HealthBoxDesignSystem.spacing10;
+  static const double xl4 = HealthBoxDesignSystem.spacing12;
+  static const double xl5 = HealthBoxDesignSystem.spacing16;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingBase = EdgeInsets.all(base);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+}
+
+/// Border radius tokens class
+class AppRadii {
+  static const double none = HealthBoxDesignSystem.radiusNone;
+  static const double xs = HealthBoxDesignSystem.radiusSm;
+  static const double sm = HealthBoxDesignSystem.radiusBase;
+  static const double md = HealthBoxDesignSystem.radiusMd;
+  static const double lg = HealthBoxDesignSystem.radiusLg;
+  static const double xl = HealthBoxDesignSystem.radiusXl;
+  static const double xl2 = HealthBoxDesignSystem.radius2xl;
+  static const double xl3 = HealthBoxDesignSystem.radius3xl;
+  static const double full = HealthBoxDesignSystem.radiusFull;
+
+  static BorderRadius get radiusXs => BorderRadius.circular(xs);
+  static BorderRadius get radiusSm => BorderRadius.circular(sm);
+  static BorderRadius get radiusMd => BorderRadius.circular(md);
+  static BorderRadius get radiusLg => BorderRadius.circular(lg);
+  static BorderRadius get radiusXl => BorderRadius.circular(xl);
+  static BorderRadius get radiusXl2 => BorderRadius.circular(xl2);
+  static BorderRadius get radiusXl3 => BorderRadius.circular(xl3);
+  static BorderRadius get radiusFull => BorderRadius.circular(full);
+}
+
+/// Elevation tokens class
+class AppElevation {
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 2.0;
+  static const double level3 = 4.0;
+  static const double level4 = 6.0;
+  static const double level5 = 12.0;
+
+  static List<BoxShadow> shadow(double elevation, {bool isDark = false}) {
+    if (elevation == 0) return [];
+    final opacity = isDark ? 0.4 : 0.1;
+    return [
+      BoxShadow(
+        color: Colors.black.withValues(alpha: opacity),
+        offset: Offset(0, elevation / 2),
+        blurRadius: elevation * 2,
+        spreadRadius: elevation / 4,
+      ),
+    ];
+  }
+
+  static List<BoxShadow> coloredShadow(Color color, {double opacity = 0.3}) {
+    return HealthBoxDesignSystem.coloredShadow(color, opacity: opacity);
+  }
+}
+
+/// Animation duration tokens
+class AppDurations {
+  static const Duration instant = Duration(milliseconds: 50);
+  static const Duration fast = HealthBoxDesignSystem.durationFast;
+  static const Duration normal = HealthBoxDesignSystem.durationBase;
+  static const Duration slow = HealthBoxDesignSystem.durationSlow;
+  static const Duration slower = HealthBoxDesignSystem.durationSlower;
+
+  static const Curve easeOut = Curves.easeOut;
+  static const Curve easeIn = Curves.easeIn;
+  static const Curve easeInOut = Curves.easeInOut;
+  static const Curve spring = Curves.elasticOut;
+}
+
+/// Responsive breakpoints
+class AppBreakpoints {
+  static const double phone = 600.0;
+  static const double tablet = 1024.0;
+  static const double desktop = 1440.0;
+
+  static bool isPhone(BuildContext context) =>
+      MediaQuery.of(context).size.width < phone;
+
+  static bool isTablet(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return width >= phone && width < tablet;
+  }
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= tablet;
+
+  static double responsivePadding(BuildContext context) {
+    if (isPhone(context)) return AppSpacing.base;
+    if (isTablet(context)) return AppSpacing.xl;
+    return AppSpacing.xl2;
+  }
+
+  static double responsiveRadius(BuildContext context) {
+    if (isPhone(context)) return AppRadii.md;
+    if (isTablet(context)) return AppRadii.lg;
+    return AppRadii.xl;
+  }
+}
+
+/// Component size tokens
+class AppSizes {
+  static const double buttonSm = HealthBoxDesignSystem.buttonHeightSm;
+  static const double buttonMd = HealthBoxDesignSystem.buttonHeightBase;
+  static const double buttonLg = HealthBoxDesignSystem.buttonHeightLg;
+
+  static const double inputSm = HealthBoxDesignSystem.inputHeightSm;
+  static const double inputMd = HealthBoxDesignSystem.inputHeightBase;
+  static const double inputLg = HealthBoxDesignSystem.inputHeightLg;
+
+  static const double iconXs = 16.0;
+  static const double iconSm = 20.0;
+  static const double iconMd = 24.0;
+  static const double iconLg = 32.0;
+  static const double iconXl = 48.0;
+
+  static const double avatarSm = 32.0;
+  static const double avatarMd = 40.0;
+  static const double avatarLg = 56.0;
+  static const double avatarXl = 80.0;
+
+  static const double appBarHeight = 64.0;
+  static const double appBarCollapsedHeight = 56.0;
+  static const double bottomNavHeight = 80.0;
+  static const double minTouchTarget = 48.0;
+}
+
+// ============================================================================
+// ENHANCED CONTEXT EXTENSIONS
+// ============================================================================
+
+extension BuildContextExtensions on BuildContext {
+  // Theme access
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
+  TextTheme get textTheme => Theme.of(this).textTheme;
+  bool get isDark => Theme.of(this).brightness == Brightness.dark;
+
+  // Responsive helpers
+  bool get isPhone => AppBreakpoints.isPhone(this);
+  bool get isTablet => AppBreakpoints.isTablet(this);
+  bool get isDesktop => AppBreakpoints.isDesktop(this);
+
+  double get responsivePadding => AppBreakpoints.responsivePadding(this);
+  double get responsiveRadius => AppBreakpoints.responsiveRadius(this);
+
+  // Screen dimensions
+  Size get screenSize => MediaQuery.of(this).size;
+  double get screenWidth => MediaQuery.of(this).size.width;
+  double get screenHeight => MediaQuery.of(this).size.height;
+  EdgeInsets get viewPadding => MediaQuery.of(this).viewPadding;
+  EdgeInsets get viewInsets => MediaQuery.of(this).viewInsets;
+}
+
+// ============================================================================
+// COLOR SCHEME EXTENSIONS
+// ============================================================================
+
+extension ColorSchemeExtensions on ColorScheme {
+  // Semantic colors
+  Color get success => AppColors.success;
+  Color get warning => AppColors.warning;
+  Color get info => AppColors.info;
+
+  // Neutral colors
+  Color get neutral => AppColors.neutral500;
+  Color get neutralLight => AppColors.neutral300;
+  Color get neutralDark => AppColors.neutral700;
+}
+
+// ============================================================================
+// RECORD TYPE UTILITIES
+// ============================================================================
+
+class RecordTypeUtils {
+  static Color getColor(String recordType) {
+    final colors = <String, Color>{
+      'medication': HealthBoxDesignSystem.primaryBlue,
+      'prescription': HealthBoxDesignSystem.accentPurple,
+      'lab_report': HealthBoxDesignSystem.accentOrange,
+      'vaccination': HealthBoxDesignSystem.accentGreen,
+      'allergy': HealthBoxDesignSystem.errorColor,
+      'chronic_condition': const Color(0xFF6366F1),
+      'surgical_record': HealthBoxDesignSystem.accentCyan,
+      'radiology_record': HealthBoxDesignSystem.accentPurple,
+      'pathology_record': const Color(0xFFF97316),
+      'discharge_summary': HealthBoxDesignSystem.primaryBlue,
+      'hospital_admission': const Color(0xFF14B8A6),
+      'dental_record': HealthBoxDesignSystem.accentCyan,
+      'mental_health_record': const Color(0xFFA78BFA),
+      'general_record': HealthBoxDesignSystem.neutral500,
+    };
+    return colors[recordType] ?? AppColors.neutral500;
+  }
+
+  static IconData getIcon(String recordType) {
+    const icons = <String, IconData>{
+      'medication': Icons.medication_rounded,
+      'prescription': Icons.receipt_rounded,
+      'lab_report': Icons.science_rounded,
+      'vaccination': Icons.vaccines_rounded,
+      'allergy': Icons.warning_amber_rounded,
+      'chronic_condition': Icons.favorite_rounded,
+      'surgical_record': Icons.medical_services_rounded,
+      'radiology_record': Icons.camera_alt_rounded,
+      'pathology_record': Icons.biotech_rounded,
+      'discharge_summary': Icons.description_rounded,
+      'hospital_admission': Icons.local_hospital_rounded,
+      'dental_record': Icons.medication_liquid_rounded,
+      'mental_health_record': Icons.psychology_rounded,
+      'general_record': Icons.note_add_rounded,
+    };
+    return icons[recordType] ?? Icons.folder_rounded;
+  }
+
+  static LinearGradient getGradient(String recordType) {
+    return HealthBoxDesignSystem.getRecordTypeGradient(recordType);
+  }
+
+  static List<BoxShadow> getShadow(String recordType) {
+    return HealthBoxDesignSystem.getRecordTypeShadow(recordType);
+  }
+}
