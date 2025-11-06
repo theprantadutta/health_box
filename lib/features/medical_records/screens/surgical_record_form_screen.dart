@@ -7,7 +7,12 @@ import '../../../data/models/surgical_record.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_chip.dart';
+import '../../../shared/widgets/hb_list_tile.dart';
 import 'dart:developer' as developer;
 
 class SurgicalRecordFormScreen extends ConsumerStatefulWidget {
@@ -69,46 +74,36 @@ class _SurgicalRecordFormScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEditing ? 'Edit Surgical Record' : 'New Surgical Record',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: HealthBoxDesignSystem.surgicalGradient,
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: _isEditing ? 'Edit Surgical Record' : 'New Surgical Record',
+        gradient: RecordTypeUtils.getGradient('surgical'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveSurgicalRecord,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
             ),
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildProcedureDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildSurgeryDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAnesthesiaSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildClinicalDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildRecoverySection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
           ],
         ),
@@ -117,266 +112,311 @@ class _SurgicalRecordFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return _buildModernSection(
-      title: 'Basic Information',
-      icon: Icons.info_outline,
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., Appendectomy Surgery',
-          prefixIcon: const Icon(Icons.medical_services),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Title is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _descriptionController,
-          labelText: 'Description',
-          hintText: 'Additional details about this procedure',
-          prefixIcon: const Icon(Icons.description),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Record Date'),
-          subtitle: Text(_formatDate(_recordDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: true),
-        ),
-        const SizedBox(height: 16),
-        SwitchListTile(
-          title: const Text('Emergency Procedure'),
-          subtitle: const Text('Was this an emergency surgery?'),
-          value: _isEmergency,
-          onChanged: (value) {
-            setState(() => _isEmergency = value);
-          },
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Basic Information',
+            Icons.info_outline,
+            RecordTypeUtils.getGradient('surgical'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., Appendectomy Surgery',
+            prefixIcon: Icons.medical_services,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Title is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _descriptionController,
+            label: 'Description',
+            hint: 'Additional details about this procedure',
+            prefixIcon: Icons.description,
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile(
+            'Record Date',
+            _recordDate,
+            () => _selectDate(context, isRecordDate: true),
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBListTile.switchTile(
+            title: 'Emergency Procedure',
+            subtitle: 'Was this an emergency surgery?',
+            icon: Icons.emergency,
+            value: _isEmergency,
+            onChanged: (value) {
+              setState(() => _isEmergency = value);
+            },
+            iconColor: AppColors.error,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildProcedureDetailsSection() {
-    return _buildModernSection(
-      title: 'Procedure Details',
-      icon: Icons.healing,
-      children: [
-        ModernTextField(
-          controller: _procedureNameController,
-          labelText: 'Procedure Name *',
-          hintText: 'e.g., Laparoscopic Appendectomy',
-          prefixIcon: const Icon(Icons.healing),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Procedure name is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Common Surgical Categories',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: SurgicalCategories.allCategories.map((category) {
-            return FilterChip(
-              label: Text(category),
-              selected: false,
-              onSelected: (selected) {
-                // Could be enhanced to auto-suggest procedure names
-                // based on the selected category
-              },
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _indicationController,
-          labelText: 'Indication',
-          hintText: 'Reason for the procedure',
-          prefixIcon: const Icon(Icons.info),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          maxLines: 2,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Procedure Details',
+            Icons.healing,
+            RecordTypeUtils.getGradient('surgical'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _procedureNameController,
+            label: 'Procedure Name',
+            hint: 'e.g., Laparoscopic Appendectomy',
+            prefixIcon: Icons.healing,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Procedure name is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          Text(
+            'Common Surgical Categories',
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightMedium,
+            ),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
+            children: SurgicalCategories.allCategories.map((category) {
+              return HBChip.filter(
+                label: category,
+                selected: false,
+                onSelected: (selected) {
+                  // Could be enhanced to auto-suggest procedure names
+                  // based on the selected category
+                },
+              );
+            }).toList(),
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _indicationController,
+            label: 'Indication',
+            hint: 'Reason for the procedure',
+            prefixIcon: Icons.info,
+            minLines: 2,
+            maxLines: 4,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSurgeryDetailsSection() {
-    return _buildModernSection(
-      title: 'Surgery Details',
-      icon: Icons.local_hospital,
-      children: [
-        ListTile(
-          title: const Text('Surgery Date'),
-          subtitle: Text(_formatDate(_surgeryDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: false),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: ListTile(
-                title: const Text('Start Time'),
-                subtitle: Text(_surgeryStartTime != null
-                    ? _surgeryStartTime!.format(context)
-                    : 'Not set'),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectTime(context, isStartTime: true),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Surgery Details',
+            Icons.local_hospital,
+            RecordTypeUtils.getGradient('surgical'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          _buildDateTile(
+            'Surgery Date',
+            _surgeryDate,
+            () => _selectDate(context, isRecordDate: false),
+          ),
+          SizedBox(height: AppSpacing.base),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTimeTile(
+                  'Start Time',
+                  _surgeryStartTime,
+                  () => _selectTime(context, isStartTime: true),
+                ),
               ),
-            ),
-            Expanded(
-              child: ListTile(
-                title: const Text('End Time'),
-                subtitle: Text(_surgeryEndTime != null
-                    ? _surgeryEndTime!.format(context)
-                    : 'Not set'),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectTime(context, isStartTime: false),
+              SizedBox(width: AppSpacing.base),
+              Expanded(
+                child: _buildTimeTile(
+                  'End Time',
+                  _surgeryEndTime,
+                  () => _selectTime(context, isStartTime: false),
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _surgeonNameController,
-          labelText: 'Surgeon Name',
-          hintText: 'Primary surgeon',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _hospitalController,
-          labelText: 'Hospital/Facility',
-          hintText: 'Where the surgery was performed',
-          prefixIcon: const Icon(Icons.local_hospital),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _operatingRoomController,
-          labelText: 'Operating Room',
-          hintText: 'e.g., OR 3',
-          prefixIcon: const Icon(Icons.room),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-        ),
-      ],
+            ],
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _surgeonNameController,
+            label: 'Surgeon Name',
+            hint: 'Primary surgeon',
+            prefixIcon: Icons.person,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _hospitalController,
+            label: 'Hospital/Facility',
+            hint: 'Where the surgery was performed',
+            prefixIcon: Icons.local_hospital,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _operatingRoomController,
+            label: 'Operating Room',
+            hint: 'e.g., OR 3',
+            prefixIcon: Icons.room,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAnesthesiaSection() {
-    return _buildModernSection(
-      title: 'Anesthesia Information',
-      icon: Icons.masks,
-      children: [
-        DropdownButtonFormField<String>(
-          initialValue: _selectedAnesthesiaType,
-          decoration: const InputDecoration(
-            labelText: 'Anesthesia Type',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.masks),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Anesthesia Information',
+            Icons.masks,
+            RecordTypeUtils.getGradient('surgical'),
           ),
-          items: AnesthesiaTypes.allTypes
-              .map((type) => DropdownMenuItem(
-                    value: type,
-                    child: Text(type),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            setState(() => _selectedAnesthesiaType = value);
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _anesthesiologistController,
-          labelText: 'Anesthesiologist',
-          hintText: 'Anesthesia provider name',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-        ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          DropdownButtonFormField<String>(
+            value: _selectedAnesthesiaType,
+            decoration: InputDecoration(
+              labelText: 'Anesthesia Type',
+              prefixIcon: const Icon(Icons.masks),
+              filled: true,
+              fillColor: context.colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: AppRadii.radiusMd,
+                borderSide: BorderSide.none,
+              ),
+            ),
+            items: AnesthesiaTypes.allTypes
+                .map((type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(type),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              setState(() => _selectedAnesthesiaType = value);
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _anesthesiologistController,
+            label: 'Anesthesiologist',
+            hint: 'Anesthesia provider name',
+            prefixIcon: Icons.person,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildClinicalDetailsSection() {
-    return _buildModernSection(
-      title: 'Clinical Details',
-      icon: Icons.search,
-      children: [
-        ModernTextField(
-          controller: _findingsController,
-          labelText: 'Surgical Findings',
-          hintText: 'What was found during the procedure',
-          prefixIcon: const Icon(Icons.search),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _complicationsController,
-          labelText: 'Complications',
-          hintText: 'Any complications that occurred',
-          prefixIcon: const Icon(Icons.warning),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          maxLines: 3,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Clinical Details',
+            Icons.search,
+            RecordTypeUtils.getGradient('surgical'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.multiline(
+            controller: _findingsController,
+            label: 'Surgical Findings',
+            hint: 'What was found during the procedure',
+            prefixIcon: Icons.search,
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _complicationsController,
+            label: 'Complications',
+            hint: 'Any complications that occurred',
+            prefixIcon: Icons.warning,
+            minLines: 3,
+            maxLines: 5,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildRecoverySection() {
-    return _buildModernSection(
-      title: 'Recovery & Follow-up',
-      icon: Icons.healing,
-      children: [
-        ModernTextField(
-          controller: _recoveryNotesController,
-          labelText: 'Recovery Notes',
-          hintText: 'Post-operative recovery details',
-          prefixIcon: const Icon(Icons.healing),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _followUpPlanController,
-          labelText: 'Follow-up Plan',
-          hintText: 'Planned follow-up appointments and care',
-          prefixIcon: const Icon(Icons.calendar_month),
-          focusGradient: HealthBoxDesignSystem.surgicalGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Discharge Date'),
-          subtitle: Text(_dischargeDate != null
-              ? _formatDate(_dischargeDate!)
-              : 'Not set'),
-          trailing: const Icon(Icons.exit_to_app),
-          onTap: () => _selectDischargeDate(context),
-        ),
-        if (_dischargeDate != null)
-          TextButton(
-            onPressed: () {
-              setState(() => _dischargeDate = null);
-            },
-            child: const Text('Clear Discharge Date'),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Recovery & Follow-up',
+            Icons.healing,
+            RecordTypeUtils.getGradient('surgical'),
           ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.multiline(
+            controller: _recoveryNotesController,
+            label: 'Recovery Notes',
+            hint: 'Post-operative recovery details',
+            prefixIcon: Icons.healing,
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _followUpPlanController,
+            label: 'Follow-up Plan',
+            hint: 'Planned follow-up appointments and care',
+            prefixIcon: Icons.calendar_month,
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile(
+            'Discharge Date',
+            _dischargeDate,
+            () => _selectDischargeDate(context),
+            optional: true,
+          ),
+          if (_dischargeDate != null)
+            Padding(
+              padding: EdgeInsets.only(top: AppSpacing.sm),
+              child: HBButton.text(
+                onPressed: () {
+                  setState(() => _dischargeDate = null);
+                },
+                child: const Text('Clear Discharge Date'),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -530,16 +570,16 @@ class _SurgicalRecordFormScreenState
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Surgical record saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
@@ -566,16 +606,16 @@ class _SurgicalRecordFormScreenState
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.error_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save surgical record. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -592,29 +632,37 @@ class _SurgicalRecordFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      icon: Icons.attach_file,
-      children: [
-        Text(
-          'Add surgical reports, operative notes, or post-op instructions',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            RecordTypeUtils.getGradient('surgical'),
           ),
-        ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 10,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 50,
-        ),
-      ],
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add surgical reports, operative notes, or post-op instructions',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 10,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 50,
+          ),
+        ],
+      ),
     );
   }
 
@@ -622,87 +670,104 @@ class _SurgicalRecordFormScreenState
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  Widget _buildModernSection({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.surgicalGradient;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateTile(String label, DateTime? date, VoidCallback onTap, {bool optional = false}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today, color: context.colorScheme.onSurfaceVariant, size: AppSizes.iconMd),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: sectionGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Icon(icon, size: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  ...children,
+                  Text(
+                    date != null ? _formatDate(date) : (optional ? 'Not set' : 'Select date'),
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: date != null ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
+              ),
+            ),
+            Icon(Icons.chevron_right, color: context.colorScheme.onSurfaceVariant),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeTile(String label, TimeOfDay? time, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.access_time, color: context.colorScheme.onSurfaceVariant, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
+                Text(
+                  label,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSpacing.xs),
+            Text(
+              time != null ? time.format(context) : 'Not set',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: time != null ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
+                fontWeight: AppTypography.fontWeightMedium,
               ),
             ),
           ],

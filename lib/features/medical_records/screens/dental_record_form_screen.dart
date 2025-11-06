@@ -6,7 +6,10 @@ import '../services/dental_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_card.dart';
 import 'dart:developer' as developer;
 
 class DentalRecordFormScreen extends ConsumerStatefulWidget {
@@ -48,45 +51,26 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dental Record'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.dentalGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.dentalGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: 'Dental Record',
+        gradient: RecordTypeUtils.getGradient('dental'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveDentalRecord,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
             ),
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildDentalVisitSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
           ],
         ),
@@ -95,83 +79,92 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
   }
 
   Widget _buildDentalVisitSection() {
-    return _buildModernSection(
-      title: 'Dental Visit Details',
-      icon: Icons.medical_services,
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., Routine Dental Cleaning',
-          prefixIcon: const Icon(Icons.medical_services),
-          focusGradient: HealthBoxDesignSystem.dentalGradient,
-          validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _dentistController,
-          labelText: 'Dentist Name',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.dentalGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _clinicController,
-          labelText: 'Dental Clinic',
-          prefixIcon: const Icon(Icons.business),
-          focusGradient: HealthBoxDesignSystem.dentalGradient,
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _visitType,
-          decoration: const InputDecoration(
-            labelText: 'Visit Type',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.category),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Dental Visit Details',
+            Icons.medical_services,
+            RecordTypeUtils.getGradient('dental'),
           ),
-          items: _visitTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-          onChanged: (value) => setState(() => _visitType = value!),
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Visit Date'),
-          subtitle: Text('${_visitDate.day}/${_visitDate.month}/${_visitDate.year}'),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () async {
-            final date = await showDatePicker(
-              context: context,
-              initialDate: _visitDate,
-              firstDate: DateTime(1900),
-              lastDate: DateTime.now(),
-            );
-            if (date != null) setState(() => _visitDate = date);
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _procedureController,
-          labelText: 'Procedures Performed',
-          prefixIcon: const Icon(Icons.healing),
-          focusGradient: HealthBoxDesignSystem.dentalGradient,
-          maxLines: 2,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _treatmentController,
-          labelText: 'Treatment Details',
-          prefixIcon: const Icon(Icons.description),
-          focusGradient: HealthBoxDesignSystem.dentalGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _notesController,
-          labelText: 'Additional Notes',
-          prefixIcon: const Icon(Icons.note),
-          focusGradient: HealthBoxDesignSystem.dentalGradient,
-          maxLines: 3,
-        ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., Routine Dental Cleaning',
+            prefixIcon: Icons.medical_services,
+            validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _dentistController,
+            label: 'Dentist Name',
+            prefixIcon: Icons.person,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _clinicController,
+            label: 'Dental Clinic',
+            prefixIcon: Icons.business,
+          ),
+          SizedBox(height: AppSpacing.base),
+          DropdownButtonFormField<String>(
+            value: _visitType,
+            decoration: InputDecoration(
+              labelText: 'Visit Type',
+              prefixIcon: const Icon(Icons.category),
+              filled: true,
+              fillColor: context.colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: AppRadii.radiusMd,
+                borderSide: BorderSide.none,
+              ),
+            ),
+            items: _visitTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+            onChanged: (value) => setState(() => _visitType = value!),
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile(
+            'Visit Date',
+            _visitDate,
+            () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: _visitDate,
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+              if (date != null) setState(() => _visitDate = date);
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _procedureController,
+            label: 'Procedures Performed',
+            prefixIcon: Icons.healing,
+            minLines: 2,
+            maxLines: 4,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _treatmentController,
+            label: 'Treatment Details',
+            prefixIcon: Icons.description,
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _notesController,
+            label: 'Additional Notes',
+            prefixIcon: Icons.note,
+            minLines: 3,
+            maxLines: 5,
+          ),
+        ],
+      ),
     );
   }
 
@@ -207,16 +200,16 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Dental record saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
@@ -243,16 +236,16 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.error_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save dental record. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -267,115 +260,101 @@ class _DentalRecordFormScreenState extends ConsumerState<DentalRecordFormScreen>
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      icon: Icons.attach_file,
-      children: [
-        Text(
-          'Add dental X-rays, treatment notes, or dental reports',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            RecordTypeUtils.getGradient('dental'),
           ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add dental X-rays, treatment notes, or dental reports',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 10,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 50,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
         ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 10,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 50,
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildModernSection({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.dentalGradient;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
+  Widget _buildDateTile(String label, DateTime date, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Row(
           children: [
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            Icon(Icons.calendar_today, color: context.colorScheme.onSurfaceVariant, size: AppSizes.iconMd),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: sectionGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Icon(icon, size: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  ...children,
+                  Text(
+                    '${date.day}/${date.month}/${date.year}',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
                 ],
               ),
             ),
+            Icon(Icons.chevron_right, color: context.colorScheme.onSurfaceVariant),
           ],
         ),
       ),

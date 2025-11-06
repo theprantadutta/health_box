@@ -6,7 +6,10 @@ import '../../../shared/theme/design_system.dart';
 import '../services/mental_health_record_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_card.dart';
 import 'dart:developer' as developer;
 
 class MentalHealthRecordFormScreen extends ConsumerStatefulWidget {
@@ -48,42 +51,26 @@ class _MentalHealthRecordFormScreenState extends ConsumerState<MentalHealthRecor
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Mental Health Record',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.mentalHealthGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.mentalHealthGradient.colors.first
-                    .withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: 'Mental Health Record',
+        gradient: RecordTypeUtils.getGradient('mental_health'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveMentalHealthRecord,
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildSessionDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
           ],
         ),
@@ -125,16 +112,16 @@ class _MentalHealthRecordFormScreenState extends ConsumerState<MentalHealthRecor
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Mental health record saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
@@ -161,16 +148,16 @@ class _MentalHealthRecordFormScreenState extends ConsumerState<MentalHealthRecor
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.error_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save mental health record. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -185,193 +172,268 @@ class _MentalHealthRecordFormScreenState extends ConsumerState<MentalHealthRecor
   }
 
   Widget _buildSessionDetailsSection() {
-    return _buildModernSection(
-      title: 'Session Details',
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., Therapy Session - Anxiety Management',
-          prefixIcon: const Icon(Icons.psychology),
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-          validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _providerController,
-          labelText: 'Mental Health Provider',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _facilityController,
-          labelText: 'Facility/Practice',
-          prefixIcon: const Icon(Icons.business),
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _sessionType,
-          decoration: const InputDecoration(
-            labelText: 'Session Type',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.category),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Session Details',
+            Icons.psychology,
+            RecordTypeUtils.getGradient('mental_health'),
           ),
-          items: _sessionTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-          onChanged: (value) => setState(() => _sessionType = value!),
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Session Date'),
-          subtitle: Text('${_sessionDate.day}/${_sessionDate.month}/${_sessionDate.year}'),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () async {
-            final date = await showDatePicker(
-              context: context,
-              initialDate: _sessionDate,
-              firstDate: DateTime(1900),
-              lastDate: DateTime.now(),
-            );
-            if (date != null) setState(() => _sessionDate = date);
-          },
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            const Text('Mood Rating (1-10): '),
-            Expanded(
-              child: Slider(
-                value: double.parse(_moodRating),
-                min: 1,
-                max: 10,
-                divisions: 9,
-                label: _moodRating,
-                onChanged: (value) => setState(() => _moodRating = value.round().toString()),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., Therapy Session - Anxiety Management',
+            prefixIcon: Icons.psychology,
+            validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _providerController,
+            label: 'Mental Health Provider',
+            prefixIcon: Icons.person,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _facilityController,
+            label: 'Facility/Practice',
+            prefixIcon: Icons.business,
+          ),
+          SizedBox(height: AppSpacing.base),
+          DropdownButtonFormField<String>(
+            value: _sessionType,
+            decoration: InputDecoration(
+              labelText: 'Session Type',
+              prefixIcon: const Icon(Icons.category),
+              filled: true,
+              fillColor: context.colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: AppRadii.radiusMd,
+                borderSide: BorderSide.none,
               ),
             ),
-            Text(_moodRating),
-          ],
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _sessionNotesController,
-          labelText: 'Session Notes',
-          maxLines: 4,
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _assessmentController,
-          labelText: 'Assessment/Observations',
-          maxLines: 3,
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _treatmentPlanController,
-          labelText: 'Treatment Plan',
-          maxLines: 3,
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _medicationsController,
-          labelText: 'Medications/Recommendations',
-          maxLines: 2,
-          focusGradient: HealthBoxDesignSystem.mentalHealthGradient,
-        ),
-      ],
+            items: _sessionTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+            onChanged: (value) => setState(() => _sessionType = value!),
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile(
+            'Session Date',
+            _sessionDate,
+            () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: _sessionDate,
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+              if (date != null) setState(() => _sessionDate = date);
+            },
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildMoodRatingSlider(),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _sessionNotesController,
+            label: 'Session Notes',
+            minLines: 4,
+            maxLines: 6,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _assessmentController,
+            label: 'Assessment/Observations',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _treatmentPlanController,
+            label: 'Treatment Plan',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _medicationsController,
+            label: 'Medications/Recommendations',
+            minLines: 2,
+            maxLines: 4,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      subtitle: 'Add therapy notes, assessments, or treatment plans',
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            RecordTypeUtils.getGradient('mental_health'),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add therapy notes, assessments, or treatment plans',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 8,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 25,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
       children: [
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 8,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 25,
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildModernSection({
-    required String title,
-    String? subtitle,
-    required List<Widget> children,
-    Gradient? gradient,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
-                .colors
-                .first
-                .withValues(alpha: 0.03),
-          ],
+  Widget _buildDateTile(String label, DateTime date, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
-              .colors
-              .first
-              .withValues(alpha: 0.1),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
-                .colors
-                .first
-                .withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            ShaderMask(
-              shaderCallback: (bounds) => (gradient ?? HealthBoxDesignSystem.mentalHealthGradient)
-                  .createShader(bounds),
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            Icon(Icons.calendar_today, color: context.colorScheme.onSurfaceVariant, size: AppSizes.iconMd),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
                     ),
+                  ),
+                  Text(
+                    '${date.day}/${date.month}/${date.year}',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
+                ],
               ),
             ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            ...children,
+            Icon(Icons.chevron_right, color: context.colorScheme.onSurfaceVariant),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMoodRatingSlider() {
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.base),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerHighest,
+        borderRadius: AppRadii.radiusMd,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Mood Rating',
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  gradient: RecordTypeUtils.getGradient('mental_health'),
+                  borderRadius: BorderRadius.circular(AppRadii.md),
+                ),
+                child: Text(
+                  _moodRating,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: AppTypography.fontWeightBold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSpacing.xs),
+          Slider(
+            value: double.parse(_moodRating),
+            min: 1,
+            max: 10,
+            divisions: 9,
+            label: _moodRating,
+            onChanged: (value) => setState(() => _moodRating = value.round().toString()),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Low',
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              Text(
+                'High',
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
