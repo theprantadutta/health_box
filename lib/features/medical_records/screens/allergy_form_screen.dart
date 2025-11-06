@@ -8,7 +8,12 @@ import '../../../data/models/allergy.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_chip.dart';
+import '../../../shared/widgets/hb_list_tile.dart';
 
 class AllergyFormScreen extends ConsumerStatefulWidget {
   final String? profileId;
@@ -53,56 +58,43 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
 
   Future<void> _loadAllergy() async {
     // TODO: Load existing allergy data when editing
-    // This will be implemented with the allergy service
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Allergy' : 'New Allergy'),
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.allergyGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.allergyGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: _isEditing ? 'Edit Allergy' : 'New Allergy',
+        gradient: RecordTypeUtils.getGradient('allergy'),
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveAllergy,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
             ),
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAllergenDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildSeveritySection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildSymptomsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildReactionDatesSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildTreatmentSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildStatusSection(),
           ],
         ),
@@ -111,269 +103,388 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
   }
 
   Widget _buildBasicInfoSection() {
-    return _buildModernSection(
-      title: 'Basic Information',
-      icon: Icons.info_outline,
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., Peanut Allergy',
-          prefixIcon: const Icon(Icons.warning),
-          focusGradient: HealthBoxDesignSystem.allergyGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Title is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _descriptionController,
-          labelText: 'Description',
-          hintText: 'Additional details about this allergy',
-          focusGradient: HealthBoxDesignSystem.allergyGradient,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 16),
-        ListTile(
-          title: const Text('Record Date'),
-          subtitle: Text(_formatDate(_recordDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, isRecordDate: true),
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Basic Information',
+            Icons.info_outline,
+            RecordTypeUtils.getGradient('allergy'),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., Peanut Allergy',
+            prefixIcon: Icons.warning,
+            validator: HBValidators.required,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _descriptionController,
+            label: 'Description',
+            hint: 'Additional details about this allergy',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile('Record Date', _recordDate, () => _selectDate(context, isRecordDate: true)),
+        ],
+      ),
     );
   }
 
   Widget _buildAllergenDetailsSection() {
-    return _buildModernSection(
-      title: 'Allergen Details',
-      icon: Icons.eco,
-      children: [
-        ModernTextField(
-          controller: _allergenController,
-          labelText: 'Allergen *',
-          hintText: 'e.g., Peanuts, Shellfish, Penicillin',
-          prefixIcon: const Icon(Icons.eco),
-          focusGradient: HealthBoxDesignSystem.allergyGradient,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Allergen is required';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Common Allergen Types',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          children: AllergenTypes.allTypes.map((type) {
-            return FilterChip(
-              label: Text(type),
-              selected: false,
-              onSelected: (selected) {
-                if (selected) {
-                  _allergenController.text = type;
-                }
-              },
-            );
-          }).toList(),
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Allergen Details',
+            Icons.eco,
+            AppColors.warningGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _allergenController,
+            label: 'Allergen',
+            hint: 'e.g., Peanuts, Shellfish, Penicillin',
+            prefixIcon: Icons.eco,
+            validator: HBValidators.required,
+          ),
+          SizedBox(height: AppSpacing.base),
+          Text(
+            'Common Allergen Types',
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightMedium,
+            ),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
+            children: AllergenTypes.allTypes.map((type) {
+              return HBChip.filter(
+                label: type,
+                selected: false,
+                onSelected: (selected) {
+                  if (selected) {
+                    _allergenController.text = type;
+                  }
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSeveritySection() {
-    return _buildModernSection(
-      title: 'Severity Level',
-      icon: Icons.emergency,
-      children: [
-        SegmentedButton<String>(
-          segments: AllergySeverity.allSeverities
-              .map((severity) => ButtonSegment<String>(
-                    value: severity,
-                    label: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(_getSeverityDisplayName(severity)),
-                        Text(
-                          _getSeverityDescription(severity),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
-          selected: {_selectedSeverity},
-          onSelectionChanged: (Set<String> selection) {
-            if (selection.isNotEmpty) {
-              setState(() => _selectedSeverity = selection.first);
-            }
-          },
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Severity Level',
+            Icons.emergency,
+            AppColors.errorGradient,
+          ),
+          SizedBox(height: AppSpacing.base),
+          SegmentedButton<String>(
+            segments: AllergySeverity.allSeverities
+                .map((severity) => ButtonSegment<String>(
+                      value: severity,
+                      label: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_getSeverityDisplayName(severity)),
+                          Text(
+                            _getSeverityDescription(severity),
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            selected: {_selectedSeverity},
+            onSelectionChanged: (Set<String> selection) {
+              if (selection.isNotEmpty) {
+                setState(() => _selectedSeverity = selection.first);
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSymptomsSection() {
-    return _buildModernSection(
-      title: 'Symptoms',
-      icon: Icons.health_and_safety,
-      children: [
-        Text(
-          'Select all symptoms you experience:',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: AllergySymptoms.allSymptoms.map((symptom) {
-            return FilterChip(
-              label: Text(symptom),
-              selected: _selectedSymptoms.contains(symptom),
-              onSelected: (selected) {
-                setState(() {
-                  if (selected) {
-                    _selectedSymptoms.add(symptom);
-                  } else {
-                    _selectedSymptoms.remove(symptom);
-                  }
-                });
-              },
-            );
-          }).toList(),
-        ),
-        if (_selectedSymptoms.isEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              'Please select at least one symptom',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.error,
-                fontSize: 12,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Symptoms',
+            Icons.health_and_safety,
+            AppColors.secondaryGradient,
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Select all symptoms you experience:',
+            style: context.textTheme.bodyMedium,
+          ),
+          SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
+            children: AllergySymptoms.allSymptoms.map((symptom) {
+              return HBChip.filter(
+                label: symptom,
+                selected: _selectedSymptoms.contains(symptom),
+                onSelected: (selected) {
+                  setState(() {
+                    if (selected) {
+                      _selectedSymptoms.add(symptom);
+                    } else {
+                      _selectedSymptoms.remove(symptom);
+                    }
+                  });
+                },
+              );
+            }).toList(),
+          ),
+          if (_selectedSymptoms.isEmpty)
+            Padding(
+              padding: EdgeInsets.only(top: AppSpacing.sm),
+              child: Text(
+                'Please select at least one symptom',
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.colorScheme.error,
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildReactionDatesSection() {
-    return _buildModernSection(
-      title: 'Reaction History',
-      icon: Icons.history,
-      children: [
-        ListTile(
-          title: const Text('First Reaction'),
-          subtitle: Text(_firstReaction != null
-              ? _formatDate(_firstReaction!)
-              : 'Not set'),
-          trailing: const Icon(Icons.history),
-          onTap: () => _selectReactionDate(context, isFirst: true),
-        ),
-        ListTile(
-          title: const Text('Last Reaction'),
-          subtitle: Text(_lastReaction != null
-              ? _formatDate(_lastReaction!)
-              : 'Not set'),
-          trailing: const Icon(Icons.access_time),
-          onTap: () => _selectReactionDate(context, isFirst: false),
-        ),
-        if (_firstReaction != null || _lastReaction != null)
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _firstReaction = null;
-                _lastReaction = null;
-              });
-            },
-            child: const Text('Clear Reaction Dates'),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Reaction History',
+            Icons.history,
+            AppColors.primaryGradient,
           ),
-      ],
+          SizedBox(height: AppSpacing.lg),
+          _buildDateTile(
+            'First Reaction',
+            _firstReaction,
+            () => _selectReactionDate(context, isFirst: true),
+            optional: true,
+          ),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile(
+            'Last Reaction',
+            _lastReaction,
+            () => _selectReactionDate(context, isFirst: false),
+            optional: true,
+          ),
+          if (_firstReaction != null || _lastReaction != null) ...[
+            SizedBox(height: AppSpacing.sm),
+            HBButton.text(
+              onPressed: () {
+                setState(() {
+                  _firstReaction = null;
+                  _lastReaction = null;
+                });
+              },
+              child: const Text('Clear Reaction Dates'),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
   Widget _buildTreatmentSection() {
-    return _buildModernSection(
-      title: 'Treatment & Notes',
-      icon: Icons.medical_services,
-      children: [
-        ModernTextField(
-          controller: _treatmentController,
-          labelText: 'Treatment',
-          hintText: 'e.g., Antihistamines, EpiPen, Avoidance',
-          prefixIcon: const Icon(Icons.medical_services),
-          focusGradient: HealthBoxDesignSystem.allergyGradient,
-          maxLines: 2,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _notesController,
-          labelText: 'Additional Notes',
-          hintText: 'Any other relevant information',
-          prefixIcon: const Icon(Icons.note),
-          focusGradient: HealthBoxDesignSystem.allergyGradient,
-          maxLines: 3,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Treatment & Notes',
+            Icons.medical_services,
+            AppColors.successGradient,
+          ),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.multiline(
+            controller: _treatmentController,
+            label: 'Treatment',
+            hint: 'e.g., Antihistamines, EpiPen, Avoidance',
+            minLines: 2,
+            maxLines: 3,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _notesController,
+            label: 'Additional Notes',
+            hint: 'Any other relevant information',
+            minLines: 3,
+            maxLines: 5,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      icon: Icons.attach_file,
-      children: [
-        Text(
-          'Add allergy test results, medical reports, or related documents',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Attachments',
+            Icons.attach_file,
+            AppColors.secondaryGradient,
           ),
-        ),
-        const SizedBox(height: 16),
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 5,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 25,
-        ),
-      ],
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Add allergy test results, medical reports, or related documents',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() {
+                _attachments = attachments;
+              });
+            },
+            maxFiles: 5,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 25,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildStatusSection() {
-    return _buildModernSection(
-      title: 'Allergy Status',
-      icon: Icons.toggle_on,
-      children: [
-        SwitchListTile(
-          title: const Text('Active Allergy'),
-          subtitle: const Text(
-            'Uncheck if this allergy is no longer active',
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            'Allergy Status',
+            Icons.toggle_on,
+            AppColors.primaryGradient,
           ),
-          value: _isAllergyActive,
-          onChanged: (value) {
-            setState(() => _isAllergyActive = value);
-          },
+          SizedBox(height: AppSpacing.base),
+          HBListTile.switchTile(
+            title: 'Active Allergy',
+            subtitle: 'Uncheck if this allergy is no longer active',
+            icon: Icons.warning,
+            value: _isAllergyActive,
+            onChanged: (value) {
+              setState(() => _isAllergyActive = value);
+            },
+            iconColor: AppColors.warning,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(
+              gradient.colors.first,
+              opacity: 0.3,
+            ),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
+        ),
+        SizedBox(width: AppSpacing.md),
+        Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: AppTypography.fontWeightSemiBold,
+            color: context.colorScheme.onSurface,
+          ),
         ),
       ],
     );
   }
 
-  Future<void> _selectDate(BuildContext context,
-      {required bool isRecordDate}) async {
+  Widget _buildDateTile(String label, DateTime? date, VoidCallback onTap, {bool optional = false}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today,
+              color: context.colorScheme.onSurfaceVariant,
+              size: AppSizes.iconMd,
+            ),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    date != null ? _formatDate(date) : (optional ? 'Not set' : 'Select date'),
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: date != null ? context.colorScheme.onSurface : context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context, {required bool isRecordDate}) async {
     final initialDate = isRecordDate ? _recordDate : DateTime.now();
     final selectedDate = await showDatePicker(
       context: context,
@@ -391,8 +502,7 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
     }
   }
 
-  Future<void> _selectReactionDate(BuildContext context,
-      {required bool isFirst}) async {
+  Future<void> _selectReactionDate(BuildContext context, {required bool isFirst}) async {
     final initialDate = isFirst
         ? (_firstReaction ?? DateTime.now())
         : (_lastReaction ?? _firstReaction ?? DateTime.now());
@@ -408,13 +518,11 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
       setState(() {
         if (isFirst) {
           _firstReaction = selectedDate;
-          // Ensure last reaction is not before first reaction
           if (_lastReaction != null && _lastReaction!.isBefore(selectedDate)) {
             _lastReaction = null;
           }
         } else {
           _lastReaction = selectedDate;
-          // Ensure first reaction is not after last reaction
           if (_firstReaction != null && _firstReaction!.isAfter(selectedDate)) {
             _firstReaction = null;
           }
@@ -425,14 +533,40 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
 
   Future<void> _saveAllergy() async {
     if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please fill in all required fields'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
+        ),
+      );
       return;
     }
 
     if (_selectedSymptoms.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select at least one symptom'),
-          backgroundColor: Colors.orange,
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.white, size: 20),
+              SizedBox(width: AppSpacing.sm),
+              const Expanded(
+                child: Text('Please select at least one symptom'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
         ),
       );
       return;
@@ -471,14 +605,12 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
 
       await service.createAllergy(request);
 
-      // Log success
       developer.log(
         'Allergy created successfully for profile: $selectedProfileId',
         name: 'AllergyForm',
-        level: 800, // INFO level
+        level: 800,
       );
 
-      // Refresh medical records providers
       ref.invalidate(allMedicalRecordsProvider);
       ref.invalidate(recordsByProfileIdProvider(selectedProfileId));
 
@@ -489,44 +621,42 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
             content: Row(
               children: [
                 const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Allergy saved successfully'),
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
     } catch (error, stackTrace) {
-      // Log detailed error to console
       developer.log(
         'Failed to save allergy',
         name: 'AllergyForm',
-        level: 1000, // ERROR level
+        level: 1000,
         error: error,
         stackTrace: stackTrace,
       );
 
       if (mounted) {
-        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
                 const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
                 const Expanded(
                   child: Text('Failed to save allergy. Please try again.'),
                 ),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: context.colorScheme.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -560,13 +690,13 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
   String _getSeverityDescription(String severity) {
     switch (severity) {
       case AllergySeverity.mild:
-        return 'Minor discomfort, manageable symptoms';
+        return 'Minor discomfort';
       case AllergySeverity.moderate:
-        return 'Noticeable symptoms that may require treatment';
+        return 'Requires treatment';
       case AllergySeverity.severe:
-        return 'Significant symptoms requiring medical attention';
+        return 'Medical attention';
       case AllergySeverity.lifeThreatening:
-        return 'Anaphylaxis or other life-threatening reactions';
+        return 'Anaphylaxis risk';
       default:
         return '';
     }
@@ -574,95 +704,6 @@ class _AllergyFormScreenState extends ConsumerState<AllergyFormScreen> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-
-  Widget _buildModernSection({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-    LinearGradient? gradient,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final sectionGradient = gradient ?? HealthBoxDesignSystem.allergyGradient;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: sectionGradient.colors.first.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: sectionGradient.colors.first.withValues(alpha: 0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.05),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 4,
-              decoration: BoxDecoration(gradient: sectionGradient),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: sectionGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: sectionGradient.colors.first.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Icon(icon, size: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ...children,
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
