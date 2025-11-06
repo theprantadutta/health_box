@@ -6,7 +6,10 @@ import '../../../shared/theme/design_system.dart';
 import '../services/discharge_summary_service.dart';
 import '../../../shared/widgets/attachment_form_widget.dart';
 import '../../../shared/services/attachment_service.dart';
-import '../../../shared/widgets/modern_text_field.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_card.dart';
 import 'dart:developer' as developer;
 
 class DischargeSummaryFormScreen extends ConsumerStatefulWidget {
@@ -58,44 +61,32 @@ class _DischargeSummaryFormScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Discharge Summary', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicalPurple,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalPurple.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: 'Discharge Summary',
+        gradient: HealthBoxDesignSystem.medicalPurple,
         actions: [
-          TextButton(
+          HBButton.text(
             onPressed: _isLoading ? null : _saveDischargeSummary,
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-            child: Text(_isLoading ? 'SAVING...' : 'SAVE'),
+            child: Text(
+              _isLoading ? 'SAVING...' : 'SAVE',
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.responsivePadding),
           children: [
             _buildBasicInfoSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildHospitalStaySection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildDiagnosesSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildDischargeDetailsSection(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildAttachmentsSection(),
           ],
         ),
@@ -104,129 +95,138 @@ class _DischargeSummaryFormScreenState
   }
 
   Widget _buildBasicInfoSection() {
-    return _buildModernSection(
-      title: 'Basic Information',
-      children: [
-        ModernTextField(
-          controller: _titleController,
-          labelText: 'Title *',
-          hintText: 'e.g., Hospital Discharge Summary',
-          prefixIcon: const Icon(Icons.exit_to_app),
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-          validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _descriptionController,
-          labelText: 'Description',
-          maxLines: 2,
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _hospitalController,
-          labelText: 'Hospital/Facility *',
-          prefixIcon: const Icon(Icons.local_hospital),
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-          validator: (value) => value?.trim().isEmpty == true ? 'Hospital is required' : null,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Basic Information', Icons.exit_to_app, HealthBoxDesignSystem.medicalPurple),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.filled(
+            controller: _titleController,
+            label: 'Title',
+            hint: 'e.g., Hospital Discharge Summary',
+            prefixIcon: Icons.exit_to_app,
+            validator: (value) => value?.trim().isEmpty == true ? 'Title is required' : null,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _descriptionController,
+            label: 'Description',
+            minLines: 2,
+            maxLines: 4,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _hospitalController,
+            label: 'Hospital/Facility',
+            prefixIcon: Icons.local_hospital,
+            validator: (value) => value?.trim().isEmpty == true ? 'Hospital is required' : null,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildHospitalStaySection() {
-    return _buildModernSection(
-      title: 'Hospital Stay',
-      children: [
-        ListTile(
-          title: const Text('Admission Date'),
-          subtitle: Text(_formatDate(_admissionDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, 'admission'),
-        ),
-        ListTile(
-          title: const Text('Discharge Date'),
-          subtitle: Text(_formatDate(_dischargeDate)),
-          trailing: const Icon(Icons.calendar_today),
-          onTap: () => _selectDate(context, 'discharge'),
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _attendingPhysicianController,
-          labelText: 'Attending Physician',
-          prefixIcon: const Icon(Icons.person),
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Hospital Stay', Icons.hotel, HealthBoxDesignSystem.medicalPurple),
+          SizedBox(height: AppSpacing.lg),
+          _buildDateTile('Admission Date', _admissionDate, () => _selectDate(context, 'admission')),
+          SizedBox(height: AppSpacing.base),
+          _buildDateTile('Discharge Date', _dischargeDate, () => _selectDate(context, 'discharge')),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _attendingPhysicianController,
+            label: 'Attending Physician',
+            prefixIcon: Icons.person,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDiagnosesSection() {
-    return _buildModernSection(
-      title: 'Diagnoses & Course',
-      children: [
-        ModernTextField(
-          controller: _primaryDiagnosisController,
-          labelText: 'Primary Diagnosis *',
-          prefixIcon: const Icon(Icons.medical_information),
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-          validator: (value) => value?.trim().isEmpty == true ? 'Primary diagnosis is required' : null,
-          maxLines: 2,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _secondaryDiagnosesController,
-          labelText: 'Secondary Diagnoses',
-          maxLines: 3,
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _hospitalCourseController,
-          labelText: 'Hospital Course',
-          hintText: 'Summary of treatment and progress',
-          maxLines: 4,
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-      ],
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Diagnoses & Course', Icons.medical_information, HealthBoxDesignSystem.medicalPurple),
+          SizedBox(height: AppSpacing.lg),
+          HBTextField.multiline(
+            controller: _primaryDiagnosisController,
+            label: 'Primary Diagnosis',
+            prefixIcon: Icons.medical_information,
+            validator: (value) => value?.trim().isEmpty == true ? 'Primary diagnosis is required' : null,
+            minLines: 2,
+            maxLines: 4,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _secondaryDiagnosesController,
+            label: 'Secondary Diagnoses',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _hospitalCourseController,
+            label: 'Hospital Course',
+            hint: 'Summary of treatment and progress',
+            minLines: 4,
+            maxLines: 6,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDischargeDetailsSection() {
-    return _buildModernSection(
-      title: 'Discharge Details',
-      children: [
-        DropdownButtonFormField<String>(
-          initialValue: _dischargeDisposition,
-          decoration: const InputDecoration(
-            labelText: 'Discharge Disposition',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.home),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Discharge Details', Icons.home, HealthBoxDesignSystem.medicalPurple),
+          SizedBox(height: AppSpacing.lg),
+          DropdownButtonFormField<String>(
+            value: _dischargeDisposition,
+            decoration: InputDecoration(
+              labelText: 'Discharge Disposition',
+              prefixIcon: const Icon(Icons.home),
+              filled: true,
+              fillColor: context.colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(borderRadius: AppRadii.radiusMd, borderSide: BorderSide.none),
+            ),
+            items: _dispositions.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+            onChanged: (value) => setState(() => _dischargeDisposition = value!),
           ),
-          items: _dispositions.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
-          onChanged: (value) => setState(() => _dischargeDisposition = value!),
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _dischargeConditionController,
-          labelText: 'Condition at Discharge',
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _dischargeMedicationsController,
-          labelText: 'Discharge Medications',
-          maxLines: 3,
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-        const SizedBox(height: 16),
-        ModernTextField(
-          controller: _followUpInstructionsController,
-          labelText: 'Follow-up Instructions',
-          maxLines: 4,
-          focusGradient: HealthBoxDesignSystem.medicalPurple,
-        ),
-      ],
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _dischargeConditionController,
+            label: 'Condition at Discharge',
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _dischargeMedicationsController,
+            label: 'Discharge Medications',
+            minLines: 3,
+            maxLines: 5,
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.multiline(
+            controller: _followUpInstructionsController,
+            label: 'Follow-up Instructions',
+            minLines: 4,
+            maxLines: 6,
+          ),
+        ],
+      ),
     );
   }
 
@@ -289,52 +289,37 @@ class _DischargeSummaryFormScreenState
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Text('Discharge summary saved successfully'),
-                ),
+                const Icon(Icons.check_circle_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
+                const Expanded(child: Text('Discharge summary saved successfully')),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
           ),
         );
       }
 
-      // Log success
-      developer.log(
-        'Discharge summary created successfully for profile: $selectedProfileId',
-        name: 'DischargeSummaryForm',
-        level: 800, // INFO level
-      );
+      developer.log('Discharge summary created successfully for profile: $selectedProfileId',
+        name: 'DischargeSummaryForm', level: 800);
     } catch (error, stackTrace) {
-      // Log detailed error to console
-      developer.log(
-        'Failed to save discharge summary',
-        name: 'DischargeSummaryForm',
-        level: 1000, // ERROR level
-        error: error,
-        stackTrace: stackTrace,
-      );
+      developer.log('Failed to save discharge summary',
+        name: 'DischargeSummaryForm', level: 1000, error: error, stackTrace: stackTrace);
 
       if (mounted) {
-        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Text('Failed to save discharge summary. Please try again.'),
-                ),
+                const Icon(Icons.error_outline, color: Colors.white, size: AppSizes.iconSm),
+                SizedBox(width: AppSpacing.sm),
+                const Expanded(child: Text('Failed to save discharge summary. Please try again.')),
               ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: AppRadii.radiusMd),
             action: SnackBarAction(
               label: 'Retry',
               textColor: Colors.white,
@@ -349,97 +334,81 @@ class _DischargeSummaryFormScreenState
   }
 
   Widget _buildAttachmentsSection() {
-    return _buildModernSection(
-      title: 'Attachments',
-      subtitle: 'Add discharge papers, care instructions, or follow-up notes',
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Attachments', Icons.attach_file, HealthBoxDesignSystem.medicalPurple),
+          SizedBox(height: AppSpacing.sm),
+          Text('Add discharge papers, care instructions, or follow-up notes',
+            style: context.textTheme.bodySmall?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+          SizedBox(height: AppSpacing.base),
+          AttachmentFormWidget(
+            initialAttachments: _attachments,
+            onAttachmentsChanged: (attachments) {
+              setState(() => _attachments = attachments);
+            },
+            maxFiles: 12,
+            allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            maxFileSizeMB: 50,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Gradient gradient) {
+    return Row(
       children: [
-        AttachmentFormWidget(
-          initialAttachments: _attachments,
-          onAttachmentsChanged: (attachments) {
-            setState(() {
-              _attachments = attachments;
-            });
-          },
-          maxFiles: 12,
-          allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-          maxFileSizeMB: 50,
+        Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            boxShadow: AppElevation.coloredShadow(gradient.colors.first, opacity: 0.3),
+          ),
+          child: Icon(icon, size: AppSizes.iconMd, color: Colors.white),
         ),
+        SizedBox(width: AppSpacing.md),
+        Text(title, style: context.textTheme.titleMedium?.copyWith(
+          fontWeight: AppTypography.fontWeightSemiBold,
+          color: context.colorScheme.onSurface)),
       ],
     );
   }
 
-  Widget _buildModernSection({
-    required String title,
-    String? subtitle,
-    required List<Widget> children,
-    Gradient? gradient,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            (gradient ?? HealthBoxDesignSystem.medicalPurple)
-                .colors
-                .first
-                .withValues(alpha: 0.03),
-          ],
+  Widget _buildDateTile(String label, DateTime date, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadii.radiusMd,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.base),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: AppRadii.radiusMd,
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: (gradient ?? HealthBoxDesignSystem.medicalPurple)
-              .colors
-              .first
-              .withValues(alpha: 0.1),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: (gradient ?? HealthBoxDesignSystem.medicalPurple)
-                .colors
-                .first
-                .withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            ShaderMask(
-              shaderCallback: (bounds) => (gradient ?? HealthBoxDesignSystem.medicalPurple)
-                  .createShader(bounds),
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+            Icon(Icons.calendar_today, color: context.colorScheme.onSurfaceVariant, size: AppSizes.iconMd),
+            SizedBox(width: AppSpacing.base),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: context.textTheme.bodyMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant)),
+                  Text('${date.day}/${date.month}/${date.year}',
+                    style: context.textTheme.bodyLarge?.copyWith(color: context.colorScheme.onSurface)),
+                ],
               ),
             ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            ...children,
+            Icon(Icons.chevron_right, color: context.colorScheme.onSurfaceVariant),
           ],
         ),
       ),
     );
   }
-
-  String _formatDate(DateTime date) => '${date.day}/${date.month}/${date.year}';
 
   @override
   void dispose() {
