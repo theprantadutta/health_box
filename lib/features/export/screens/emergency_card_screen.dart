@@ -7,6 +7,10 @@ import '../widgets/emergency_card_preview_widget.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/profile_providers.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../../medical_records/services/medical_records_service.dart';
 
 /// Screen for configuring and generating emergency cards
@@ -118,7 +122,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading data: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -135,20 +139,23 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Emergency Card', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        title: Text(
+          'Emergency Card',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.errorGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.errorGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.errorGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         bottom: TabBar(
@@ -178,7 +185,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
       ),
       body: profileAsync.when(
         data: (profile) => _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const HBLoading.circular()
             : TabBarView(
                 controller: _tabController,
                 children: [
@@ -187,24 +194,27 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
                   _buildGenerateTab(profile),
                 ],
               ),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const HBLoading.circular(),
         error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text('Error loading profile: ${error.toString()}'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => context.pop(),
-                child: const Text('Go Back'),
-              ),
-            ],
+          child: Padding(
+            padding: context.responsivePadding,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error,
+                  size: AppSizes.iconXl * 1.5,
+                  color: AppColors.error,
+                ),
+                SizedBox(height: AppSpacing.base),
+                Text('Error loading profile: ${error.toString()}'),
+                SizedBox(height: AppSpacing.base),
+                HBButton.primary(
+                  text: 'Go Back',
+                  onPressed: () => context.pop(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -215,20 +225,20 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
     if (profile == null) return const SizedBox();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildPersonalInfoCard(profile),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildContactInfoCard(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildMedicalDataCard(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildOptionsCard(),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             _buildCustomNotesCard(),
           ],
         ),
@@ -250,72 +260,61 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
     if (profile == null) return const SizedBox();
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Generate Emergency Card',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Generate Emergency Card',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.sm),
+                const Text(
+                  'Create a printable PDF emergency card that can be carried in a wallet or purse.',
+                ),
+                SizedBox(height: AppSpacing.base),
+                Row(
+                  children: [
+                    Expanded(
+                      child: HBButton.primary(
+                        text: 'Generate PDF',
+                        icon: Icons.picture_as_pdf,
+                        onPressed: _isGenerating ? null : _generatePDFCard,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Create a printable PDF emergency card that can be carried in a wallet or purse.',
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: _isGenerating ? null : _generatePDFCard,
-                          icon: _isGenerating
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(Icons.picture_as_pdf),
-                          label: const Text('Generate PDF'),
-                        ),
+                    SizedBox(width: AppSpacing.base),
+                    Expanded(
+                      child: HBButton.outlined(
+                        text: 'QR Code Only',
+                        icon: Icons.qr_code,
+                        onPressed: _generateQRCode,
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: _generateQRCode,
-                          icon: const Icon(Icons.qr_code),
-                          label: const Text('QR Code Only'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Usage Instructions',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+          SizedBox(height: AppSpacing.base),
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Usage Instructions',
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 8),
+                ),
+                SizedBox(height: AppSpacing.sm),
                   const Text(
                     '• Print the PDF and carry it in your wallet\n'
                     '• Emergency responders can scan the QR code for digital access\n'
@@ -696,7 +695,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Configuration saved successfully'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -705,7 +704,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error saving configuration: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -739,7 +738,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Emergency card generated: $filePath'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             action: SnackBarAction(
               label: 'Share',
               onPressed: () => _shareFile(filePath),
@@ -752,7 +751,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error generating card: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -801,7 +800,7 @@ class _EmergencyCardScreenState extends ConsumerState<EmergencyCardScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error generating QR code: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
