@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../data/database/app_database.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
-import '../../../shared/widgets/gradient_button.dart';
-import '../../../shared/widgets/modern_card.dart';
-import '../../../shared/theme/app_theme.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/micro_interactions.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../widgets/profile_card.dart';
 
@@ -34,10 +33,9 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   Widget build(BuildContext context) {
     final profilesAsync = ref.watch(simpleProfilesProvider);
     final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
-    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      backgroundColor: context.colorScheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           // Dashboard-style app bar
@@ -50,97 +48,67 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: HealthBoxDesignSystem.medicalBlue,
-                boxShadow: [
-                  BoxShadow(
-                    color: HealthBoxDesignSystem.medicalBlue.colors.first
-                        .withValues(alpha: 0.3),
-                    offset: const Offset(0, 4),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
+                boxShadow: AppElevation.coloredShadow(
+                  HealthBoxDesignSystem.medicalBlue.colors.first,
+                  opacity: 0.3,
+                ),
               ),
             ),
             title: Text(
               'Family Profiles',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
+              style: context.textTheme.headlineSmall?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
                 color: Colors.white,
               ),
             ),
             actions: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.tune_rounded,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white,
                 ),
                 onPressed: _showFilterBottomSheet,
                 tooltip: 'Filter Profiles',
               ),
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.add_rounded,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white,
                 ),
                 onPressed: () => _navigateToAddProfile(context),
                 tooltip: 'Add New Profile',
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: AppSpacing.sm),
             ],
           ),
 
           // Profile List
           SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.colorScheme.shadow.withValues(alpha: 0.05),
-                    offset: const Offset(0, 2),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: TextField(
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.base),
+              child: HBTextField.filled(
                 controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search profiles...',
-                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: theme.colorScheme.primary,
-                    size: 22,
-                  ),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.close_rounded,
-                            color: theme.colorScheme.onSurfaceVariant,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {
-                              _searchQuery = '';
-                            });
-                          },
-                        )
-                      : null,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
+                hint: 'Search profiles...',
+                prefix: Icon(
+                  Icons.search_rounded,
+                  color: context.colorScheme.primary,
+                  size: AppSizes.iconSm,
                 ),
+                suffix: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: context.colorScheme.onSurfaceVariant,
+                          size: AppSizes.iconSm,
+                        ),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
                 onChanged: (value) {
                   setState(() {
                     _searchQuery = value;
@@ -153,7 +121,6 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
           _buildProfileList(
             profilesAsync,
             selectedProfileAsync,
-            theme,
           ),
         ],
       ),
@@ -172,64 +139,49 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   Widget _buildProfileList(
     AsyncValue<List<FamilyMemberProfile>> profilesAsync,
     AsyncValue<FamilyMemberProfile?> selectedProfileAsync,
-    ThemeData theme,
   ) {
     return profilesAsync.when(
-      loading: () => SliverFillRemaining(
-        child: Center(
-          child: CommonTransitions.fadeSlideIn(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MicroInteractions.breathingDots(
-                  color: AppTheme.primaryColorLight,
-                  dotCount: 3,
-                  dotSize: 12.0,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Loading profiles...',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      loading: () => const SliverFillRemaining(
+        child: HBLoading.circular(),
       ),
       error: (error, stack) => SliverFillRemaining(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
-              const SizedBox(height: 16),
-              Text(
-                'Error loading profiles',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: theme.colorScheme.onSurface,
+          child: Padding(
+            padding: context.responsivePadding,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: AppSizes.iconXl * 1.5,
+                  color: AppColors.error,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                error.toString(),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+                SizedBox(height: AppSpacing.base),
+                Text(
+                  'Error loading profiles',
+                  style: context.textTheme.headlineSmall?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () {
-                  ref.invalidate(simpleProfilesProvider);
-                  ref.invalidate(simpleSelectedProfileProvider);
-                },
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
+                SizedBox(height: AppSpacing.sm),
+                Text(
+                  error.toString(),
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.base),
+                HBButton.primary(
+                  text: 'Retry',
+                  icon: Icons.refresh,
+                  onPressed: () {
+                    ref.invalidate(simpleProfilesProvider);
+                    ref.invalidate(simpleSelectedProfileProvider);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -237,71 +189,50 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
         if (profiles.isEmpty) {
           return SliverFillRemaining(
             child: Center(
-            child: CommonTransitions.fadeSlideIn(
-              child: ModernCard(
-                medicalTheme: MedicalCardTheme.success,
-                elevation: CardElevation.low,
-                margin: const EdgeInsets.all(32),
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppTheme.successColor.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
+              child: Padding(
+                padding: context.responsivePadding * 2,
+                child: HBCard.elevated(
+                  padding: EdgeInsets.all(AppSpacing.xxl),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(AppSpacing.base),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.family_restroom_rounded,
+                          size: AppSizes.iconXl,
+                          color: AppColors.success,
+                        ),
                       ),
-                      child: Icon(
-                        Icons.family_restroom_rounded,
-                        size: 48,
-                        color: AppTheme.successColor,
+                      SizedBox(height: AppSpacing.xl),
+                      Text(
+                        'No profiles yet',
+                        style: context.textTheme.headlineSmall?.copyWith(
+                          fontWeight: AppTypography.fontWeightBold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'No profiles yet',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
+                      SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Add your first family member profile to get started with managing your family\'s health',
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Add your first family member profile to get started with managing your family\'s health',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                        height: 1.4,
+                      SizedBox(height: AppSpacing.xl),
+                      HBButton.primary(
+                        text: 'Add First Profile',
+                        icon: Icons.person_add_rounded,
+                        onPressed: () => _navigateToAddProfile(context),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    HealthButton(
-                      onPressed: () => _navigateToAddProfile(context),
-                      medicalTheme: MedicalButtonTheme.success,
-                      size: HealthButtonSize.medium,
-                      enableHoverEffect: true,
-                      enablePressEffect: true,
-                      enableHaptics: true,
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.person_add_rounded, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            'Add First Profile',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
             ),
           );
         }
@@ -311,67 +242,75 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
         if (filteredProfiles.isEmpty) {
           return SliverFillRemaining(
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.search_off,
-                    size: 64,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No profiles found',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: theme.colorScheme.onSurface,
+              child: Padding(
+                padding: context.responsivePadding,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.search_off,
+                      size: AppSizes.iconXl * 1.5,
+                      color: context.colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Try adjusting your search or filters',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                    SizedBox(height: AppSpacing.base),
+                    Text(
+                      'No profiles found',
+                      style: context.textTheme.headlineSmall?.copyWith(
+                        fontWeight: AppTypography.fontWeightBold,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Try adjusting your search or filters',
+                      textAlign: TextAlign.center,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         }
 
         return SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.base,
+            AppSpacing.sm,
+            AppSpacing.base,
+            96,
+          ),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final profile = filteredProfiles[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: selectedProfileAsync.when(
-                  loading: () => ProfileCard(
-                    profile: profile,
-                    isSelected: false,
-                    onTap: () => _selectProfile(profile),
-                    onEdit: () => _navigateToEditProfile(context, profile),
-                    onDelete: () => _showDeleteConfirmation(context, profile),
+                return Padding(
+                  padding: EdgeInsets.only(bottom: AppSpacing.base),
+                  child: selectedProfileAsync.when(
+                    loading: () => ProfileCard(
+                      profile: profile,
+                      isSelected: false,
+                      onTap: () => _selectProfile(profile),
+                      onEdit: () => _navigateToEditProfile(context, profile),
+                      onDelete: () => _showDeleteConfirmation(context, profile),
+                    ),
+                    error: (_, __) => ProfileCard(
+                      profile: profile,
+                      isSelected: false,
+                      onTap: () => _selectProfile(profile),
+                      onEdit: () => _navigateToEditProfile(context, profile),
+                      onDelete: () => _showDeleteConfirmation(context, profile),
+                    ),
+                    data: (selectedProfile) => ProfileCard(
+                      profile: profile,
+                      isSelected: selectedProfile?.id == profile.id,
+                      onTap: () => _selectProfile(profile),
+                      onEdit: () => _navigateToEditProfile(context, profile),
+                      onDelete: () => _showDeleteConfirmation(context, profile),
+                    ),
                   ),
-                  error: (_, __) => ProfileCard(
-                    profile: profile,
-                    isSelected: false,
-                    onTap: () => _selectProfile(profile),
-                    onEdit: () => _navigateToEditProfile(context, profile),
-                    onDelete: () => _showDeleteConfirmation(context, profile),
-                  ),
-                  data: (selectedProfile) => ProfileCard(
-                    profile: profile,
-                    isSelected: selectedProfile?.id == profile.id,
-                    onTap: () => _selectProfile(profile),
-                    onEdit: () => _navigateToEditProfile(context, profile),
-                    onDelete: () => _showDeleteConfirmation(context, profile),
-                  ),
-                ),
-              );
+                );
               },
               childCount: filteredProfiles.length,
             ),
@@ -382,16 +321,14 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
   }
 
   void _showFilterBottomSheet() {
-    final theme = Theme.of(context);
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          color: context.colorScheme.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
         ),
         child: DraggableScrollableSheet(
           initialChildSize: 0.5,
@@ -404,69 +341,70 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
               Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                margin: EdgeInsets.only(
+                  top: AppSpacing.md,
+                  bottom: AppSpacing.sm,
+                ),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(2),
+                  color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(AppRadii.xs),
                 ),
               ),
 
               // Header
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.xl,
+                  AppSpacing.sm,
+                  AppSpacing.xl,
+                  AppSpacing.base,
+                ),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: EdgeInsets.all(AppSpacing.sm + 2),
                       decoration: BoxDecoration(
                         gradient: HealthBoxDesignSystem.medicalPurple,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: HealthBoxDesignSystem.coloredShadow(
+                        borderRadius: BorderRadius.circular(AppRadii.md),
+                        boxShadow: AppElevation.coloredShadow(
                           HealthBoxDesignSystem.medicalPurple.colors.first,
                           opacity: 0.3,
                         ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.tune_rounded,
                         color: Colors.white,
-                        size: 24,
+                        size: AppSizes.iconMd,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: AppSpacing.base),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Filter Profiles',
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: theme.colorScheme.onSurface,
+                            style: context.textTheme.titleLarge?.copyWith(
+                              fontWeight: AppTypography.fontWeightBold,
                             ),
                           ),
                           Text(
                             'Customize your view',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    TextButton(
+                    HBButton.text(
+                      text: 'Reset',
                       onPressed: () {
                         setState(() {
                           _selectedGenderFilter = 'All';
                         });
                         context.pop();
                       },
-                      child: Text(
-                        'Reset',
-                        style: TextStyle(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -478,30 +416,29 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
               Expanded(
                 child: ListView(
                   controller: scrollController,
-                  padding: const EdgeInsets.all(24),
+                  padding: EdgeInsets.all(AppSpacing.xl),
                   children: [
                     // Gender Filter
                     Row(
                       children: [
                         Icon(
                           Icons.people_rounded,
-                          size: 20,
-                          color: theme.colorScheme.primary,
+                          size: AppSizes.iconSm,
+                          color: context.colorScheme.primary,
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: AppSpacing.sm),
                         Text(
                           'Gender',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.onSurface,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: AppTypography.fontWeightBold,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: AppSpacing.md),
                     Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
                       children: ['All', 'Male', 'Female', 'Other', 'Unspecified']
                           .map((gender) {
                         final isSelected = _selectedGenderFilter == gender;
@@ -513,19 +450,21 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                               _selectedGenderFilter = gender;
                             });
                           },
-                          backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                          selectedColor: theme.colorScheme.primaryContainer,
+                          backgroundColor: context.colorScheme.surfaceContainerHighest,
+                          selectedColor: context.colorScheme.primaryContainer,
                           labelStyle: TextStyle(
                             color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                ? context.colorScheme.primary
+                                : context.colorScheme.onSurface,
+                            fontWeight: isSelected
+                                ? AppTypography.fontWeightSemiBold
+                                : AppTypography.fontWeightMedium,
                           ),
-                          checkmarkColor: theme.colorScheme.primary,
+                          checkmarkColor: context.colorScheme.primary,
                           side: BorderSide(
                             color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.outlineVariant,
+                                ? context.colorScheme.primary
+                                : context.colorScheme.outlineVariant,
                             width: 1,
                           ),
                         );
@@ -538,28 +477,11 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
               // Apply button
               SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => context.pop(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        'Apply Filters',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                  padding: EdgeInsets.all(AppSpacing.xl),
+                  child: HBButton.primary(
+                    text: 'Apply Filters',
+                    onPressed: () => context.pop(),
+                    isExpanded: true,
                   ),
                 ),
               ),
@@ -628,11 +550,12 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
             'Are you sure you want to delete ${profile.firstName} ${profile.lastName}\'s profile? This action cannot be undone.',
           ),
           actions: [
-            TextButton(
+            HBButton.text(
+              text: 'Cancel',
               onPressed: () => context.pop(),
-              child: const Text('Cancel'),
             ),
-            TextButton(
+            HBButton.text(
+              text: 'Delete',
               onPressed: () async {
                 context.pop();
                 try {
@@ -655,16 +578,13 @@ class _ProfileListScreenState extends ConsumerState<ProfileListScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Error deleting profile: $e'),
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                        backgroundColor: AppColors.error,
                       ),
                     );
                   }
                 }
               },
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: const Text('Delete'),
+              textColor: AppColors.error,
             ),
           ],
         );
