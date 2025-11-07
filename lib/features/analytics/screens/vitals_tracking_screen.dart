@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../services/analytics_service.dart';
 import '../widgets/vitals_chart_widget.dart';
 
@@ -85,7 +88,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to load data: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -100,20 +103,23 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vitals Tracking', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        title: Text(
+          'Vitals Tracking',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.vitalsGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.vitalsGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.vitalsGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         bottom: TabBar(
@@ -132,7 +138,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const HBLoading.circular()
           : TabBarView(
               controller: _tabController,
               children: [
@@ -877,7 +883,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please enter valid blood pressure values'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
         return;
@@ -917,7 +923,7 @@ class _VitalsTrackingScreenState extends ConsumerState<VitalsTrackingScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to save reading: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
