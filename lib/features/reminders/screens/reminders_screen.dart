@@ -3,15 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/database/app_database.dart';
-import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/micro_interactions.dart';
-import '../../../shared/animations/stagger_animations.dart';
 import '../../../shared/providers/reminder_providers.dart';
-import '../../../shared/theme/app_theme.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/error_state_widget.dart';
-import '../../../shared/widgets/loading_animation_widget.dart';
-import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../services/reminder_service.dart';
 import '../widgets/reminder_form_widget.dart';
 
@@ -51,15 +47,13 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      backgroundColor: context.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
         title: Text(
           'Reminders',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.textTheme.headlineSmall?.copyWith(
+            fontWeight: AppTypography.fontWeightBold,
             color: Colors.white,
           ),
         ),
@@ -69,17 +63,10 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.chronicConditionGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem
-                    .chronicConditionGradient
-                    .colors
-                    .first
-                    .withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.chronicConditionGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
