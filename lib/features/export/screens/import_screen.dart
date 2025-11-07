@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
 import '../services/import_service.dart';
 
 class ImportScreen extends ConsumerStatefulWidget {
@@ -61,9 +63,12 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Import Data',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -71,13 +76,10 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.medicalOrange,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalOrange.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.medicalOrange.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         actions: [
@@ -96,29 +98,29 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: context.responsivePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_isImporting) _buildProgressSection(),
             if (!_isImporting) ...[
               _buildFileSelectionSection(),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
               if (_selectedFilePath != null) ...[
                 _buildFormatSection(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.xl),
                 _buildImportModeSection(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.xl),
                 _buildOptionsSection(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.xl),
                 _buildEntityTypesSection(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.xl),
                 _buildValidationSection(),
                 if (_validationResult != null) ...[
-                  const SizedBox(height: 24),
+                  SizedBox(height: AppSpacing.xl),
                   _buildValidationResultsSection(),
                 ],
-                const SizedBox(height: 32),
+                SizedBox(height: AppSpacing.xxl),
                 _buildImportButton(),
               ],
             ],
@@ -689,7 +691,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to select file: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
