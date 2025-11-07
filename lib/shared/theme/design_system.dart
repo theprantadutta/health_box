@@ -738,7 +738,7 @@ class HealthBoxStyle {
   }
 }
 
-/// Button type enumeration
+/// Button size enumeration
 enum ButtonType { primary, secondary, outline, ghost }
 
 /// Button size enumeration
@@ -760,3 +760,108 @@ enum ButtonSize {
   final double height;
   final EdgeInsets padding;
 }
+
+// ============ DESIGN TOKEN UTILITY CLASSES ============
+
+/// Simplified AppSpacing class for consistent spacing
+class AppSpacing {
+  static const double xs = HealthBoxDesignSystem.spacing1; // 4px
+  static const double sm = HealthBoxDesignSystem.spacing2; // 8px
+  static const double md = HealthBoxDesignSystem.spacing3; // 12px
+  static const double base = HealthBoxDesignSystem.spacing4; // 16px
+  static const double lg = HealthBoxDesignSystem.spacing5; // 20px
+  static const double xl = HealthBoxDesignSystem.spacing6; // 24px
+  static const double xxl = HealthBoxDesignSystem.spacing8; // 32px
+  static const double xxxl = HealthBoxDesignSystem.spacing10; // 40px
+}
+
+/// Simplified AppRadii class for consistent border radius
+class AppRadii {
+  static const double xs = HealthBoxDesignSystem.radiusSm; // 4px
+  static const double sm = HealthBoxDesignSystem.radiusBase; // 8px
+  static const double md = HealthBoxDesignSystem.radiusMd; // 12px
+  static const double lg = HealthBoxDesignSystem.radiusLg; // 16px
+  static const double xl = HealthBoxDesignSystem.radiusXl; // 20px
+  static const double xxl = HealthBoxDesignSystem.radius2xl; // 24px
+  static const double full = HealthBoxDesignSystem.radiusFull; // 9999px
+}
+
+/// Simplified AppTypography class for consistent font styles
+class AppTypography {
+  static const double fontSizeXs = HealthBoxDesignSystem.textSizeXs; // 12px
+  static const double fontSizeSm = HealthBoxDesignSystem.textSizeSm; // 14px
+  static const double fontSizeBase = HealthBoxDesignSystem.textSizeBase; // 16px
+  static const double fontSizeLg = HealthBoxDesignSystem.textSizeLg; // 18px
+  static const double fontSizeXl = HealthBoxDesignSystem.textSizeXl; // 20px
+  static const double fontSize2Xl = HealthBoxDesignSystem.textSize2xl; // 24px
+  static const double fontSize3Xl = HealthBoxDesignSystem.textSize3xl; // 30px
+  static const double fontSize4Xl = HealthBoxDesignSystem.textSize4xl; // 36px
+
+  static const FontWeight fontWeightLight = HealthBoxDesignSystem.fontWeightLight;
+  static const FontWeight fontWeightNormal = HealthBoxDesignSystem.fontWeightNormal;
+  static const FontWeight fontWeightMedium = HealthBoxDesignSystem.fontWeightMedium;
+  static const FontWeight fontWeightSemiBold = HealthBoxDesignSystem.fontWeightSemiBold;
+  static const FontWeight fontWeightBold = HealthBoxDesignSystem.fontWeightBold;
+  static const FontWeight fontWeightExtraBold = HealthBoxDesignSystem.fontWeightExtraBold;
+}
+
+/// Simplified AppSizes class for consistent component sizes
+class AppSizes {
+  static const double iconXs = 16.0;
+  static const double iconSm = 20.0;
+  static const double iconMd = 24.0;
+  static const double iconLg = 32.0;
+  static const double iconXl = 48.0;
+  static const double iconXl2 = 64.0;
+
+  static const double buttonHeightSm = HealthBoxDesignSystem.buttonHeightSm;
+  static const double buttonHeightBase = HealthBoxDesignSystem.buttonHeightBase;
+  static const double buttonHeightLg = HealthBoxDesignSystem.buttonHeightLg;
+}
+
+/// Simplified AppColors class for semantic colors
+class AppColors {
+  static const Color primary = HealthBoxDesignSystem.primaryBlue;
+  static const Color primaryLight = HealthBoxDesignSystem.primaryBlueLight;
+  static const Color primaryDark = HealthBoxDesignSystem.primaryBlueDark;
+
+  static const Color success = HealthBoxDesignSystem.successColor;
+  static const Color warning = HealthBoxDesignSystem.warningColor;
+  static const Color error = HealthBoxDesignSystem.errorColor;
+
+  static const Color textPrimary = HealthBoxDesignSystem.textPrimary;
+  static const Color textSecondary = HealthBoxDesignSystem.textSecondary;
+  static const Color textTertiary = HealthBoxDesignSystem.textTertiary;
+
+  // Gradients
+  static const LinearGradient primaryGradient = HealthBoxDesignSystem.medicalBlue;
+  static const LinearGradient secondaryGradient = HealthBoxDesignSystem.medicalPurple;
+  static const LinearGradient successGradient = HealthBoxDesignSystem.successGradient;
+  static const LinearGradient warningGradient = HealthBoxDesignSystem.warningGradient;
+  static const LinearGradient errorGradient = HealthBoxDesignSystem.errorGradient;
+}
+
+/// Simplified AppDurations class for animation durations
+class AppDurations {
+  static const Duration instant = Duration(milliseconds: 100);
+  static const Duration short = Duration(milliseconds: 150);
+  static const Duration medium = Duration(milliseconds: 250);
+  static const Duration long = Duration(milliseconds: 350);
+  static const Duration xLong = Duration(milliseconds: 500);
+}
+
+/// Simplified AppElevation class for shadows
+class AppElevation {
+  static const List<BoxShadow> none = HealthBoxDesignSystem.shadowNone;
+  static const List<BoxShadow> xs = HealthBoxDesignSystem.shadowXs;
+  static const List<BoxShadow> sm = HealthBoxDesignSystem.shadowSm;
+  static const List<BoxShadow> base = HealthBoxDesignSystem.shadowBase;
+  static const List<BoxShadow> md = HealthBoxDesignSystem.shadowMd;
+  static const List<BoxShadow> lg = HealthBoxDesignSystem.shadowLg;
+  static const List<BoxShadow> xl = HealthBoxDesignSystem.shadowXl;
+
+  static List<BoxShadow> coloredShadow(Color color, {double opacity = 0.3}) {
+    return HealthBoxDesignSystem.coloredShadow(color, opacity: opacity);
+  }
+}
+
