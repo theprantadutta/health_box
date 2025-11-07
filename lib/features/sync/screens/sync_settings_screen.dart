@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../services/google_drive_service.dart';
-import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/navigation/app_router.dart';
-import '../../../shared/theme/app_theme.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../providers/google_drive_providers.dart';
 import '../widgets/backup_management_bottom_sheet.dart';
 import '../widgets/file_sync_settings_widget.dart';
@@ -41,8 +41,8 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                 : 'Failed to sign in to Google Drive',
           ),
           backgroundColor: success
-              ? AppTheme.successColor
-              : AppTheme.errorColor,
+              ? AppColors.success
+              : AppColors.error,
         ),
       );
     }
@@ -54,7 +54,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Successfully signed out of Google Drive'),
-          backgroundColor: AppTheme.warningColor,
+          backgroundColor: AppColors.warning,
         ),
       );
     }
@@ -68,7 +68,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Backup created successfully'),
-            backgroundColor: AppTheme.successColor,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -82,7 +82,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppColors.error,
             action: e.toString().contains('authentication')
                 ? SnackBarAction(
                     label: 'Sign In',
@@ -107,18 +107,17 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final authAsync = ref.watch(googleDriveAuthProvider);
     final syncSettingsAsync = ref.watch(syncSettingsProvider);
     final backupProgressAsync = ref.watch(backupOperationsProvider);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      backgroundColor: context.colorScheme.surfaceContainerLowest,
       appBar: AppBar(
         title: Text(
           'Google Drive Sync',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.textTheme.headlineSmall?.copyWith(
+            fontWeight: AppTypography.fontWeightBold,
             color: Colors.white,
           ),
         ),
@@ -128,13 +127,10 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.medicalBlue,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalBlue.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.medicalBlue.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -156,40 +152,38 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: CommonTransitions.fadeSlideIn(
-          child: Column(
-            children: [
-              // Google Drive Account Section
-              _buildAccountSection(authAsync, theme),
-              const SizedBox(height: 16),
+        padding: context.responsivePadding,
+        child: Column(
+          children: [
+            // Google Drive Account Section
+            _buildAccountSection(authAsync),
+            SizedBox(height: AppSpacing.base),
 
-              // Sync Settings Section
-              syncSettingsAsync.when(
-                loading: () => _buildLoadingCard(theme),
-                error: (error, _) => _buildErrorCard(theme, error.toString()),
-                data: (syncSettings) =>
-                    _buildSyncSettingsSection(authAsync, syncSettings, theme),
+            // Sync Settings Section
+            syncSettingsAsync.when(
+              loading: () => const HBLoading.circular(),
+              error: (error, _) => _buildErrorCard(error.toString()),
+              data: (syncSettings) =>
+                  _buildSyncSettingsSection(authAsync, syncSettings),
+            ),
+            SizedBox(height: AppSpacing.base),
+
+            // File Sync Settings Section
+            FileSyncSettingsWidget(
+              isEnabled: authAsync.maybeWhen(
+                data: (isSignedIn) => isSignedIn,
+                orElse: () => false,
               ),
-              const SizedBox(height: 16),
+            ),
+            SizedBox(height: AppSpacing.base),
 
-              // File Sync Settings Section
-              FileSyncSettingsWidget(
-                isEnabled: authAsync.maybeWhen(
-                  data: (isSignedIn) => isSignedIn,
-                  orElse: () => false,
-                ),
-              ),
-              const SizedBox(height: 16),
+            // Manual Actions Section
+            _buildManualActionsSection(authAsync, backupProgressAsync),
+            SizedBox(height: AppSpacing.base),
 
-              // Manual Actions Section
-              _buildManualActionsSection(authAsync, backupProgressAsync, theme),
-              const SizedBox(height: 16),
-
-              // Backup Management Section
-              _buildBackupManagementSection(authAsync, theme),
-            ],
-          ),
+            // Backup Management Section
+            _buildBackupManagementSection(authAsync),
+          ],
         ),
       ),
     );
@@ -974,7 +968,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
                             content: const Text(
                               'Please sign in to Google Drive first',
                             ),
-                            backgroundColor: AppTheme.warningColor,
+                            backgroundColor: AppColors.warning,
                             action: SnackBarAction(
                               label: 'Sign In',
                               textColor: Colors.white,
