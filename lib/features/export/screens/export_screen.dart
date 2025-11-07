@@ -5,6 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/profile_dao.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_loading.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_button.dart';
 import '../services/export_service.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
@@ -69,7 +74,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to load profiles: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -81,60 +86,49 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Export Data', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicalOrange,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalOrange.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: 'Export Data',
+        gradient: HealthBoxDesignSystem.medicalOrange,
         actions: [
           if (_isExporting)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: SizedBox(
+            Padding(
+              padding: EdgeInsets.all(AppSpacing.base),
+              child: const SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               ),
             ),
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const HBLoading.circular()
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: context.responsivePadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_isExporting) _buildProgressSection(),
                   if (!_isExporting) ...[
                     _buildFormatSection(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: AppSpacing.xl),
                     _buildScopeSection(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: AppSpacing.xl),
                     if (_selectedScope != ExportScope.all)
                       _buildProfileSelection(),
                     if (_selectedScope == ExportScope.medicalRecordsOnly ||
                         _selectedScope == ExportScope.remindersOnly) ...[
-                      const SizedBox(height: 24),
+                      SizedBox(height: AppSpacing.xl),
                       _buildDateRangeSection(),
                     ],
-                    const SizedBox(height: 24),
+                    SizedBox(height: AppSpacing.xl),
                     _buildOptionsSection(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: AppSpacing.xl),
                     _buildFileNameSection(),
-                    const SizedBox(height: 32),
+                    SizedBox(height: AppSpacing.xxl),
                     _buildExportButton(),
                   ],
                 ],
@@ -144,292 +138,295 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   }
 
   Widget _buildProgressSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Exporting Data',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Exporting Data',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 12),
-            LinearProgressIndicator(value: _exportProgress),
-            const SizedBox(height: 8),
-            Text(_exportStatus),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _cancelExport,
-                    child: const Text('Cancel'),
-                  ),
-                ),
-              ],
+          ),
+          SizedBox(height: AppSpacing.md),
+          LinearProgressIndicator(value: _exportProgress),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            _exportStatus,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          SizedBox(
+            width: double.infinity,
+            child: HBButton.outlined(
+              text: 'Cancel',
+              onPressed: _cancelExport,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildFormatSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Export Format',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Export Format',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 12),
-            SegmentedButton<ExportFormat>(
-              segments: ExportFormat.values
-                  .map((format) => ButtonSegment<ExportFormat>(
-                        value: format,
-                        label: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_getFormatDisplayName(format)),
-                            Text(
-                              _exportService.getFormatDescription(format),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-              selected: {_selectedFormat},
-              onSelectionChanged: (Set<ExportFormat> selection) {
-                setState(() => _selectedFormat = selection.first);
-              },
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: AppSpacing.md),
+          SegmentedButton<ExportFormat>(
+            segments: ExportFormat.values
+                .map((format) => ButtonSegment<ExportFormat>(
+                      value: format,
+                      label: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_getFormatDisplayName(format)),
+                          Text(
+                            _exportService.getFormatDescription(format),
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            selected: {_selectedFormat},
+            onSelectionChanged: (Set<ExportFormat> selection) {
+              setState(() => _selectedFormat = selection.first);
+            },
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildScopeSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Data to Export',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Data to Export',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 12),
-            SegmentedButton<ExportScope>(
-              segments: ExportScope.values
-                  .map((scope) => ButtonSegment<ExportScope>(
-                        value: scope,
-                        label: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_getScopeDisplayName(scope)),
-                            Text(
-                              _getScopeDescription(scope),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-              selected: {_selectedScope},
-              onSelectionChanged: (Set<ExportScope> selection) {
-                setState(() => _selectedScope = selection.first);
-              },
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: AppSpacing.md),
+          SegmentedButton<ExportScope>(
+            segments: ExportScope.values
+                .map((scope) => ButtonSegment<ExportScope>(
+                      value: scope,
+                      label: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_getScopeDisplayName(scope)),
+                          Text(
+                            _getScopeDescription(scope),
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            selected: {_selectedScope},
+            onSelectionChanged: (Set<ExportScope> selection) {
+              setState(() => _selectedScope = selection.first);
+            },
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildProfileSelection() {
     if (_profiles.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('No profiles available'),
+      return HBCard.elevated(
+        padding: EdgeInsets.all(AppSpacing.base),
+        child: Text(
+          'No profiles available',
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
         ),
       );
     }
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Select Profiles',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Select Profiles',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      if (_selectedProfileIds.length == _profiles.length) {
-                        _selectedProfileIds.clear();
-                      } else {
-                        _selectedProfileIds = _profiles
-                            .map((p) => p.id)
-                            .toList();
-                      }
-                    });
-                  },
-                  child: Text(
-                    _selectedProfileIds.length == _profiles.length
-                        ? 'Deselect All'
-                        : 'Select All',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            for (final profile in _profiles)
-              CheckboxListTile(
-                title: Text('${profile.firstName} ${profile.lastName}'),
-                subtitle: Text('Born: ${_formatDate(profile.dateOfBirth)}'),
-                value: _selectedProfileIds.contains(profile.id),
-                onChanged: (selected) {
+              ),
+              HBButton.text(
+                text: _selectedProfileIds.length == _profiles.length
+                    ? 'Deselect All'
+                    : 'Select All',
+                onPressed: () {
                   setState(() {
-                    if (selected == true) {
-                      _selectedProfileIds.add(profile.id);
+                    if (_selectedProfileIds.length == _profiles.length) {
+                      _selectedProfileIds.clear();
                     } else {
-                      _selectedProfileIds.remove(profile.id);
+                      _selectedProfileIds = _profiles
+                          .map((p) => p.id)
+                          .toList();
                     }
                   });
                 },
               ),
-          ],
-        ),
+            ],
+          ),
+          SizedBox(height: AppSpacing.md),
+          for (final profile in _profiles)
+            CheckboxListTile(
+              title: Text('${profile.firstName} ${profile.lastName}'),
+              subtitle: Text('Born: ${_formatDate(profile.dateOfBirth)}'),
+              value: _selectedProfileIds.contains(profile.id),
+              onChanged: (selected) {
+                setState(() {
+                  if (selected == true) {
+                    _selectedProfileIds.add(profile.id);
+                  } else {
+                    _selectedProfileIds.remove(profile.id);
+                  }
+                });
+              },
+            ),
+        ],
       ),
     );
   }
 
   Widget _buildDateRangeSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Date Range (Optional)',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Date Range (Optional)',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: const Text('From Date'),
-                    subtitle: Text(
-                      _dateFrom != null ? _formatDate(_dateFrom!) : 'Not set',
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () => _selectDate(context, isFromDate: true),
+          ),
+          SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: const Text('From Date'),
+                  subtitle: Text(
+                    _dateFrom != null ? _formatDate(_dateFrom!) : 'Not set',
                   ),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () => _selectDate(context, isFromDate: true),
                 ),
-                Expanded(
-                  child: ListTile(
-                    title: const Text('To Date'),
-                    subtitle: Text(
-                      _dateTo != null ? _formatDate(_dateTo!) : 'Not set',
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () => _selectDate(context, isFromDate: false),
-                  ),
-                ),
-              ],
-            ),
-            if (_dateFrom != null || _dateTo != null)
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _dateFrom = null;
-                    _dateTo = null;
-                  });
-                },
-                child: const Text('Clear Date Range'),
               ),
-          ],
-        ),
+              Expanded(
+                child: ListTile(
+                  title: const Text('To Date'),
+                  subtitle: Text(
+                    _dateTo != null ? _formatDate(_dateTo!) : 'Not set',
+                  ),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () => _selectDate(context, isFromDate: false),
+                ),
+              ),
+            ],
+          ),
+          if (_dateFrom != null || _dateTo != null)
+            HBButton.text(
+              text: 'Clear Date Range',
+              onPressed: () {
+                setState(() {
+                  _dateFrom = null;
+                  _dateTo = null;
+                });
+              },
+            ),
+        ],
       ),
     );
   }
 
   Widget _buildOptionsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Export Options',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Export Options',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 12),
-            SwitchListTile(
-              title: const Text('Include Attachments'),
-              subtitle: const Text('Export file attachments with the data'),
-              value: _includeAttachments,
-              onChanged: (value) {
-                setState(() => _includeAttachments = value);
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Include Inactive Records'),
-              subtitle: const Text('Export records marked as inactive'),
-              value: _includeInactiveRecords,
-              onChanged: (value) {
-                setState(() => _includeInactiveRecords = value);
-              },
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: AppSpacing.md),
+          SwitchListTile(
+            title: const Text('Include Attachments'),
+            subtitle: const Text('Export file attachments with the data'),
+            value: _includeAttachments,
+            onChanged: (value) {
+              setState(() => _includeAttachments = value);
+            },
+          ),
+          SwitchListTile(
+            title: const Text('Include Inactive Records'),
+            subtitle: const Text('Export records marked as inactive'),
+            value: _includeInactiveRecords,
+            onChanged: (value) {
+              setState(() => _includeInactiveRecords = value);
+            },
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildFileNameSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'File Name (Optional)',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'File Name (Optional)',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _fileNameController,
-              decoration: InputDecoration(
-                labelText: 'Custom file name',
-                hintText:
-                    'health_data_export_${DateTime.now().millisecondsSinceEpoch}',
-                suffixText:
-                    '.${_exportService.getFormatExtension(_selectedFormat)}',
-                border: const OutlineInputBorder(),
+          ),
+          SizedBox(height: AppSpacing.md),
+          HBTextField.filled(
+            controller: _fileNameController,
+            label: 'Custom file name',
+            hint: 'health_data_export_${DateTime.now().millisecondsSinceEpoch}',
+            suffix: Text(
+              '.${_exportService.getFormatExtension(_selectedFormat)}',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -439,14 +436,11 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         !_isExporting &&
         (_selectedScope == ExportScope.all || _selectedProfileIds.isNotEmpty);
 
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: canExport ? _performExport : null,
-        icon: const Icon(Icons.download),
-        label: const Text('Export Data'),
-        style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
-      ),
+    return HBButton.primary(
+      text: 'Export Data',
+      onPressed: canExport ? _performExport : null,
+      icon: Icons.download,
+      isExpanded: true,
     );
   }
 
@@ -550,23 +544,23 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Exported ${result.itemCount} items successfully.'),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text('Format: ${result.format.toUpperCase()}'),
             if (result.filePath != null) ...[
-              const SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               Text('Saved to: ${result.filePath}'),
             ],
           ],
         ),
         actions: [
-          TextButton(onPressed: () => context.pop(), child: const Text('OK')),
+          HBButton.text(text: 'OK', onPressed: () => context.pop()),
           if (result.filePath != null)
-            ElevatedButton(
+            HBButton.primary(
+              text: 'Open',
               onPressed: () {
                 context.pop();
                 // In a real app, you'd open the file or share it
               },
-              child: const Text('Open'),
             ),
         ],
       ),
@@ -580,7 +574,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         title: const Text('Export Failed'),
         content: Text('Failed to export data:\n\n$error'),
         actions: [
-          TextButton(onPressed: () => context.pop(), child: const Text('OK')),
+          HBButton.text(text: 'OK', onPressed: () => context.pop()),
         ],
       ),
     );
