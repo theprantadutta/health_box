@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/models/notification_settings.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../services/notification_settings_service.dart';
 import '../widgets/sound_picker_widget.dart';
 import '../widgets/volume_slider_widget.dart';
@@ -45,9 +48,12 @@ class _NotificationSettingsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Notification Settings',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -55,21 +61,18 @@ class _NotificationSettingsScreenState
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.infoGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.infoGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.infoGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert, color: Colors.white),
             onSelected: _onMenuSelected,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
+            itemBuilder: (context) => const [
+              PopupMenuItem(
                 value: 'test',
                 child: ListTile(
                   leading: Icon(Icons.play_arrow),
@@ -77,7 +80,7 @@ class _NotificationSettingsScreenState
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'reset',
                 child: ListTile(
                   leading: Icon(Icons.refresh),
@@ -108,7 +111,7 @@ class _NotificationSettingsScreenState
         ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const HBLoading.circular();
           }
 
           if (snapshot.hasError) {
@@ -133,7 +136,7 @@ class _NotificationSettingsScreenState
 
   Widget _buildSoundsTab(NotificationSetting settings) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -148,7 +151,7 @@ class _NotificationSettingsScreenState
               volume,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: AppSpacing.xl),
           _buildSoundSection(
             'Appointments',
             'Sound for appointment reminders',
@@ -160,7 +163,7 @@ class _NotificationSettingsScreenState
               volume,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: AppSpacing.xl),
           _buildSoundSection(
             'General Reminders',
             'Sound for other reminders',
@@ -179,21 +182,22 @@ class _NotificationSettingsScreenState
 
   Widget _buildVibrationTab(NotificationSetting settings) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Vibration Settings',
-                    style: Theme.of(context).textTheme.titleLarge,
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Vibration Settings',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                SizedBox(height: AppSpacing.base),
                   SwitchListTile(
                     title: const Text('Enable Vibration'),
                     subtitle: const Text('Vibrate when receiving notifications'),
@@ -205,12 +209,14 @@ class _NotificationSettingsScreenState
                     ),
                   ),
                   if (settings.enableVibration) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
                     Text(
                       'Vibration Pattern',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: AppTypography.fontWeightBold,
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: AppSpacing.sm),
                     ...VibrationPatterns.allPatterns.map((pattern) {
                       if (pattern == VibrationPatterns.none) return const SizedBox.shrink();
 
@@ -242,21 +248,22 @@ class _NotificationSettingsScreenState
 
   Widget _buildDisplayTab(NotificationSetting settings) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Display Settings',
-                    style: Theme.of(context).textTheme.titleLarge,
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Display Settings',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                SizedBox(height: AppSpacing.base),
                   SwitchListTile(
                     title: const Text('Show on Lock Screen'),
                     subtitle: const Text('Display notifications on lock screen'),
@@ -288,18 +295,19 @@ class _NotificationSettingsScreenState
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'LED Settings (Android)',
-                    style: Theme.of(context).textTheme.titleLarge,
+          SizedBox(height: AppSpacing.base),
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'LED Settings (Android)',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                SizedBox(height: AppSpacing.base),
                   SwitchListTile(
                     title: const Text('Enable LED'),
                     subtitle: const Text('Flash LED light for notifications'),
@@ -307,12 +315,14 @@ class _NotificationSettingsScreenState
                     onChanged: (value) => _updateLedSettings(settings, value),
                   ),
                   if (settings.enableLed) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
                     Text(
                       'LED Color',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: AppTypography.fontWeightBold,
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: AppSpacing.sm),
                     _buildColorPicker(settings),
                   ],
                 ],
@@ -326,21 +336,22 @@ class _NotificationSettingsScreenState
 
   Widget _buildAdvancedTab(NotificationSetting settings) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Persistent Notifications',
-                    style: Theme.of(context).textTheme.titleLarge,
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Persistent Notifications',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                SizedBox(height: AppSpacing.base),
                   SwitchListTile(
                     title: const Text('Enable Persistent Notifications'),
                     subtitle: const Text('Show persistent notifications for missed doses'),
@@ -351,7 +362,7 @@ class _NotificationSettingsScreenState
                     ),
                   ),
                   if (settings.enablePersistentNotifications) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.base),
                     ListTile(
                       title: const Text('Timeout'),
                       subtitle: Text('${settings.persistentNotificationTimeout} minutes'),
@@ -363,18 +374,19 @@ class _NotificationSettingsScreenState
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Do Not Disturb',
-                    style: Theme.of(context).textTheme.titleLarge,
+          SizedBox(height: AppSpacing.base),
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Do Not Disturb',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                SizedBox(height: AppSpacing.base),
                   SwitchListTile(
                     title: const Text('Respect Do Not Disturb'),
                     subtitle: const Text('Honor system do not disturb settings'),
@@ -394,18 +406,19 @@ class _NotificationSettingsScreenState
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Snooze Settings',
-                    style: Theme.of(context).textTheme.titleLarge,
+          SizedBox(height: AppSpacing.base),
+          HBCard.elevated(
+            padding: EdgeInsets.all(AppSpacing.base),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Snooze Settings',
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                SizedBox(height: AppSpacing.base),
                   ListTile(
                     title: const Text('Default Snooze Duration'),
                     subtitle: Text('${settings.defaultSnoozeMinutes} minutes'),
@@ -428,34 +441,34 @@ class _NotificationSettingsScreenState
     double currentVolume,
     Function(String, double) onChanged,
   ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+          ),
+          Text(
+            subtitle,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
             ),
-            const SizedBox(height: 16),
-            SoundPickerWidget(
-              currentSound: currentSound,
-              onSoundChanged: (soundName) => onChanged(soundName, currentVolume),
-            ),
-            const SizedBox(height: 16),
-            VolumeSliderWidget(
-              volume: currentVolume,
-              onVolumeChanged: (volume) => onChanged(currentSound, volume),
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: AppSpacing.base),
+          SoundPickerWidget(
+            currentSound: currentSound,
+            onSoundChanged: (soundName) => onChanged(soundName, currentVolume),
+          ),
+          SizedBox(height: AppSpacing.base),
+          VolumeSliderWidget(
+            volume: currentVolume,
+            onVolumeChanged: (volume) => onChanged(currentSound, volume),
+          ),
+        ],
       ),
     );
   }
@@ -488,13 +501,13 @@ class _NotificationSettingsScreenState
               shape: BoxShape.circle,
               border: Border.all(
                 color: isSelected
-                    ? Theme.of(context).colorScheme.primary
+                    ? context.colorScheme.primary
                     : Colors.transparent,
                 width: 3,
               ),
             ),
             child: isSelected
-                ? Icon(Icons.check, color: Colors.white, size: 20)
+                ? const Icon(Icons.check, color: Colors.white, size: 20)
                 : null,
           ),
         );
@@ -504,31 +517,38 @@ class _NotificationSettingsScreenState
 
   Widget _buildErrorWidget(String error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading settings',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: () => setState(() {}),
-            child: const Text('Retry'),
-          ),
-        ],
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: AppSizes.iconXl * 1.5,
+              color: AppColors.error,
+            ),
+            SizedBox(height: AppSpacing.base),
+            Text(
+              'Error loading settings',
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              error,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.base),
+            HBButton.primary(
+              text: 'Retry',
+              onPressed: () => setState(() {}),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -717,7 +737,7 @@ class _NotificationSettingsScreenState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: AppColors.error,
       ),
     );
   }
@@ -726,7 +746,7 @@ class _NotificationSettingsScreenState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.success,
       ),
     );
   }
