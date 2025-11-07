@@ -35,7 +35,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       body: recordAsync.when(
-        loading: () => const HBLoading.circular(),
+        loading: () => HBLoading.circular(),
         error: (error, stack) => _buildErrorState(context, error),
         data: (record) => record == null
             ? _buildRecordNotFound(context)

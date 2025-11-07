@@ -128,7 +128,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               Text('Loading...'),
               SizedBox(height: 20),
-              const HBLoading.circular(),
+              HBLoading.circular(),
             ],
           ),
         ),
