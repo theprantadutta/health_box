@@ -4,6 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/medication_adherence_dao.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_chip.dart';
+import '../../../shared/widgets/hb_loading.dart';
+import '../../../shared/widgets/hb_button.dart';
 import '../services/medication_adherence_service.dart';
 import '../widgets/adherence_statistics_widget.dart';
 import '../widgets/adherence_calendar_widget.dart';
@@ -53,7 +57,10 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
       appBar: AppBar(
         title: const Text(
           'Medication History',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -61,13 +68,10 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.chronicConditionGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.chronicConditionGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.chronicConditionGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         actions: [
@@ -113,15 +117,16 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
   }
 
   Widget _buildDateRangeHeader() {
-    final theme = Theme.of(context);
-
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.base,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        color: context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         border: Border(
           bottom: BorderSide(
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+            color: context.colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
       ),
@@ -129,24 +134,20 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
         children: [
           Icon(
             Icons.date_range,
-            size: 16,
-            color: theme.colorScheme.onSurfaceVariant,
+            size: AppSizes.iconSm,
+            color: context.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: AppSpacing.sm),
           Text(
             '${_selectedStartDate.toString().substring(0, 10)} - ${_selectedEndDate.toString().substring(0, 10)}',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
             ),
           ),
           const Spacer(),
           if (_selectedMedicationFilter != null || _selectedStatusFilter != null)
-            Chip(
-              label: Text(
-                'Filtered',
-                style: TextStyle(fontSize: 12),
-              ),
-              deleteIcon: const Icon(Icons.close, size: 16),
+            HBChip.filter(
+              label: 'Filtered',
               onDeleted: _clearFilters,
             ),
         ],
@@ -159,43 +160,16 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
       future: _getAdherenceStatistics(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const HBLoading.circular();
         }
 
         if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.error,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Error loading statistics',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  snapshot.error.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: () => setState(() {}),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          );
+          return _buildErrorWidget(snapshot.error.toString());
         }
 
         final stats = snapshot.data!;
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: context.responsivePadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -203,9 +177,9 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
                 statistics: stats,
                 dateRange: DateRange(_selectedStartDate, _selectedEndDate),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
               _buildQuickStatsCards(stats),
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xl),
               _buildTrendsChart(stats),
             ],
           ),
@@ -219,7 +193,7 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
       future: _getAdherenceRecords(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const HBLoading.circular();
         }
 
         if (snapshot.hasError) {
@@ -242,7 +216,7 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
       future: _getAdherenceRecords(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const HBLoading.circular();
         }
 
         if (snapshot.hasError) {
@@ -264,7 +238,6 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
   }
 
   Widget _buildQuickStatsCards(AdherenceStatistics stats) {
-
     return Row(
       children: [
         Expanded(
@@ -273,27 +246,27 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
             '${(stats.onTimeRate * 100).toInt()}%',
             stats.takenCount,
             Icons.check_circle,
-            Colors.green,
+            AppColors.success,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: AppSpacing.md),
         Expanded(
           child: _buildStatCard(
             'Late',
             '${(stats.lateRate * 100).toInt()}%',
             stats.takenLateCount,
             Icons.schedule,
-            Colors.orange,
+            AppColors.warning,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: AppSpacing.md),
         Expanded(
           child: _buildStatCard(
             'Missed',
             '${(stats.missedRate * 100).toInt()}%',
             stats.missedCount,
             Icons.cancel,
-            Colors.red,
+            AppColors.error,
           ),
         ),
       ],
@@ -307,69 +280,104 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
     IconData icon,
     Color color,
   ) {
-    final theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: AppSizes.iconSm),
+              SizedBox(width: AppSpacing.sm),
+              Text(
+                title,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              percentage,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.bold,
               ),
+            ],
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            percentage,
+            style: context.textTheme.headlineSmall?.copyWith(
+              color: color,
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            Text(
-              '$count doses',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+          ),
+          Text(
+            '$count doses',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildTrendsChart(AdherenceStatistics stats) {
     // Placeholder for trends chart - could be implemented with fl_chart package
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Adherence Trends',
-              style: Theme.of(context).textTheme.titleMedium,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Adherence Trends',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 16),
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8),
+          ),
+          SizedBox(height: AppSpacing.base),
+          Container(
+            height: 200,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: context.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(AppRadii.md),
+            ),
+            child: const Center(
+              child: Text('Chart coming soon'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget(String error) {
+    return Center(
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: AppSizes.iconXl * 1.5,
+              color: AppColors.error,
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'Error loading data',
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
               ),
-              child: const Center(
-                child: Text('Chart coming soon'),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              error,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.lg),
+            HBButton.primary(
+              text: 'Retry',
+              onPressed: () => setState(() {}),
+              icon: Icons.refresh,
             ),
           ],
         ),
@@ -377,59 +385,35 @@ class _ReminderHistoryScreenState extends ConsumerState<ReminderHistoryScreen>
     );
   }
 
-  Widget _buildErrorWidget(String error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading data',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: () => setState(() {}),
-            child: const Text('Retry'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.medication,
-            size: 64,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No medication records',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Take your medications to start tracking adherence',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.medication,
+              size: AppSizes.iconXl * 1.5,
+              color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'No medication records',
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'Take your medications to start tracking adherence',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
