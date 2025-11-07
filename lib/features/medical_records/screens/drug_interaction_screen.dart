@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_card.dart';
 import '../services/medication_interaction_service.dart';
 import '../widgets/interaction_warning_widget.dart';
 
@@ -49,7 +52,10 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
       appBar: AppBar(
         title: const Text(
           'Drug Interactions',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -57,13 +63,10 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.warningGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.warningGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.warningGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         actions: [
@@ -89,7 +92,7 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
           if (_isLoading)
             const LinearProgressIndicator()
           else
-            const SizedBox(height: 4),
+            SizedBox(height: AppSpacing.xs),
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -110,12 +113,12 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildInteractionSummary(),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.base),
           if (_currentWarnings.isNotEmpty)
             InteractionWarningWidget(
               warnings: _currentWarnings,
@@ -129,20 +132,20 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
 
   Widget _buildCheckNewDrugTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildNewDrugChecker(),
-          const SizedBox(height: 24),
+          SizedBox(height: AppSpacing.xl),
           if (_newMedicationWarnings.isNotEmpty) ...[
             Text(
               'Potential Interactions',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             InteractionWarningWidget(
               warnings: _newMedicationWarnings,
               showAllWarnings: true,
@@ -155,7 +158,6 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
   }
 
   Widget _buildInteractionSummary() {
-    final theme = Theme.of(context);
     final highCount = _currentWarnings
         .where((w) => w.interaction.severity == InteractionSeverity.high)
         .length;
@@ -166,72 +168,62 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
         .where((w) => w.interaction.severity == InteractionSeverity.low)
         .length;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Interaction Summary',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Interaction Summary',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
+            ),
+          ),
+          SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: _buildSummaryItem(
+                  'High Risk',
+                  highCount,
+                  MedicationInteractionService.getSeverityColor(InteractionSeverity.high),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildSummaryItem(
-                    'High Risk',
-                    highCount,
-                    MedicationInteractionService.getSeverityColor(InteractionSeverity.high),
-                    theme,
-                  ),
+              Expanded(
+                child: _buildSummaryItem(
+                  'Moderate',
+                  mediumCount,
+                  MedicationInteractionService.getSeverityColor(InteractionSeverity.medium),
                 ),
-                Expanded(
-                  child: _buildSummaryItem(
-                    'Moderate',
-                    mediumCount,
-                    MedicationInteractionService.getSeverityColor(InteractionSeverity.medium),
-                    theme,
-                  ),
+              ),
+              Expanded(
+                child: _buildSummaryItem(
+                  'Low Risk',
+                  lowCount,
+                  MedicationInteractionService.getSeverityColor(InteractionSeverity.low),
                 ),
-                Expanded(
-                  child: _buildSummaryItem(
-                    'Low Risk',
-                    lowCount,
-                    MedicationInteractionService.getSeverityColor(InteractionSeverity.low),
-                    theme,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSummaryItem(
-    String label,
-    int count,
-    Color color,
-    ThemeData theme,
-  ) {
+  Widget _buildSummaryItem(String label, int count, Color color) {
     return Column(
       children: [
         Text(
           '$count',
-          style: theme.textTheme.headlineMedium?.copyWith(
+          style: context.textTheme.headlineMedium?.copyWith(
             color: color,
-            fontWeight: FontWeight.bold,
+            fontWeight: AppTypography.fontWeightBold,
           ),
         ),
         Text(
           label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
           ),
         ),
       ],
@@ -239,82 +231,81 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
   }
 
   Widget _buildNewDrugChecker() {
-    final theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Check New Medication',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+    return HBCard.elevated(
+      padding: EdgeInsets.all(AppSpacing.base),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Check New Medication',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Enter a medication name to check for interactions with your current medications',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Enter a medication name to check for interactions with your current medications',
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _medicationController,
-              decoration: InputDecoration(
-                labelText: 'Medication name',
-                hintText: 'e.g., Aspirin, Ibuprofen, Metformin',
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: _checkNewMedication,
-                  icon: const Icon(Icons.search),
-                ),
-              ),
-              onSubmitted: (_) => _checkNewMedication(),
+          ),
+          SizedBox(height: AppSpacing.base),
+          HBTextField.filled(
+            controller: _medicationController,
+            label: 'Medication name',
+            hint: 'e.g., Aspirin, Ibuprofen, Metformin',
+            suffixIcon: Icons.search,
+            onFieldSubmitted: (_) => _checkNewMedication(),
+          ),
+          SizedBox(height: AppSpacing.base),
+          SizedBox(
+            width: double.infinity,
+            child: HBButton.primary(
+              text: 'Check Interactions',
+              onPressed: _checkNewMedication,
+              icon: Icons.search,
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _checkNewMedication,
-                child: const Text('Check Interactions'),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildNoInteractionsWidget() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 64,
-            color: Colors.green,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No Interactions Found',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Your current medications appear to be safe to take together',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          OutlinedButton(
-            onPressed: () => _tabController.animateTo(1),
-            child: const Text('Check New Medication'),
-          ),
-        ],
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_outline,
+              size: AppSizes.iconXl * 1.5,
+              color: AppColors.success,
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'No Interactions Found',
+              style: context.textTheme.titleLarge?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'Your current medications appear to be safe to take together',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.xl),
+            HBButton.outlined(
+              text: 'Check New Medication',
+              onPressed: () => _tabController.animateTo(1),
+              icon: Icons.search,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -373,7 +364,7 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('No interactions found for $medicationName'),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
             ),
           );
         }
@@ -383,7 +374,7 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error checking interactions: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -416,16 +407,16 @@ class _DrugInteractionScreenState extends ConsumerState<DrugInteractionScreen>
           children: [
             Text('Coverage: ${stats.totalMedications} medications'),
             Text('Total interactions: ${stats.totalInteractions}'),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text('Severity breakdown:'),
             Text('• High risk: ${stats.highSeverityCount}'),
             Text('• Moderate risk: ${stats.mediumSeverityCount}'),
             Text('• Low risk: ${stats.lowSeverityCount}'),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             Text(
               'This database contains basic interactions for common medications. Always consult healthcare providers for comprehensive drug interaction checking.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -451,7 +442,6 @@ class _InteractionDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final interaction = warning.interaction;
     final color = MedicationInteractionService.getSeverityColor(interaction.severity);
 
@@ -462,11 +452,11 @@ class _InteractionDetailDialog extends StatelessWidget {
             MedicationInteractionService.getSeverityIcon(interaction.severity),
             color: color,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               'Drug Interaction',
-              style: theme.textTheme.titleMedium?.copyWith(
+              style: context.textTheme.titleMedium?.copyWith(
                 color: color,
               ),
             ),
@@ -478,51 +468,54 @@ class _InteractionDetailDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(AppRadii.sm),
             ),
             child: Text(
               MedicationInteractionService.getSeverityLabel(interaction.severity),
-              style: theme.textTheme.bodySmall?.copyWith(
+              style: context.textTheme.bodySmall?.copyWith(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+                fontWeight: AppTypography.fontWeightBold,
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.base),
           Text(
             'Medications:',
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: context.textTheme.titleSmall?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: AppSpacing.xs),
           Text('• ${warning.primaryMedicationName}'),
           Text('• ${warning.secondaryMedicationName}'),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.base),
           Text(
             'Description:',
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: context.textTheme.titleSmall?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: AppSpacing.xs),
           Text(interaction.description),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.base),
           Text(
             'Recommendation:',
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: context.textTheme.titleSmall?.copyWith(
+              fontWeight: AppTypography.fontWeightBold,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: AppSpacing.xs),
           Text(
             interaction.recommendation,
-            style: theme.textTheme.bodyMedium?.copyWith(
+            style: context.textTheme.bodyMedium?.copyWith(
               color: color,
-              fontWeight: FontWeight.w500,
+              fontWeight: AppTypography.fontWeightMedium,
             ),
           ),
         ],
