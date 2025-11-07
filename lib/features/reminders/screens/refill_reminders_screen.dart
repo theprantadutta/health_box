@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_text_field.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../services/refill_reminder_service.dart';
 import '../widgets/refill_info_card_widget.dart';
 
@@ -44,7 +47,10 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
       appBar: AppBar(
         title: const Text(
           'Medication Refills',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -52,13 +58,10 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.medicationGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicationGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.medicationGradient.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         actions: [
@@ -106,7 +109,7 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
           if (_isLoading)
             const LinearProgressIndicator()
           else
-            const SizedBox(height: 4),
+            SizedBox(height: AppSpacing.xs),
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -134,7 +137,7 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const HBLoading.circular();
         }
 
         if (snapshot.hasError) {
@@ -159,7 +162,7 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const HBLoading.circular();
         }
 
         if (snapshot.hasError) {
@@ -189,12 +192,12 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
         : medications;
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       itemCount: filteredMedications.length,
       itemBuilder: (context, index) {
         final refillInfo = filteredMedications[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.only(bottom: AppSpacing.md),
           child: RefillInfoCardWidget(
             refillInfo: refillInfo,
             onRefillTapped: () => _showRefillDialog(refillInfo),
@@ -208,93 +211,117 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
 
   Widget _buildNoUrgentRefillsWidget() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 64,
-            color: Colors.green,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'All Set!',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'No medications need immediate refills',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          OutlinedButton(
-            onPressed: () => _tabController.animateTo(1),
-            child: const Text('View All Medications'),
-          ),
-        ],
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_outline,
+              size: AppSizes.iconXl * 1.5,
+              color: AppColors.success,
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'All Set!',
+              style: context.textTheme.titleLarge?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'No medications need immediate refills',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.xl),
+            HBButton.outlined(
+              text: 'View All Medications',
+              onPressed: () => _tabController.animateTo(1),
+              icon: Icons.medication,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildNoMedicationsWidget() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.medication,
-            size: 64,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No Medications Found',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Add medications with pill counts to track refills',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          FilledButton(
-            onPressed: _navigateToAddMedication,
-            child: const Text('Add Medication'),
-          ),
-        ],
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.medication,
+              size: AppSizes.iconXl * 1.5,
+              color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'No Medications Found',
+              style: context.textTheme.titleLarge?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'Add medications with pill counts to track refills',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.xl),
+            HBButton.primary(
+              text: 'Add Medication',
+              onPressed: _navigateToAddMedication,
+              icon: Icons.add,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildErrorWidget(String error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error Loading Refills',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: () => setState(() {}),
-            child: const Text('Retry'),
-          ),
-        ],
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: AppSizes.iconXl * 1.5,
+              color: AppColors.error,
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'Error Loading Refills',
+              style: context.textTheme.titleLarge?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              error,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.lg),
+            HBButton.primary(
+              text: 'Retry',
+              onPressed: () => setState(() {}),
+              icon: Icons.refresh,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -315,7 +342,7 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Scheduled $scheduledCount refill reminders'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
         setState(() {});
@@ -325,7 +352,7 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to schedule reminders: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -366,16 +393,14 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
           children: [
             Text(
               refillInfo.medicationName,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Current pill count',
-                border: OutlineInputBorder(),
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
               ),
+            ),
+            SizedBox(height: AppSpacing.base),
+            HBTextField.number(
+              controller: controller,
+              label: 'Current pill count',
             ),
           ],
         ),
@@ -419,9 +444,9 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Pill count updated and refill reminder rescheduled'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: const Text('Pill count updated and refill reminder rescheduled'),
+            backgroundColor: AppColors.success,
           ),
         );
         setState(() {}); // Refresh
@@ -431,7 +456,7 @@ class _RefillRemindersScreenState extends ConsumerState<RefillRemindersScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to update pill count: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -502,27 +527,23 @@ class _RefillDialogState extends State<_RefillDialog> {
           children: [
             Text(
               widget.refillInfo.medicationName,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
               ),
             ),
             Text(
               'Current count: ${widget.refillInfo.currentPillCount} pills',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 16),
-            TextField(
+            SizedBox(height: AppSpacing.base),
+            HBTextField.number(
               controller: _refillAmountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Refill amount',
-                hintText: 'Number of pills added',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Refill amount',
+              hint: 'Number of pills added',
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.base),
             ListTile(
               title: const Text('Refill date'),
               subtitle: Text('${_refillDate.day}/${_refillDate.month}/${_refillDate.year}'),
@@ -530,14 +551,11 @@ class _RefillDialogState extends State<_RefillDialog> {
               onTap: _selectRefillDate,
               contentPadding: EdgeInsets.zero,
             ),
-            const SizedBox(height: 16),
-            TextField(
+            SizedBox(height: AppSpacing.base),
+            HBTextField.multiline(
               controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'Notes (optional)',
-                hintText: 'Pharmacy, prescription number, etc.',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Notes (optional)',
+              hint: 'Pharmacy, prescription number, etc.',
               maxLines: 2,
             ),
           ],
@@ -605,7 +623,7 @@ class _RefillDialogState extends State<_RefillDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Refill recorded: +$refillAmount pills'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -626,7 +644,7 @@ class _RefillDialogState extends State<_RefillDialog> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: AppColors.error,
       ),
     );
   }
