@@ -3,14 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/database/app_database.dart';
-import '../../../shared/animations/common_transitions.dart';
-import '../../../shared/animations/micro_interactions.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
-import '../../../shared/theme/app_theme.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/gradient_button.dart';
-import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../widgets/medical_record_card.dart';
 
 class MedicalRecordListScreen extends ConsumerStatefulWidget {
@@ -62,10 +60,8 @@ class _MedicalRecordListScreenState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      backgroundColor: context.colorScheme.surfaceContainerLowest,
       body: CustomScrollView(
         slivers: [
           // Dashboard-style app bar
@@ -78,45 +74,40 @@ class _MedicalRecordListScreenState
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: HealthBoxDesignSystem.medicalBlue,
-                boxShadow: [
-                  BoxShadow(
-                    color: HealthBoxDesignSystem.medicalBlue.colors.first
-                        .withValues(alpha: 0.3),
-                    offset: const Offset(0, 4),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
+                boxShadow: AppElevation.coloredShadow(
+                  HealthBoxDesignSystem.medicalBlue.colors.first,
+                  opacity: 0.3,
+                ),
               ),
             ),
             title: Text(
               'Medical Records',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
+              style: context.textTheme.headlineSmall?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
                 color: Colors.white,
               ),
             ),
             actions: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.group_work_rounded,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white,
                 ),
                 onPressed: () => context.push('/medical-records/medication-batches'),
                 tooltip: 'Medication Batches',
               ),
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.tune_rounded,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white,
                 ),
                 onPressed: _showFilterBottomSheet,
                 tooltip: 'Filter Records',
               ),
               PopupMenuButton<String>(
-                icon: Icon(
+                icon: const Icon(
                   Icons.add_rounded,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white,
                 ),
                 onSelected: _onAddRecordSelected,
                 itemBuilder: (context) => [
