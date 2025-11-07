@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/database/app_database.dart';
-import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/profile_providers.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 
 class MedicalRecordDetailScreen extends ConsumerWidget {
   final String recordId;
@@ -33,7 +35,7 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       body: recordAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const HBLoading.circular(),
         error: (error, stack) => _buildErrorState(context, error),
         data: (record) => record == null
             ? _buildRecordNotFound(context)
@@ -44,60 +46,69 @@ class MedicalRecordDetailScreen extends ConsumerWidget {
 
   Widget _buildErrorState(BuildContext context, Object error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading record',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error.toString(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: AppSizes.iconXl * 1.5,
+              color: AppColors.error,
             ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back),
-            label: const Text('Go Back'),
-          ),
-        ],
+            SizedBox(height: AppSpacing.base),
+            Text(
+              'Error loading record',
+              style: context.textTheme.headlineSmall?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              error.toString(),
+              textAlign: TextAlign.center,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            SizedBox(height: AppSpacing.base),
+            HBButton.primary(
+              text: 'Go Back',
+              icon: Icons.arrow_back,
+              onPressed: () => context.pop(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildRecordNotFound(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.search_off,
-            size: 64,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Record not found',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'The medical record you\'re looking for doesn\'t exist or has been deleted',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: AppSizes.iconXl * 1.5,
+              color: context.colorScheme.onSurfaceVariant,
             ),
+            SizedBox(height: AppSpacing.base),
+            Text(
+              'Record not found',
+              style: context.textTheme.headlineSmall?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'The medical record you\'re looking for doesn\'t exist or has been deleted',
+              textAlign: TextAlign.center,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
