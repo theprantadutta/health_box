@@ -5,6 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../services/ocr_service.dart';
 
 class OCRScanScreen extends ConsumerStatefulWidget {
@@ -59,7 +63,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to initialize OCR: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -72,7 +76,10 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
       appBar: AppBar(
         title: Text(
           _getScreenTitle(),
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: AppTypography.fontWeightBold,
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -80,13 +87,10 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: HealthBoxDesignSystem.medicalPurple,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicalPurple.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
+            boxShadow: AppElevation.coloredShadow(
+              HealthBoxDesignSystem.medicalPurple.colors.first,
+              opacity: 0.3,
+            ),
           ),
         ),
         actions: [
@@ -682,7 +686,7 @@ class _OCRScanScreenState extends ConsumerState<OCRScanScreen>
               icon: const Icon(Icons.check),
               label: const Text('Use This Scan'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.success,
                 foregroundColor: Colors.white,
               ),
             ),
