@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alarm/alarm.dart';
+import '../../../shared/theme/design_system.dart';
 
 /// Beautiful full-screen alarm UI - Simple approach like BetterClock
 class AlarmScreen extends StatefulWidget {
@@ -118,12 +119,12 @@ class _AlarmScreenState extends State<AlarmScreen>
                 children: [
                   // Time Display
                   Padding(
-                    padding: const EdgeInsets.only(top: 40),
+                    padding: EdgeInsets.only(top: AppSpacing.xxl),
                     child: Text(
                       _currentTime,
                       style: TextStyle(
                         fontSize: 64,
-                        fontWeight: FontWeight.w300,
+                        fontWeight: AppTypography.fontWeightLight,
                         color: Colors.white.withValues(alpha: 0.9),
                         letterSpacing: 2,
                         shadows: [
@@ -137,14 +138,14 @@ class _AlarmScreenState extends State<AlarmScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: AppSpacing.lg),
 
                   // Date Display
                   Text(
                     _formatDate(DateTime.now()),
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: AppTypography.fontWeightRegular,
                       color: Colors.white.withValues(alpha: 0.8),
                       letterSpacing: 1,
                     ),
@@ -177,22 +178,22 @@ class _AlarmScreenState extends State<AlarmScreen>
                       ),
                       child: Icon(
                         Icons.alarm,
-                        size: 80,
+                        size: AppSizes.iconXl * 2,
                         color: Colors.white.withValues(alpha: 0.95),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  SizedBox(height: AppSpacing.xxl),
 
                   // Alarm Title
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
                     child: Text(
                       widget.alarmSettings.notificationSettings.title,
                       style: TextStyle(
                         fontSize: 28,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: AppTypography.fontWeightSemiBold,
                         color: Colors.white,
                         shadows: [
                           Shadow(
@@ -206,17 +207,17 @@ class _AlarmScreenState extends State<AlarmScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: AppSpacing.md),
 
                   // Alarm Body/Description
                   if (widget.alarmSettings.notificationSettings.body.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
                       child: Text(
                         widget.alarmSettings.notificationSettings.body,
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: AppTypography.fontWeightRegular,
                           color: Colors.white.withValues(alpha: 0.9),
                         ),
                         textAlign: TextAlign.center,
@@ -229,7 +230,7 @@ class _AlarmScreenState extends State<AlarmScreen>
 
                   // Action Buttons
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
                     child: Row(
                       children: [
                         // Snooze Button
@@ -247,7 +248,7 @@ class _AlarmScreenState extends State<AlarmScreen>
                           ),
                         ),
 
-                        const SizedBox(width: 16),
+                        SizedBox(width: AppSpacing.base),
 
                         // Stop Button
                         Expanded(
@@ -265,7 +266,7 @@ class _AlarmScreenState extends State<AlarmScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 60),
+                  SizedBox(height: AppSpacing.xxl * 1.5),
                 ],
               ),
             ),
@@ -286,7 +287,7 @@ class _AlarmScreenState extends State<AlarmScreen>
       height: 64,
       decoration: BoxDecoration(
         gradient: gradient,
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(AppRadii.xxl),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -299,17 +300,17 @@ class _AlarmScreenState extends State<AlarmScreen>
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(AppRadii.xxl),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, color: textColor, size: 28),
-              const SizedBox(width: 12),
+              SizedBox(width: AppSpacing.md),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: AppTypography.fontWeightSemiBold,
                   color: textColor,
                 ),
               ),

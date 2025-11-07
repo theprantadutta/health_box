@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../shared/theme/design_system.dart';
+import '../../../shared/widgets/hb_app_bar.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../services/medication_batch_service.dart';
 import '../widgets/batch_card_widget.dart';
 import '../widgets/batch_form_widget.dart';
@@ -37,7 +40,10 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading batches: $e')),
+          SnackBar(
+            content: Text('Error loading batches: $e'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -81,7 +87,7 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Delete'),
           ),
         ],
@@ -94,13 +100,19 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
         await _loadBatches();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Deleted batch "${batch.name}"')),
+            SnackBar(
+              content: Text('Deleted batch "${batch.name}"'),
+              backgroundColor: AppColors.success,
+            ),
           );
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error deleting batch: $e')),
+            SnackBar(
+              content: Text('Error deleting batch: $e'),
+              backgroundColor: AppColors.error,
+            ),
           );
         }
       }
@@ -110,23 +122,9 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Medication Batches', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: HealthBoxDesignSystem.medicationGradient,
-            boxShadow: [
-              BoxShadow(
-                color: HealthBoxDesignSystem.medicationGradient.colors.first.withValues(alpha: 0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
+      appBar: HBAppBar.gradient(
+        title: 'Medication Batches',
+        gradient: HealthBoxDesignSystem.medicationGradient,
         actions: [
           IconButton(
             icon: const Icon(Icons.add, color: Colors.white),
@@ -136,39 +134,13 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const HBLoading.circular()
           : _batches.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.medical_services,
-                        size: 64,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'No Medication Batches',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Create batches to group medications by timing\n(e.g., "After Breakfast", "Before Dinner")',
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _showCreateBatchDialog,
-                        child: const Text('Create First Batch'),
-                      ),
-                    ],
-                  ),
-                )
+              ? _buildEmptyState()
               : RefreshIndicator(
                   onRefresh: _loadBatches,
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: context.responsivePadding,
                     itemCount: _batches.length,
                     itemBuilder: (context, index) {
                       final batch = _batches[index];
@@ -180,6 +152,45 @@ class _MedicationBatchScreenState extends ConsumerState<MedicationBatchScreen> {
                     },
                   ),
                 ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: context.responsivePadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.medical_services,
+              size: AppSizes.iconXl * 1.5,
+              color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'No Medication Batches',
+              style: context.textTheme.titleLarge?.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'Create batches to group medications by timing\n(e.g., "After Breakfast", "Before Dinner")',
+              textAlign: TextAlign.center,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            SizedBox(height: AppSpacing.xl),
+            HBButton.primary(
+              text: 'Create First Batch',
+              onPressed: _showCreateBatchDialog,
+              icon: Icons.add,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
