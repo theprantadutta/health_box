@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/database/app_database.dart';
-import '../../../shared/animations/common_transitions.dart';
 import '../../../shared/navigation/app_router.dart';
 import '../../../shared/providers/medical_records_providers.dart';
 import '../../../shared/providers/simple_profile_providers.dart';
 import '../../../shared/theme/design_system.dart';
-import '../../../shared/widgets/gradient_button.dart';
-import '../../../shared/widgets/modern_card.dart';
+import '../../../shared/widgets/hb_card.dart';
+import '../../../shared/widgets/hb_button.dart';
+import '../../../shared/widgets/hb_loading.dart';
 import '../../../test_alarm_notification.dart';
 import '../widgets/recent_activity_widget.dart';
 import '../widgets/upcoming_reminders_widget.dart';
@@ -25,12 +25,11 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final profilesAsync = ref.watch(simpleProfilesProvider);
     final selectedProfileAsync = ref.watch(simpleSelectedProfileProvider);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      backgroundColor: context.colorScheme.surfaceContainerLowest,
       body: RefreshIndicator(
         onRefresh: () async {
           // Refresh the simple providers
@@ -49,42 +48,37 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               flexibleSpace: Container(
                 decoration: BoxDecoration(
                   gradient: HealthBoxDesignSystem.medicalBlue,
-                  boxShadow: [
-                    BoxShadow(
-                      color: HealthBoxDesignSystem.medicalBlue.colors.first
-                          .withValues(alpha: 0.3),
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                    ),
-                  ],
+                  boxShadow: AppElevation.coloredShadow(
+                    HealthBoxDesignSystem.medicalBlue.colors.first,
+                    opacity: 0.3,
+                  ),
                 ),
               ),
               title: Text(
                 'HealthBox',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+                style: context.textTheme.headlineSmall?.copyWith(
+                  fontWeight: AppTypography.fontWeightBold,
                   color: Colors.white,
                 ),
               ),
               actions: [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.search_rounded,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: Colors.white,
                   ),
                   onPressed: () => _showSearchDialog(context),
                   tooltip: 'Search',
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.notifications_none_rounded,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: Colors.white,
                   ),
                   onPressed: () => context.push(AppRoutes.reminders),
                   tooltip: 'Notifications',
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.sm),
               ],
             ),
 
@@ -127,25 +121,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return selectedProfileAsync.when(
       loading: () => CommonTransitions.fadeIn(
-        child: ModernCard(
-          medicalTheme: MedicalCardTheme.primary,
-          elevation: CardElevation.low,
-          padding: const EdgeInsets.all(24),
+        child: HBCard.elevated(
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Loading...'),
               SizedBox(height: 20),
-              Center(child: CircularProgressIndicator()),
+              const HBLoading.circular(),
             ],
           ),
         ),
       ),
       error: (error, stack) => CommonTransitions.fadeSlideIn(
-        child: ModernCard(
-          medicalTheme: MedicalCardTheme.primary,
-          elevation: CardElevation.medium,
-          padding: const EdgeInsets.all(24),
+        child: HBCard.elevated(
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
